@@ -1,0 +1,5 @@
+docker/db/*
+docker/postgres/data/*
+docker/**/*.env
+
+**/coverage

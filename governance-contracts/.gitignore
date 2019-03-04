@@ -1,0 +1,13 @@
+# installed packages
+node_modules/
+installed_contracts/
+
+# build artifacts
+build/
+
+# backup files
+*.swp
+
+# solidity-coverage artifacts
+coverage/
+coverage.json

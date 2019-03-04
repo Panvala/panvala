@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "panvala-api.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "panvala-api.name" . }}
+    helm.sh/chart: {{ include "panvala-api.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "panvala-api.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "panvala-api.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.node_env }}
+            - name: PRODUCTION_HOST
+              value: {{ .Values.databaseHost }}
+            - name: PRODUCTION_PORT
+              value: {{ .Values.databasePort | quote }}
+            - name: PRODUCTION_DATABASE
+              value: {{ .Values.databaseName }}
+            - name: PRODUCTION_USERNAME
+              value: {{ .Values.databaseUser }}
+            - name: PRODUCTION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+                  key: databasePassword
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+        #   readinessProbe:
+        #     httpGet:
+        #       path: /
+        #       port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

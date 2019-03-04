@@ -1,0 +1,241 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ballots - vote should render correctly Ballot slate voting component per snapshot 1`] = `
+<div>
+  <div>
+    <div
+      class="flex justify-end"
+    >
+      <div
+        class="Deadline__Wrapper-sc-1a3aqlz-1 gtXKcM"
+      >
+        <div
+          class="Tag__Wrapper-l3n6sk-1 ceKKQx"
+        >
+          <div
+            class="Deadline__StyledDeadline-sc-1a3aqlz-0 kbjpMT Tag__StyledTag-l3n6sk-0 eAsWWP"
+          >
+            VOTE UNTIL 2018-10-08 AT 20:15 PM EST
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="b f2 tc mv4"
+    >
+      Submit Vote
+    </div>
+    <div
+      class="vote__BallotWrapper-sc-1g9yn2o-0 cSohui"
+    >
+      <div
+        class="pa4"
+      >
+        <div
+          class="SectionLabel__StyledSectionLabel-sc-1fzxsyz-0 hMXPaX"
+        >
+          GRANTS
+        </div>
+        <label
+          class="Label__StyledLabel-sc-1pdmyea-0 fEfxuf"
+          required=""
+        >
+          Select your first and second choice slate
+          <span
+            class="Required__StyledRequired-sc-1du3aep-0 icgBVx"
+          >
+             *
+          </span>
+        </label>
+        <div
+          class="flex flex-wrap mt3"
+        >
+          <div
+            class="Card__Wrapper-h3ymxi-0 gjicgu"
+          >
+            <div
+              class="flex"
+            >
+              <div
+                class="Tag__Wrapper-l3n6sk-1 ceKKQx"
+              >
+                <div
+                  class="Tag__StyledTag-l3n6sk-0 cZzgaW"
+                >
+                  GRANT
+                </div>
+              </div>
+              <div
+                class="Tag__Wrapper-l3n6sk-1 ceKKQx"
+              >
+                <div
+                  class="Tag__StyledTag-l3n6sk-0 eAsWWP"
+                >
+                  PENDING VOTE
+                </div>
+              </div>
+            </div>
+            <div
+              class="Card__CardTitle-h3ymxi-1 bSTxPd"
+            >
+              Panvala Award Committee
+            </div>
+            <div
+              class="Card__CardSubTitle-h3ymxi-2 kWUzrK"
+            />
+            <div
+              class="Card__CardDescription-h3ymxi-3 iIGibR"
+            >
+              In tempus sem orci, eu auctor mi finibus eu. Nam mi risus, pretium ut laoreet fermentum, cursus nec mi. Nulla ...
+            </div>
+            <div>
+              View slate details
+            </div>
+            <div
+              class="Form__Separator-naepsk-0 eYZnFo"
+            />
+            <div
+              class="Card__CardDescription-h3ymxi-3 iIGibR"
+            >
+              Select an option
+            </div>
+            <div
+              class="Card__ChoiceOptions-h3ymxi-6 gjfasN"
+            >
+              <div
+                class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+              >
+                <button
+                  class="Card__ChoiceButton-h3ymxi-7 fJptFY Button__StyledButton-sc-1vedn6s-0 lahyEh"
+                  data-testid="first-choice"
+                >
+                  1st Choice
+                </button>
+              </div>
+              <div
+                class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+              >
+                <button
+                  class="Card__ChoiceButton-h3ymxi-7 fJptFY Button__StyledButton-sc-1vedn6s-0 lahyEh"
+                  data-testid="second-choice"
+                >
+                  2nd Choice
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="Card__Wrapper-h3ymxi-0 gjicgu"
+          >
+            <div
+              class="flex"
+            >
+              <div
+                class="Tag__Wrapper-l3n6sk-1 ceKKQx"
+              >
+                <div
+                  class="Tag__StyledTag-l3n6sk-0 cZzgaW"
+                >
+                  GRANT
+                </div>
+              </div>
+              <div
+                class="Tag__Wrapper-l3n6sk-1 ceKKQx"
+              >
+                <div
+                  class="Tag__StyledTag-l3n6sk-0 llOOnS"
+                >
+                  PENDING TOKENS
+                </div>
+              </div>
+            </div>
+            <div
+              class="Card__CardTitle-h3ymxi-1 bSTxPd"
+            >
+              Grant Awards
+            </div>
+            <div
+              class="Card__CardSubTitle-h3ymxi-2 kWUzrK"
+            />
+            <div
+              class="Card__CardDescription-h3ymxi-3 iIGibR"
+            >
+              In tempus sem orci, eu auctor mi finibus eu. Nam mi risus, pretium ut laoreet fermentum, cursus nec mi. Nulla sodales ultrices tellus sodales consectetur.Nullam id mattis velit.
+            </div>
+            <div>
+              View slate details
+            </div>
+            <div
+              class="Form__Separator-naepsk-0 eYZnFo"
+            />
+            <div
+              class="Card__CardDescription-h3ymxi-3 iIGibR"
+            >
+              Select an option
+            </div>
+            <div
+              class="Card__ChoiceOptions-h3ymxi-6 gjfasN"
+            >
+              <div
+                class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+              >
+                <button
+                  class="Card__ChoiceButton-h3ymxi-7 fJptFY Button__StyledButton-sc-1vedn6s-0 lahyEh"
+                  data-testid="first-choice"
+                >
+                  1st Choice
+                </button>
+              </div>
+              <div
+                class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+              >
+                <button
+                  class="Card__ChoiceButton-h3ymxi-7 fJptFY Button__StyledButton-sc-1vedn6s-0 lahyEh"
+                  data-testid="second-choice"
+                >
+                  2nd Choice
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="vote__Separator-sc-1g9yn2o-1 gQIqRR"
+      />
+      <div
+        class="flex flex-column pv4 ph4 items-end"
+      >
+        <div
+          class="flex"
+        >
+          <div
+            class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+          >
+            <button
+              class="Button__LargeButton-sc-1vedn6s-1 lfgnkA"
+            >
+              Back
+            </button>
+          </div>
+          <div
+            class="Button__Wrapper-sc-1vedn6s-2 jHiEij"
+          >
+            <button
+              class="Button__LargeButton-sc-1vedn6s-1 lCuqq"
+              type="submit"
+            >
+              Confirm and Submit
+            </button>
+          </div>
+        </div>
+        <div
+          class="f7 w5 tr mr3"
+        >
+          This will redirect to a seperate MetaMask window to confirm your transaction.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,16 @@
+{
+    "title": "An amazing proposal",
+    "summary": "All sorts of amazing things",
+    "tokensRequested": 200000,
+    "firstName": "John",
+    "lastName": "Crypto",
+    "email": "jc@eth.io",
+    "github": "jcrypto",
+    "website": "jc.io",
+    "projectPlan": "2019 is gonna launch",
+    "projectTimeline": "2020 is gonna moon",
+    "teamBackgrounds": "I do this. She does that.",
+    "totalBudget": "$1,000,000 for this. $500,000 for that.",
+    "otherFunding": "none",
+    "awardAddress": "0xD09cc3Bc67E4294c4A446d8e4a2934a921410eD7"
+}

@@ -1,0 +1,393 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+defaults: &defaults
+  docker:
+    - image: circleci/node:10
+  working_directory: ~/repo
+
+install-aws: &install-aws
+    name: Install the AWS CLI
+    command: |
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install -r scripts/requirements.txt
+
+install-helm: &install-helm
+    name: Install Helm
+    command: |
+        . ./scripts/helpers.sh
+        install_helm
+
+install-kubectl: &install-kubectl
+    name: Install kubectl
+    command: |
+        k8sversion=v1.10.11
+
+        # Get the kubectl binary.
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/$k8sversion/bin/linux/amd64/kubectl
+
+        # Make the kubectl binary executable.
+        chmod +x ./kubectl
+
+        # Move the kubectl executable to /usr/local/bin.
+        sudo mv ./kubectl /usr/local/bin/kubectl
+
+install-iam-authenticator: &install-iam-authenticator
+    name: Install IAM authenticator
+    command: |
+        AUTHENTICATOR=https://amazon-eks.s3-us-west-2.amazonaws.com/1.11.5/2018-12-06/bin/linux/amd64/aws-iam-authenticator
+        curl -o aws-iam-authenticator $AUTHENTICATOR
+        curl -o aws-iam-authenticator.sha256 "$AUTHENTICATOR.sha256"
+        openssl sha1 -sha256 aws-iam-authenticator
+        chmod +x ./aws-iam-authenticator
+        # Move the aws-iam-authenticator executable to /usr/local/bin.
+        sudo mv ./aws-iam-authenticator /usr/local/bin/aws-iam-authenticator
+
+jobs:
+  build-api-image:
+    <<: *defaults
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build image
+          command: sh ./scripts/build-api.sh
+      - run:
+          name: Run tests
+          command: sh ./scripts/test-api.sh
+      - run:
+          name: Save image to an archive
+          command: |
+            . ./scripts/helpers.sh
+            FULL_IMAGE_NAME="$(get_image_name panvala/api)"
+            mkdir docker-image
+            docker save -o docker-image/api-image.tar $FULL_IMAGE_NAME
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-image
+
+  publish-api-image:
+    <<: *defaults
+    docker:
+     - image: circleci/python:3.6.1
+    steps:
+     - checkout
+     - setup_remote_docker
+     - attach_workspace:
+          at: workspace
+     - restore_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+     - run:
+          <<: *install-aws
+     - save_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+          paths:
+            - "venv"
+     - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-image/api-image.tar
+     - run:
+         name: Publish image
+         command: |
+           . venv/bin/activate
+           sh ./scripts/publish-api.sh
+
+  dev-deploy-api:
+    <<: *defaults
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+      - run:
+          <<: *install-aws
+      - save_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          <<: *install-kubectl
+      - run:
+          <<: *install-iam-authenticator
+      - run:
+          name: Prepare
+          command: |
+            . venv/bin/activate
+            . ./scripts/helpers.sh
+            kube_config
+            install_helm
+      - run:
+          name: Deploy API
+          command: |
+            . venv/bin/activate
+            . ./scripts/helpers.sh
+            deploy_api development
+
+  # run api tests
+  api:
+    <<: *defaults
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - api-dependencies-{{ checksum "api/package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - api-dependencies-
+
+      - run: cd api && yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: api-dependencies-{{ checksum "api/package.json" }}
+
+      # run tests!
+      - run: cd api && yarn test
+
+  build-frontend-image:
+    <<: *defaults
+    docker:
+      - image: docker:stable-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build image
+          command: sh ./scripts/build-frontend.sh
+      - run:
+          name: Run tests
+          command: sh ./scripts/test-frontend.sh
+      - run:
+          name: Save image to an archive
+          command: |
+            . ./scripts/helpers.sh
+            mkdir docker-image
+            docker save -o docker-image/frontend-image.tar $(get_image_name panvala/frontend)
+      - persist_to_workspace:
+          root: .
+          paths:
+            - docker-image
+
+  publish-frontend-image:
+    <<: *defaults
+    docker:
+     - image: circleci/python:3.6.1
+    steps:
+     - checkout
+     - setup_remote_docker
+     - attach_workspace:
+          at: workspace
+     - restore_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+     - run:
+          <<: *install-aws
+     - save_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+          paths:
+            - "venv"
+     - run:
+          name: Load image
+          command: |
+            docker load --input workspace/docker-image/frontend-image.tar
+     - run:
+         name: Publish image
+         command: |
+           . venv/bin/activate
+           sh ./scripts/publish-frontend.sh
+
+  dev-deploy-frontend:
+    <<: *defaults
+    docker:
+      - image: circleci/python:3.6.1
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+      - run:
+          <<: *install-aws
+      - save_cache:
+          key: v1-{{ checksum "scripts/requirements.txt" }}
+          paths:
+            - "venv"
+      - run:
+          <<: *install-kubectl
+      - run:
+          <<: *install-iam-authenticator
+      - run:
+          name: Prepare
+          command: |
+            . venv/bin/activate
+            . ./scripts/helpers.sh
+            kube_config
+            install_helm
+      - run:
+          name: Deploy frontend
+          command: |
+            . venv/bin/activate
+            . ./scripts/helpers.sh
+            deploy_frontend development
+
+  # run client tests
+  frontend:
+    <<: *defaults
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - frontend-dependencies-{{ checksum "client/package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - frontend-dependencies-
+
+      - run: cd client && yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: frontend-dependencies-{{ checksum "client/package.json" }}
+
+      - run:
+          name: build server
+          command: cd client && yarn build
+
+      # run tests!
+      - run:
+          name: Run tests
+          command: cd client && yarn test
+
+  # test governance contracts
+  governance-contracts:
+    <<: *defaults
+    docker:
+      - image: circleci/node:10
+
+      # service container for our test blockchain
+      - image: trufflesuite/ganache-cli
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - token-dependencies-{{ checksum "governance-contracts/package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - token-dependencies-
+
+      - run:
+          name: install dependencies
+          command: cd governance-contracts && yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: token-dependencies-{{ checksum "governance-contracts/package.json" }}
+
+      - run:
+          name: run tests
+          command: cd governance-contracts && yarn test
+
+      # TODO: run coverage
+
+  # run token tests
+  restricted-token:
+    <<: *defaults
+    docker:
+      - image: circleci/node:10
+
+      # service container for our test blockchain
+      - image: trufflesuite/ganache-cli
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - token-dependencies-{{ checksum "restricted-token/package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - token-dependencies-
+
+      - run:
+          name: install dependencies
+          command: cd restricted-token && yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: token-dependencies-{{ checksum "restricted-token/package.json" }}
+
+      - run:
+          name: run tests
+          command: cd restricted-token && yarn test
+
+      # TODO: run coverage
+
+
+workflows:
+  version: 2
+  # test on every commit
+  test:
+    jobs:
+      - api
+      - frontend
+      - restricted-token
+      - governance-contracts
+
+  # build and push on commit to develop
+  # deploy to development
+  build-and-deploy:
+    jobs:
+      - build-api-image:
+          filters:
+            branches:
+              only:
+                - develop
+      - publish-api-image:
+          filters:
+            branches:
+              only:
+                - develop
+          requires:
+            - build-api-image
+      - build-frontend-image:
+          filters:
+            branches:
+              only:
+                - develop
+      - publish-frontend-image:
+          filters:
+            branches:
+              only:
+                - develop
+          requires:
+            - build-frontend-image
+      # deploy to development
+      - dev-deploy-api:
+          requires:
+            - publish-api-image
+          filters:
+            branches:
+              only:
+                - develop
+      - dev-deploy-frontend:
+          requires:
+            - publish-frontend-image
+          filters:
+            branches:
+              only:
+                - develop
+

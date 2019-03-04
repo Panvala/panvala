@@ -1,0 +1,229 @@
+import * as React from 'react';
+import styled from 'styled-components';
+import * as yup from 'yup';
+import { Formik, Form, Field as FormikField, ErrorMessage as FormikError } from 'formik';
+import { COLORS } from '../styles';
+import { Separator } from '../components/Form';
+import Label from './Label';
+import SectionLabel from './SectionLabel';
+import Button from './Button';
+import { toast } from 'react-toastify';
+import FieldText from './FieldText';
+import FieldTextarea from './FieldTextarea';
+import config from '../config';
+
+const FormSchema = yup.object().shape({
+  firstName: yup
+    .string()
+    .min(2, 'Too Short!')
+    .max(70, 'Too Long!')
+    .required('Required'),
+  lastName: yup
+    .string()
+    .min(2, 'Too Short!')
+    .max(70, 'Too Long!'),
+  email: yup
+    .string()
+    .email('Invalid email')
+    .required('Required'),
+  title: yup
+    .string()
+    .max(70, 'Too Long!')
+    .required('Required'),
+  summary: yup
+    .string()
+    .max(4000, 'Too Long!')
+    .required('Required'),
+  tokensRequested: yup
+    .number()
+    .min(1, 'Not enough tokens')
+    .max(config.totalUpcomingDispatch, `Too many tokens (${config.totalUpcomingDispatch} max)`)
+    .required('Required'),
+  totalBudget: yup.string().required('Required'),
+  otherFunding: yup.string().required('Required'),
+  awardAddress: yup.string().required('Required'),
+});
+
+const Field = styled(FormikField)`
+  background-color: ${COLORS.grey6};
+  border: 1px solid ${COLORS.greyBorder};
+  border-radius: 2px;
+  width: 100%;
+  padding: 0.8em;
+  font-size: 0.8em;
+  margin: 1em 0;
+`;
+
+const ErrorMessage: any = styled(FormikError)`
+  font-weight: bold;
+  margin-left: 0.5em;
+  color: red;
+`;
+
+interface Props {
+  onHandleSubmit: any;
+}
+
+const ProposalForm: React.SFC<Props> = ({ onHandleSubmit }) => {
+  return (
+    <div>
+      <Formik
+        initialValues={{
+          firstName: '',
+          lastName: '',
+          email: '',
+          github: '',
+          tokensRequested: '',
+          title: '',
+          summary: '',
+          website: '',
+          projectPlan: '',
+          projectTimeline: '',
+          teamBackgrounds: '',
+          file: {},
+          totalBudget: '',
+          otherFunding: '',
+          awardAddress: '',
+        }}
+        validationSchema={FormSchema}
+        onSubmit={async (values, { setSubmitting }) => {
+          console.log('proposal-form-values:', values);
+          // values.tokensRequested = utils.parseUnits(values.tokensRequested.toString(), 18).toString();
+          await onHandleSubmit(values);
+          setSubmitting(false);
+        }}
+      >
+        {({ isSubmitting, setFieldValue }) => (
+          <Form>
+            <div className="pa4">
+              <SectionLabel>{'PERSONAL INFORMATION'}</SectionLabel>
+
+              <FieldText
+                required
+                label={'First Name / Organization'}
+                name="firstName"
+                placeholder="Enter your first name or the name of your organization"
+              />
+              <FieldText label={'Last Name'} name="lastName" placeholder="Enter your last name" />
+              <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
+              <FieldText label={'Github'} name="github" placeholder="Enter your github username" />
+            </div>
+
+            <Separator />
+
+            <div className="pa4">
+              <SectionLabel>{'PROJECT DETAILS'}</SectionLabel>
+
+              <FieldText
+                required
+                label={'Project Name'}
+                name="title"
+                placeholder="Enter project name"
+              />
+              <FieldText label={'Website'} name="website" placeholder="Enter project website" />
+
+              <FieldTextarea
+                required
+                label={'Project Summary'}
+                name="summary"
+                placeholder="Enter project proposal"
+              />
+              <FieldTextarea
+                label={'Project Plan'}
+                name="projectPlan"
+                placeholder="Enter project plan"
+              />
+              <FieldTextarea
+                label={'Timeline and Milestones'}
+                name="projectTimeline"
+                placeholder="Enter project timeline and milestones"
+              />
+              <FieldTextarea
+                label={"What are your and your team's backgrounds?"}
+                name="teamBackgrounds"
+                placeholder="Enter your and your team's backgrounds"
+              />
+
+              <Label htmlFor="file">{'File upload'}</Label>
+              <div className="mt2">
+                <input
+                  type="file"
+                  name="file"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    if (!event.currentTarget.files) {
+                      return;
+                    }
+                    const file = event.currentTarget.files[0];
+                    if (file.type !== 'application/pdf') {
+                      toast.error('Invalid file type. Please upload .pdf');
+                      setFieldValue('file', {});
+                    } else {
+                      setFieldValue('file', file);
+                    }
+                  }}
+                  placeholder="Choose file"
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="pa4">
+              <SectionLabel>{'FINANCIAL DETAILS'}</SectionLabel>
+
+              <FieldTextarea
+                required
+                label={'What is the total budget of your project (in USD)?'}
+                name="totalBudget"
+                placeholder="Enter the total budget of your project"
+              />
+
+              <Label htmlFor="tokensRequested" required>
+                {'How many tokens are you requesting?'}
+              </Label>
+              <ErrorMessage name="tokensRequested" component="span" />
+              <Field
+                maxLength={80}
+                type="number"
+                name="tokensRequested"
+                placeholder="Enter the amount of tokens you would like"
+              />
+
+              <FieldText
+                required
+                label={'Award address'}
+                name="awardAddress"
+                placeholder="Enter the address of the token recipient for this proposal"
+              />
+
+              <FieldTextarea
+                required
+                label={'Have you applied/received other funding?'}
+                name="otherFunding"
+                placeholder="Enter any other funding you have received"
+              />
+            </div>
+
+            <Separator />
+
+            <div className="flex flex-column pv2 ph4 items-end">
+              <div className="flex">
+                <Button type="default" large disabled={true}>
+                  {'Back'}
+                </Button>
+                <Button type="submit" large primary disabled={isSubmitting}>
+                  {'Confirm and Submit'}
+                </Button>
+              </div>
+              <div className="f7 w5 tr mr3">
+                {'This will redirect to a seperate MetaMask window to confirm your transaction.'}
+              </div>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+export default ProposalForm;

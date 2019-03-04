@@ -1,0 +1,33 @@
+{
+    "name": "panvala-governance",
+    "version": "0.0.1",
+    "description": "Governance contracts for Panvala",
+    "main": "truffle-config.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "compile": "yarn sol-lint && truffle compile",
+        "coverage": "solidity-coverage",
+        "lint": "eslint",
+        "sol-lint": "solhint ./contracts/**/*.sol",
+        "fix": "eslint --fix ./",
+        "test": "yarn lint ./ && truffle test"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "bs58": "^4.0.1",
+        "eslint": "5.6.1",
+        "eslint-config-airbnb-base": "13.1.0",
+        "eslint-plugin-import": "2.14.0",
+        "solhint": "1.3.0",
+        "solidity-coverage": "0.5.11",
+        "truffle": "^5.0.4"
+    },
+    "dependencies": {
+        "ethereumjs-util": "^6.1.0",
+        "openzeppelin-solidity": "^2.1.3",
+        "truffle-hdwallet-provider": "^1.0.4"
+    }
+}

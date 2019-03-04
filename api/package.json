@@ -1,0 +1,40 @@
+{
+  "name": "panvala-api",
+  "version": "0.0.1",
+  "description": "Panvala API service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "migrate": "sequelize db:migrate",
+    "test": "jest --passWithNoTests"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "express-validator": "^5.3.1",
+    "pg": "^7.8.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0"
+  },
+  "devDependencies": {
+    "husky": "^1.3.1",
+    "jest": "^24.1.0",
+    "lint-staged": "^8.1.5",
+    "prettier": "^1.16.4",
+    "supertest": "^3.4.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,css,md}": [
+      "prettier --write --config ./.prettierrc",
+      "git add"
+    ]
+  }
+}

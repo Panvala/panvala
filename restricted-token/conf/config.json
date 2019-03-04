@@ -1,0 +1,11 @@
+{
+    "token": {
+        "name": "Panvala Token",
+        "symbol": "PAN",
+        "initialTokens": "50000000",
+        "decimals": "18",
+        "whitelist": [
+
+        ]
+    }
+}

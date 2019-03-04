@@ -1,0 +1,2 @@
+# Requirements for pushing docker images
+awscli>=1.15.50

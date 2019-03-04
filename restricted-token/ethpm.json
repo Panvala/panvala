@@ -1,0 +1,9 @@
+{
+    "package_name": "panvala-restricted-token",
+    "version": "0.0.1",
+    "description": "A token restricted to whitelisted accounts",
+    "authors": [],
+    "keywords": [],
+    "dependencies": [],
+    "license": ""
+}
