@@ -14,6 +14,7 @@ import CenteredTitle from '../../components/CenteredTitle';
 import FieldText, { ErrorMessage } from '../../components/FieldText';
 import FieldTextarea from '../../components/FieldTextarea';
 import Checkbox from '../../components/Checkbox';
+import { ipfsAddObject } from '../../utils/ipfs';
 // import { EthereumContext } from '../../components/EthereumProvider';
 
 const Separator = styled.div`
@@ -76,13 +77,25 @@ const CreateSlate: React.FunctionComponent = () => {
           }}
           validationSchema={FormSchema}
           onSubmit={async (values: any, { setSubmitting, setFieldError }) => {
-            const proposalIDs = Object.keys(values.proposals).filter(
+            const selectedProposalIDs = Object.keys(values.proposals).filter(
               p => values.proposals[p] === true
             );
-            if (proposalIDs.length === 0) {
+
+            if (selectedProposalIDs.length === 0) {
               setFieldError('proposals', 'need at least 1 proposal.');
             } else {
-              values.proposals = proposals.filter(p => proposalIDs.includes(p.id.toString()));
+              // selected proposal objects
+              const selectedProposals = proposals.filter((p: any) =>
+                selectedProposalIDs.includes(p.id.toString())
+              );
+
+              // save proposals to IPFS to be included in the slate metadata
+              const proposalMultihashes = await Promise.all(
+                selectedProposals.map(async proposal => ipfsAddObject(proposal))
+              );
+              console.log('proposalMultihashes:', proposalMultihashes);
+
+              values.proposals = selectedProposals;
               // await handleSubmit(values);
             }
             setSubmitting(false);
