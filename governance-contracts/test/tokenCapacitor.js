@@ -125,4 +125,60 @@ contract('TokenCapacitor', (accounts) => {
       assert.fail('allowed creation of a proposal with an empty metadataHash');
     });
   });
+
+  describe('createManyProposals', () => {
+    const [creator, proposer, beneficiary1, beneficiary2] = accounts;
+    let gatekeeper;
+    let capacitor;
+
+    beforeEach(async () => {
+      // deploy a gatekeeper
+      gatekeeper = await utils.newGatekeeper({ from: creator });
+      // deploy a new capacitor
+      capacitor = await TokenCapacitor.new(gatekeeper.address, { from: creator });
+    });
+
+    it('should create proposals and emit an event for each', async () => {
+      const beneficiaries = [beneficiary1, beneficiary2];
+      const tokenAmounts = ['1000', '2000'];
+      const metadataHashes = ['request1', 'request2'].map(r => utils.createMultihash(r));
+
+      const receipt = await capacitor.createManyProposals(
+        beneficiaries,
+        tokenAmounts,
+        metadataHashes.map(utils.asBytes),
+        { from: proposer },
+      );
+
+      assert.strictEqual(receipt.logs.length, beneficiaries.length, 'Wrong number of events');
+
+      // eslint-disable-next-line
+      for (let i = 0; i < beneficiaries.length; i++) {
+        const log = receipt.logs[i];
+        const to = beneficiaries[i];
+        const tokens = tokenAmounts[i];
+        const metadataHash = metadataHashes[i];
+
+        const {
+          proposer: emittedProposer,
+          requestID,
+          to: emittedRecipient,
+          tokens: emittedTokens,
+          metadataHash: emittedHash,
+        } = log.args;
+
+        // should emit event with requestID and other data
+        const index = i.toString();
+        assert.strictEqual(requestID.toString(), index);
+        assert.strictEqual(emittedProposer, proposer, 'Emitted wrong proposer');
+        assert.strictEqual(emittedRecipient, to, 'Emitted wrong beneficiary');
+        assert.strictEqual(emittedTokens.toString(), tokens, 'Emitted wrong number of tokens');
+        assert.strictEqual(
+          utils.bytesAsString(emittedHash),
+          metadataHash,
+          'Emitted wrong metadataHash',
+        );
+      }
+    });
+  });
 });

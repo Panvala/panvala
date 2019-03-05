@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
 import "./Gatekeeper.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
@@ -65,5 +66,25 @@ contract TokenCapacitor {
         return requestID;
     }
 
-    // TODO: batch create proposals
+    /**
+     @dev Create multiple proposals to send tokens to beneficiaries.
+     @param beneficiaries The accounts to send tokens to
+     @param tokenAmounts The number of tokens to send to each beneficiary
+     @param metadataHashes Metadata hashes describing the proposals
+    */
+    function createManyProposals(
+        address[] memory beneficiaries,
+        uint[] memory tokenAmounts,
+        bytes[] memory metadataHashes
+    ) public {
+        require(beneficiaries.length == tokenAmounts.length, "All inputs must have the same length");
+        require(tokenAmounts.length == metadataHashes.length, "All inputs must have the same length");
+
+        for (uint i = 0; i < beneficiaries.length; i++) {
+            address to = beneficiaries[i];
+            uint tokens = tokenAmounts[i];
+            bytes memory metadataHash = metadataHashes[i];
+            createProposal(to, tokens, metadataHash);
+        }
+    }
 }
