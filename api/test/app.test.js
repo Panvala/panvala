@@ -150,11 +150,38 @@ describe('POST /api/proposals', () => {
         .send(data);
       expect(result.status).toBe(400);
     });
+
+    // cannot be empty strings
+    test.each(requiredFields)('it should return a 400 if `%s` is an empty string', async field => {
+      data[field] = '';
+      const result = await request(app)
+        .post('/api/proposals')
+        .send(data);
+      expect(result.status).toBe(400);
+    });
+
+    // whitespace strings
+    test.each(requiredFields)('it should return a 400 if `%s` is all whitespace', async field => {
+      data[field] = '             ';
+      const result = await request(app)
+        .post('/api/proposals')
+        .send(data);
+      expect(result.status).toBe(400);
+    });
   });
 
   describe('missing optional fields', async () => {
-    test('it should accept a missing lastName', async () => {
-      data.lastName = undefined;
+    const optionalFields = [
+      'lastName',
+      'github',
+      'website',
+      'projectPlan',
+      'projectTimeline',
+      'teamBackgrounds',
+    ];
+
+    test.each(optionalFields)('it should accept a missing `%s`', async field => {
+      data[field] = undefined;
 
       const result = await request(app)
         .post('/api/proposals')
@@ -162,8 +189,17 @@ describe('POST /api/proposals', () => {
       expect(result.status).toBe(200);
     });
 
-    test('it should accept a missing github', async () => {
-      data.github = undefined;
+    test.each(optionalFields)('it should accept an empty string for `%s`', async field => {
+      data[field] = '';
+
+      const result = await request(app)
+        .post('/api/proposals')
+        .send(data);
+      expect(result.status).toBe(200);
+    });
+
+    test.each(optionalFields)('it should accept a null `%s`', async field => {
+      data[field] = null;
 
       const result = await request(app)
         .post('/api/proposals')
@@ -173,44 +209,6 @@ describe('POST /api/proposals', () => {
   });
 
   describe('field validation', () => {
-    // empty strings
-    test.each([
-      'title',
-      'summary',
-      'firstName',
-      'lastName',
-      'email',
-      'github',
-      'totalBudget',
-      'otherFunding',
-      'awardAddress',
-    ])('it should return a 400 if `%s` is an empty string', async field => {
-      data[field] = '';
-      const result = await request(app)
-        .post('/api/proposals')
-        .send(data);
-      expect(result.status).toBe(400);
-    });
-
-    // whitespace strings
-    test.each([
-      'title',
-      'summary',
-      'firstName',
-      'lastName',
-      'email',
-      'github',
-      'totalBudget',
-      'otherFunding',
-      'awardAddress',
-    ])('it should return a 400 if `%s` is all whitespace', async field => {
-      data[field] = '             ';
-      const result = await request(app)
-        .post('/api/proposals')
-        .send(data);
-      expect(result.status).toBe(400);
-    });
-
     // String lengths
     test('it should return a 400 if the title is longer than 80 characters', async () => {
       data.title = 'a'.repeat(90);

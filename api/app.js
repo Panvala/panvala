@@ -64,12 +64,6 @@ const proposalSchema = {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   email: {
     in: ['body'],
@@ -87,56 +81,26 @@ const proposalSchema = {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   website: {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   projectPlan: {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   projectTimeline: {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   teamBackgrounds: {
     in: ['body'],
     optional: true,
     trim: true,
-    isEmpty: false,
-    isLength: {
-      options: {
-        min: 1,
-      },
-    },
   },
   totalBudget: {
     in: ['body'],
