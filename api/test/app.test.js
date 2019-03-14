@@ -27,7 +27,7 @@ function initProposals() {
     {
       title: 'An amazing proposal',
       summary: 'All sorts of amazing things',
-      tokensRequested: 200000,
+      tokensRequested: '200000000000000000000000',
       firstName: 'John',
       lastName: 'Crypto',
       email: 'jc@eth.io',
@@ -43,7 +43,7 @@ function initProposals() {
     {
       title: 'Another amazing proposal',
       summary: "You won't even believe it",
-      tokensRequested: 300000,
+      tokensRequested: '300000000000000000000000',
       firstName: 'Sarah',
       lastName: 'Ethers',
       email: 'sarah@eth.io',
@@ -107,7 +107,7 @@ describe('POST /api/proposals', () => {
     data = {
       title: 'An ok proposal',
       summary: "I guess it's fine",
-      tokensRequested: 1000000,
+      tokensRequested: '1000000000000000000000000',
       firstName: 'Mary',
       lastName: 'Jones',
       email: 'mj@eth.io',
@@ -254,12 +254,32 @@ describe('POST /api/proposals', () => {
     test.todo('it should return a 4000 if lastName is too long');
 
     // formats
-    test('it should return a 400 if `tokensRequested` is not a number', async () => {
+    test('it should return a 400 if `tokensRequested` is a string that cannot be parsed as a number', async () => {
       data.tokensRequested = 'a million';
 
       const result = await request(app)
         .post('/api/proposals')
         .send(data);
+      expect(result.status).toBe(400);
+    });
+
+    test('it should return a 400 if `tokensRequested` is a number', async () => {
+      data.tokensRequested = 1000000000000000000000000000;
+
+      const result = await request(app)
+        .post('/api/proposals')
+        .send(data);
+
+      expect(result.status).toBe(400);
+    });
+
+    test('it should return a 400 if `tokensRequested` a number smaller than base unit', async () => {
+      data.tokensRequested = '100000000000000000';
+
+      const result = await request(app)
+        .post('/api/proposals')
+        .send(data);
+
       expect(result.status).toBe(400);
     });
 
@@ -270,6 +290,18 @@ describe('POST /api/proposals', () => {
         .post('/api/proposals')
         .send(data);
       expect(result.status).toBe(400);
+    });
+
+    // Stateful
+    test('all proposals should have the correct datatype for tokensRequested', async () => {
+      // get all added proposals
+      const proposals = await Proposal.findAll();
+
+      // check to make sure each type is a string
+      proposals.forEach(p => {
+        const { tokensRequested } = p;
+        expect(typeof tokensRequested).toBe('string');
+      });
     });
   });
 });

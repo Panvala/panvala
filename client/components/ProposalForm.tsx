@@ -1,8 +1,6 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import * as yup from 'yup';
-import { Formik, Form, Field as FormikField, ErrorMessage as FormikError } from 'formik';
-import { COLORS } from '../styles';
+import { Formik, Form } from 'formik';
 import { Separator } from '../components/Form';
 import Label from './Label';
 import SectionLabel from './SectionLabel';
@@ -11,6 +9,7 @@ import { toast } from 'react-toastify';
 import FieldText from './FieldText';
 import FieldTextarea from './FieldTextarea';
 import config from '../config';
+import { convertedToBaseUnits } from '../utils/format';
 
 const FormSchema = yup.object().shape({
   firstName: yup
@@ -35,36 +34,19 @@ const FormSchema = yup.object().shape({
     .max(4000, 'Too Long!')
     .required('Required'),
   tokensRequested: yup
-    .number()
-    .min(1, 'Not enough tokens')
-    .max(config.totalUpcomingDispatch, `Too many tokens (${config.totalUpcomingDispatch} max)`)
+    .string()
+    // .max(config.totalUpcomingDispatch, `Too many tokens (${config.totalUpcomingDispatch} max)`)
     .required('Required'),
   totalBudget: yup.string().required('Required'),
   otherFunding: yup.string().required('Required'),
   awardAddress: yup.string().required('Required'),
 });
 
-const Field = styled(FormikField)`
-  background-color: ${COLORS.grey6};
-  border: 1px solid ${COLORS.greyBorder};
-  border-radius: 2px;
-  width: 100%;
-  padding: 0.8em;
-  font-size: 0.8em;
-  margin: 1em 0;
-`;
-
-const ErrorMessage: any = styled(FormikError)`
-  font-weight: bold;
-  margin-left: 0.5em;
-  color: red;
-`;
-
-interface Props {
+interface IProps {
   onHandleSubmit: any;
 }
 
-const ProposalForm: React.SFC<Props> = ({ onHandleSubmit }) => {
+const ProposalForm: React.SFC<IProps> = ({ onHandleSubmit }) => {
   return (
     <div>
       <Formik
@@ -87,9 +69,12 @@ const ProposalForm: React.SFC<Props> = ({ onHandleSubmit }) => {
         }}
         validationSchema={FormSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          console.log('proposal-form-values:', values);
-          // values.tokensRequested = utils.parseUnits(values.tokensRequested.toString(), 18).toString();
-          await onHandleSubmit(values);
+          const baseUnitsValues = {
+            ...values,
+            // throws on underflow (x.1234567890123456789)
+            tokensRequested: convertedToBaseUnits(values.tokensRequested, 18),
+          };
+          await onHandleSubmit(baseUnitsValues);
           setSubmitting(false);
         }}
       >
@@ -178,13 +163,9 @@ const ProposalForm: React.SFC<Props> = ({ onHandleSubmit }) => {
                 placeholder="Enter the total budget of your project"
               />
 
-              <Label htmlFor="tokensRequested" required>
-                {'How many tokens are you requesting?'}
-              </Label>
-              <ErrorMessage name="tokensRequested" component="span" />
-              <Field
-                maxLength={80}
-                type="number"
+              <FieldText
+                required
+                label={'How many tokens are you requesting?'}
                 name="tokensRequested"
                 placeholder="Enter the amount of tokens you would like"
               />
