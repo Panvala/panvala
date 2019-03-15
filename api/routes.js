@@ -1,8 +1,11 @@
 const { sequelize } = require('./models');
 const { checkSchema } = require('express-validator/check');
 const { proposalSchema } = require('./utils/proposals');
+const { ballotSchema, ballotInsertSchema } = require('./utils/ballots');
+
 const proposal = require('./controllers/proposal');
 const slate = require('./controllers/slate');
+const ballot = require('./controllers/ballot');
 
 const eth = require('./utils/eth');
 
@@ -49,4 +52,13 @@ module.exports = app => {
 
   // SLATES
   app.get('/api/slates', slate.getAll);
+
+  // BALLOTS
+  app.post(
+    '/api/ballots',
+    checkSchema(ballotSchema),
+    ballot.process,
+    checkSchema(ballotInsertSchema),
+    ballot.create
+  );
 };
