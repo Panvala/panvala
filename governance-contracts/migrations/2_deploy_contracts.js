@@ -25,7 +25,7 @@ module.exports = function (deployer, network) {
     const name = 'Basic Token';
     const symbol = 'BSC';
     const decimals = '18';
-    const supply = '1' + '0'.repeat(26);  // 1e26
+    const supply = `1${'0'.repeat(26)}`; // 1e26
 
 
     // resolve to a token address
