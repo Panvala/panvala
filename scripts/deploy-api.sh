@@ -13,7 +13,7 @@ set -e
 # Deploy
 deploy() {
     ENVIRONMENT=$1
-    # TAG=$(get_image_tag panvala/api)
+    TAG=$(get_image_tag panvala/api)
     REPO="$(get_image_registry)/panvala/api"
     APP="panvala-api"
 
