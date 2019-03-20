@@ -1,28 +1,27 @@
-# Default values for panvala-frontend.
+# Default values for panvala-base.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# custom variables
-# the container port
-containerPort: 3000
-# the API host - the name of the service with the API
-apiHost: http://panvala-api
 
-###
+# The host of the database to be exposed to the cluster as a service
+databaseExternalHost: localhost
 
-replicaCount: 1
+# database config
+# The database host that the other services will point to
+databaseHost: panvala-db
+databasePort: 5432
+databaseName: panvala_api
+databaseUser: panvala
+databasePassword: password
 
-image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
+
+# contract addresses
+gatekeeper: "0xcc20cbD0F5534f85F0042eC99Fd1C4f4608a31B9"
+tokenCapacitor: "0x6BAD8c9caDFC59f0f5df904765ebA360A91a59b9"
+
 
 nameOverride: ""
 fullnameOverride: ""
-
-service:
-  type: ClusterIP
-  port: 80
 
 ingress:
   enabled: false
