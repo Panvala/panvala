@@ -1,23 +1,22 @@
 import * as React from 'react';
-import Link from 'next/link';
-import { withRouter, SingletonRouter } from 'next/router';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
+
 import { AppContext } from '../../components/Layout';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
-import RouteTitle from '../../components/RouteTitle';
-import { ISlate } from '../../interfaces';
-import { toast } from 'react-toastify';
 import Deadline from '../../components/Deadline';
+import RouteTitle from '../../components/RouteTitle';
 import { tsToDeadline } from '../../utils/datetime';
 import { statuses } from '../../utils/status';
+import { ISlate, IAppContext } from '../../interfaces';
+import RouterLink from '../../components/RouterLink';
 
 type Props = {
   errors?: string;
   account?: string;
   provider?: any;
   userAgent?: any;
-  router: SingletonRouter;
 };
 
 const VisibilityFilterContainer = styled.div`
@@ -25,23 +24,12 @@ const VisibilityFilterContainer = styled.div`
   margin-bottom: 1rem;
 `;
 
-const Slates: React.FunctionComponent<Props> = ({ router }) => {
-  const { slates, slateStakingDeadline }: any = React.useContext(AppContext);
-  // console.log("slates:", slates);
-  const [visibilityFilter, setVisibilityFilter] = React.useState('all');
+const Slates: React.FunctionComponent<Props> = () => {
+  const { slates, slateStakingDeadline }: IAppContext = React.useContext(AppContext);
+  const [visibilityFilter] = React.useState('all');
 
-  function handleClickSlate(slate: ISlate) {
-    router.push({
-      pathname: '/slates/slate',
-      // asPath: `/slates/${slate.id}`,
-      query: {
-        id: slate.id,
-      },
-    });
-  }
-
-  function handleSelectVisibilityFilter() {
-    toast.error('Demo Error');
+  function handleSelectVisibilityFilter(type: string) {
+    (toast as any)[type](`Demo: ${type}`);
   }
 
   return (
@@ -50,43 +38,52 @@ const Slates: React.FunctionComponent<Props> = ({ router }) => {
         {/* TODO: componentize */}
         <div className="flex">
           <RouteTitle className="mr3">{'Slates'}</RouteTitle>
-          <Link passHref href="/slates/create" as="/slates/create">
-            <a className="link flex items-center">
-              <Button type="default">{'Add Slate'}</Button>
-            </a>
-          </Link>
+          <RouterLink href="/slates/create" as="/slates/create" classNames="flex items-center">
+            <Button type="default">{'Add Slate'}</Button>
+          </RouterLink>
         </div>
-        <Deadline status={statuses.PENDING_TOKENS}>{`${tsToDeadline(
-          slateStakingDeadline
-        )}`}</Deadline>
+        {slateStakingDeadline && (
+          <Deadline status={statuses.PENDING_TOKENS}>{`${tsToDeadline(
+            slateStakingDeadline
+          )}`}</Deadline>
+        )}
       </div>
 
       <VisibilityFilterContainer>
         <Button active={visibilityFilter === 'all'}>{'All'}</Button>
-        <Button active={visibilityFilter === 'current'}>{'Current'}</Button>
-        <Button onClick={handleSelectVisibilityFilter} active={visibilityFilter === 'past'}>
+        <Button
+          onClick={() => handleSelectVisibilityFilter('info')}
+          active={visibilityFilter === 'current'}
+        >
+          {'Current'}
+        </Button>
+        <Button
+          onClick={() => handleSelectVisibilityFilter('error')}
+          active={visibilityFilter === 'past'}
+        >
           {'Past'}
         </Button>
       </VisibilityFilterContainer>
 
       <CardsWrapper>
-        {slates &&
-          slates.map((slate: any, index: number) => (
-            <div key={slate.title + index} onClick={() => handleClickSlate(slate)}>
-              <Card
-                key={slate.title + index}
-                title={slate.title}
-                subtitle={slate.subtitle}
-                description={slate.description}
-                category={slate.category}
-                // TODO: translate status to enum value
-                status={slate.status}
-                address={slate.ownerAddress}
-                recommender={slate.owner}
-                // onClick={() => onHandleSelectSlate(slate.title)}
-              />
-            </div>
-          ))}
+        {slates && slates.length
+          ? slates.map((slate: ISlate) => (
+              <div key={slate.id}>
+                <RouterLink href={`/DetailedView?id=${slate.id}`} as={`/slates/${slate.id}`}>
+                  <Card
+                    key={slate.id}
+                    title={slate.title}
+                    subtitle={slate.proposals.length + ' Grants Included'}
+                    description={slate.description}
+                    category={slate.category}
+                    status={slate.status}
+                    address={slate.ownerAddress}
+                    recommender={slate.owner}
+                  />
+                </RouterLink>
+              </div>
+            ))
+          : null}
       </CardsWrapper>
     </div>
   );
@@ -104,4 +101,4 @@ const CardsWrapper = styled.div`
 //   max-height: 50vh;
 // `;
 
-export default withRouter(Slates);
+export default Slates;
