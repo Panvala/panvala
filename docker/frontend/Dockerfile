@@ -7,11 +7,14 @@ WORKDIR /srv
 RUN apk add --update curl && rm -rf /var/cache/apk/*
 
 # install dependencies
-COPY package.json .
+COPY ./client/package.json .
 RUN yarn
 
+# copy shared libs
+COPY ./packages/panvala-utils/ ../packages/panvala-utils
+
 # copy our code to the server
-COPY . .
+COPY ./client .
 
 # build
 RUN yarn build

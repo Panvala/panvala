@@ -10,4 +10,5 @@ set -u
 export FULL_IMAGE_NAME=$(get_image_name "$REPOSITORY_NAME")
 
 echo "building image $FULL_IMAGE_NAME"
-docker build -t ${FULL_IMAGE_NAME} ${CONTEXT} --file ${DOCKERFILE}
+
+tar --exclude=node_modules -czf - ${BUILD_DEPENDENCIES} | docker build -t ${FULL_IMAGE_NAME} --file ${DOCKERFILE} -

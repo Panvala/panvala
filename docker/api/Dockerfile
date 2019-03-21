@@ -19,12 +19,15 @@ RUN apt-get update && apt-get install -y \
     yarn
 
 # Install node dependencies
-COPY package.json .
+COPY ./api/package.json .
 RUN ls
 RUN yarn
 
+# copy shared libs
+COPY ./packages/panvala-utils/ ../packages/panvala-utils
+
 # copy our code to the server
-COPY . .
+COPY ./api .
 
 
 EXPOSE 5000
