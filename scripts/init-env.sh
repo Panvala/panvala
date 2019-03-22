@@ -22,6 +22,8 @@ configure() {
         --set databaseExternalHost=${DATABASE_HOST} \
         --set databaseUser=${DATABASE_USER} \
         --set databasePassword=${DATABASE_PASSWORD} \
+        --set gatekeeper=${GATEKEEPER_ADDRESS} \
+        --set tokenCapacitor=${TOKEN_CAPACITOR_ADDRESS} \
         --set nameOverride="panvala-base" \
         panvala-base-${ENVIRONMENT} \
         ./charts/panvala-base
