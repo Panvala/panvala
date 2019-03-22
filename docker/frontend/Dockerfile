@@ -6,12 +6,13 @@ WORKDIR /srv
 # install curl
 RUN apk add --update curl && rm -rf /var/cache/apk/*
 
+# copy shared libs and run install
+COPY ./packages/panvala-utils/ ../packages/panvala-utils
+RUN cd ../packages/panvala-utils && yarn
+
 # install dependencies
 COPY ./client/package.json .
 RUN yarn
-
-# copy shared libs
-COPY ./packages/panvala-utils/ ../packages/panvala-utils
 
 # copy our code to the server
 COPY ./client .

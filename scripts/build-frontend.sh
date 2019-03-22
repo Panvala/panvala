@@ -1,7 +1,6 @@
 #!/bin/sh
 set -e
 set -u
-set -x
 
 . scripts/helpers.sh
 

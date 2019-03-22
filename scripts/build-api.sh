@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-
+set -u
 
 export REPOSITORY_NAME="panvala/api"
 export DOCKERFILE=docker/api/Dockerfile
