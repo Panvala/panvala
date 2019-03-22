@@ -211,6 +211,8 @@ const CreateSlate: React.FunctionComponent = () => {
     );
     console.log('tokenAmounts:', tokenAmounts);
 
+    let errorMessage = '';
+
     try {
       // batch create proposals
       // console.log('creating proposals...');
@@ -244,7 +246,8 @@ const CreateSlate: React.FunctionComponent = () => {
               const slate: any = await submitGrantSlate(requestIDs, slateMetadataHash);
               console.log('Submitted slate', slate);
             } catch (error) {
-              toast.error('error submitting slate', error.message);
+              errorMessage = `error submitting slate ${error.message}`;
+              toast.error(errorMessage);
             }
 
             // TODO: add slate to db: slateID, multihash
@@ -255,16 +258,22 @@ const CreateSlate: React.FunctionComponent = () => {
             //   setOpenModal(true);
             // }
           } catch (error) {
-            toast.error('error saving slate metadata:', error.message);
+            errorMessage = `error saving slate metadata: ${error.message}`;
+            // console.error(errorMessage);
+            toast.error(errorMessage);
           }
         } catch (error) {
-          toast.error('error getting transaction receipt:', error.message);
+          errorMessage = `error getting transaction receipt: ${error.message}`;
+          // console.error(errorMessage);
+          toast.error(errorMessage);
         }
 
         // TODO: Should take us to all slates view after successful submission
       }
     } catch (error) {
-      toast.error('error while sending tx createManyProposals:', error.message);
+      errorMessage = `error while sending tx createManyProposals: ${error.message}`;
+      // console.error(errorMessage);
+      toast.error(errorMessage);
     }
   }
 
