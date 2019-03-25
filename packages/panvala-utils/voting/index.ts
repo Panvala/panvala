@@ -1,5 +1,10 @@
-const ethers = require('ethers');
-const { solidityKeccak256, randomBytes, bigNumberify } = ethers.utils;
+import { utils } from 'ethers';
+const { solidityKeccak256, randomBytes, bigNumberify } = utils;
+
+interface IChoices {
+  firstChoice: utils.BigNumber;
+  secondChoice: utils.BigNumber;
+}
 
 /**
  * generateCommitHash
@@ -11,12 +16,12 @@ const { solidityKeccak256, randomBytes, bigNumberify } = ethers.utils;
  * @param {*} votes { category: { firstChoice, secondChoice }}
  * @param {ethers.BN} salt Random 256-bit number
  */
-function generateCommitHash(votes, salt) {
-  const types = [];
-  const values = [];
+function generateCommitHash(votes: any, salt: utils.BigNumber): string {
+  const types: string[] = [];
+  const values: any[] = [];
 
-  Object.keys(votes).forEach(category => {
-    const { firstChoice, secondChoice } = votes[category];
+  Object.keys(votes).forEach((category: string) => {
+    const { firstChoice, secondChoice }: IChoices = votes[category];
     types.push('uint', 'uint', 'uint');
     values.push(category, firstChoice, secondChoice);
   });
@@ -32,8 +37,8 @@ function generateCommitHash(votes, salt) {
  * Calculate a random number w/ 32 bytes of entropy
  * @return {ethers.BN}
  */
-function randomSalt() {
-  const salt = bigNumberify(randomBytes(32));
+function randomSalt(): utils.BigNumber {
+  const salt: utils.BigNumber = bigNumberify(randomBytes(32));
   return salt;
 }
 
