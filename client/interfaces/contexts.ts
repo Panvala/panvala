@@ -51,7 +51,7 @@ export interface IProposalMetadata {
  * Slate fields that gets loaded/rendered in the frontend
  */
 export interface ISlate {
-  id: string;
+  id: number;
   category: string;
   status: string;
   deadline: number | false;
@@ -77,6 +77,15 @@ export interface ISlateMetadata {
   description: string;
   proposalMultihashes: string[];
   proposals: IProposalMetadata[];
+}
+
+/**
+ * Slate data to be saved in the database
+ */
+export interface ISaveSlate {
+  slateID: string,
+  metadataHash: string,
+  email?: string,
 }
 
 export interface IChoices {

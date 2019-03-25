@@ -1,5 +1,5 @@
 import getConfig from 'next/config';
-import { IProposal, ISlate } from '../interfaces';
+import { IProposal, ISlate, ISaveSlate } from '../interfaces';
 import axios, { AxiosResponse } from 'axios';
 import { proposalsArray } from './data';
 
@@ -75,16 +75,9 @@ export async function postProposal(data: IProposal): Promise<AxiosResponse> {
 //   return selected;
 // }
 
-/** Calls a mock API which returns the above array to simulate "get all". */
-// export async function findAllProposals() {
-//   // Throw an error, just for example.
-//   if (!Array.isArray(proposalsArray)) {
-//     throw new Error('Cannot find users');
-//   }
-
-//   return proposalsArray;
-// }
-
+/**
+ * Get all the available slates
+ */
 export async function getAllSlates(): Promise<ISlate[] | AxiosResponse> {
   try {
     const response = await axios({
@@ -104,6 +97,29 @@ export async function getAllSlates(): Promise<ISlate[] | AxiosResponse> {
   } catch (error) {
     console.log('error while getting slates:', error);
     // console.log('returning dummy data');
+    throw new Error(error);
+  }
+}
+
+
+/**
+ * Save slate info using the API
+ * @param data
+ */
+export async function postSlate(data: ISaveSlate): Promise<AxiosResponse> {
+  try {
+    const response = await axios({
+      method: 'post',
+      url: `${apiHost}/api/slates`,
+      data,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...corsHeaders,
+      },
+    });
+    return response;
+  } catch (error) {
     throw new Error(error);
   }
 }

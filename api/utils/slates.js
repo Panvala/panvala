@@ -65,7 +65,9 @@ async function getAllSlates() {
 /**
  * Get the slate metadata by combining data from multiple sources
  * @param {ethers.Contract} slate
+ * @param {number} slateID
  * @param {String} metadataHash
+ * @param {ethers.BigNumber} requiredStake
  */
 async function getSlateMetadata(slate, slateID, metadataHash, requiredStake) {
   // TODO: get real data
@@ -108,6 +110,8 @@ const slateSchema = {
   slateID: {
     in: ['body'],
     exists: true,
+    // parse as integer
+    toInt: true,
     isInt: true,
   },
   metadataHash: {

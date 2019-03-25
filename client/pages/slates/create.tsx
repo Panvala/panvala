@@ -17,10 +17,12 @@ import FieldTextarea from '../../components/FieldTextarea';
 import { FormWrapper } from '../../components/Form';
 import Label from '../../components/Label';
 import SectionLabel from '../../components/SectionLabel';
-import { IAppContext, IProposal, IProposalMetadata, ISlateMetadata } from '../../interfaces';
+import { IAppContext, IProposal, IProposalMetadata, ISlateMetadata, ISaveSlate } from '../../interfaces';
 import { ipfsAddObject } from '../../utils/ipfs';
 import { LogDescription } from 'ethers/utils';
 import { convertedToBaseUnits } from '../../utils/format';
+import { postSlate } from '../../utils/api';
+
 
 const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
@@ -146,7 +148,7 @@ const CreateSlate: React.FunctionComponent = () => {
           .filter(d => d.name == 'SlateCreated');
 
         // Extract the slateID
-        const slateID: string = decoded[0].values.slateID;
+        const slateID: string = decoded[0].values.slateID.toString();
         const slate: any = { slateID, metadataHash };
         // console.log('Created slate', slate);
         return slate;
@@ -245,18 +247,29 @@ const CreateSlate: React.FunctionComponent = () => {
             try {
               const slate: any = await submitGrantSlate(requestIDs, slateMetadataHash);
               console.log('Submitted slate', slate);
+
+              // Add slate to db
+              const slateToSave: ISaveSlate = {
+                slateID: slate.slateID,
+                metadataHash: slateMetadataHash,
+                email: values.email,
+              };
+
+              const response = await postSlate(slateToSave);
+              if (response.status === 200) {
+                console.log('Saved slate info');
+                toast.success('Saved slate');
+              } else {
+                errorMessage = `problem saving slate info ${response.data}`
+                toast.error(errorMessage);
+              }
+              // end add slate
+
             } catch (error) {
               errorMessage = `error submitting slate ${error.message}`;
               toast.error(errorMessage);
             }
 
-            // TODO: add slate to db: slateID, multihash
-            // TODO: slates api??
-            // values.selectedProposals = selectedProposals;
-            // const response = await postSlate(values);
-            // if (response.status === 200) {
-            //   setOpenModal(true);
-            // }
           } catch (error) {
             errorMessage = `error saving slate metadata: ${error.message}`;
             // console.error(errorMessage);
