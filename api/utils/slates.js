@@ -1,9 +1,9 @@
 const ethers = require('ethers');
 const ipfs = require('./ipfs');
 
-const Gatekeeper = require('../../abis/Gatekeeper.json');
-const Slate = require('../../abis/Slate.json');
-const ParameterStore = require('../../abis/ParameterStore.json');
+const Gatekeeper = require('../contracts/Gatekeeper.json');
+const Slate = require('../contracts/Slate.json');
+const ParameterStore = require('../contracts/ParameterStore.json');
 
 const { toUtf8String } = ethers.utils;
 
@@ -101,7 +101,6 @@ async function getSlateMetadata(slate, slateID, metadataHash, requiredStake) {
   return slateMetadata;
 }
 
-
 /**
  * Data received in a POST request
  */
@@ -127,7 +126,7 @@ const slateSchema = {
         checkFalsy: true,
       },
     },
-  }
+  },
 };
 
 module.exports = {
