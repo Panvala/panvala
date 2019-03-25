@@ -36,12 +36,6 @@ const setup: any = () => {
 };
 
 describe('Ballots - vote', () => {
-  test.skip('should render correctly Ballot slate voting component per snapshot', () => {
-    const { container } = setup();
-
-    expect(container).toMatchSnapshot();
-  });
-
   test('Ballots - vote', async () => {
     const { firstChoiceButton } = setup();
 

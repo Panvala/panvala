@@ -5,9 +5,10 @@ import Tag from './Tag';
 import { splitAddressHumanReadable } from '../utils/format';
 import Button from './Button';
 import { Separator } from './Form';
-import { IChoices } from '../interfaces';
+import { IChoices, IProposal } from '../interfaces';
+import RouterLink from './RouterLink';
 
-const Wrapper = styled.div<{ isActive?: boolean }>`
+const Wrapper = styled.div<{ isActive?: boolean; asPath?: string }>`
   width: 300px;
   display: flex;
   flex-direction: column;
@@ -18,7 +19,9 @@ const Wrapper = styled.div<{ isActive?: boolean }>`
   box-shadow: 0px 5px 5px ${COLORS.grey5};
   margin-bottom: 1rem;
   margin-right: 1rem;
-  cursor: pointer;
+  ${({ asPath }) => !asPath && 'cursor: pointer;'}
+  max-height: 100%;
+  ${({ asPath }) => asPath && asPath.startsWith('/ballots') && 'height: 100%;'}
 `;
 const CardTitle = styled.div`
   font-size: 1.5rem;
@@ -33,13 +36,23 @@ const CardDescription = styled.div`
   font-size: 0.8rem;
   margin-top: 1rem;
   color: ${COLORS.grey3};
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
-const CardUser = styled(CardDescription)`
+const CardUser = styled.div`
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  color: ${COLORS.grey3};
   display: flex;
   flex-flow: column wrap;
 `;
-export const CardAddress = styled(CardDescription)`
+export const CardAddress = styled.div`
+  font-size: 0.8rem;
+  color: ${COLORS.grey3};
   margin-top: 0.5rem;
   letter-spacing: 0.05em;
 `;
@@ -47,6 +60,27 @@ export const CardAddress = styled(CardDescription)`
 const ChoiceOptions = styled.div`
   display: flex;
   margin-top: 0.5rem;
+`;
+
+const ViewSlateDetails = styled.div`
+  display: flex;
+  margin: 0.6rem 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+`;
+const CardProposals = styled.div`
+  display: flex;
+  margin: 0.6rem 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+`;
+const CardProposal = styled.div`
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+  color: ${COLORS.grey3};
+  display: flex;
+  flex-flow: column wrap;
 `;
 
 type IProps = {
@@ -61,11 +95,12 @@ type IProps = {
   choices?: IChoices;
   onSetChoice?: any;
   slateID?: string;
+  proposals?: IProposal[];
+  asPath?: string;
   // /slates
   onClick?: any;
   // /slates/create
   isActive?: boolean;
-  onHandleViewSlateDetails?: any;
 };
 
 const ChoiceButton: any = styled(Button)`
@@ -87,7 +122,7 @@ const ChoiceButton: any = styled(Button)`
 
 const Card: React.FunctionComponent<IProps> = props => {
   return (
-    <Wrapper onClick={props.onClick} isActive={props.isActive}>
+    <Wrapper onClick={props.onClick} isActive={props.isActive} asPath={props.asPath}>
       <div className="flex">
         {/* GRANT | PENDING TOKENS */}
         <Tag status={''}>{props.category.toUpperCase()}</Tag>
@@ -100,14 +135,22 @@ const Card: React.FunctionComponent<IProps> = props => {
 
       {props.address && ( // 0x D09C C3BC 67E4 294C 4A44 6D8E 4A29 34A9 2141 0ED7
         <CardUser>
-          <div>{props.recommender}</div>
+          {/* <div>{props.recommender}</div> */}
           <CardAddress>{splitAddressHumanReadable(props.address)}</CardAddress>
         </CardUser>
       )}
 
       {props.choices && ( // renders in /ballots/vote
         <>
-          <div onClick={props.onHandleViewSlateDetails}>View slate details</div>
+          <RouterLink href={`/DetailedView?id=${props.slateID}`} as={`/slates/${props.slateID}`}>
+            <ViewSlateDetails>View slate details</ViewSlateDetails>
+          </RouterLink>
+          <Separator />
+
+          <CardProposals>Grant Proposals:</CardProposals>
+          {props.proposals &&
+            props.proposals.map(p => <CardProposal key={p.id}>{p.title}</CardProposal>)}
+
           <Separator />
           <CardDescription>{'Select an option'}</CardDescription>
           <ChoiceOptions>
