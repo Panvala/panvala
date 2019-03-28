@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-db-migrate"
+  labels:
+    app.kubernetes.io/managed-by: {{.Release.Service | quote }}
+    app.kubernetes.io/instance: {{.Release.Name | quote }}
+    # helm.sh/chart: {{ include "panvala-api.chart" . }}
+    helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+spec:
+  activeDeadlineSeconds: 60
+  backoffLimit: 1
+  completions: 1
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{.Release.Service | quote }}
+        app.kubernetes.io/instance: {{.Release.Name | quote }}
+        helm.sh/chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: db-migrate
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          command: ["/bin/sh", "-c", "yarn", "migrate"]
+          env:
+            - name: NODE_ENV
+              value: {{ .Values.node_env }}
+            # Database values (from config map)
+            - name: PRODUCTION_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: host
+            - name: PRODUCTION_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: port
+            - name: PRODUCTION_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: name
+            - name: PRODUCTION_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: user
+            # Read database password from secret
+            - name: PRODUCTION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: databasePassword
