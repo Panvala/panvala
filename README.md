@@ -4,89 +4,123 @@
 
 Panvala wraps the existing ecosystem of grant funders, corporate open source projects and volunteers with a token that gives them all a shared incentive to find sustainable funding together.
 
-## Run with Docker
-Requirements: [Docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/)
+## Documentation
+Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.gitbook.io/docs)
 
-### Configuration
-You need to create a file `docker/postgres/postgres.env` with your database credentials. This will create a user and a database:
+## Quickstart
+Set up your environment for local development.
 
+First, install the following prerequisites:
+- [NodeJS](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/)
+
+If you're on MacOS, you can get both of these from Homebrew
 ```shell
-# docker/postgres/postgres.env
-POSTGRES_USER=panvala_devel
-POSTGRES_PASSWORD=password
-POSTGRES_DB=panvala_api
+brew install node yarn
 ```
 
-Additionally, set up a file `docker/api/panvala-api.env` 
+### Local blockchain and contracts
+Install [Ganache](https://truffleframework.com/ganache) (recommended) or [ganache-cli](https://github.com/trufflesuite/ganache-cli). Start Ganache.
+
+Install [Truffle](https://github.com/trufflesuite/truffle) for deploying contracts and running tests.
 
 ```shell
-# docker/api/panvala-api.env
+npm install -g truffle
+```
 
-# Special environment for running in docker
-NODE_ENV=docker
+Install dependencies, compile, and deploy the governance contracts to Ganache.
+```shell
+cd governance-contracts
+yarn install
+truffle migrate --network ganache
+```
+You should see output with the contract addresses for the `Gatekeeper` and the `TokenCapacitor`. Save these values for later configuration steps.
 
-# Must match settings in postgres.env
-DB_PASSWORD=password
+### Set up the database
+The Panvala API uses [PostgreSQL](https://www.postgresql.org/) for its database, so you'll need to run an instance to use it.
+
+#### Run with Docker
+The easiest way to run PostgreSQL is to use [Docker](https://www.docker.com/products/docker-desktop). You'll need to install it separately. 
+
+Create a file `docker/postgres/postgres.env` with the following environment variables:
+
+```
+# docker/postgres/postgres.env
+POSTGRES_USER=panvala_devel
+POSTGRES_PASSWORD=panvala
+POSTGRES_DB=panvala_api
+```
+You can set the `POSTGRES_PASSWORD` and `POSTGRES_DB` to anything, but `POSTGRES_USER` must be `panvala_devel`.
+
+Now, you can start the database by running the included script from the root of the repository.
+
+```shell
+scripts/dev/start-db.sh
+```
+
+#### Standalone
+Alternatively, if you have a PostgreSQL server running on your machine, you can use it. You will need to create a user `panvala_devel` and set a password.
+
+### Configure the applications
+We recommend creating a `.env` file somewhere outside the repository with the required values, and sourcing it to set the environment variables. Note that `DB_PASSWORD` must equal `POSTGRES_PASSWORD` from the previous step.
+
+Fill in the `GATEKEEPER_ADDRESS` and `TOKEN_CAPACITOR_ADDRESS` with the values you got from deploying to Ganache.
+
+```shell
+# panvala.env
+
+## API
+DB_PASSWORD=panvala
 DB_NAME=panvala_api
 
-# Ethereum
-RPC_ENDPOINT=http://localhost:7545  # Or whereever your chain is
+## Frontend
+API_HOST=http://localhost:5000
+
+## Ethereum
+RPC_ENDPOINT=http://localhost:7545  # default Ganache endpoint
 GATEKEEPER_ADDRESS={your-deployed-gatekeeper}
 TOKEN_CAPACITOR_ADDRESS={your-deployed-capacitor}
 
-# IPFS
+## IPFS (optional)
 IPFS_HOST=ipfs.infura.io
 IPFS_PORT=5001
 ```
 
-### Start up the containers
+Set the environment by sourcing the file:
 ```shell
-cd docker
-docker-compose up
+source <path-to-panvala.env>
 ```
+You will need to do this each time you start the API or the frontend in a new terminal, or add this line to your shell startup script (e.g. `.bashrc`).
 
-Frontend will run on port `3001`
+## Start the API
+Install dependencies and set up the database tables. Remember to source the `.env` file first.
 
-API/backend will run on port `5000`
-
-If you change code, you may need to `docker-compose up --build` to rebuild the images. If you change the database credentials in `postgres.env`, you will need to delete the database data volume to see the updated changes (**this will delete all the tables!**).
-
-### Run migrations and set up the database tables
 ```shell
-docker exec docker_api_1 yarn migrate
+cd api/
+source <path-to-panvala.env>
+yarn install
+# yarn db:create (if it does not already exist)
+yarn migrate
+yarn start
 ```
 
-### (Optionally) Connect to the database from the `api` container
+You should be able to reach the API in your browser at http://localhost:5000. To verify that it is properly connected to your database and blockchain, visit http://localhost:5000/ready. You should see the response `ok` if everything is fine. Otherwise, any errors should be printed to the terminal.
 
-First, attach to the container and run `bash`
+
+## Set up MetaMask
+To interact with your contracts through the web application, install the [MetaMask](https://metamask.io/) browser extension.
+
+First, you'll need to add your local Ganache network by clicking the network dropdown (it says something like "Mainnet") and selecting "Custom RPC". Scroll down to "New Network", put `http://127.0.0.1:7545` (or whatever your Ganache instance is running on) into the "New RPC URL" field, and save.
+
+Next, you need to import a private key from your network into MetaMask. In Ganache, select the accounts tab, click the key icon next to the first address, and copy the private key. In MetaMask, click the account icon in the upper right and select "Import account". Paste the private key into the field. Give the account a recognizable name.
+
+
+## Start the frontend
 ```shell
-docker exec -it docker_api_1 /bin/bash
+cd client/
+source <path-to-panvala.env>
+yarn install
+yarn dev
 ```
 
-Once you are inside, connect to the API database as your user
-```shell
-psql -h pg-docker -U panvala_devel -d panvala_api
-```
-Check your tables by typing `\dt` at the `psql` prompt.
-
-Your output should look something like this:
-```
-❯ docker exec -it docker_api_1 /bin/bash
-root@990dbd10c37e:/srv# psql -h pg-docker -U panvala_devel -d panvala_api
-Password for user panvala_devel:
-psql (10.6 (Ubuntu 10.6-0ubuntu0.18.04.1))
-Type "help" for help.
-
-panvala_api=# \dt
-               List of relations
- Schema |     Name      | Type  |     Owner
---------+---------------+-------+---------------
- public | Proposals     | table | panvala_devel
- public | SequelizeMeta | table | panvala_devel
-(2 rows)
-
-panvala_api=# \q
-root@990dbd10c37e:/srv# exit
-```
-
-# hit the database from the api
+You should be able to visit the application in your browser at http://localhost:3000 and receive a prompt to let the application connect to MetaMask.

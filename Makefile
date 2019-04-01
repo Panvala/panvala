@@ -1,4 +1,7 @@
 # Helpers for common tasks
+start-db:
+	./scripts/dev/start-db.sh
+
 deploy-api:
 	./scripts/deploy-api.sh ${ENVIRONMENT}
 
