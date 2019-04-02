@@ -74,10 +74,16 @@ async function getAllSlates() {
 async function getSlateWithMetadata(slate, slateID, metadataHash, requiredStake) {
   try {
     // the slate as it exists in the db:
-    const dbSlate = await Slate.find({
+    const [dbSlate] = await Slate.findOrBuild({
       where: {
         slateID,
       },
+      defaults: {
+        slateID,
+        metadataHash,
+        email: '',
+        verifiedRecommender: false
+      }
     });
 
     // --------------------------
