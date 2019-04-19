@@ -1,15 +1,25 @@
-const IPFS = require('ipfs-mini');
+const IPFS = require('ipfs-http-client');
 
 const ipfsHost = process.env.IPFS_HOST || 'ipfs.infura.io';
 const ipfsPort = process.env.IPFS_PORT || 5001;
 
 const ipfs = new IPFS({ host: ipfsHost, port: ipfsPort, protocol: 'https' });
 
-async function get(multihash) {
+/**
+ * Get a file from IPFS
+ * Options:
+ *   {Boolean} json Whether to parse as JSON
+ * @param {String} multihash
+ * @param {Object} options
+ */
+async function get(multihash, options) {
+  const json = options.json || false;
+
   return new Promise((resolve, reject) => {
-    ipfs.catJSON(multihash, (err, result) => {
+    ipfs.cat(multihash, (err, result) => {
       if (err) reject(new Error(err));
-      resolve(result);
+      const data = json ? JSON.parse(result) : result;
+      resolve(data);
     });
   });
 }

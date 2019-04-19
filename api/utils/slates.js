@@ -82,14 +82,14 @@ async function getSlateWithMetadata(slate, slateID, metadataHash, requiredStake)
         slateID,
         metadataHash,
         email: '',
-        verifiedRecommender: false
-      }
+        verifiedRecommender: false,
+      },
     });
 
     // --------------------------
     // IPFS -- slate metadata
     // --------------------------
-    const slateMetadata = await ipfs.get(metadataHash);
+    const slateMetadata = await ipfs.get(metadataHash, { json: true });
     const {
       firstName,
       lastName,
