@@ -8,14 +8,33 @@ export const statuses = {
   BALLOT_OPEN: 'BALLOT OPEN',
   BALLOT_CLOSED: 'BALLOT CLOSED',
   PRE_VOTING: 'PRE VOTING',
+  SLATE_ACCEPTED: 'ACCEPTED',
+  SLATE_REJECTED: 'REJECTED',
+};
+
+export const SlateStatus = {
+  Unstaked: '0',
+  Staked: '1',
+  Rejected: '2',
+  Accepted: '3',
 };
 
 export function convertEVMSlateStatus(status: number) {
-  if (status === 0) {
+  // TODO: caller should handle this
+  if (typeof status === 'undefined') {
     return statuses.PENDING_TOKENS;
   }
 
-  return statuses.PENDING_VOTE;
+  const s = status.toString();
+  if (s === SlateStatus.Unstaked) {
+    return statuses.PENDING_TOKENS;
+  } else if (s === SlateStatus.Staked) {
+    return statuses.PENDING_VOTE;
+  } else if (s === SlateStatus.Rejected) {
+    return statuses.SLATE_REJECTED;
+  }
+
+  return statuses.SLATE_ACCEPTED;
 }
 
 export function isPendingTokens(status: string) {
@@ -72,4 +91,30 @@ export function getPrefixAndDeadline(
   }
 
   return { deadline, prefix };
+}
+
+export function ballotDates(startDate: number): IBallotDates {
+  const oneWeekSeconds = 604800;
+  const epochStartDate = startDate;
+  const week11EndDate = epochStartDate + oneWeekSeconds * 11;
+  const week12EndDate = week11EndDate + oneWeekSeconds;
+  const week13EndDate = week12EndDate + oneWeekSeconds;
+
+  return {
+    startDate,
+    votingOpenDate: week11EndDate,
+    votingCloseDate: week12EndDate,
+    finalityDate: week13EndDate,
+  };
+}
+
+const statusStrings = {
+  '0': 'Unstaked',
+  '1': 'Staked',
+  '2': 'Rejected',
+  '3': 'Accepted',
+};
+
+export function slateStatusString(status: string): string {
+  return (statusStrings as any)[status];
 }

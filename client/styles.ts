@@ -21,6 +21,9 @@ export const COLORS = {
 
   green1: '#E5FFEE',
   green2: '#31AE5C',
+
+  red1: 'rgba(255, 147, 147, 0.25)',
+  red2: '#EA6B6B',
 };
 
 export const BUTTON_COLORS = {

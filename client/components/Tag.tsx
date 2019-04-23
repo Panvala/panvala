@@ -12,12 +12,20 @@ const StyledTag = styled.div`
       ? COLORS.grey5
       : status === 'PENDING TOKENS'
       ? COLORS.yellow1
+      : status === 'ACCEPTED'
+      ? COLORS.green1
+      : status === 'REJECTED'
+      ? COLORS.red1
       : 'rgba(89, 182, 230, 0.2)'};
   color: ${({ status }: any) =>
     status === 'PENDING VOTE'
       ? COLORS.grey3
       : status === 'PENDING TOKENS'
       ? COLORS.yellow2
+      : status === 'ACCEPTED'
+      ? COLORS.green2
+      : status === 'REJECTED'
+      ? COLORS.red2
       : COLORS.blue2};
   letter-spacing: 0.03rem;
   font-size: 0.7rem;

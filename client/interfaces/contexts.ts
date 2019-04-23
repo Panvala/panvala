@@ -64,6 +64,7 @@ export interface ISlate {
   proposals: IProposal[];
   requiredStake: string;
   verifiedRecommender: boolean;
+  staker?: string;
 }
 
 /**
