@@ -122,7 +122,7 @@ async function getSlateWithMetadata(slate, slateID, metadataHash, requiredStake)
       id: slateID, // should we call this slateID instead of id? we're already using slateID as the primary key in the slates table
       metadataHash,
       category: 'GRANT',
-      slateStatus,
+      status: slateStatus,
       deadline,
       title,
       description,

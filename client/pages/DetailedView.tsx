@@ -389,7 +389,6 @@ const DetailedView: StatelessPage<any> = ({ router }) => {
   // Set the target object
   const slateOrProposal: any = slate || proposal;
   console.log('slateOrProposal:', slateOrProposal);
-  console.log('slate status:', slateOrProposal);
 
   if (!slateOrProposal) {
     return <div>Loading...</div>;
