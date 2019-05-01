@@ -8,7 +8,6 @@ import { AxiosResponse } from 'axios';
 import Header from './Header';
 import { IProposal, ISlate, IAppContext } from '../interfaces';
 import { getAllProposals, getAllSlates } from '../utils/api';
-import { convertEVMSlateStatus } from '../utils/status';
 import { baseToConvertedUnits } from '../utils/format';
 
 export const AppContext: React.Context<IAppContext> = React.createContext<IAppContext>({
@@ -63,7 +62,7 @@ export default class Layout extends React.Component<IProps, IAppContext> {
   async componentDidMount() {
     // const slatesFromIpfs: any[] = await Promise.all(slateMultihashes.map(mh => ipfsGetData(mh)));
     // const slatesWithMHs = slates.map((s, i) => ({ ...s, hash: slateMultihashes[i] }));
-    const slates: ISlate[] | AxiosResponse = await getAllSlates();
+    let slates: ISlate[] = await this.handleGetAllSlates();
     const proposals: IProposal[] | AxiosResponse = await this.handleGetAllProposals();
 
     let proposalData: IProposal[] = [];
@@ -75,16 +74,6 @@ export default class Layout extends React.Component<IProps, IAppContext> {
         return parseInt(timestampA) - parseInt(timestampB);
       });
       proposalData = sortedProposals;
-    }
-
-    let slateData: ISlate[] = [];
-    // convert statuses: number -> string (via enum)
-    if (Array.isArray(slates)) {
-      slateData = slates.map((s: any) => {
-        // convert from number to string
-        s.status = convertEVMSlateStatus(s.status);
-        return s;
-      });
     }
 
     const oneWeekSeconds = 604800;
@@ -100,7 +89,7 @@ export default class Layout extends React.Component<IProps, IAppContext> {
 
     // prettier-ignore
     this.setState({
-      slates: slateData,
+      slates,
       proposals: proposalData,
       currentBallot: {
         startDate: epochStartDate,

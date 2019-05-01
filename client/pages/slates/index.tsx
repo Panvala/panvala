@@ -9,6 +9,16 @@ import Deadline from '../../components/Deadline';
 import RouteTitle from '../../components/RouteTitle';
 import RouterLink from '../../components/RouterLink';
 import { ISlate, IAppContext } from '../../interfaces';
+import { convertEVMSlateStatus } from '../../utils/status';
+
+const VisibilityFilterContainer = styled.div`
+  display: flex;
+  margin-bottom: 1rem;
+`;
+const CardsWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`;
 
 type Props = {
   errors?: string;
@@ -17,14 +27,19 @@ type Props = {
   userAgent?: any;
 };
 
-const VisibilityFilterContainer = styled.div`
-  display: flex;
-  margin-bottom: 1rem;
-`;
-
 const Slates: React.FunctionComponent<Props> = () => {
-  const { slates, currentBallot }: IAppContext = React.useContext(AppContext);
   const [visibilityFilter] = React.useState('all');
+  const { slates, currentBallot }: IAppContext = React.useContext(AppContext);
+
+  let slateData: ISlate[] = [];
+  // convert statuses: number -> string (via enum)
+  if (Array.isArray(slates)) {
+    slateData = slates.map((s: any) => {
+      // convert from number to string
+      s.status = convertEVMSlateStatus(s.status);
+      return s;
+    });
+  }
 
   function handleSelectVisibilityFilter(type: string) {
     (toast as any)[type](`Demo: ${type}`);
@@ -60,8 +75,8 @@ const Slates: React.FunctionComponent<Props> = () => {
       </VisibilityFilterContainer>
 
       <CardsWrapper>
-        {slates && slates.length
-          ? slates.map((slate: ISlate) => (
+        {slateData && slateData.length
+          ? slateData.map((slate: ISlate) => (
               <div key={slate.id}>
                 <RouterLink href={`/DetailedView?id=${slate.id}`} as={`/slates/${slate.id}`}>
                   <Card
@@ -83,17 +98,5 @@ const Slates: React.FunctionComponent<Props> = () => {
     </div>
   );
 };
-const CardsWrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  /* justify-content: space-between; */
-`;
-
-// settings for varied card heights
-// const CardsWrapper = styled.div`
-//   display: flex;
-//   flex-flow: column wrap;
-//   max-height: 50vh;
-// `;
 
 export default Slates;

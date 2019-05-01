@@ -420,7 +420,7 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
                         proposals.map((proposal: IProposal) => (
                           <Card
                             key={proposal.id}
-                            category={proposal.category + ' PROPOSAL'}
+                            category={proposal.category || 'GRANT' + ' PROPOSAL'}
                             title={proposal.title}
                             subtitle={proposal.tokensRequested.toString()}
                             description={proposal.summary}

@@ -26,11 +26,11 @@ export function convertEVMSlateStatus(status: number) {
   }
 
   const s = status.toString();
-  if (s === SlateStatus.Unstaked) {
+  if (s === SlateStatus.Unstaked || statuses.PENDING_TOKENS) {
     return statuses.PENDING_TOKENS;
-  } else if (s === SlateStatus.Staked) {
+  } else if (s === SlateStatus.Staked || statuses.PENDING_VOTE) {
     return statuses.PENDING_VOTE;
-  } else if (s === SlateStatus.Rejected) {
+  } else if (s === SlateStatus.Rejected || statuses.SLATE_REJECTED) {
     return statuses.SLATE_REJECTED;
   }
 
