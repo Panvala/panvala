@@ -7,21 +7,31 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const Wrapper = styled.div`
+const Wrapper: any = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70%;
-`
+  width: ${({ wide }) => (wide ? '100%' : '70%')};
+`;
 
-const Image = styled.img`
+const StyledImage = styled.img`
   width: 100%;
 `;
 
-export default ({ src, alt }: { src: any; alt: any }) => (
-  <Container>
-    <Wrapper>
-      <Image src={src} alt={alt} />
-    </Wrapper>
-  </Container>
-);
+interface IProps {
+  src: string;
+  alt: string;
+  wide: boolean;
+}
+
+const Image: React.SFC<IProps> = ({ src, alt, wide }) => {
+  return (
+    <Container>
+      <Wrapper wide={wide}>
+        <StyledImage src={src} alt={alt} />
+      </Wrapper>
+    </Container>
+  );
+};
+
+export default Image;

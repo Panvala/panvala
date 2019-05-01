@@ -13,7 +13,7 @@ const BaseButton = styled.button`
   cursor: pointer;
 `;
 
-const StyledButton = styled(BaseButton)`
+const StyledButton: any = styled(BaseButton)`
   height: 2rem;
   background-color: ${({ type }: any) =>
     type && (BUTTON_COLORS as any)[type] ? (BUTTON_COLORS as any)[type] : COLORS.white};
@@ -31,7 +31,7 @@ const StyledButton = styled(BaseButton)`
   line-height: 1rem;
 `;
 
-const LargeButton = styled(BaseButton)`
+const LargeButton: any = styled(BaseButton)`
   width: 100%;
   background-color: ${({ type }: any) => (type ? (BUTTON_COLORS as any)[type] : COLORS.white)};
   padding: 0.8rem 1.5rem;
