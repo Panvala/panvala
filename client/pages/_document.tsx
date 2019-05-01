@@ -42,10 +42,6 @@ export default class MyDocument extends Document {
           <link rel="icon" href="/static/favicon.ico" />
           {this.props.styles}
           <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css" />
-          <link
-            href="https://fonts.googleapis.com/css?family=Roboto:400,500,700"
-            rel="stylesheet"
-          />
         </Head>
         <body>
           <Main />

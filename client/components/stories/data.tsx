@@ -1,6 +1,7 @@
 import Router from 'next/router';
 import { ballotDates, statuses } from '../../utils/status';
 import { ISlate, IProposal } from '../../interfaces';
+import '../../globalStyles.css';
 
 // https://github.com/zeit/next.js/issues/1827#issuecomment-323314141
 export const mockedRouter = {
