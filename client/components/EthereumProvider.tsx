@@ -39,10 +39,12 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         const ethProvider: providers.Web3Provider = await connectProvider(ethereum);
 
         // contract abstractions (w/ metamask signer)
-        const contracts: IContracts = await connectContracts(ethProvider);
+        const [contracts, unlocked]: any = await Promise.all([
+          connectContracts(ethProvider),
+          ethereum._metamask.isUnlocked(),
+        ]);
         console.log('contracts:', contracts);
 
-        const unlocked = await ethereum._metamask.isUnlocked();
         if (!unlocked) {
           this.props.onHandleNotification({ action: 'Sign in with MetaMask' });
         }

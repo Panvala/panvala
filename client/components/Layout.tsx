@@ -60,10 +60,11 @@ export default class Layout extends React.Component<IProps, IAppContext> {
 
   // runs once, onload
   async componentDidMount() {
-    // const slatesFromIpfs: any[] = await Promise.all(slateMultihashes.map(mh => ipfsGetData(mh)));
-    // const slatesWithMHs = slates.map((s, i) => ({ ...s, hash: slateMultihashes[i] }));
-    let slates: ISlate[] = await this.handleGetAllSlates();
-    const proposals: IProposal[] | AxiosResponse = await this.handleGetAllProposals();
+    const [slates, proposals]: any = await Promise.all([
+      this.handleGetAllSlates(),
+      this.handleGetAllProposals(),
+    ]);
+    // const proposals: IProposal[] | AxiosResponse = await this.handleGetAllProposals();
 
     let proposalData: IProposal[] = [];
     // sort proposals by createdAt
