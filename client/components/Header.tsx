@@ -26,12 +26,12 @@ const Header: React.FunctionComponent<any> = ({ router, notifications }: any) =>
       <nav>
         <NavWrapper>
           <FlexContainer>
-            <RouterLink href="/" as="/">
+            <RouterLink href="/slates" as="/slates">
               <Image src="/static/logo-black.svg" alt="panvala logo" />
             </RouterLink>
           </FlexContainer>
           <NavItems>
-            <RouterLink href="/" as="/">
+            <RouterLink href="/slates" as="/slates">
               <Button
                 active={
                   (router && router.pathname === '/') ||

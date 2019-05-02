@@ -8,14 +8,12 @@ import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
 import { IAppContext } from '../../interfaces';
 
-interface IProps {
-  errors?: string;
-  account?: string;
-  provider?: any;
-  userAgent?: any;
-}
+const CardsWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+`;
 
-const Proposals: React.SFC<IProps> = props => {
+const Proposals: React.SFC<any> = () => {
   const { proposals, currentBallot }: IAppContext = React.useContext(AppContext);
 
   return (
@@ -57,17 +55,5 @@ const Proposals: React.SFC<IProps> = props => {
     </div>
   );
 };
-
-const CardsWrapper = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-`;
-
-// settings for varied card heights
-// const CardsWrapper = styled.div`
-//   display: flex;
-//   flex-flow: column wrap;
-//   max-height: 50vh;
-// `;
 
 export default Proposals;
