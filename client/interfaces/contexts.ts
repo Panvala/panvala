@@ -116,21 +116,17 @@ export interface IBallotDates {
 export interface IContracts {
   tokenCapacitor: Contract;
   gateKeeper: Contract;
-  token?: Contract;
+  token: Contract;
   parameterStore?: Contract;
 }
 
-export interface IAppContext {
+export interface IMainContext {
   slates?: ISlate[];
   proposals?: IProposal[];
   currentBallot: IBallotDates;
-  onNotify?: any;
-  onRefreshProposals?: any;
-  onRefreshSlates?: any;
-  notifications?: any[];
-  onHandleNotification?: any;
+  onRefreshProposals(): any;
+  onRefreshSlates(): any;
 }
-
 export interface IEthereumContext {
   account?: string;
   ethProvider?: providers.Web3Provider;
@@ -138,5 +134,5 @@ export interface IEthereumContext {
   panBalance: utils.BigNumber;
   gkAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
-  onConnectEthereum?: any;
+  onConnectEthereum(): any;
 }

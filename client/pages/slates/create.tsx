@@ -9,7 +9,7 @@ import * as yup from 'yup';
 import { COLORS } from '../../styles';
 import CenteredTitle from '../../components/CenteredTitle';
 import Checkbox from '../../components/Checkbox';
-import { AppContext } from '../../components/Layout';
+import { MainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import { EthereumContext } from '../../components/EthereumProvider';
@@ -20,7 +20,7 @@ import Label from '../../components/Label';
 import SectionLabel from '../../components/SectionLabel';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import {
-  IAppContext,
+  IMainContext,
   IProposal,
   IProposalMetadata,
   ISlateMetadata,
@@ -81,13 +81,15 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
   // get proposals and eth context
-  const { proposals, onRefreshSlates }: IAppContext = React.useContext(AppContext);
+  const { proposals, onRefreshSlates }: IMainContext = React.useContext(MainContext);
   const { account, ethProvider, contracts, onConnectEthereum }: IEthereumContext = React.useContext(
     EthereumContext
   );
 
   React.useEffect(() => {
-    onConnectEthereum();
+    if (!account) {
+      onConnectEthereum();
+    }
   }, []);
 
   /**

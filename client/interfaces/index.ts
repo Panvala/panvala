@@ -3,7 +3,7 @@ import { StatelessPage } from './components';
 import {
   ISlate,
   IProposal,
-  IAppContext,
+  IMainContext,
   IContracts,
   IEthereumContext,
   IProposalMetadata,
@@ -17,7 +17,7 @@ import {
 export {
   ISlate,
   IProposal,
-  IAppContext,
+  IMainContext,
   IButton,
   ITag,
   StatelessPage,

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { AppContext } from '../../components/Layout';
+import { MainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Deadline from '../../components/Deadline';
 import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
-import { IAppContext } from '../../interfaces';
+import { IMainContext } from '../../interfaces';
 
 const CardsWrapper = styled.div`
   display: flex;
@@ -14,7 +14,8 @@ const CardsWrapper = styled.div`
 `;
 
 const Proposals: React.SFC<any> = () => {
-  const { proposals, currentBallot }: IAppContext = React.useContext(AppContext);
+  const { proposals, currentBallot }: IMainContext = React.useContext(MainContext);
+  console.log('proposals:', proposals);
 
   return (
     <div>

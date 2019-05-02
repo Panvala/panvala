@@ -16,16 +16,10 @@ declare global {
 export default class EthereumProvider extends React.Component<any, IEthereumContext> {
   state: any = {
     account: '',
-    ethProvider: {},
     panBalance: utils.bigNumberify('0'),
     gkAllowance: utils.bigNumberify('0'),
     votingRights: utils.bigNumberify('0'),
-    onConnectEthereum: () => this.handleConnectEthereum(),
   };
-
-  componentWillUnmount() {
-    console.log('unmounting..');
-  }
 
   handleConnectEthereum = async () => {
     try {
@@ -39,32 +33,32 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         const ethProvider: providers.Web3Provider = await connectProvider(ethereum);
 
         // contract abstractions (w/ metamask signer)
-        const [contracts, unlocked]: any = await Promise.all([
-          connectContracts(ethProvider),
-          ethereum._metamask.isUnlocked(),
-        ]);
+        const contracts: IContracts = await connectContracts(ethProvider);
         console.log('contracts:', contracts);
 
+        const unlocked: boolean = await ethereum._metamask.isUnlocked();
         if (!unlocked) {
           this.props.onHandleNotification({ action: 'Sign in with MetaMask' });
         }
-        // pop-up metamask to authorize panvala-app (account signature validation)
-        const addresses: string[] = await ethereum.enable();
-        // first account
-        const account: string = utils.getAddress(addresses[0]);
+        let account: string | undefined;
+
+        const enabled = await ethereum._metamask.isEnabled();
+        if (!enabled) {
+          // pop-up metamask to authorize panvala-app (account signature validation)
+          const addresses: string[] = await ethereum.enable();
+          // first account
+          account = utils.getAddress(addresses[0]);
+          if (account) {
+            toast.success('MetaMask successfully connected!');
+          }
+        } else {
+          account = utils.getAddress(ethereum.selectedAddress);
+        }
         console.log('account:', account);
 
-        if (account) {
-          toast.success('MetaMask successfully connected!');
-          if (contracts.token) {
-            // get the token balance and gate_keeper allowance
-            panBalance = await contracts.token.functions.balanceOf(account);
-            gkAllowance = await contracts.token.functions.allowance(
-              account,
-              contracts.gateKeeper.address
-            );
-            votingRights = await contracts.gateKeeper.functions.voteTokenBalance(account);
-          }
+        if (contracts.token) {
+          // get the token balance and gate_keeper allowance
+          [panBalance, gkAllowance, votingRights] = await this.getBalances(account, contracts);
         }
 
         this.setState({
@@ -82,10 +76,23 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
     }
   };
 
+  getBalances = async (account: string, contracts: IContracts) => {
+    const [panBalance, gkAllowance, votingRights]: utils.BigNumber[] = await Promise.all([
+      contracts.token.functions.balanceOf(account),
+      contracts.token.functions.allowance(account, contracts.gateKeeper.address),
+      contracts.gateKeeper.functions.voteTokenBalance(account),
+    ]);
+    return [panBalance, gkAllowance, votingRights];
+  };
+
   render() {
     console.log('ETH state:', this.state);
     return (
-      <EthereumContext.Provider value={this.state}>{this.props.children}</EthereumContext.Provider>
+      <EthereumContext.Provider
+        value={{ ...this.state, onConnectEthereum: this.handleConnectEthereum }}
+      >
+        {this.props.children}
+      </EthereumContext.Provider>
     );
   }
 }

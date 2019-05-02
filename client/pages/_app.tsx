@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { toast } from 'react-toastify';
 import App, { Container } from 'next/app';
 import { SingletonRouter } from 'next/router';
 import ErrorPage from 'next/error';
+import { ToastContainer } from 'react-toastify';
 // required: import css at top-level
 // Note: CSS files can not be imported into your _document.js. You can use the _app.js instead or any other page.
 // https://github.com/zeit/next-plugins/tree/master/packages/next-css#without-css-modules
@@ -10,15 +10,14 @@ import '../globalStyles.css';
 import '../ReactToastify.css';
 import '../components/Toggle.css';
 import EthereumProvider from '../components/EthereumProvider';
-import Layout, { AppContext } from '../components/Layout';
+import Layout from '../components/Layout';
+import MainProvider, { MainContext } from '../components/MainProvider';
+import NotificationsProvider from '../components/NotificationsProvider';
 
 type IProps = {
   Component: any;
   router: SingletonRouter;
   ctx: any;
-  account?: string;
-  provider?: any;
-  query?: any;
   pageProps: any;
 };
 
@@ -56,10 +55,10 @@ export default class MyApp extends App<IProps, IState> {
     this.props.router.push('/', '/');
     console.log('CUSTOM ERROR', error);
     console.log('errorInfo:', errorInfo);
-    toast.error(error.message);
     // this.setState({
-    //   hasError: false
-    // })
+    //   hasError: true,
+    //   error,
+    // });
 
     // // TODO: log error to reporting service
 
@@ -76,19 +75,33 @@ export default class MyApp extends App<IProps, IState> {
 
     return (
       <Container>
-        <Layout title={pageProps.title || 'Panvala'}>
-          {hasError && errorCode ? (
-            <ErrorPage statusCode={errorCode} />
-          ) : (
-            <AppContext.Consumer>
-              {({ onHandleNotification }) => (
-                <EthereumProvider onHandleNotification={onHandleNotification}>
-                  <Component {...pageProps} />
-                </EthereumProvider>
+        <MainProvider>
+          <NotificationsProvider>
+            <Layout>
+              {hasError && errorCode ? (
+                <ErrorPage statusCode={errorCode} />
+              ) : (
+                <MainContext.Consumer>
+                  {({ onHandleNotification }) => (
+                    <EthereumProvider onHandleNotification={onHandleNotification}>
+                      <Component {...pageProps} />
+                    </EthereumProvider>
+                  )}
+                </MainContext.Consumer>
               )}
-            </AppContext.Consumer>
-          )}
-        </Layout>
+            </Layout>
+          </NotificationsProvider>
+        </MainProvider>
+        <ToastContainer
+          position="bottom-right"
+          autoClose={8000}
+          hideProgressBar={true}
+          newestOnTop={false}
+          rtl={false}
+          draggable={false}
+          closeOnClick
+          pauseOnHover
+        />
       </Container>
     );
   }

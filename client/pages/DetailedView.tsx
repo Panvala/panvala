@@ -1,17 +1,17 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../styles';
-import { AppContext } from '../components/Layout';
 import Button from '../components/Button';
+import Card, { CardAddress } from '../components/Card';
+import Deadline from '../components/Deadline';
+import { MainContext } from '../components/MainProvider';
+import RouterLink from '../components/RouterLink';
 import RouteTitle from '../components/RouteTitle';
 import SectionLabel from '../components/SectionLabel';
 import Tag from '../components/Tag';
-import Card, { CardAddress } from '../components/Card';
-import Deadline from '../components/Deadline';
-import { IProposal, ISlate, IAppContext, StatelessPage, IBallotDates } from '../interfaces';
+import { IProposal, ISlate, IMainContext, StatelessPage, IBallotDates } from '../interfaces';
 import { splitAddressHumanReadable, formatPanvalaUnits } from '../utils/format';
 import { isPendingTokens, statuses } from '../utils/status';
-import RouterLink from '../components/RouterLink';
 
 const Incumbent = styled.div`
   color: ${COLORS.primary};
@@ -359,7 +359,7 @@ interface IProps {
 }
 
 const DetailedView: StatelessPage<IProps> = ({ query, asPath }) => {
-  const { slates, proposals, currentBallot }: IAppContext = React.useContext(AppContext);
+  const { slates, proposals, currentBallot }: IMainContext = React.useContext(MainContext);
 
   const currentContext: string = asPath.startsWith('/slates') ? 'slates' : 'proposals';
   const identifier: number = parseInt(query.id);

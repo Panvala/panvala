@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../../styles';
-import { AppContext } from '../../components/Layout';
+import { MainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
@@ -9,7 +9,7 @@ import Deadline from '../../components/Deadline';
 import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
 import SectionLabel from '../../components/SectionLabel';
-import { IAppContext } from '../../interfaces';
+import { IMainContext } from '../../interfaces';
 import { tsToDeadline } from '../../utils/datetime';
 import { isBallotOpen } from '../../utils/status';
 
@@ -24,7 +24,7 @@ const BallotNotOpen = styled.div`
 `;
 
 const Ballots: React.FunctionComponent<any> = () => {
-  const { currentBallot }: IAppContext = React.useContext(AppContext);
+  const { currentBallot }: IMainContext = React.useContext(MainContext);
   console.log('currentBallot:', currentBallot);
   return (
     <div>

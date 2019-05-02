@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { utils, Signer } from 'ethers';
 
 import { COLORS } from '../../styles';
-import { AppContext } from '../../components/Layout';
+import { MainContext } from '../../components/MainProvider';
 import { EthereumContext } from '../../components/EthereumProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -16,10 +16,12 @@ import Image from '../../components/Image';
 import Label from '../../components/Label';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import SectionLabel from '../../components/SectionLabel';
-import { ISlate, IAppContext, IEthereumContext, ISubmitBallot, IChoices } from '../../interfaces';
+import { ISlate, IMainContext, IEthereumContext, ISubmitBallot, IChoices } from '../../interfaces';
 import { randomSalt, generateCommitHash, generateCommitMessage } from '../../utils/voting';
 import { baseToConvertedUnits } from '../../utils/format';
 import { postBallot } from '../../utils/api';
+import { convertEVMSlateStatus } from '../../utils/status';
+import Actions from '../../components/Actions';
 
 type IProps = {
   account?: string;
@@ -33,7 +35,7 @@ const Separator = styled.div`
 
 const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   // get contexts
-  const { slates, currentBallot }: IAppContext = React.useContext(AppContext);
+  const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
     account,
@@ -45,8 +47,11 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   }: IEthereumContext = React.useContext(EthereumContext);
 
   React.useEffect(() => {
-    onConnectEthereum();
+    if (!account) {
+      onConnectEthereum();
+    }
   }, []);
+  console.log('slates:', slates);
 
   // component state
   // choice selector
@@ -224,7 +229,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
                     subtitle={slate.proposals.length + ' Grants Included'}
                     description={slate.description}
                     category={slate.category}
-                    status={slate.status}
+                    status={convertEVMSlateStatus(slate.status)}
                     choices={choices}
                     address={slate.ownerAddress}
                     onSetChoice={handleSetChoice}
@@ -238,18 +243,11 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
         </div>
 
         <Separator />
-
-        <div className="flex flex-column pv4 ph4 items-end">
-          <div className="flex">
-            <Button large>{'Back'}</Button>
-            <Button type="submit" large onClick={handleSubmitVote}>
-              {'Confirm and Submit'}
-            </Button>
-          </div>
-          <div className="f7 w5 tr mr3">
-            {'This will redirect to a seperate MetaMask window to confirm your transaction.'}
-          </div>
-        </div>
+        <Actions
+          handleClick={handleSubmitVote}
+          handleBack={null}
+          actionText={'Confirm and Submit'}
+        />
       </CenteredWrapper>
     </div>
   );

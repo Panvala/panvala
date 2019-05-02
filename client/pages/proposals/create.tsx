@@ -1,22 +1,24 @@
 import * as React from 'react';
-import { AppContext } from '../../components/Layout';
+import { AxiosResponse } from 'axios';
+import { SingletonRouter, withRouter } from 'next/router';
+import { toast } from 'react-toastify';
+
 import Button from '../../components/Button';
 import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
 import Image from '../../components/Image';
+import { MainContext } from '../../components/MainProvider';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import ProposalForm from '../../components/ProposalForm';
 import { postProposal } from '../../utils/api';
-import { IProposal, IAppContext } from '../../interfaces';
-import { AxiosResponse } from 'axios';
-import { SingletonRouter, withRouter } from 'next/router';
+import { IProposal, IMainContext } from '../../interfaces';
 
 type IProps = {
   router: SingletonRouter;
 };
 
 const CreateProposal: React.FunctionComponent<IProps> = ({ router }) => {
-  const { onNotify, onRefreshProposals }: IAppContext = React.useContext(AppContext);
+  const { onRefreshProposals }: IMainContext = React.useContext(MainContext);
 
   const [isOpen, setOpenModal] = React.useState(false);
 
@@ -30,7 +32,7 @@ const CreateProposal: React.FunctionComponent<IProps> = ({ router }) => {
         await onRefreshProposals();
       }
     } catch (error) {
-      onNotify(error.message, 'error');
+      toast.error(error.message);
     }
   }
 
