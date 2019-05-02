@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../styles';
 import Image from './Image';
+import RouterLink from './RouterLink';
 // import noti from '../static/notification.svg';
 // import notiRed from '../static/notification-red.svg';
 
@@ -52,8 +53,8 @@ const ItemAction = styled.div`
   color: ${COLORS.grey2};
 `;
 
-const SelectedItem = styled.div`
-  background: rgba(222, 240, 250, 0.3);
+const ItemText = styled.div`
+  margin-top: 0.5rem;
 `;
 
 interface Props {
@@ -80,20 +81,21 @@ const NotificationItems: React.FunctionComponent<ItemProps> = props => {
   }
 
   // TODO: if the item is selected, change its background
-  // TODO: if the item has a link, then make a RouterLink
   return (
     <div>
       {props.items.map((item, index) => (
         <ItemWrapper key={index} index={index}>
           {item.link ? (
-            <a href={item.link}>
-              <ItemAction>{item.action}</ItemAction>
-              {item.text && <div>{item.text}</div>}
-            </a>
+            <>
+              <RouterLink href={`/${item.link}?id=${0}`} as={`/${item.link.toLowerCase()}/0`}>
+                <ItemAction>{item.action}</ItemAction>
+              </RouterLink>
+              {item.text && <ItemText>{item.text}</ItemText>}
+            </>
           ) : (
             <>
               <ItemAction>{item.action}</ItemAction>
-              {item.text && <div>{item.text}</div>}
+              {item.text && <ItemText>{item.text}</ItemText>}
             </>
           )}
         </ItemWrapper>
@@ -116,18 +118,18 @@ const NotificationIcon: React.FunctionComponent<any> = props => {
 const NotificationPanel: React.FunctionComponent<Props> = props => {
   const [isOpen, setOpen] = React.useState(false);
 
-  function handleClick() {
+  function handleTogglePanelOpen() {
     setOpen(!isOpen);
   }
 
   return (
     <Wrapper>
       <NotificationIcon
-        onHandleClick={handleClick}
+        onHandleClick={handleTogglePanelOpen}
         unread={props.items.length > 0 ? true : false}
       />
       {isOpen && (
-        <PanelWrapper>
+        <PanelWrapper onClick={handleTogglePanelOpen}>
           <PanelHeading>Notifications</PanelHeading>
           <NotificationItems items={props.items} />
         </PanelWrapper>

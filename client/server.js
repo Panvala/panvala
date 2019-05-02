@@ -48,6 +48,10 @@ app.prepare().then(() => {
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/DetailedView', requestParams);
   });
+  server.get('/withdraw/:id', (req, res) => {
+    const requestParams = setIdParamsByRequestQuery(req);
+    return app.render(req, res, '/Withdraw', requestParams);
+  });
 
   // ----------------------------------------------
   // HOUSEKEEPING
