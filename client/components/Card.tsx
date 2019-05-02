@@ -119,6 +119,7 @@ const ChoiceButton: any = styled(Button)`
       : COLORS.text};
   border: ${({ firstChoice, secondChoice }: any) =>
     firstChoice || secondChoice ? '2px solid transparent' : '2px solid ' + COLORS.grey5};
+  margin-right: 1rem;
 `;
 
 const Card: React.FunctionComponent<ICardProps> = props => {

@@ -7,6 +7,7 @@ const CenteredWrapper = styled.div`
   margin: 2rem 10rem;
   border: 1px solid #f0f5f6;
   color: ${COLORS.text};
+  font-family: 'Roboto';
 `;
 
 export default CenteredWrapper;

@@ -5,6 +5,7 @@ import Button from './Button';
 import Image from './Image';
 import NotificationPanel from './NotificationPanel';
 import RouterLink from './RouterLink';
+import { NotificationsContext } from './NotificationsProvider';
 
 const StyledHeader = styled.header`
   margin-bottom: 2rem;
@@ -19,8 +20,12 @@ const NavWrapper = styled(FlexContainer)`
 const NavItems = styled(FlexContainer)`
   justify-content: flex-start;
 `;
+const NavItem = styled(FlexContainer)`
+  margin-right: 1rem;
+`;
 
-const Header: React.FunctionComponent<any> = ({ router, notifications }: any) => {
+const Header: React.FunctionComponent<any> = ({ router }: any) => {
+  const { notifications } = React.useContext(NotificationsContext);
   return (
     <StyledHeader>
       <nav>
@@ -31,26 +36,33 @@ const Header: React.FunctionComponent<any> = ({ router, notifications }: any) =>
             </RouterLink>
           </FlexContainer>
           <NavItems>
-            <RouterLink href="/slates" as="/slates">
-              <Button
-                active={
-                  (router && router.pathname === '/') ||
-                  (router && router.asPath && router.asPath.startsWith('/slates'))
-                }
-              >
-                {'Slates'}
-              </Button>
-            </RouterLink>
-            <RouterLink href="/proposals" as="/proposals">
-              <Button active={router && router.asPath && router.asPath.startsWith('/proposals')}>
-                {'Proposals'}
-              </Button>
-            </RouterLink>
-            <RouterLink href="/ballots" as="/ballots">
-              <Button active={router && router.asPath && router.asPath.startsWith('/ballots')}>
-                {'Ballots'}
-              </Button>
-            </RouterLink>
+            <NavItem>
+              <RouterLink href="/slates" as="/slates">
+                <Button
+                  active={
+                    (router && router.pathname === '/') ||
+                    (router && router.asPath && router.asPath.startsWith('/slates'))
+                  }
+                >
+                  {'Slates'}
+                </Button>
+              </RouterLink>
+            </NavItem>
+
+            <NavItem>
+              <RouterLink href="/proposals" as="/proposals">
+                <Button active={router && router.asPath && router.asPath.startsWith('/proposals')}>
+                  {'Proposals'}
+                </Button>
+              </RouterLink>
+            </NavItem>
+            <NavItem>
+              <RouterLink href="/ballots" as="/ballots">
+                <Button active={router && router.asPath && router.asPath.startsWith('/ballots')}>
+                  {'Ballots'}
+                </Button>
+              </RouterLink>
+            </NavItem>
             <NotificationPanel items={notifications} />
           </NavItems>
         </NavWrapper>

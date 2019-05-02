@@ -20,7 +20,7 @@ const StyledButton: any = styled(BaseButton)`
   color: ${({ active }: any) => (active ? COLORS.primary : COLORS.text)};
   ${({ active }: any) => active && 'box-shadow: 0px 3px 10px rgba(83, 172, 217, 0.16)'};
   padding: 0 0.6rem;
-  margin: 0 1rem 0 0;
+  margin: 0;
   border: 1px solid transparent;
   border-radius: 0.3rem;
   &:focus {

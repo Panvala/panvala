@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { withRouter } from 'next/router';
+import Actions from '../../components/Actions';
 import Button from '../../components/Button';
 import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
+import { EthereumContext } from '../../components/EthereumProvider';
 import Image from '../../components/Image';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import SectionLabel from '../../components/SectionLabel';
 import { Separator } from '../../components/Separator';
-import { COLORS } from '../../styles';
 import { IEthereumContext } from '../../interfaces';
-import { EthereumContext } from '../../components/EthereumProvider';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -19,26 +18,6 @@ const Wrapper = styled.div`
 
 const CenteredSection = styled.div`
   padding: 2rem;
-`;
-
-const ActionsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding: 2rem;
-  font-family: 'Roboto';
-`;
-
-const FlexWrapper = styled.div`
-  display: flex;
-`;
-
-const ActionHelpMessage = styled.div`
-  font-size: 0.75rem;
-  width: 16rem;
-  text-align: right;
-  margin-right: 1rem;
-  color: ${COLORS.grey3};
 `;
 
 const SectionStatement = styled.div`
@@ -55,21 +34,7 @@ const BlackSeparator = styled.div`
   border-bottom: 3px solid #606060;
 `;
 
-export const StakeActions = ({ onHandleStakeTokens }): any => (
-  <ActionsWrapper>
-    <FlexWrapper>
-      <Button large>Back</Button>
-      <Button large type="default" onClick={onHandleStakeTokens}>
-        Confirm and Deposit PAN
-      </Button>
-    </FlexWrapper>
-    <ActionHelpMessage>
-      This will redirect to a separate MetaMask window to confirm your transaction.
-    </ActionHelpMessage>
-  </ActionsWrapper>
-);
-
-const Stake: React.SFC<any> = ({ router }) => {
+const Stake: React.SFC<any> = ({ query }) => {
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
   const { account, contracts, onConnectEthereum }: IEthereumContext = React.useContext(
@@ -81,7 +46,7 @@ const Stake: React.SFC<any> = ({ router }) => {
   console.log('contracts:', contracts);
 
   async function handleStakeTokens() {
-    const { slateID } = router.query;
+    const { slateID } = query;
     if (account) {
       // await contracts.gateKeeper.functions.stakeTokens(slateID);
     }
@@ -102,7 +67,7 @@ const Stake: React.SFC<any> = ({ router }) => {
       </Modal>
 
       <Wrapper>
-        <CenteredTitle title="Stake Tokens on a  Slate" />
+        <CenteredTitle title="Stake Tokens on a Slate" />
         <CenteredWrapper>
           <CenteredSection>
             <SectionLabel>TOKEN DEPOSIT</SectionLabel>
@@ -125,11 +90,19 @@ const Stake: React.SFC<any> = ({ router }) => {
           </CenteredSection>
 
           <Separator />
-          <StakeActions onHandleStakeTokens={handleStakeTokens} />
+          <Actions
+            handleClick={handleStakeTokens}
+            handleBack={null}
+            actionText={'Confirm and Deposit PAN'}
+          />
         </CenteredWrapper>
       </Wrapper>
     </>
   );
 };
 
-export default withRouter(Stake);
+Stake.getInitialProps = ({ query }) => {
+  return { query };
+};
+
+export default Stake;
