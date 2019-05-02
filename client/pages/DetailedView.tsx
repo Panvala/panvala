@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { withRouter } from 'next/router';
 import { COLORS } from '../styles';
 import { AppContext } from '../components/Layout';
 import Button from '../components/Button';
@@ -66,13 +65,13 @@ interface IStakeSidebarProps {
 interface IStakeHeaderProps {
   slate: ISlate;
   currentBallot: IBallotDates;
-  router: any;
+  asPath: string;
 }
 
 interface IStakeDetailProps {
   slate: ISlate;
   currentBallot: IBallotDates;
-  router: any;
+  asPath: string;
 }
 
 export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
@@ -146,23 +145,23 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
   );
 };
 
-export const SlateHeader = ({ slate, currentBallot, router }: IStakeHeaderProps) => {
+export const SlateHeader = ({ slate, currentBallot, asPath }: IStakeHeaderProps) => {
   return (
     <>
       <div className="flex">
         <Tag status={''}>{slate.category.toUpperCase()}</Tag>
         <Tag status={slate.status}>{slate.status}</Tag>
       </div>
-      {slate.deadline && <Deadline ballot={currentBallot} route={router.asPath} />}
+      {slate.deadline && <Deadline ballot={currentBallot} route={asPath} />}
     </>
   );
 };
 
-export const SlateDetail = ({ slate, currentBallot, router }: IStakeDetailProps): any => {
+export const SlateDetail = ({ slate, currentBallot, asPath }: IStakeDetailProps): any => {
   return (
     <div className="flex flex-column">
       <div className="flex justify-between">
-        <SlateHeader slate={slate} router={router} currentBallot={currentBallot} />
+        <SlateHeader slate={slate} asPath={asPath} currentBallot={currentBallot} />
       </div>
 
       {slate.incumbent && <Incumbent>INCUMBENT</Incumbent>}
@@ -214,21 +213,21 @@ interface IProposalHeaderProps {
   proposal: IProposal;
   includedInSlates: ISlate[];
   currentBallot: IBallotDates;
-  router: any;
+  asPath: string;
 }
 
 interface IProposalDetailProps {
   proposal: IProposal;
   includedInSlates: ISlate[];
   currentBallot: IBallotDates;
-  router: any;
+  asPath: string;
 }
 
 export const ProposalHeader = ({
   proposal,
   includedInSlates,
   currentBallot,
-  router,
+  asPath,
 }: IProposalHeaderProps): any => {
   if (includedInSlates.length === 1) {
     const slate = includedInSlates[0];
@@ -247,7 +246,7 @@ export const ProposalHeader = ({
         {slate.deadline && (
           <Deadline
             ballot={currentBallot}
-            route={router.asPath}
+            route={asPath}
             // deadline={slate.deadline}
             // status={slate.status}
           />
@@ -321,7 +320,7 @@ export const ProposalSidebar = ({ proposal, includedInSlates }: IProposalSidebar
 export const ProposalDetail = ({
   proposal,
   includedInSlates,
-  router,
+  asPath,
   currentBallot,
 }: IProposalDetailProps): any => {
   return (
@@ -329,7 +328,7 @@ export const ProposalDetail = ({
       <div className="flex justify-between">
         <ProposalHeader
           proposal={proposal}
-          router={router}
+          asPath={asPath}
           includedInSlates={includedInSlates}
           currentBallot={currentBallot}
         />
@@ -354,11 +353,16 @@ export const ProposalDetail = ({
   );
 };
 
-const DetailedView: StatelessPage<any> = ({ router }) => {
+interface IProps {
+  query: any;
+  asPath: string;
+}
+
+const DetailedView: StatelessPage<IProps> = ({ query, asPath }) => {
   const { slates, proposals, currentBallot }: IAppContext = React.useContext(AppContext);
 
-  const currentContext: string = router.asPath.startsWith('/slates') ? 'slates' : 'proposals';
-  const identifier: number = parseInt(router.query.id);
+  const currentContext: string = asPath.startsWith('/slates') ? 'slates' : 'proposals';
+  const identifier: number = parseInt(query.id);
 
   let slate: ISlate | undefined;
   let proposal: IProposal | undefined;
@@ -394,18 +398,27 @@ const DetailedView: StatelessPage<any> = ({ router }) => {
     return <div>Loading...</div>;
   }
 
-  if (currentContext === 'slates') {
-    return <SlateDetail slate={slate} currentBallot={currentBallot} router={router} />;
-  } else {
+  if (slate && currentContext === 'slates') {
+    return <SlateDetail slate={slate} currentBallot={currentBallot} asPath={asPath} />;
+  } else if (proposal) {
     return (
       <ProposalDetail
         proposal={proposal}
         includedInSlates={includedInSlates}
         currentBallot={currentBallot}
-        router={router}
+        asPath={asPath}
       />
     );
+  } else {
+    return <div>Error</div>;
   }
 };
 
-export default withRouter(DetailedView);
+DetailedView.getInitialProps = async ({ asPath, query }) => {
+  return {
+    query,
+    asPath,
+  };
+};
+
+export default DetailedView;
