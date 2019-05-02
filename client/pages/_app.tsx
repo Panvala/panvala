@@ -4,6 +4,8 @@ import App, { Container } from 'next/app';
 import { SingletonRouter } from 'next/router';
 import ErrorPage from 'next/error';
 // required: import css at top-level
+// Note: CSS files can not be imported into your _document.js. You can use the _app.js instead or any other page.
+// https://github.com/zeit/next-plugins/tree/master/packages/next-css#without-css-modules
 import '../globalStyles.css';
 import '../ReactToastify.css';
 import '../components/Toggle.css';

@@ -21,7 +21,7 @@ const StyledImage = styled.img`
 interface IProps {
   src: string;
   alt: string;
-  wide: boolean;
+  wide?: boolean;
 }
 
 const Image: React.SFC<IProps> = ({ src, alt, wide }) => {

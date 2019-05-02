@@ -11,21 +11,21 @@ html {
 
 @font-face {
   font-family: 'Roboto';
-  src: url('/static/fonts/Roboto-Regular.ttf');
   font-weight: 400;
+  src: url('/static/fonts/Roboto-Regular.ttf');
 }
 @font-face {
   font-family: 'Roboto';
-  src: url('/static/fonts/Roboto-Medium.ttf');
   font-weight: 500;
+  src: url('/static/fonts/Roboto-Medium.ttf');
 }
 @font-face {
   font-family: 'Roboto';
+  font-weight: bold;
   src: url('/static/fonts/Roboto-Bold.ttf');
-  font-weight: 700;
 }
 @font-face {
   font-family: 'Roboto';
-  src: url('/static/fonts/Roboto-Italic.ttf');
   font-style: italic;
+  src: url('/static/fonts/Roboto-Italic.ttf');
 }
