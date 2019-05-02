@@ -43,7 +43,7 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   console.log('slate:', slate);
 
   async function handleWithdraw() {
-    await contracts.gateKeeper.functions.withdrawVotingTokens(votingRights);
+    await contracts.gateKeeper.functions.withdrawVoteTokens(votingRights);
   }
 
   return (

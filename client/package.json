@@ -11,7 +11,8 @@
     "start": "NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006 -s ./ -c .storybook",
     "test": "jest",
-    "type-check": "tsc"
+    "type-check": "tsc",
+    "update:abis": "node update-abis.js"
   },
   "dependencies": {
     "@zeit/next-css": "1.0.1",
