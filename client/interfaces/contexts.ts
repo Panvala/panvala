@@ -117,7 +117,7 @@ export interface IContracts {
   tokenCapacitor: Contract;
   gateKeeper: Contract;
   token: Contract;
-  parameterStore?: Contract;
+  parameterStore: Contract;
 }
 
 export interface IMainContext {
@@ -135,6 +135,7 @@ export interface IEthereumContext {
   gkAllowance: utils.BigNumber;
   tcAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
+  slateStakeAmount: utils.BigNumber;
   onConnectEthereum(): any;
   onRefreshBalances(): any;
 }

@@ -20,6 +20,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
     gkAllowance: utils.bigNumberify('0'),
     tcAllowance: utils.bigNumberify('0'),
     votingRights: utils.bigNumberify('0'),
+    slateStakeAmount: utils.bigNumberify('0'),
   };
 
   handleConnectEthereum = async () => {
@@ -31,6 +32,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         let gkAllowance: utils.BigNumber = this.state.gkAllowance;
         let tcAllowance: utils.BigNumber = this.state.tcAllowance;
         let votingRights: utils.BigNumber = this.state.votingRights;
+        let slateStakeAmount: utils.BigNumber = this.state.slateStakeAmount;
         // wrap it with ethers
         const ethProvider: providers.Web3Provider = await connectProvider(ethereum);
 
@@ -60,10 +62,13 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
 
         if (contracts.token) {
           // get the token balance and gate_keeper allowance
-          [panBalance, gkAllowance, tcAllowance, votingRights] = await this.getBalances(
-            account,
-            contracts
-          );
+          [
+            panBalance,
+            gkAllowance,
+            tcAllowance,
+            votingRights,
+            slateStakeAmount,
+          ] = await this.getBalances(account, contracts);
         }
 
         this.setState({
@@ -74,6 +79,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
           gkAllowance,
           tcAllowance,
           votingRights,
+          slateStakeAmount,
         });
       }
     } catch (error) {
@@ -88,25 +94,31 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
       gkAllowance,
       tcAllowance,
       votingRights,
+      slateStakeAmount,
     ]: utils.BigNumber[] = await Promise.all([
       contracts.token.functions.balanceOf(account),
       contracts.token.functions.allowance(account, contracts.gateKeeper.address),
       contracts.token.functions.allowance(account, contracts.tokenCapacitor.address),
       contracts.gateKeeper.functions.voteTokenBalance(account),
+      contracts.parameterStore.functions.get('slateStakeAmount'),
     ]);
-    return [panBalance, gkAllowance, tcAllowance, votingRights];
+    return [panBalance, gkAllowance, tcAllowance, votingRights, slateStakeAmount];
   };
 
   handleRefreshBalances = async () => {
-    const [panBalance, gkAllowance, tcAllowance, votingRights] = await this.getBalances(
-      this.state.account,
-      this.state.contracts
-    );
+    const [
+      panBalance,
+      gkAllowance,
+      tcAllowance,
+      votingRights,
+      slateStakeAmount,
+    ] = await this.getBalances(this.state.account, this.state.contracts);
     this.setState({
       panBalance,
       gkAllowance,
       tcAllowance,
       votingRights,
+      slateStakeAmount,
     });
   };
 

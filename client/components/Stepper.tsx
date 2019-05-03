@@ -69,11 +69,10 @@ const Stepper: React.SFC<IProps> = props => {
     <div>
       {props.isOpen && (
         <Wrapper>
-          <Overlay onClick={props.handleClick} className="Stepper-overlay" />
+          <Overlay onClick={props.handleCancel} className="Stepper-overlay" />
           <StepperBody {...props}>
             <StepperTitle>{`Step ${props.step || 1} of ${props.steps.length}`}</StepperTitle>
             <CancelButton onClick={props.handleCancel}>Cancel</CancelButton>
-            {props.steps[props.step]}
             {props.children}
           </StepperBody>
         </Wrapper>

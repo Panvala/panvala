@@ -82,9 +82,13 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
   const [isOpen, setOpenModal] = React.useState(false);
   // get proposals and eth context
   const { proposals, onRefreshSlates }: IMainContext = React.useContext(MainContext);
-  const { account, ethProvider, contracts, onConnectEthereum }: IEthereumContext = React.useContext(
-    EthereumContext
-  );
+  const {
+    account,
+    ethProvider,
+    contracts,
+    onConnectEthereum,
+    onRefreshBalances,
+  }: IEthereumContext = React.useContext(EthereumContext);
 
   React.useEffect(() => {
     if (!account) {
@@ -273,7 +277,8 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
             console.log('Saved slate info');
             toast.success('Saved slate');
             setOpenModal(true);
-            await onRefreshSlates();
+            onRefreshSlates();
+            onRefreshBalances();
           } else {
             errorMessage = `problem saving slate info ${response.data}`;
             toast.error(errorMessage);

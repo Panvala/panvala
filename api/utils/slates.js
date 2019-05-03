@@ -129,7 +129,7 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake) {
       staker: slate.staker,
       // either first + last name or just first name
       owner: lastName ? `${firstName} ${lastName}` : firstName,
-      recommenderAddress,
+      recommenderAddress: slate.recommenderAddress,
       verifiedRecommender: dbSlate.verifiedRecommender,
     };
     return slateData;
