@@ -10,6 +10,10 @@ import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import SectionLabel from '../../components/SectionLabel';
 import { Separator } from '../../components/Separator';
 import { IEthereumContext } from '../../interfaces';
+import { getAllSlates } from '../../utils/api';
+import Stepper, { StepperDialog } from '../../components/Stepper';
+import StepperMetamaskDialog from '../../components/StepperMetamaskDialog';
+import MetamaskButton from '../../components/MetamaskButton';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -36,7 +40,8 @@ const BlackSeparator = styled.div`
 
 const Stake: React.SFC<any> = ({ query }) => {
   // modal opener
-  const [isOpen, setOpenModal] = React.useState(false);
+  const [modalIsOpen, toggleOpenModal] = React.useState(false);
+  const [stepperIsOpen, toggleOpenStepper] = React.useState(false);
   const { account, contracts, onConnectEthereum }: IEthereumContext = React.useContext(
     EthereumContext
   );
@@ -47,21 +52,39 @@ const Stake: React.SFC<any> = ({ query }) => {
 
   async function handleStakeTokens() {
     const { slateID } = query;
+    console.log('slateID:', slateID);
     if (account) {
       // await contracts.gateKeeper.functions.stakeTokens(slateID);
     }
   }
 
+  const steps = [
+    <StepperDialog>
+      To prove you are the account owner, please sign this message. This is similar to signing in
+      with a password.
+    </StepperDialog>,
+    <StepperDialog>
+      Waiting to confirm in MetaMask. By confirming this transaction, you approve to spend 500 PAN
+      tokens to stake for this slate.
+    </StepperDialog>,
+  ];
+
   return (
     <>
-      <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
+      <Stepper isOpen={stepperIsOpen} step={1} steps={steps} handleClick={null} handleCancel={null}>
+        <StepperMetamaskDialog />
+        <Image src="/static/signature-request-tip.svg" alt="signature request tip" wide />
+        <MetamaskButton handleClick={handleStakeTokens} text="Approve 500 PAN" />
+      </Stepper>
+
+      <Modal handleClick={() => toggleOpenModal(false)} isOpen={modalIsOpen}>
         <Image src="/static/check.svg" alt="tokens staked" />
         <ModalTitle>{'Tokens staked.'}</ModalTitle>
         <ModalDescription className="flex flex-wrap">
           Now that you have staked tokens on this slate the Panvala token holding community will
           have the ability to vote for or against the slate when the voting period begins.
         </ModalDescription>
-        <Button type="default" onClick={() => setOpenModal(false)}>
+        <Button type="default" onClick={() => toggleOpenModal(false)}>
           {'Done'}
         </Button>
       </Modal>

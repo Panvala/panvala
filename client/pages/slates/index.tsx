@@ -10,11 +10,6 @@ import RouteTitle from '../../components/RouteTitle';
 import RouterLink from '../../components/RouterLink';
 import { ISlate, IMainContext } from '../../interfaces';
 import { convertEVMSlateStatus } from '../../utils/status';
-import { getAllSlates } from '../../utils/api';
-import Stepper from '../../components/Stepper';
-import StepperMetamaskDialog from '../../components/StepperMetamaskDialog';
-import Image from '../../components/Image';
-import MetamaskButton from '../../components/MetamaskButton';
 
 const VisibilityFilterContainer = styled.div`
   display: flex;
@@ -28,11 +23,6 @@ const CardsWrapper = styled.div`
 type Props = {
   errors?: string;
 };
-
-const StepperDialog = styled.div`
-  font-size: 1.2rem;
-  line-height: 2rem;
-`;
 
 const Slates: React.FunctionComponent<Props> = props => {
   const [visibilityFilter] = React.useState('all');
@@ -58,16 +48,6 @@ const Slates: React.FunctionComponent<Props> = props => {
 
   return (
     <div>
-      {/* <Stepper isOpen steps={2}>
-        <StepperDialog>
-          Waiting to confirm in MetaMask. By confirming this transaction, you approve to spend 500
-          PAN tokens to stake for this slate.
-        </StepperDialog>
-        <StepperMetamaskDialog />
-
-        <Image src="/static/signature-request-tip.svg" alt="signature request tip" wide />
-        <MetamaskButton handleClick={null} text="Approve 500 PAN" />
-      </Stepper> */}
       <div className="flex justify-between">
         {/* TODO: componentize */}
         <div className="flex">

@@ -9,11 +9,16 @@ const Wrapper = styled.div`
   font-family: 'Roboto';
 `;
 
-export const StepperTitle = styled.div`
+const StepperTitle = styled.div`
   font-size: 1.5rem;
   color: ${COLORS.grey2};
   margin: 0.5rem 0 1rem;
 `;
+export const StepperDialog = styled.div`
+  font-size: 1.2rem;
+  line-height: 2rem;
+`;
+
 const CancelButton = styled(Button)`
   color: ${COLORS.grey3};
   font-weight: bold;
@@ -56,8 +61,8 @@ interface IProps {
   handleClose?(): void;
   handleClick?(): any;
   handleCancel?(): any;
-  step?: number;
-  steps: number;
+  step: number;
+  steps: any[];
 }
 const Stepper: React.SFC<IProps> = props => {
   return (
@@ -66,8 +71,9 @@ const Stepper: React.SFC<IProps> = props => {
         <Wrapper>
           <Overlay onClick={props.handleClick} className="Stepper-overlay" />
           <StepperBody {...props}>
-            <StepperTitle>{`Step ${props.step || 1} of ${props.steps}`}</StepperTitle>
+            <StepperTitle>{`Step ${props.step || 1} of ${props.steps.length}`}</StepperTitle>
             <CancelButton onClick={props.handleCancel}>Cancel</CancelButton>
+            {props.steps[props.step]}
             {props.children}
           </StepperBody>
         </Wrapper>
