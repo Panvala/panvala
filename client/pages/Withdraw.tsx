@@ -9,6 +9,7 @@ import Actions from '../components/Actions';
 import { StatelessPage, IMainContext, IEthereumContext } from '../interfaces';
 import { EthereumContext } from '../components/EthereumProvider';
 import { MainContext } from '../components/MainProvider';
+import { sendAndWaitForTransaction } from '../utils/transaction';
 
 const CenteredSection = styled.div`
   padding: 2rem;
@@ -16,7 +17,6 @@ const CenteredSection = styled.div`
 
 const SectionDialog = styled.div`
   margin-bottom: 2rem;
-  font-size: 0.9rem;
   line-height: 1.5;
 `;
 
@@ -25,25 +25,38 @@ interface IProps {
 }
 
 const Withdraw: StatelessPage<IProps> = ({ query }) => {
-  console.log('query:', query);
   const { slates }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
     account,
     votingRights,
     onConnectEthereum,
+    ethProvider,
+    onRefreshBalances,
   }: IEthereumContext = React.useContext(EthereumContext);
+
+  // runs once, on first load
+  // connect to metamask
   React.useEffect(() => {
     if (!account) {
       onConnectEthereum();
     }
   }, []);
 
-  const slate = slates.find(s => s.id === parseInt(query.id));
+  const slate = (slates as any[]).find(s => s.id === parseInt(query.id));
   console.log('slate:', slate);
 
   async function handleWithdraw() {
-    await contracts.gateKeeper.functions.withdrawVoteTokens(votingRights);
+    try {
+      if (ethProvider && contracts) {
+        await sendAndWaitForTransaction(ethProvider, contracts.gateKeeper, 'withdrawVoteTokens', [
+          votingRights,
+        ]);
+        onRefreshBalances();
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   return (

@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { COLORS } from '../styles';
 import Image from './Image';
 import RouterLink from './RouterLink';
-// import noti from '../static/notification.svg';
-// import notiRed from '../static/notification-red.svg';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -67,6 +65,7 @@ interface Item {
   action: string;
   text: string;
   link?: string;
+  id?: string;
 }
 
 // list of items and the currently selected one
@@ -87,7 +86,7 @@ const NotificationItems: React.FunctionComponent<ItemProps> = props => {
         <ItemWrapper key={index} index={index}>
           {item.link ? (
             <>
-              <RouterLink href={`/${item.link}?id=${0}`} as={`/${item.link.toLowerCase()}/0`}>
+              <RouterLink href={`/${item.link}?id=${item.id}`} as={`/${item.link.toLowerCase()}/0`}>
                 <ItemAction>{item.action}</ItemAction>
               </RouterLink>
               {item.text && <ItemText>{item.text}</ItemText>}

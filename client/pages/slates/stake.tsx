@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TransactionResponse } from 'ethers/providers';
+import { toast } from 'react-toastify';
 
 import Actions from '../../components/Actions';
 import Button from '../../components/Button';
@@ -8,14 +8,15 @@ import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
 import { EthereumContext } from '../../components/EthereumProvider';
 import Image from '../../components/Image';
+import { MainContext } from '../../components/MainProvider';
+import MetamaskButton from '../../components/MetamaskButton';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import SectionLabel from '../../components/SectionLabel';
 import { Separator } from '../../components/Separator';
 import { IEthereumContext, StatelessPage } from '../../interfaces';
 import Stepper, { StepperDialog } from '../../components/Stepper';
 import StepperMetamaskDialog from '../../components/StepperMetamaskDialog';
-import MetamaskButton from '../../components/MetamaskButton';
-import { toast } from 'react-toastify';
+import { sendAndWaitForTransaction } from '../../utils/transaction';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -54,6 +55,7 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
     gkAllowance,
     slateStakeAmount,
   }: IEthereumContext = React.useContext(EthereumContext);
+  const { onRefreshSlates } = React.useContext(MainContext);
   console.log('contracts:', contracts);
 
   // runs once, on first load
@@ -92,39 +94,26 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
       // TODO: customize numTokens
       const numTokens = panBalance;
 
-      // TODO: make a util for sending/waiting for txs
-      return contracts.token.functions
-        .approve(contracts.gateKeeper.address, numTokens)
-        .then((response: TransactionResponse) => {
-          return ethProvider.waitForTransaction(response.hash);
-        })
-        .then(() => {
-          toast.success('approve tx mined');
-          // refresh balances, increment the step, exit out of function
-          onRefreshBalances();
-          setStepNumber(2);
-        })
-        .catch(error => {
-          console.log('approval error:', error);
-        });
+      await sendAndWaitForTransaction(ethProvider, contracts.token, 'approve', [
+        contracts.gateKeeper.address,
+        numTokens,
+      ]);
+      toast.success('approve tx mined');
+      // refresh balances, increment the step, exit out of function
+      onRefreshBalances();
+      return setStepNumber(2);
     }
 
     // step 2: stakeTokens
-    return contracts.gateKeeper.functions
-      .stakeTokens(parseInt(slateID))
-      .then((response: TransactionResponse) => {
-        return ethProvider.waitForTransaction(response.hash);
-      })
-      .then(() => {
-        toast.success(`stakeTokens tx mined.`);
-        // refresh balances, change -> Success Modal
-        onRefreshBalances();
-        toggleOpenModal(true);
-        toggleOpenStepper(false);
-      })
-      .catch(error => {
-        console.log('stakeTokens error:', error);
-      });
+    await sendAndWaitForTransaction(ethProvider, contracts.gateKeeper, 'stakeTokens', [
+      parseInt(slateID),
+    ]);
+    toast.success(`stakeTokens tx mined.`);
+    // refresh balances, refresh slates, change -> Success Modal
+    onRefreshBalances();
+    onRefreshSlates();
+    toggleOpenModal(true);
+    return toggleOpenStepper(false);
   }
 
   return (

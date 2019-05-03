@@ -12,9 +12,10 @@ export default class NotificationsProvider extends React.PureComponent {
   async componentDidMount() {
     console.log('notifications mounted');
     const noti = {
-      action: `Withdraw staked tokens from ${'Panvala Awards Committee'}`,
-      text: 'The current batch has ended',
+      action: 'Withdraw Voting Rights',
+      text: `The tokens you previously deposited are now available to be withdrawn.`,
       link: 'Withdraw',
+      id: '1',
     };
     this.handlePushNotification(noti);
   }
