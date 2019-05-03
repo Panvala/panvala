@@ -77,7 +77,7 @@ export default class MyApp extends App<IProps, IState> {
       <Container>
         <MainProvider>
           <NotificationsProvider>
-            <Layout>
+            <Layout title={pageProps.title || 'Panvala'}>
               {hasError && errorCode ? (
                 <ErrorPage statusCode={errorCode} />
               ) : (

@@ -28,23 +28,9 @@ const Slates: React.FunctionComponent<Props> = props => {
   const [visibilityFilter] = React.useState('all');
   let { slates, currentBallot }: IMainContext = React.useContext(MainContext);
 
-  // slates = props.slatess
-
-  let slateData: ISlate[] = [];
-  // convert statuses: number -> string (via enum)
-  if (Array.isArray(slates)) {
-    slateData = slates.map((s: any) => {
-      // convert from number to string
-      s.status = convertEVMSlateStatus(s.status);
-      return s;
-    });
-  }
-
   function handleSelectVisibilityFilter(type: string) {
     (toast as any)[type](`Demo: ${type}`);
   }
-
-  console.log('slates:', slateData);
 
   return (
     <div>
@@ -76,8 +62,8 @@ const Slates: React.FunctionComponent<Props> = props => {
       </VisibilityFilterContainer>
 
       <CardsWrapper>
-        {slateData && slateData.length
-          ? slateData.map((slate: ISlate) => (
+        {slates && slates.length
+          ? slates.map((slate: ISlate) => (
               <div key={slate.id}>
                 <RouterLink href={`/DetailedView?id=${slate.id}`} as={`/slates/${slate.id}`}>
                   <Card
@@ -86,8 +72,8 @@ const Slates: React.FunctionComponent<Props> = props => {
                     subtitle={slate.proposals.length + ' Grants Included'}
                     description={slate.description}
                     category={slate.category}
-                    status={slate.status}
-                    address={slate.ownerAddress}
+                    status={convertEVMSlateStatus(slate.status)}
+                    address={slate.recommenderAddress}
                     recommender={slate.owner}
                     verifiedRecommender={slate.verifiedRecommender}
                   />

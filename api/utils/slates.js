@@ -40,7 +40,7 @@ async function getAllSlates() {
     // give access to this variable throughout the chain
     return gatekeeper
       .slates(slateID)
-      .then(({ recommender, metadataHash, status }) => {
+      .then(({ recommender, metadataHash, status, staker, stake }) => {
         // decode hash
         const decoded = toUtf8String(metadataHash);
         // console.log('decoded hash', decoded);
@@ -49,7 +49,9 @@ async function getAllSlates() {
           metadataHash,
           status,
           decoded,
-          recommender,
+          recommenderAddress: recommender,
+          staker,
+          stake,
         };
       })
       .then(slate => {
@@ -100,8 +102,7 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake) {
     // CONTRACTS CALLS
     // --------------------------
     // get the slate's current status & the account that recommended this slate:
-    const slateStatus = await slate.status;
-    const recommender = await slate.recommender;
+    const slateStatus = slate.status;
 
     // TODO: rehydrate proposals
 
@@ -122,12 +123,13 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake) {
       title,
       description,
       organization,
-      recommender,
       incumbent,
       proposals,
       requiredStake,
+      staker: slate.staker,
       // either first + last name or just first name
       owner: lastName ? `${firstName} ${lastName}` : firstName,
+      recommenderAddress,
       verifiedRecommender: dbSlate.verifiedRecommender,
     };
     return slateData;

@@ -18,6 +18,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
     account: '',
     panBalance: utils.bigNumberify('0'),
     gkAllowance: utils.bigNumberify('0'),
+    tcAllowance: utils.bigNumberify('0'),
     votingRights: utils.bigNumberify('0'),
   };
 
@@ -28,6 +29,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         const { ethereum }: Window = window;
         let panBalance: utils.BigNumber = this.state.panBalance;
         let gkAllowance: utils.BigNumber = this.state.gkAllowance;
+        let tcAllowance: utils.BigNumber = this.state.tcAllowance;
         let votingRights: utils.BigNumber = this.state.votingRights;
         // wrap it with ethers
         const ethProvider: providers.Web3Provider = await connectProvider(ethereum);
@@ -58,7 +60,10 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
 
         if (contracts.token) {
           // get the token balance and gate_keeper allowance
-          [panBalance, gkAllowance, votingRights] = await this.getBalances(account, contracts);
+          [panBalance, gkAllowance, tcAllowance, votingRights] = await this.getBalances(
+            account,
+            contracts
+          );
         }
 
         this.setState({
@@ -67,6 +72,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
           contracts,
           panBalance,
           gkAllowance,
+          tcAllowance,
           votingRights,
         });
       }
@@ -77,19 +83,42 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
   };
 
   getBalances = async (account: string, contracts: IContracts) => {
-    const [panBalance, gkAllowance, votingRights]: utils.BigNumber[] = await Promise.all([
+    const [
+      panBalance,
+      gkAllowance,
+      tcAllowance,
+      votingRights,
+    ]: utils.BigNumber[] = await Promise.all([
       contracts.token.functions.balanceOf(account),
       contracts.token.functions.allowance(account, contracts.gateKeeper.address),
+      contracts.token.functions.allowance(account, contracts.tokenCapacitor.address),
       contracts.gateKeeper.functions.voteTokenBalance(account),
     ]);
-    return [panBalance, gkAllowance, votingRights];
+    return [panBalance, gkAllowance, tcAllowance, votingRights];
+  };
+
+  handleRefreshBalances = async () => {
+    const [panBalance, gkAllowance, tcAllowance, votingRights] = await this.getBalances(
+      this.state.account,
+      this.state.contracts
+    );
+    this.setState({
+      panBalance,
+      gkAllowance,
+      tcAllowance,
+      votingRights,
+    });
   };
 
   render() {
     console.log('ETH state:', this.state);
     return (
       <EthereumContext.Provider
-        value={{ ...this.state, onConnectEthereum: this.handleConnectEthereum }}
+        value={{
+          ...this.state,
+          onConnectEthereum: this.handleConnectEthereum,
+          onRefreshBalances: this.handleRefreshBalances,
+        }}
       >
         {this.props.children}
       </EthereumContext.Provider>

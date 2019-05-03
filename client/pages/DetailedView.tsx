@@ -11,7 +11,7 @@ import SectionLabel from '../components/SectionLabel';
 import Tag from '../components/Tag';
 import { IProposal, ISlate, IMainContext, StatelessPage, IBallotDates } from '../interfaces';
 import { splitAddressHumanReadable, formatPanvalaUnits } from '../utils/format';
-import { isPendingTokens, statuses } from '../utils/status';
+import { isPendingTokens, statuses, convertEVMSlateStatus } from '../utils/status';
 
 const Incumbent = styled.div`
   color: ${COLORS.primary};
@@ -75,15 +75,16 @@ interface IStakeDetailProps {
 }
 
 export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
+  const status = convertEVMSlateStatus(slate.status);
   // button: 'Stake Tokens' or 'View Ballot' or null
   const button =
-    slate.status === statuses.PENDING_TOKENS ? (
-      <RouterLink href={`/slates/stake?slateID=${slate.id}`} as="/slates/stake">
+    status === statuses.PENDING_TOKENS ? (
+      <RouterLink href={`/slates/stake?slateID=${slate.id}`} as={`/slates/stake/${slate.id}`}>
         <Button large type="default">
           {'Stake Tokens'}
         </Button>
       </RouterLink>
-    ) : slate.status === statuses.PENDING_VOTE ? (
+    ) : status === statuses.PENDING_VOTE ? (
       <RouterLink href="/ballots" as="/ballots">
         <Button large type="default">
           {'View Ballot'}
@@ -92,7 +93,7 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
     ) : null;
 
   const instructions =
-    slate.status === statuses.PENDING_TOKENS ? (
+    status === statuses.PENDING_TOKENS ? (
       <>
         <SectionLabel>{'STAKING REQUIREMENT'}</SectionLabel>
         <StakingRequirement>{formatPanvalaUnits(slate.requiredStake)}</StakingRequirement>
@@ -100,9 +101,10 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
     ) : null;
 
   const isStaked =
-    slate.status === statuses.PENDING_VOTE ||
-    slate.status === statuses.SLATE_ACCEPTED ||
-    slate.status === statuses.SLATE_REJECTED;
+    status === statuses.PENDING_VOTE ||
+    status === statuses.SLATE_ACCEPTED ||
+    status === statuses.SLATE_REJECTED;
+  console.log('slate:', slate);
 
   return (
     <>
@@ -121,7 +123,7 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
         <TokensSection>
           <SectionLabel lessMargin>{'CREATED BY'}</SectionLabel>
           <DarkText>{slate.owner}</DarkText>
-          <CardAddress>{splitAddressHumanReadable(slate.ownerAddress)}</CardAddress>
+          <CardAddress>{splitAddressHumanReadable(slate.recommenderAddress)}</CardAddress>
 
           {slate.verifiedRecommender ? (
             <>
@@ -146,11 +148,12 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
 };
 
 export const SlateHeader = ({ slate, currentBallot, asPath }: IStakeHeaderProps) => {
+  const status = convertEVMSlateStatus(slate.status);
   return (
     <>
       <div className="flex">
         <Tag status={''}>{slate.category.toUpperCase()}</Tag>
-        <Tag status={slate.status}>{slate.status}</Tag>
+        <Tag status={status}>{status}</Tag>
       </div>
       {slate.deadline && <Deadline ballot={currentBallot} route={asPath} />}
     </>
@@ -241,7 +244,7 @@ export const ProposalHeader = ({
       <>
         <div className="flex">
           <Tag status={''}>{slate.category.toUpperCase() + ' PROPOSAL'}</Tag>
-          {accepted && <Tag status={slate.status}>{slate.status}</Tag>}
+          {accepted && <Tag status={slate.status}>{convertEVMSlateStatus(slate.status)}</Tag>}
         </div>
         {slate.deadline && (
           <Deadline

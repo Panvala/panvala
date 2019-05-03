@@ -41,7 +41,6 @@ export default class MyDocument extends Document {
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <link rel="icon" href="/static/favicon.ico" />
           {this.props.styles}
-          <title>Panvala</title>
           <link rel="stylesheet" href="https://unpkg.com/tachyons@4/css/tachyons.min.css" />
         </Head>
         <body>

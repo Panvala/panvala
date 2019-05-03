@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import Head from 'next/head';
 
 import Header from './Header';
 
@@ -9,13 +10,12 @@ export const LayoutWrapper = styled.div`
   margin: 2em 10em;
 `;
 
-export default class Layout extends React.PureComponent {
-  render() {
-    return (
-      <LayoutWrapper>
-        <Header />
-        {this.props.children}
-      </LayoutWrapper>
-    );
-  }
-}
+export default ({ title, children }: any) => (
+  <LayoutWrapper>
+    <Head>
+      <title>{title}</title>
+    </Head>
+    <Header />
+    {children}
+  </LayoutWrapper>
+);

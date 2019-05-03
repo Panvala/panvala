@@ -57,13 +57,13 @@ export interface ISlate {
   deadline: number | false;
   title: string;
   owner: string;
-  ownerAddress: string;
   organization?: string;
   description: string;
   incumbent?: boolean;
   proposals: IProposal[];
   requiredStake: string;
   verifiedRecommender: boolean;
+  recommenderAddress: string;
   staker?: string;
 }
 
@@ -133,6 +133,8 @@ export interface IEthereumContext {
   contracts?: IContracts;
   panBalance: utils.BigNumber;
   gkAllowance: utils.BigNumber;
+  tcAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
   onConnectEthereum(): any;
+  onRefreshBalances(): any;
 }
