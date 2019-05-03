@@ -1,36 +1,30 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ProposalHeader, ProposalSidebar, ProposalDetail } from '../../pages/DetailedView';
+import Proposal, { ProposalHeader, ProposalSidebar } from '../../pages/proposals/proposal';
 import { ISlate, IProposal } from '../../interfaces';
-import { currentBallot, unstakedSlate, proposals, mockedRouter } from './data';
-import { statuses } from '../../utils/status';
+import { currentBallot, unstakedSlate, proposals } from './data';
+import { MainContext } from '../MainProvider';
 
 const proposal: IProposal = proposals[0];
 
 const acceptedSlate: ISlate = {
   ...unstakedSlate,
-  status: statuses.SLATE_ACCEPTED,
+  status: 3,
 };
 
 const rejectedSlate: ISlate = {
   ...unstakedSlate,
-  status: statuses.SLATE_REJECTED,
+  status: 2,
 };
 
 storiesOf('ProposalHeader', module)
   .add('not in a slate', () => (
-    <ProposalHeader
-      proposal={proposal}
-      includedInSlates={[]}
-      router={mockedRouter}
-      currentBallot={currentBallot}
-    />
+    <ProposalHeader proposal={proposal} includedInSlates={[]} currentBallot={currentBallot} />
   ))
   .add('accepted', () => (
     <ProposalHeader
       proposal={proposal}
       includedInSlates={[acceptedSlate]}
-      router={mockedRouter}
       currentBallot={currentBallot}
     />
   ))
@@ -38,7 +32,6 @@ storiesOf('ProposalHeader', module)
     <ProposalHeader
       proposal={proposal}
       includedInSlates={[rejectedSlate]}
-      router={mockedRouter}
       currentBallot={currentBallot}
     />
   ));
@@ -51,26 +44,35 @@ storiesOf('ProposalSidebar', module)
 
 storiesOf('Proposal', module)
   .add('not in a slate', () => (
-    <ProposalDetail
-      proposal={proposal}
-      includedInSlates={[]}
-      router={mockedRouter}
-      currentBallot={currentBallot}
-    />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [],
+        proposals: [proposal],
+      }}
+    >
+      <Proposal query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('accepted', () => (
-    <ProposalDetail
-      proposal={proposal}
-      includedInSlates={[acceptedSlate]}
-      router={mockedRouter}
-      currentBallot={currentBallot}
-    />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [acceptedSlate],
+        proposals: [proposal],
+      }}
+    >
+      <Proposal query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('not accepted', () => (
-    <ProposalDetail
-      proposal={proposal}
-      includedInSlates={[rejectedSlate]}
-      router={mockedRouter}
-      currentBallot={currentBallot}
-    />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [rejectedSlate],
+        proposals: [proposal],
+      }}
+    >
+      <Proposal query={{ id: '0' }} />
+    </MainContext.Provider>
   ));

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 
-import { SlateSidebar, SlateDetail, SlateHeader } from '../../pages/DetailedView';
+import Slate, { SlateSidebar, SlateHeader } from '../../pages/slates/slate';
 import { ISlate } from '../../interfaces';
-import { currentBallot, unstakedSlate, mockedRouter } from './data';
-import { statuses } from '../../utils/status';
+import { currentBallot, unstakedSlate } from './data';
+import { MainContext } from '../MainProvider';
 
 const unstakedIncumbent: ISlate = {
   ...unstakedSlate,
@@ -21,36 +21,32 @@ const noStaker = undefined;
 
 const stakedSlate: ISlate = {
   ...unstakedSlate,
-  status: statuses.PENDING_VOTE,
+  status: 1,
   staker,
 };
 
 const stakedVerified: ISlate = {
   ...unstakedSlate,
-  status: statuses.PENDING_VOTE,
+  status: 1,
   verifiedRecommender: true,
   staker,
 };
 
 const acceptedSlate: ISlate = {
   ...stakedSlate,
-  status: statuses.SLATE_ACCEPTED,
+  status: 3,
   staker,
 };
 
 const rejectedSlate: ISlate = {
   ...stakedSlate,
-  status: statuses.SLATE_REJECTED,
+  status: 2,
   staker,
 };
 
 storiesOf('SlateHeader', module)
-  .add('unstaked', () => (
-    <SlateHeader slate={unstakedSlate} router={mockedRouter} currentBallot={currentBallot} />
-  ))
-  .add('staked', () => (
-    <SlateHeader slate={stakedSlate} router={mockedRouter} currentBallot={currentBallot} />
-  ));
+  .add('unstaked', () => <SlateHeader slate={unstakedSlate} currentBallot={currentBallot} />)
+  .add('staked', () => <SlateHeader slate={stakedSlate} currentBallot={currentBallot} />);
 
 storiesOf('SlateSidebar', module)
   .add('unstaked', () => <SlateSidebar slate={unstakedSlate} />)
@@ -60,20 +56,62 @@ storiesOf('SlateSidebar', module)
 
 storiesOf('Slate', module)
   .add('unstaked', () => (
-    <SlateDetail slate={unstakedSlate} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [unstakedSlate],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('unstaked incumbent', () => (
-    <SlateDetail slate={unstakedIncumbent} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [unstakedIncumbent],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('staked unverified', () => (
-    <SlateDetail slate={stakedSlate} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [stakedSlate],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('staked verified', () => (
-    <SlateDetail slate={stakedVerified} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [stakedVerified],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('accepted', () => (
-    <SlateDetail slate={acceptedSlate} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [acceptedSlate],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ))
   .add('rejected', () => (
-    <SlateDetail slate={rejectedSlate} router={mockedRouter} currentBallot={currentBallot} />
+    <MainContext.Provider
+      value={{
+        currentBallot,
+        slates: [rejectedSlate],
+      }}
+    >
+      <Slate query={{ id: '0' }} />
+    </MainContext.Provider>
   ));

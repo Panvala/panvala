@@ -65,7 +65,7 @@ const Slates: React.FunctionComponent<Props> = props => {
         {slates && slates.length
           ? slates.map((slate: ISlate) => (
               <div key={slate.id}>
-                <RouterLink href={`/DetailedView?id=${slate.id}`} as={`/slates/${slate.id}`}>
+                <RouterLink href={`/slates/slate?id=${slate.id}`} as={`/slates/${slate.id}`}>
                   <Card
                     key={slate.id}
                     title={slate.title}

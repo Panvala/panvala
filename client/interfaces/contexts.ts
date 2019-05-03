@@ -53,7 +53,7 @@ export interface IProposalMetadata {
 export interface ISlate {
   id: number;
   category: string;
-  status: string;
+  status: number;
   deadline: number | false;
   title: string;
   owner: string;
@@ -124,8 +124,8 @@ export interface IMainContext {
   slates?: ISlate[];
   proposals?: IProposal[];
   currentBallot: IBallotDates;
-  onRefreshProposals(): any;
-  onRefreshSlates(): any;
+  onRefreshProposals?(): any;
+  onRefreshSlates?(): any;
 }
 export interface IEthereumContext {
   account?: string;

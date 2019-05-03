@@ -38,7 +38,7 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   // runs once, on first load
   // connect to metamask
   React.useEffect(() => {
-    if (!account) {
+    if (!account && onConnectEthereum) {
       onConnectEthereum();
     }
   }, []);

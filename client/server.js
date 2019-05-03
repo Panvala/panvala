@@ -44,9 +44,13 @@ app.prepare().then(() => {
   // ----------------------------------------------
 
   // pass the id param inside the request
-  server.get(['/slates/:id', '/proposals/:id'], (req, res) => {
+  server.get('/slates/:id', (req, res) => {
     const requestParams = setIdParamsByRequestQuery(req);
-    return app.render(req, res, '/DetailedView', requestParams);
+    return app.render(req, res, '/slates/slate', requestParams);
+  });
+  server.get('/proposals/:id', (req, res) => {
+    const requestParams = setIdParamsByRequestQuery(req);
+    return app.render(req, res, '/proposals/proposal', requestParams);
   });
   server.get('/withdraw/:id', (req, res) => {
     const requestParams = setIdParamsByRequestQuery(req);

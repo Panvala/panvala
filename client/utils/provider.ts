@@ -18,8 +18,10 @@ export async function connectContracts(provider: providers.Web3Provider): Promis
   const paramsAbi: any[] = ParameterStore.abi;
 
   // read addresses from env vars
-  const tcAddress: string = publicRuntimeConfig.tokenCapacitorAddress;
-  const gcAddress: string = publicRuntimeConfig.gatekeeperAddress;
+  const gcAddress: string =
+    publicRuntimeConfig.gatekeeperAddress || '0xFb1BB61Da19016A88c8b9f8d7f79c2A6A6fD3885';
+  const tcAddress: string =
+    publicRuntimeConfig.tokenCapacitorAddress || '0xC42F9084ee2C6a2295226cAf86111Ce71DFFC139';
 
   // init ethers contract abstractions
   const signer: Signer = provider.getSigner();

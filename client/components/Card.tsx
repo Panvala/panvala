@@ -146,7 +146,7 @@ const Card: React.FunctionComponent<ICardProps> = props => {
         <>
           <RouterLink
             newTab
-            href={`/DetailedView?id=${props.slateID}`}
+            href={`/slates/slate?id=${props.slateID}`}
             as={`/slates/${props.slateID}`}
           >
             <ViewSlateDetails>View slate details</ViewSlateDetails>

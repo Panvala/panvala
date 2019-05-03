@@ -28,6 +28,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
       if (typeof window !== 'undefined' && window.hasOwnProperty('ethereum')) {
         // this means metamask is installed. get the ethereum provider
         const { ethereum }: Window = window;
+        let account: string = this.state.account;
         let panBalance: utils.BigNumber = this.state.panBalance;
         let gkAllowance: utils.BigNumber = this.state.gkAllowance;
         let tcAllowance: utils.BigNumber = this.state.tcAllowance;
@@ -44,7 +45,6 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         if (!unlocked) {
           this.props.onHandleNotification({ action: 'Sign in with MetaMask' });
         }
-        let account: string | undefined;
 
         const enabled = await ethereum._metamask.isEnabled();
         if (!enabled) {
@@ -55,12 +55,11 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
           if (account) {
             toast.success('MetaMask successfully connected!');
           }
-        } else {
+        } else if (ethereum.selectedAddress) {
           account = utils.getAddress(ethereum.selectedAddress);
         }
-        console.log('account:', account);
 
-        if (contracts.token) {
+        if (account && contracts.token) {
           // get the token balance and gate_keeper allowance
           [
             panBalance,
@@ -69,18 +68,18 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
             votingRights,
             slateStakeAmount,
           ] = await this.getBalances(account, contracts);
-        }
 
-        this.setState({
-          account,
-          ethProvider,
-          contracts,
-          panBalance,
-          gkAllowance,
-          tcAllowance,
-          votingRights,
-          slateStakeAmount,
-        });
+          this.setState({
+            account,
+            ethProvider,
+            contracts,
+            panBalance,
+            gkAllowance,
+            tcAllowance,
+            votingRights,
+            slateStakeAmount,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -100,7 +99,7 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
       contracts.token.functions.allowance(account, contracts.gateKeeper.address),
       contracts.token.functions.allowance(account, contracts.tokenCapacitor.address),
       contracts.gateKeeper.functions.voteTokenBalance(account),
-      contracts.parameterStore.functions.get('slateStakeAmount'),
+      contracts.parameterStore.functions.get('slateStakeAmount'), // TODO: move to /stake route
     ]);
     return [panBalance, gkAllowance, tcAllowance, votingRights, slateStakeAmount];
   };

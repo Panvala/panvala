@@ -39,7 +39,7 @@ const Proposals: React.SFC<any> = () => {
           ? proposals.map((proposal: any) => (
               <div key={proposal.id}>
                 <RouterLink
-                  href={`/DetailedView?id=${proposal.id}`}
+                  href={`/proposals/proposal?id=${proposal.id}`}
                   as={`/proposals/${proposal.id}`}
                 >
                   <Card
