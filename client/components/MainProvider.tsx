@@ -27,8 +27,6 @@ export default class MainProvider extends React.PureComponent {
       votingCloseDate: 0,
       finalityDate: 0,
     },
-    onRefreshProposals: () => this.handleRefreshProposals(),
-    onRefreshSlates: () => this.handleRefreshSlates(),
   };
 
   async componentDidMount() {
@@ -108,6 +106,16 @@ export default class MainProvider extends React.PureComponent {
 
   render() {
     const { children } = this.props;
-    return <MainContext.Provider value={this.state}>{children}</MainContext.Provider>;
+    return (
+      <MainContext.Provider
+        value={{
+          ...this.state,
+          onRefreshProposals: this.handleRefreshProposals,
+          onRefreshSlates: this.handleRefreshSlates,
+        }}
+      >
+        {children}
+      </MainContext.Provider>
+    );
   }
 }

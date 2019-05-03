@@ -109,30 +109,32 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
     const tokenAmounts: string[] = metadata.map(p => convertedToBaseUnits(p.tokensRequested, 18));
     console.log('tokenAmounts:', tokenAmounts);
 
-    return contracts.tokenCapacitor.functions
-      .createManyProposals(beneficiaries, tokenAmounts, proposalMultihashes)
-      .then((response: TransactionResponse) => {
-        return ethProvider.waitForTransaction(response.hash);
-      })
-      .then((receipt: TransactionReceipt) => {
-        if (receipt.logs && contracts && contracts.tokenCapacitor) {
-          // console.log('Transaction Mined: ' + receipt);
-          // console.log('logs:', receipt.logs);
+    if (contracts && ethProvider) {
+      return contracts.tokenCapacitor.functions
+        .createManyProposals(beneficiaries, tokenAmounts, proposalMultihashes)
+        .then((response: TransactionResponse) => {
+          return ethProvider.waitForTransaction(response.hash);
+        })
+        .then((receipt: TransactionReceipt) => {
+          if (receipt.logs && contracts && contracts.tokenCapacitor) {
+            // console.log('Transaction Mined: ' + receipt);
+            // console.log('logs:', receipt.logs);
 
-          // Get the ProposalCreated logs from the receipt
-          const decoded: LogDescription[] = receipt.logs
-            .map(log => {
-              return contracts.tokenCapacitor.interface.parseLog(log);
-            })
-            .filter(d => d !== null)
-            .filter(d => d.name == 'ProposalCreated');
+            // Get the ProposalCreated logs from the receipt
+            const decoded: LogDescription[] = receipt.logs
+              .map(log => {
+                return contracts.tokenCapacitor.interface.parseLog(log);
+              })
+              .filter(d => d !== null)
+              .filter(d => d.name == 'ProposalCreated');
 
-          // Extract the requestIDs
-          const requestIDs = decoded.map(d => d.values.requestID);
+            // Extract the requestIDs
+            const requestIDs = decoded.map(d => d.values.requestID);
 
-          return requestIDs;
-        }
-      });
+            return requestIDs;
+          }
+        });
+    }
   }
 
   /**
@@ -145,31 +147,33 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
     const epochNumber = 1;
     const category = 0; // Grant
 
-    return contracts.gateKeeper.functions
-      .recommendSlate(epochNumber, category, requestIDs, Buffer.from(metadataHash))
-      .then((response: TransactionResponse) => {
-        return ethProvider.waitForTransaction(response.hash);
-      })
-      .then((receipt: TransactionReceipt) => {
-        if (receipt.logs) {
-          // console.log('Transaction Mined: ' + receipt);
-          // console.log('logs:', receipt.logs);
+    if (contracts && ethProvider) {
+      return contracts.gateKeeper.functions
+        .recommendSlate(epochNumber, category, requestIDs, Buffer.from(metadataHash))
+        .then((response: TransactionResponse) => {
+          return ethProvider.waitForTransaction(response.hash);
+        })
+        .then((receipt: TransactionReceipt) => {
+          if (receipt.logs) {
+            // console.log('Transaction Mined: ' + receipt);
+            // console.log('logs:', receipt.logs);
 
-          // Get the SlateCreated logs from the receipt
-          const decoded: LogDescription[] = receipt.logs
-            .map(log => {
-              return contracts.gateKeeper.interface.parseLog(log);
-            })
-            .filter(d => d !== null)
-            .filter(d => d.name == 'SlateCreated');
+            // Get the SlateCreated logs from the receipt
+            const decoded: LogDescription[] = receipt.logs
+              .map(log => {
+                return contracts.gateKeeper.interface.parseLog(log);
+              })
+              .filter(d => d !== null)
+              .filter(d => d.name == 'SlateCreated');
 
-          // Extract the slateID
-          const slateID: string = decoded[0].values.slateID.toString();
-          const slate: any = { slateID, metadataHash };
-          console.log('Created slate', slate);
-          return slate;
-        }
-      });
+            // Extract the slateID
+            const slateID: string = decoded[0].values.slateID.toString();
+            const slate: any = { slateID, metadataHash };
+            console.log('Created slate', slate);
+            return slate;
+          }
+        });
+    }
   }
 
   /**
@@ -186,7 +190,7 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
    * @param selectedProposals
    */
   async function handleSubmitSlate(values: IFormValues, selectedProposals: IProposal[]) {
-    if (!account) {
+    if (!account || !onRefreshSlates) {
       const msg =
         'To create a slate, you must first log into MetaMask and switch to the Rinkeby Test Network.';
       toast.error(msg);
@@ -333,8 +337,8 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
             organization: '',
             title: '',
             description: '',
-            recommendation: query.selectedProposal ? 'grant' : '',
-            proposals: query.selectedProposal ? { [query.selectedProposal]: true } : {},
+            recommendation: query && query.id ? 'grant' : '',
+            proposals: query && query.id ? { [query.id.toString()]: true } : {},
             selectedProposals: [],
           }}
           validationSchema={FormSchema}

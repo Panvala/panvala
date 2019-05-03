@@ -27,14 +27,18 @@ app.prepare().then(() => {
   // ----------------------------------------------
 
   server.get('/slates/create', (req, res) => {
-    // proposal id (if coming from 'Add To Slate')
+    // NOTE: in order to do this, change the RouterLink asPath to `/slates/create/${proposal.id}`
+    // proposal id (if refreshing after coming from 'Add To Slate')
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/slates/create', requestParams);
   });
   server.get('/proposals/create', (req, res) => app.render(req, res, '/proposals/create'));
 
-  server.get('/slates/stake', (req, res) => {
-    // slate id
+  // ----------------------------------------------
+  // SLATE STAKING
+  // ----------------------------------------------
+
+  server.get('/slates/stake/:id', (req, res) => {
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/slates/stake', requestParams);
   });

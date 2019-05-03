@@ -98,7 +98,7 @@ export const ProposalSidebar = ({ proposal, includedInSlates }: IProposalSidebar
       </Button>
     </RouterLink>
   ) : (
-    <RouterLink href={`/slates/create?selectedProposal=${proposal.id}`} as={`/slates/create`}>
+    <RouterLink href={`/slates/create?id=${proposal.id}`} as={`/slates/create`}>
       <Button large type="default">
         {'Add to a New Slate'}
       </Button>
@@ -151,10 +151,10 @@ interface IProps {
 
 const Proposal: StatelessPage<IProps> = ({ query: { id } }) => {
   const { proposals, slates, currentBallot }: IMainContext = React.useContext(MainContext);
-
+  // parse the proposal id from query
   const proposalID: number = parseInt(id);
-
-  let proposal: IProposal | undefined = (proposals as IProposal[]).find(
+  // find proposal
+  const proposal: IProposal | undefined = (proposals as IProposal[]).find(
     (proposal: IProposal) => proposal.id === proposalID
   );
 
@@ -162,21 +162,23 @@ const Proposal: StatelessPage<IProps> = ({ query: { id } }) => {
     return <div>Loading...</div>;
   }
 
+  // check if proposal is included in any slates
   let includedInSlates: ISlate[] = [];
   if (slates) {
     includedInSlates = slates.filter(
       slate => slate.proposals.filter(p => p.id === proposal.id).length > 0
     );
   }
+
   return (
-    <div className="flex flex-column">
-      <div className="flex justify-between">
+    <FlexColumn>
+      <HeaderWrapper>
         <ProposalHeader
           proposal={proposal}
           includedInSlates={includedInSlates}
           currentBallot={currentBallot}
         />
-      </div>
+      </HeaderWrapper>
       <RouteTitle>{proposal.title}</RouteTitle>
 
       <Container>
@@ -192,9 +194,18 @@ const Proposal: StatelessPage<IProps> = ({ query: { id } }) => {
           <DarkText>{proposal.teamBackgrounds}</DarkText>
         </MainColumn>
       </Container>
-    </div>
+    </FlexColumn>
   );
 };
+
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 Proposal.getInitialProps = async ({ query }) => {
   return {

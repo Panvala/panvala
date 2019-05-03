@@ -160,9 +160,9 @@ interface IProps {
 
 const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
-
+  // parse the slate id from query
   const slateID: number = parseInt(id);
-
+  // find slate
   let slate: ISlate | undefined = (slates as ISlate[]).find(
     (slate: ISlate) => slate.id === slateID
   );
@@ -170,14 +170,15 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
   if (!slate) {
     return <div>Loading...</div>;
   } else {
+    // TODO: get from parameterStore contract
     slate.requiredStake = '500000000000000000000';
   }
-  // return <SlateDetail slate={slate} currentBallot={currentBallot} asPath={asPath} />;
+
   return (
-    <div className="flex flex-column">
-      <div className="flex justify-between">
+    <FlexColumn>
+      <HeaderWrapper>
         <SlateHeader slate={slate} currentBallot={currentBallot} />
-      </div>
+      </HeaderWrapper>
       {slate.incumbent && <Incumbent>INCUMBENT</Incumbent>}
       <RouteTitle>{slate.title}</RouteTitle>
 
@@ -213,9 +214,18 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
           ) : null}
         </MainColumn>
       </Container>
-    </div>
+    </FlexColumn>
   );
 };
+
+const FlexColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const HeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 Slate.getInitialProps = async ({ query }) => {
   return {
