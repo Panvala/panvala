@@ -140,12 +140,12 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
 };
 
 export const SlateHeader = ({ slate, currentBallot }: IStakeHeaderProps) => {
-  const status = parseInt(convertEVMSlateStatus(slate.status));
+  const status = convertEVMSlateStatus(slate.status);
   return (
     <>
       <div className="flex">
         <Tag status={''}>{slate.category.toUpperCase()}</Tag>
-        <Tag status={convertEVMSlateStatus(status)}>{convertEVMSlateStatus(status)}</Tag>
+        <Tag status={status}>{status}</Tag>
       </div>
       {slate.deadline && <Deadline ballot={currentBallot} route={'/slates'} />}
     </>

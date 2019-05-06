@@ -37,10 +37,6 @@ const StyledTag = styled.div`
   height: 1.5rem;
   border: 1px solid transparent;
   padding: 0 0.5rem;
-  /* &:focus {
-    box-shadow: 0px 3px 10px rgba(83, 172, 217, 0.16);
-    outline: none;
-  } */
 `;
 
 const Tag: React.FunctionComponent<ITag> = props => {
