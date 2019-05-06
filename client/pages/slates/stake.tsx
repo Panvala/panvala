@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
+import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import Actions from '../../components/Actions';
 import Button from '../../components/Button';
@@ -17,6 +19,7 @@ import { IEthereumContext, StatelessPage } from '../../interfaces';
 import Stepper, { StepperDialog } from '../../components/Stepper';
 import StepperMetamaskDialog from '../../components/StepperMetamaskDialog';
 import { sendAndWaitForTransaction } from '../../utils/transaction';
+import { COLORS } from '../../styles';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -41,7 +44,7 @@ const BlackSeparator = styled.div`
   border-bottom: 3px solid #606060;
 `;
 
-const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
+const Stake: StatelessPage<any> = ({ query: { slateID }, classes }) => {
   // modal opener
   const [modalIsOpen, toggleOpenModal] = React.useState(false);
   const [txPending, setTxPending] = React.useState(false);
@@ -80,14 +83,16 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
   ];
 
   // check if the user has approved the gatekeeper for the slate staking requirement
-  const initialApproved: boolean = gkAllowance.gt(slateStakeAmount);
+  const initialApproved: boolean = gkAllowance.gte(slateStakeAmount);
   const [approved, setApproved] = React.useState(initialApproved);
 
   // if approved, current step is to stake
   const currentStep = approved ? 1 : 0;
   // otherwise, display both approve and stake steps
-  steps = approved ? [steps[1]] : steps;
+  steps = initialApproved ? [steps[1]] : steps;
 
+  // TODO: separate into 2 function calls
+  // -> return if !approved
   async function approveOrStakeTokens() {
     if (!account) {
       return false;
@@ -114,14 +119,14 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
     }
 
     // step 2: stakeTokens
-    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(slateID));
     // tx pending
     setTxPending(true);
+    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(slateID));
     // change from stepper -> modal
     toggleOpenStepper(false);
     toggleOpenModal(true);
 
-    const txReceipt = await ethProvider.waitForTransaction(txResponse.hash);
+    await ethProvider.waitForTransaction(txResponse.hash);
     // tx mined
     setTxPending(false);
     toast.success(`stakeTokens tx mined.`);
@@ -154,10 +159,9 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
             <ModalTitle>{'Transaction Processing'}</ModalTitle>
             <ModalDescription className="flex flex-wrap">
               Please wait a few moments while MetaMask processes your transaction. This will only
-              take a moment.
+              take a few moments.
             </ModalDescription>
-            <div>loading</div>
-            {/* TODO: loader component */}
+            <CircularProgress className={classes.progress} />
           </>
         ) : (
           <>
@@ -213,4 +217,10 @@ Stake.getInitialProps = async ({ query }) => {
   return { query };
 };
 
-export default Stake;
+const styles = theme => ({
+  progress: {
+    margin: theme.spacing.unit * 2,
+    color: COLORS.primary,
+  },
+});
+export default withStyles(styles)(Stake);
