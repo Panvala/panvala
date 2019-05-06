@@ -44,6 +44,7 @@ const BlackSeparator = styled.div`
 const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
   // modal opener
   const [modalIsOpen, toggleOpenModal] = React.useState(false);
+  const [txPending, setTxPending] = React.useState(false);
   const [stepperIsOpen, toggleOpenStepper] = React.useState(false);
   const {
     account,
@@ -78,9 +79,14 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
     </StepperDialog>,
   ];
 
-  // if gatekeeper allowance is less that the staking requirement, send approve tx first
-  steps = gkAllowance.lt(slateStakeAmount) ? steps : [steps[1]];
-  const [stepNumber, setStepNumber] = React.useState(1);
+  // check if the user has approved the gatekeeper for the slate staking requirement
+  const initialApproved: boolean = gkAllowance.gt(slateStakeAmount);
+  const [approved, setApproved] = React.useState(initialApproved);
+
+  // if approved, current step is to stake
+  const currentStep = approved ? 1 : 0;
+  // otherwise, display both approve and stake steps
+  steps = approved ? [steps[1]] : steps;
 
   async function approveOrStakeTokens() {
     if (!account) {
@@ -89,10 +95,13 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
 
     // TODO: handle errors gracefully
 
+    // if gatekeeper allowance is less that the staking requirement, send approve tx first
     // step 1: approve
-    if (gkAllowance.lt(slateStakeAmount)) {
+    if (!approved) {
       // TODO: customize numTokens
       const numTokens = panBalance;
+
+      // TODO: should this transaction also display a 'pending transaction modal'?
 
       await sendAndWaitForTransaction(ethProvider, contracts.token, 'approve', [
         contracts.gateKeeper.address,
@@ -101,48 +110,68 @@ const Stake: StatelessPage<any> = ({ query: { slateID } }) => {
       toast.success('approve tx mined');
       // refresh balances, increment the step, exit out of function
       onRefreshBalances();
-      return setStepNumber(2);
+      return setApproved(true);
     }
 
     // step 2: stakeTokens
-    await sendAndWaitForTransaction(ethProvider, contracts.gateKeeper, 'stakeTokens', [
-      parseInt(slateID),
-    ]);
+    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(slateID));
+    // tx pending
+    setTxPending(true);
+    // change from stepper -> modal
+    toggleOpenStepper(false);
+    toggleOpenModal(true);
+
+    const txReceipt = await ethProvider.waitForTransaction(txResponse.hash);
+    // tx mined
+    setTxPending(false);
     toast.success(`stakeTokens tx mined.`);
+
     // refresh balances, refresh slates, change -> Success Modal
     onRefreshBalances();
     onRefreshSlates();
-    toggleOpenModal(true);
-    return toggleOpenStepper(false);
   }
 
   return (
     <>
       <Stepper
         isOpen={stepperIsOpen}
-        step={stepNumber}
+        step={currentStep}
         steps={steps}
         handleCancel={() => toggleOpenStepper(false)}
       >
-        {steps[stepNumber - 1]}
+        {steps[currentStep]}
         <StepperMetamaskDialog />
-        <Image src="/static/signature-request-tip.svg" alt="signature request tip" wide />
         <MetamaskButton
           handleClick={approveOrStakeTokens}
-          text={gkAllowance.lt(slateStakeAmount) ? 'Approve 500 PAN' : 'Stake Tokens'}
+          text={approved ? 'Stake Tokens' : 'Approve 500 PAN'}
         />
       </Stepper>
 
       <Modal handleClick={() => toggleOpenModal(false)} isOpen={modalIsOpen}>
-        <Image src="/static/check.svg" alt="tokens staked" />
-        <ModalTitle>{'Tokens staked.'}</ModalTitle>
-        <ModalDescription className="flex flex-wrap">
-          Now that you have staked tokens on this slate the Panvala token holding community will
-          have the ability to vote for or against the slate when the voting period begins.
-        </ModalDescription>
-        <Button type="default" onClick={() => toggleOpenModal(false)}>
-          {'Done'}
-        </Button>
+        {txPending ? (
+          <>
+            <Image src="/static/metamask-fox.svg" alt="metamask logo" />
+            <ModalTitle>{'Transaction Processing'}</ModalTitle>
+            <ModalDescription className="flex flex-wrap">
+              Please wait a few moments while MetaMask processes your transaction. This will only
+              take a moment.
+            </ModalDescription>
+            <div>loading</div>
+            {/* TODO: loader component */}
+          </>
+        ) : (
+          <>
+            <Image src="/static/check.svg" alt="tokens staked" />
+            <ModalTitle>{'Tokens staked.'}</ModalTitle>
+            <ModalDescription className="flex flex-wrap">
+              Now that you have staked tokens on this slate the Panvala token holding community will
+              have the ability to vote for or against the slate when the voting period begins.
+            </ModalDescription>
+            <Button type="default" onClick={() => toggleOpenModal(false)}>
+              {'Done'}
+            </Button>
+          </>
+        )}
       </Modal>
 
       <Wrapper>
