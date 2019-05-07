@@ -12,29 +12,26 @@ export const statuses = {
   SLATE_REJECTED: 'REJECTED',
 };
 
-export const SlateStatus = {
-  Unstaked: '0',
-  Staked: '1',
-  Rejected: '2',
-  Accepted: '3',
-};
+export enum SlateStatus {
+  Unstaked = 0,
+  Staked = 1,
+  Rejected = 2,
+  Accepted = 3,
+}
 
-export function convertEVMSlateStatus(status: number) {
-  // TODO: caller should handle this
-  if (typeof status === 'undefined') {
-    return statuses.PENDING_TOKENS;
+export function convertEVMSlateStatus(status: number): string | undefined {
+  switch (status) {
+    case SlateStatus.Unstaked:
+      return statuses.PENDING_TOKENS;
+    case SlateStatus.Staked:
+      return statuses.PENDING_VOTE;
+    case SlateStatus.Rejected:
+      return statuses.SLATE_REJECTED;
+    case SlateStatus.Accepted:
+      return statuses.SLATE_ACCEPTED;
   }
 
-  const s = status.toString();
-  if (s === SlateStatus.Unstaked) {
-    return statuses.PENDING_TOKENS;
-  } else if (s === SlateStatus.Staked) {
-    return statuses.PENDING_VOTE;
-  } else if (s === SlateStatus.Rejected) {
-    return statuses.SLATE_REJECTED;
-  }
-
-  return statuses.SLATE_ACCEPTED;
+  return undefined;
 }
 
 export function isPendingTokens(status: string) {

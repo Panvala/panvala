@@ -44,7 +44,7 @@ const BlackSeparator = styled.div`
   border-bottom: 3px solid #606060;
 `;
 
-const Stake: StatelessPage<any> = ({ query: { slateID }, classes }) => {
+const Stake: StatelessPage<any> = ({ query, classes }) => {
   // modal opener
   const [modalIsOpen, toggleOpenModal] = React.useState(false);
   const [txPending, setTxPending] = React.useState(false);
@@ -121,7 +121,7 @@ const Stake: StatelessPage<any> = ({ query: { slateID }, classes }) => {
     // step 2: stakeTokens
     // tx pending
     setTxPending(true);
-    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(slateID));
+    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(query.id));
     // change from stepper -> modal
     toggleOpenStepper(false);
     toggleOpenModal(true);

@@ -4,7 +4,7 @@ import { COLORS } from '../../styles';
 import Button from '../../components/Button';
 import { MainContext } from '../../components/MainProvider';
 import RouterLink from '../../components/RouterLink';
-import { convertEVMSlateStatus, isPendingTokens } from '../../utils/status';
+import { convertEVMSlateStatus, isPendingTokens, SlateStatus } from '../../utils/status';
 import { StatelessPage, IMainContext, ISlate, IBallotDates, IProposal } from '../../interfaces';
 import SectionLabel from '../../components/SectionLabel';
 import Tag from '../../components/Tag';
@@ -64,7 +64,7 @@ export const ProposalHeader = ({
     {
       /* this should be proposal.status */
     }
-    const accepted = slate.status === 3;
+    const accepted = slate.status === SlateStatus.Accepted;
 
     return (
       <>

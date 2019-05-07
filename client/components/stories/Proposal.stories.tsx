@@ -4,17 +4,18 @@ import Proposal, { ProposalHeader, ProposalSidebar } from '../../pages/proposals
 import { ISlate, IProposal } from '../../interfaces';
 import { currentBallot, unstakedSlate, proposals } from './data';
 import { MainContext } from '../MainProvider';
+import { SlateStatus } from '../../utils/status';
 
 const proposal: IProposal = proposals[0];
 
 const acceptedSlate: ISlate = {
   ...unstakedSlate,
-  status: 3,
+  status: SlateStatus.Accepted,
 };
 
 const rejectedSlate: ISlate = {
   ...unstakedSlate,
-  status: 2,
+  status: SlateStatus.Rejected,
 };
 
 storiesOf('ProposalHeader', module)

@@ -61,7 +61,7 @@ export interface ISlate {
   description: string;
   incumbent?: boolean;
   proposals: IProposal[];
-  requiredStake: string;
+  requiredStake: utils.BigNumberish;
   verifiedRecommender: boolean;
   recommenderAddress: string;
   staker?: string;
@@ -135,7 +135,7 @@ export interface IEthereumContext {
   gkAllowance: utils.BigNumber;
   tcAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
-  slateStakeAmount: utils.BigNumber;
+  slateStakeAmount: utils.BigNumberish;
   onConnectEthereum(): any;
   onRefreshBalances(): any;
 }

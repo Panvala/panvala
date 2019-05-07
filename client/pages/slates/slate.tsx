@@ -1,17 +1,26 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { BigNumberish } from 'ethers/utils';
 import { COLORS } from '../../styles';
 import Button from '../../components/Button';
+import Card, { CardAddress } from '../../components/Card';
+import Deadline from '../../components/Deadline';
+import { EthereumContext } from '../../components/EthereumProvider';
 import { MainContext } from '../../components/MainProvider';
 import RouterLink from '../../components/RouterLink';
-import { convertEVMSlateStatus, statuses } from '../../utils/status';
-import { StatelessPage, IMainContext, ISlate, IBallotDates, IProposal } from '../../interfaces';
-import SectionLabel from '../../components/SectionLabel';
-import { formatPanvalaUnits, splitAddressHumanReadable } from '../../utils/format';
-import Card, { CardAddress } from '../../components/Card';
-import Tag from '../../components/Tag';
-import Deadline from '../../components/Deadline';
 import RouteTitle from '../../components/RouteTitle';
+import SectionLabel from '../../components/SectionLabel';
+import Tag from '../../components/Tag';
+import { splitAddressHumanReadable, formatPanvalaUnits } from '../../utils/format';
+import {
+  StatelessPage,
+  IMainContext,
+  ISlate,
+  IBallotDates,
+  IProposal,
+  IEthereumContext,
+} from '../../interfaces';
+import { convertEVMSlateStatus, statuses } from '../../utils/status';
 
 const Incumbent = styled.div`
   color: ${COLORS.primary};
@@ -60,18 +69,19 @@ const SlateProposals = styled.div`
 
 interface IStakeSidebarProps {
   slate: ISlate;
+  requiredStake: BigNumberish;
 }
 interface IStakeHeaderProps {
   slate: ISlate;
   currentBallot: IBallotDates;
 }
 
-export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
+export const SlateSidebar = ({ slate, requiredStake }: IStakeSidebarProps): any => {
   const status = convertEVMSlateStatus(slate.status);
   // button: 'Stake Tokens' or 'View Ballot' or null
   const button =
     status === statuses.PENDING_TOKENS ? (
-      <RouterLink href={`/slates/stake?slateID=${slate.id}`} as={`/slates/stake/${slate.id}`}>
+      <RouterLink href={`/slates/stake?id=${slate.id}`} as={`/slates/stake/${slate.id}`}>
         <Button large type="default">
           {'Stake Tokens'}
         </Button>
@@ -88,7 +98,7 @@ export const SlateSidebar = ({ slate }: IStakeSidebarProps): any => {
     status === statuses.PENDING_TOKENS ? (
       <>
         <SectionLabel>{'STAKING REQUIREMENT'}</SectionLabel>
-        <StakingRequirement>{formatPanvalaUnits(slate.requiredStake)}</StakingRequirement>
+        <StakingRequirement>{formatPanvalaUnits(requiredStake)}</StakingRequirement>
       </>
     ) : null;
 
@@ -160,6 +170,7 @@ interface IProps {
 
 const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
+  const { slateStakeAmount }: IEthereumContext = React.useContext(EthereumContext);
   // parse the slate id from query
   const slateID: number = parseInt(id);
   // find slate
@@ -169,9 +180,6 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
 
   if (!slate) {
     return <div>Loading...</div>;
-  } else {
-    // TODO: get from parameterStore contract
-    slate.requiredStake = '500000000000000000000';
   }
 
   return (
@@ -184,7 +192,7 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
 
       <Container>
         <MetaColumn>
-          <SlateSidebar slate={slate} />
+          <SlateSidebar slate={slate} requiredStake={slateStakeAmount} />
         </MetaColumn>
         <MainColumn>
           <SectionLabel>DESCRIPTION</SectionLabel>

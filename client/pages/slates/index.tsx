@@ -86,10 +86,4 @@ const Slates: React.FunctionComponent<Props> = props => {
   );
 };
 
-// Slates.getInitialProps = async () => {
-//   const ss = await getAllSlates();
-//   console.log('ss', ss);
-//   return { slatess: ss };
-// };
-
 export default Slates;

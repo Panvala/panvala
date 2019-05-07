@@ -5,6 +5,9 @@ import Slate, { SlateSidebar, SlateHeader } from '../../pages/slates/slate';
 import { ISlate } from '../../interfaces';
 import { currentBallot, unstakedSlate } from './data';
 import { MainContext } from '../MainProvider';
+import { SlateStatus } from '../../utils/status';
+import { convertedToBaseUnits } from '../../utils/format';
+import EthereumProvider from '../EthereumProvider';
 
 const unstakedIncumbent: ISlate = {
   ...unstakedSlate,
@@ -17,7 +20,6 @@ const unstakedVerified: ISlate = {
 };
 
 const staker = '0xd115bffabbdd893a6f7cea402e7338643ced44a6';
-const noStaker = undefined;
 
 const stakedSlate: ISlate = {
   ...unstakedSlate,
@@ -27,34 +29,40 @@ const stakedSlate: ISlate = {
 
 const stakedVerified: ISlate = {
   ...unstakedSlate,
-  status: 1,
+  status: SlateStatus.Staked,
   verifiedRecommender: true,
   staker,
 };
 
 const acceptedSlate: ISlate = {
   ...stakedSlate,
-  status: 3,
+  status: SlateStatus.Accepted,
   staker,
 };
 
 const rejectedSlate: ISlate = {
   ...stakedSlate,
-  status: 2,
+  status: SlateStatus.Rejected,
   staker,
 };
+
+const requiredStake = convertedToBaseUnits('5000', 18);
 
 storiesOf('SlateHeader', module)
   .add('unstaked', () => <SlateHeader slate={unstakedSlate} currentBallot={currentBallot} />)
   .add('staked', () => <SlateHeader slate={stakedSlate} currentBallot={currentBallot} />);
 
 storiesOf('SlateSidebar', module)
-  .add('unstaked', () => <SlateSidebar slate={unstakedSlate} />)
-  .add('unstaked verified', () => <SlateSidebar slate={unstakedVerified} />)
-  .add('staked', () => <SlateSidebar slate={stakedSlate} />)
-  .add('staked verified', () => <SlateSidebar slate={stakedVerified} />);
+  .add('unstaked', () => <SlateSidebar slate={unstakedSlate} requiredStake={requiredStake} />)
+  .add('unstaked verified', () => (
+    <SlateSidebar slate={unstakedVerified} requiredStake={requiredStake} />
+  ))
+  .add('staked', () => <SlateSidebar slate={stakedSlate} requiredStake={requiredStake} />)
+  .add('staked verified', () => (
+    <SlateSidebar slate={stakedVerified} requiredStake={requiredStake} />
+  ));
 
-storiesOf('Slate', module)
+storiesOf('Slate with contexts', module)
   .add('unstaked', () => (
     <MainContext.Provider
       value={{
@@ -62,7 +70,9 @@ storiesOf('Slate', module)
         slates: [unstakedSlate],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ))
   .add('unstaked incumbent', () => (
@@ -72,7 +82,9 @@ storiesOf('Slate', module)
         slates: [unstakedIncumbent],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ))
   .add('staked unverified', () => (
@@ -82,7 +94,9 @@ storiesOf('Slate', module)
         slates: [stakedSlate],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ))
   .add('staked verified', () => (
@@ -92,7 +106,9 @@ storiesOf('Slate', module)
         slates: [stakedVerified],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ))
   .add('accepted', () => (
@@ -102,7 +118,9 @@ storiesOf('Slate', module)
         slates: [acceptedSlate],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ))
   .add('rejected', () => (
@@ -112,6 +130,8 @@ storiesOf('Slate', module)
         slates: [rejectedSlate],
       }}
     >
-      <Slate query={{ id: '0' }} />
+      <EthereumProvider>
+        <Slate query={{ id: '0' }} />
+      </EthereumProvider>
     </MainContext.Provider>
   ));

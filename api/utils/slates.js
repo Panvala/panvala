@@ -46,7 +46,6 @@ async function getAllSlates() {
         // console.log('decoded hash', decoded);
         return {
           slateID,
-          metadataHash,
           status,
           decoded,
           recommenderAddress: recommender,
@@ -98,12 +97,6 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake) {
     } = slateMetadata;
     console.log('proposalMultihashes:', proposalMultihashes);
 
-    // --------------------------
-    // CONTRACTS CALLS
-    // --------------------------
-    // get the slate's current status & the account that recommended this slate:
-    const slateStatus = slate.status;
-
     // TODO: rehydrate proposals
 
     // TODO: get real data
@@ -118,7 +111,7 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake) {
       id: slate.slateID, // should we call this slateID instead of id? we're already using slateID as the primary key in the slates table
       metadataHash,
       category: 'GRANT',
-      status: slateStatus,
+      status: slate.status,
       deadline,
       title,
       description,

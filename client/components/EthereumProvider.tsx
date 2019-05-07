@@ -28,7 +28,6 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
       if (typeof window !== 'undefined' && window.hasOwnProperty('ethereum')) {
         // this means metamask is installed. get the ethereum provider
         const { ethereum }: Window = window;
-        let account: string = this.state.account;
         let panBalance: utils.BigNumber = this.state.panBalance;
         let gkAllowance: utils.BigNumber = this.state.gkAllowance;
         let tcAllowance: utils.BigNumber = this.state.tcAllowance;
@@ -49,14 +48,15 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
         const enabled = await ethereum._metamask.isEnabled();
         if (!enabled) {
           // pop-up metamask to authorize panvala-app (account signature validation)
-          const addresses: string[] = await ethereum.enable();
-          // first account
-          account = utils.getAddress(addresses[0]);
-          if (account) {
-            toast.success('MetaMask successfully connected!');
-          }
-        } else if (ethereum.selectedAddress) {
-          account = utils.getAddress(ethereum.selectedAddress);
+          await ethereum.enable();
+        }
+
+        const addresses = await ethProvider.listAccounts();
+        // always the selected / first account
+        const account = utils.getAddress(addresses[0]);
+
+        if (account) {
+          toast.success('MetaMask successfully connected!');
         }
 
         if (account && contracts.token) {

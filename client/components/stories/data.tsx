@@ -1,17 +1,14 @@
 import Router from 'next/router';
-import { ballotDates, statuses } from '../../utils/status';
+import { utils } from 'ethers';
+import { ballotDates } from '../../utils/status';
 import { ISlate, IProposal } from '../../interfaces';
 import '../../globalStyles.css';
 
 // https://github.com/zeit/next.js/issues/1827#issuecomment-323314141
-export const mockedRouter = {
+(Router as any).router = {
   push: () => {},
   prefetch: () => {},
-  route: '/slates/slate?id=0',
-  query: '?slateID=0',
-  asPath: '/slates/0',
 };
-(Router as any).router = mockedRouter;
 
 export const epochStartDate = 1549040401;
 export const currentBallot = ballotDates(15499990);
@@ -43,6 +40,6 @@ export const unstakedSlate: ISlate = {
   description:
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer eu nibh molestie, auctor ligula a, faucibus ante. Morbi dapibus enim in vulputate congue. Mauris feugiat gravida nibh, sed pellentesque eros pellentesque eu. Sed rutrum vitae magna sed aliquet. Suspendisse facilisis vulputate lobortis. Vestibulum sed dolor eu mi molestie pharetra. Duis ut diam aliquam, molestie erat non, scelerisque ligula. Curabitur accumsan ipsum pellentesque posuere ornare. Sed vulputate cursus accumsan. Morbi efficitur dictum magna, a imperdiet mauris aliquet vitae.',
   proposals,
-  requiredStake: '300000000000000000000',
+  requiredStake: utils.bigNumberify('300000000000000000000'),
   verifiedRecommender: false,
 };
