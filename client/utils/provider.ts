@@ -1,6 +1,7 @@
 import { ethers, providers, Signer, Contract } from 'ethers';
 import { IContracts } from '../interfaces';
 import getConfig from 'next/config';
+import { panvala_utils } from '.';
 
 const TokenCapacitor = require('./abis/TokenCapacitor.json');
 const Gatekeeper = require('./abis/Gatekeeper.json');
@@ -10,12 +11,17 @@ const ParameterStore = require('./abis/ParameterStore.json');
 // Defaults are a workaround for https://github.com/zeit/next.js/issues/4024
 const { publicRuntimeConfig = {} } = getConfig() || {};
 
+// get contract abis from panvala-utils
+const abis: any = panvala_utils.contractABIs;
+
 // contract abstractions for gate_keeper and token_capacitor
 export async function connectContracts(provider: providers.Web3Provider): Promise<IContracts> {
-  const tcAbi: any[] = TokenCapacitor.abi;
-  const gcAbi: any[] = Gatekeeper.abi;
-  const tokenAbi: any[] = Token.abi;
-  const paramsAbi: any[] = ParameterStore.abi;
+  const [tcAbi, gcAbi, tokenAbi, paramsAbi]: [any[], any[], any[], any[]] = [
+    abis.TokenCapacitor.abi,
+    abis.Gatekeeper.abi,
+    abis.BasicToken.abi,
+    abis.ParameterStore.abi,
+  ];
 
   // read addresses from env vars
   const gcAddress: string =

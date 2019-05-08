@@ -11,8 +11,7 @@
     "start": "NODE_ENV=production node server.js",
     "storybook": "start-storybook -p 6006 -s ./ -c .storybook",
     "test": "jest",
-    "type-check": "tsc",
-    "update:abis": "node update-abis.js"
+    "type-check": "tsc"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",

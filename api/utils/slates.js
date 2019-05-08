@@ -3,8 +3,9 @@ const ipfs = require('./ipfs');
 
 const { Slate } = require('../models');
 
-const Gatekeeper = require('../contracts/Gatekeeper.json');
-const ParameterStore = require('../contracts/ParameterStore.json');
+const {
+  contractABIs: { Gatekeeper, ParameterStore },
+} = require('../../packages/panvala-utils');
 
 const { toUtf8String } = ethers.utils;
 

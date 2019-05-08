@@ -10,7 +10,10 @@
       "type": "function"
     },
     {
-      "inputs": [{ "name": "_names", "type": "string[]" }, { "name": "_values", "type": "uint256[]" }],
+      "inputs": [
+        { "name": "_names", "type": "string[]" },
+        { "name": "_values", "type": "uint256[]" }
+      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "constructor"
