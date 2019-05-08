@@ -201,18 +201,17 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
             <>
               <SectionLabel>{'GRANTS'}</SectionLabel>
               <SlateProposals>
-                {slate.proposals.map((proposal: IProposal, index: number) => (
+                {slate.proposals.map((proposal: IProposal) => (
                   <div key={proposal.id}>
                     <RouterLink
                       href={`/proposals/proposal?id=${proposal.id}`}
                       as={`/proposals/${proposal.id}`}
                     >
                       <Card
-                        key={proposal.title + index}
                         title={proposal.title}
                         subtitle={proposal.tokensRequested + ' Tokens Requested'}
                         description={proposal.summary}
-                        category={'GRANT PROPOSAL'}
+                        category={`${proposal.category} PROPOSAL`}
                       />
                     </RouterLink>
                   </div>

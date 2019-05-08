@@ -71,12 +71,14 @@ export default class MainProvider extends React.PureComponent {
   }
 
   async handleGetAllProposals() {
+    // TODO: get or sort proposals by category
     let proposals: IProposal[] | AxiosResponse = await getAllProposals();
 
     // convert tokensRequested: base -> human
     if (Array.isArray(proposals)) {
       proposals = proposals.map((p: any) => {
         p.tokensRequested = baseToConvertedUnits(p.tokensRequested, 18);
+        p.category = 'GRANT';
         return p;
       });
     } else {

@@ -6,7 +6,7 @@ import Card from '../../components/Card';
 import Deadline from '../../components/Deadline';
 import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
-import { IMainContext } from '../../interfaces';
+import { IMainContext, IProposal } from '../../interfaces';
 
 const CardsWrapper = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ const Proposals: React.SFC<any> = () => {
 
       <CardsWrapper>
         {proposals && proposals.length
-          ? proposals.map((proposal: any) => (
+          ? proposals.map((proposal: IProposal) => (
               <div key={proposal.id}>
                 <RouterLink
                   href={`/proposals/proposal?id=${proposal.id}`}
@@ -46,7 +46,7 @@ const Proposals: React.SFC<any> = () => {
                     title={proposal.title}
                     subtitle={proposal.tokensRequested + ' Tokens Requested'}
                     description={proposal.summary}
-                    category={'GRANT PROPOSAL'}
+                    category={`${proposal.category} PROPOSAL`}
                   />
                 </RouterLink>
               </div>
