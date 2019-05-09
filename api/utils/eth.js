@@ -1,6 +1,9 @@
 const ethers = require('ethers');
 const config = require('./config');
 const { rpcEndpoint } = config;
+const { gatekeeperAddress } = config.contracts;
+
+const Gatekeeper = require('../contracts/Gatekeeper.json');
 
 /**
  * Check connection
@@ -12,6 +15,17 @@ function checkConnection() {
   return provider.getBlockNumber();
 }
 
+
+function getContracts() {
+  const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
+  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, provider);
+
+  return {
+    gatekeeper,
+  }
+}
+
 module.exports = {
   checkConnection,
+  getContracts,
 };

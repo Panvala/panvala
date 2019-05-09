@@ -55,8 +55,23 @@ function generateCommitMessage(commitHash: string, ballotChoices: any, salt: str
   }. Salt: ${salt}`;
 }
 
+/**
+ * Encode a ballot to be submitted to Gatekeeper.revealManyBallots()
+ * @param {*} categories
+ * @param {*} firstChoices
+ * @param {*} secondChoices
+ */
+function encodeBallot(categories: string[], firstChoices: string[], secondChoices: string[]) {
+  const types = ['uint256[]', 'uint256[]', 'uint256[]'];
+  const values = [categories, firstChoices, secondChoices];
+
+  const encoded = utils.defaultAbiCoder.encode(types, values);
+  return encoded;
+}
+
 module.exports = {
   generateCommitHash,
   randomSalt,
   generateCommitMessage,
+  encodeBallot,
 };

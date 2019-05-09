@@ -44,8 +44,21 @@ function randomSalt() {
 function generateCommitMessage(commitHash, ballotChoices, salt) {
     return `Commit hash: ${commitHash}. First choice: ${ballotChoices.firstChoice}. Second choice: ${ballotChoices.secondChoice}. Salt: ${salt}`;
 }
+/**
+ * Encode a ballot to be submitted to Gatekeeper.revealManyBallots()
+ * @param {*} categories
+ * @param {*} firstChoices
+ * @param {*} secondChoices
+ */
+function encodeBallot(categories, firstChoices, secondChoices) {
+    const types = ['uint256[]', 'uint256[]', 'uint256[]'];
+    const values = [categories, firstChoices, secondChoices];
+    const encoded = ethers_1.utils.defaultAbiCoder.encode(types, values);
+    return encoded;
+}
 module.exports = {
     generateCommitHash,
     randomSalt,
     generateCommitMessage,
+    encodeBallot,
 };
