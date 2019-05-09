@@ -3,10 +3,6 @@ import { IContracts } from '../interfaces';
 import getConfig from 'next/config';
 import { panvala_utils } from '.';
 
-const TokenCapacitor = require('./abis/TokenCapacitor.json');
-const Gatekeeper = require('./abis/Gatekeeper.json');
-const Token = require('./abis/BasicToken.json');
-const ParameterStore = require('./abis/ParameterStore.json');
 
 // Defaults are a workaround for https://github.com/zeit/next.js/issues/4024
 const { publicRuntimeConfig = {} } = getConfig() || {};

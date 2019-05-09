@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { COLORS } from '../styles';
 import Image from './Image';
 import RouterLink from './RouterLink';
+import { INotification } from '../interfaces/contexts';
 
 const Wrapper = styled.div`
   font-family: 'Roboto';
@@ -55,38 +56,31 @@ const ItemText = styled.div`
   margin-top: 0.5rem;
 `;
 
-interface Props {
+interface IPanelProps {
   handleClose?(): void;
   handleClick?(): any;
-  items: Item[];
+  notifications: INotification[];
 }
 
-interface Item {
-  action: string;
-  text: string;
-  link?: string;
-  id?: string;
-}
-
-// list of items and the currently selected one
-interface ItemProps {
-  items: Item[];
+// list of notifications and the currently selected one
+interface INotificationsProps {
+  notifications: INotification[];
   selectedItem?: number;
 }
 
-const NotificationItems: React.FunctionComponent<ItemProps> = props => {
-  if (props.items.length === 0) {
+const NotificationItems: React.FunctionComponent<INotificationsProps> = props => {
+  if (props.notifications.length === 0) {
     return <ItemWrapper>Nothing here!</ItemWrapper>;
   }
 
   // TODO: if the item is selected, change its background
   return (
     <div>
-      {props.items.map((item, index) => (
+      {props.notifications.map((item, index) => (
         <ItemWrapper key={index} index={index}>
-          {item.link ? (
+          {item.href ? (
             <>
-              <RouterLink href={`/${item.link}?id=${item.id}`} as={`/${item.link.toLowerCase()}/0`}>
+              <RouterLink href={item.href} as={item.asPath}>
                 <ItemAction>{item.action}</ItemAction>
               </RouterLink>
               {item.text && <ItemText>{item.text}</ItemText>}
@@ -114,7 +108,7 @@ const NotificationIcon: React.FunctionComponent<any> = props => {
   );
 };
 
-const NotificationPanel: React.FunctionComponent<Props> = props => {
+const NotificationPanel: React.FunctionComponent<IPanelProps> = props => {
   const [isOpen, setOpen] = React.useState(false);
 
   function handleTogglePanelOpen() {
@@ -125,12 +119,12 @@ const NotificationPanel: React.FunctionComponent<Props> = props => {
     <Wrapper>
       <NotificationIcon
         onHandleClick={handleTogglePanelOpen}
-        unread={props.items.length > 0 ? true : false}
+        unread={props.notifications.length > 0 ? true : false}
       />
       {isOpen && (
         <PanelWrapper onClick={handleTogglePanelOpen}>
           <PanelHeading>Notifications</PanelHeading>
-          <NotificationItems items={props.items} />
+          <NotificationItems notifications={props.notifications} />
         </PanelWrapper>
       )}
     </Wrapper>

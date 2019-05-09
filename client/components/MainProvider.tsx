@@ -49,7 +49,7 @@ export default class MainProvider extends React.PureComponent {
     const oneWeekSeconds: number = 604800;
     // Epoch 3
     // beginning of week 1 (2/1)
-    const epochStartDate: number = 1549040401; // gateKeeper.functions.currentBatchStart()
+    const epochStartDate: number = 1549040400; // gatekeeper.functions.currentBatchStart()
     // end of week 11 (4/19)
     const week11EndDate: number = epochStartDate + oneWeekSeconds * 11; // 1555689601
     // end of week 12 (4/26)

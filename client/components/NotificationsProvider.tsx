@@ -1,46 +1,47 @@
 import * as React from 'react';
+import { getNotificationsByAddress } from '../utils/api';
+import { normalizeNotifications } from '../utils/notification';
+import { INotificationsContext, INotification, IEthereumContext } from '../interfaces/contexts';
+import { EthereumContext } from './EthereumProvider';
 
-export const NotificationsContext = React.createContext({
+// prettier-ignore
+export const NotificationsContext: React.Context<INotificationsContext> = React.createContext<INotificationsContext>({
   notifications: [],
 });
 
-export default class NotificationsProvider extends React.PureComponent {
-  readonly state: any = {
-    notifications: [{ action: 'Welcome to Panvala!' }],
-  };
+export default function NotificationsProvider(props: any) {
+  const [notifications, setNotifications] = React.useState<INotification[]>([]);
+  const { account } = React.useContext<IEthereumContext>(EthereumContext);
 
-  async componentDidMount() {
-    console.log('notifications mounted');
-    const noti = {
-      action: 'Withdraw Voting Rights',
-      text: `The tokens you previously deposited are now available to be withdrawn.`,
-      link: 'Withdraw',
-      id: '1',
-    };
-    this.handlePushNotification(noti);
+  /**
+   * Handler for getting all notifications for an address
+   * and replaces the global notifications state
+   * @param address ethereum address of user
+   */
+  async function getUnreadNotifications(address: string) {
+    // fetch notifications from api
+    const result: any[] = await getNotificationsByAddress(address);
+    // normalize api return data
+    const notis: INotification[] = normalizeNotifications(result);
+    // set state
+    setNotifications(notis);
   }
 
-  getUnreadNotifications = async () => {
-    const noti = {};
-    this.setState({
-      notifications: [...this.state.notifications, noti],
-    });
-  };
+  // runs whenever account changes
+  React.useEffect(() => {
+    if (account) {
+      getUnreadNotifications(account);
+    }
+  }, [account]);
 
-  handlePushNotification = (notification: any) => {
-    this.setState({
-      notifications: [...this.state.notifications, notification],
-    });
-  };
-
-  render() {
-    const { children } = this.props;
-    return (
-      <NotificationsContext.Provider
-        value={{ ...this.state, onHandleNotification: this.handlePushNotification }}
-      >
-        {children}
-      </NotificationsContext.Provider>
-    );
-  }
+  return (
+    <NotificationsContext.Provider
+      value={{
+        notifications,
+        onHandleGetUnreadNotifications: getUnreadNotifications,
+      }}
+    >
+      {props.children}
+    </NotificationsContext.Provider>
+  );
 }

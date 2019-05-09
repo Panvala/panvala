@@ -8,10 +8,9 @@ import { ToastContainer } from 'react-toastify';
 // https://github.com/zeit/next-plugins/tree/master/packages/next-css#without-css-modules
 import '../globalStyles.css';
 import '../ReactToastify.css';
-import '../components/Toggle.css';
-import EthereumProvider from '../components/EthereumProvider';
 import Layout from '../components/Layout';
-import MainProvider, { MainContext } from '../components/MainProvider';
+import EthereumProvider from '../components/EthereumProvider';
+import MainProvider from '../components/MainProvider';
 import NotificationsProvider from '../components/NotificationsProvider';
 
 type IProps = {
@@ -73,25 +72,21 @@ export default class MyApp extends App<IProps, IState> {
     const { Component, pageProps }: IProps = this.props;
     const { hasError, errorCode }: IState = this.state;
 
+    if (hasError && errorCode) {
+      return <ErrorPage statusCode={errorCode} />;
+    }
+
     return (
       <Container>
-        <MainProvider>
-          <NotificationsProvider>
-            <Layout title={pageProps.title || 'Panvala'}>
-              {hasError && errorCode ? (
-                <ErrorPage statusCode={errorCode} />
-              ) : (
-                <MainContext.Consumer>
-                  {({ onHandleNotification }) => (
-                    <EthereumProvider onHandleNotification={onHandleNotification}>
-                      <Component {...pageProps} />
-                    </EthereumProvider>
-                  )}
-                </MainContext.Consumer>
-              )}
-            </Layout>
-          </NotificationsProvider>
-        </MainProvider>
+        <EthereumProvider>
+          <MainProvider>
+            <NotificationsProvider>
+              <Layout title={pageProps.title || 'Panvala'}>
+                <Component {...pageProps} />
+              </Layout>
+            </NotificationsProvider>
+          </MainProvider>
+        </EthereumProvider>
         <ToastContainer
           position="bottom-right"
           autoClose={8000}

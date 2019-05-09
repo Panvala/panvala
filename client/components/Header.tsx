@@ -63,7 +63,7 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
                 </Button>
               </RouterLink>
             </NavItem>
-            <NotificationPanel items={notifications} />
+            <NotificationPanel notifications={notifications} />
           </NavItems>
         </NavWrapper>
       </nav>

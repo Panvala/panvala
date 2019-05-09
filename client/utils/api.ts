@@ -128,3 +128,25 @@ export async function postBallot(ballot: ISubmitBallot, commitHash: string, sign
     throw handleApiError(error);
   });
 }
+
+export async function getNotificationsByAddress(address: string): Promise<any | AxiosResponse> {
+  try {
+    const response = await axios({
+      method: 'get',
+      url: `${apiHost}/api/notifications/${address}`,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...corsHeaders,
+      },
+    });
+    if (response.status === 200) {
+      return response.data;
+    }
+    // TODO: handle response status
+    return response;
+  } catch (error) {
+    console.log('error while getting notifcations:', error);
+    throw new Error(error);
+  }
+}

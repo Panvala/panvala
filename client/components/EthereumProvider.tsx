@@ -23,6 +23,10 @@ export default class EthereumProvider extends React.Component<any, IEthereumCont
     slateStakeAmount: utils.bigNumberify('0'),
   };
 
+  componentDidMount() {
+    this.handleConnectEthereum()
+  }
+
   handleConnectEthereum = async () => {
     try {
       if (typeof window !== 'undefined' && window.hasOwnProperty('ethereum')) {

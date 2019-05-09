@@ -11,6 +11,7 @@ const eth = require('./utils/eth');
 const proposal = require('./controllers/proposal');
 const slate = require('./controllers/slate');
 const ballot = require('./controllers/ballot');
+const notification = require('./controllers/notification');
 
 // Routes
 module.exports = app => {
@@ -65,4 +66,7 @@ module.exports = app => {
     checkSchema(ballotInsertSchema),
     ballot.create
   );
+
+  // NOTIFICATIONS
+  app.get('/api/notifications/:address', notification.getByAddress);
 };
