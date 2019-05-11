@@ -18,6 +18,7 @@ async function get(multihash, options) {
   return new Promise((resolve, reject) => {
     ipfs.cat(multihash, (err, result) => {
       if (err) reject(new Error(err));
+      if (!result) reject(new Error('nothing came back!'))
       const data = json ? JSON.parse(result) : result;
       resolve(data);
     });

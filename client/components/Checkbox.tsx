@@ -1,9 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import Toggle from 'react-toggle';
 import { Field } from './FieldText';
 import { COLORS } from '../styles';
 import Label from './Label';
+import { Radio } from '@material-ui/core';
 
 // const CheckboxInput = styled.input`
 //   width: 40px;
@@ -21,6 +21,7 @@ const Wrapper = styled.div`
 
 const ToggleLabel = styled(Label)`
   margin: 1em;
+  margin-left: 0;
   font-size: 1em;
   color: ${COLORS.grey2};
 `;
@@ -31,13 +32,15 @@ const Checkbox = (props: any) => {
       <Wrapper>
         <Field name={props.name} required>
           {({ field, form }: any) => (
-            <Toggle
-              name={props.name}
-              defaultChecked={props.defaultChecked}
+            <Radio
               checked={field.value.includes(props.value)}
               onChange={() => {
                 form.setFieldValue(props.name, props.value);
               }}
+              value={props.value}
+              color="secondary"
+              name={props.name}
+              aria-label="D"
             />
           )}
         </Field>

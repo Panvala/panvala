@@ -28,20 +28,10 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   const { slates }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
-    account,
     votingRights,
-    onConnectEthereum,
     ethProvider,
     onRefreshBalances,
   }: IEthereumContext = React.useContext(EthereumContext);
-
-  // runs once, on first load
-  // connect to metamask
-  React.useEffect(() => {
-    if (!account && onConnectEthereum) {
-      onConnectEthereum();
-    }
-  }, []);
 
   const slate = (slates as any[]).find(s => s.id === parseInt(query.id));
   console.log('slate:', slate);
@@ -49,7 +39,7 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   async function handleWithdraw() {
     try {
       if (ethProvider && contracts) {
-        await sendAndWaitForTransaction(ethProvider, contracts.gateKeeper, 'withdrawVoteTokens', [
+        await sendAndWaitForTransaction(ethProvider, contracts.gatekeeper, 'withdrawVoteTokens', [
           votingRights,
         ]);
         onRefreshBalances();

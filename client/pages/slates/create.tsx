@@ -82,19 +82,9 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
   const [isOpen, setOpenModal] = React.useState(false);
   // get proposals and eth context
   const { proposals, onRefreshSlates }: IMainContext = React.useContext(MainContext);
-  const {
-    account,
-    ethProvider,
-    contracts,
-    onConnectEthereum,
-    onRefreshBalances,
-  }: IEthereumContext = React.useContext(EthereumContext);
-
-  React.useEffect(() => {
-    if (!account) {
-      onConnectEthereum();
-    }
-  }, []);
+  const { account, contracts, onRefreshBalances }: IEthereumContext = React.useContext(
+    EthereumContext
+  );
 
   /**
    * getRequestIDs
@@ -109,11 +99,11 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
     const tokenAmounts: string[] = metadata.map(p => convertedToBaseUnits(p.tokensRequested, 18));
     console.log('tokenAmounts:', tokenAmounts);
 
-    if (contracts && ethProvider) {
+    if (contracts) {
       return contracts.tokenCapacitor.functions
         .createManyProposals(beneficiaries, tokenAmounts, proposalMultihashes)
         .then((response: TransactionResponse) => {
-          return ethProvider.waitForTransaction(response.hash);
+          return response.wait();
         })
         .then((receipt: TransactionReceipt) => {
           if (receipt.logs && contracts && contracts.tokenCapacitor) {
@@ -147,11 +137,11 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
     const epochNumber = 1;
     const category = 0; // Grant
 
-    if (contracts && ethProvider) {
-      return contracts.gateKeeper.functions
+    if (contracts) {
+      return contracts.gatekeeper.functions
         .recommendSlate(epochNumber, category, requestIDs, Buffer.from(metadataHash))
         .then((response: TransactionResponse) => {
-          return ethProvider.waitForTransaction(response.hash);
+          return response.wait();
         })
         .then((receipt: TransactionReceipt) => {
           if (receipt.logs) {
@@ -161,7 +151,7 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
             // Get the SlateCreated logs from the receipt
             const decoded: LogDescription[] = receipt.logs
               .map(log => {
-                return contracts.gateKeeper.interface.parseLog(log);
+                return contracts.gatekeeper.interface.parseLog(log);
               })
               .filter(d => d !== null)
               .filter(d => d.name == 'SlateCreated');

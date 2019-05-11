@@ -115,7 +115,7 @@ export interface IBallotDates {
 
 export interface IContracts {
   tokenCapacitor: Contract;
-  gateKeeper: Contract;
+  gatekeeper: Contract;
   token: Contract;
   parameterStore: Contract;
 }
@@ -123,20 +123,21 @@ export interface IContracts {
 export interface IMainContext {
   slates?: ISlate[];
   proposals?: IProposal[];
+  proposalsByID?: any;
+  slatesByID?: any;
   currentBallot: IBallotDates;
   onRefreshProposals?(): any;
   onRefreshSlates?(): any;
 }
 export interface IEthereumContext {
   account?: string;
-  ethProvider?: providers.Web3Provider;
-  contracts?: IContracts;
+  ethProvider?: providers.Web3Provider | {};
+  contracts?: IContracts | {};
   panBalance: utils.BigNumber;
   gkAllowance: utils.BigNumber;
   tcAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
   slateStakeAmount: utils.BigNumberish;
-  onConnectEthereum(): any;
   onRefreshBalances(): any;
 }
 

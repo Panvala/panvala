@@ -53,7 +53,6 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
   const {
     account,
     contracts,
-    onConnectEthereum,
     ethProvider,
     onRefreshBalances,
     panBalance,
@@ -62,14 +61,6 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
   }: IEthereumContext = React.useContext(EthereumContext);
   const { onRefreshSlates } = React.useContext(MainContext);
   console.log('contracts:', contracts);
-
-  // runs once, on first load
-  // connect to metamask
-  React.useEffect(() => {
-    if (!account) {
-      onConnectEthereum();
-    }
-  }, []);
 
   let steps = [
     <StepperDialog>
@@ -112,7 +103,7 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
       // TODO: should this transaction also display a 'pending transaction modal'?
 
       await sendAndWaitForTransaction(ethProvider, contracts.token, 'approve', [
-        contracts.gateKeeper.address,
+        contracts.gatekeeper.address,
         numTokens,
       ]);
       toast.success('approve tx mined');
@@ -124,7 +115,7 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
     // step 2: stakeTokens
     // tx pending
     setTxPending(true);
-    const txResponse = await contracts.gateKeeper.functions.stakeTokens(parseInt(query.id));
+    const txResponse = await contracts.gatekeeper.functions.stakeTokens(parseInt(query.id));
     // change from stepper -> modal
     toggleOpenStepper(false);
     toggleOpenModal(true);

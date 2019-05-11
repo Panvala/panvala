@@ -43,14 +43,8 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
     gkAllowance,
     votingRights,
     ethProvider,
-    onConnectEthereum,
   }: IEthereumContext = React.useContext(EthereumContext);
 
-  React.useEffect(() => {
-    if (!account) {
-      onConnectEthereum();
-    }
-  }, []);
   console.log('slates:', slates);
 
   // component state
@@ -147,8 +141,8 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
       } else if (gkAllowance.eq('0') && panBalance.gt('0')) {
         console.log('no allowance. only user balance');
         // allowance is 0
-        // -> approve the gateKeeper contract first, then vote with entire balance
-        await contracts.token.functions.approve(contracts.gateKeeper.address, panBalance);
+        // -> approve the gatekeeper contract first, then vote with entire balance
+        await contracts.token.functions.approve(contracts.gatekeeper.address, panBalance);
         numTokens = panBalance;
       } else if (votingRights.eq('0') && panBalance.gt('0')) {
         console.log('no voting rights. only user balance');
@@ -173,14 +167,14 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
 
           if (res.status === 200) {
             // estimate how much it's gonna cost (gasLimit)
-            const estimate = await contracts.gateKeeper.estimate.commitBallot(
+            const estimate = await contracts.gatekeeper.estimate.commitBallot(
               commitHash,
               numTokens
             );
-            // commit (vote) the ballot to the gateKeeper contract
+            // commit (vote) the ballot to the gatekeeper contract
             // custom gasLimit can be provided here
             // -> gasPrice needs to be set also -- otherwise it will send with 1.0 gwei gas, which is not fast enough
-            await contracts.gateKeeper.functions.commitBallot(commitHash, numTokens, {
+            await contracts.gatekeeper.functions.commitBallot(commitHash, numTokens, {
               gasLimit: estimate.add('70000').toHexString(), // for safety, +70k gas (+20k doesn't cut it)
               gasPrice: utils.parseUnits('9.0', 'gwei'),
             });

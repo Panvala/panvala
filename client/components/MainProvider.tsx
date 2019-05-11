@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { format } from 'date-fns';
 import { AxiosResponse } from 'axios';
+import keyBy from 'lodash/keyBy';
 
 import { IProposal, ISlate, IMainContext } from '../interfaces';
 import { getAllProposals, getAllSlates } from '../utils/api';
@@ -21,6 +22,8 @@ export default class MainProvider extends React.PureComponent {
   readonly state: IMainContext = {
     slates: [],
     proposals: [],
+    proposalsByID: {},
+    slatesByID: {},
     currentBallot: {
       startDate: 0,
       votingOpenDate: 0,
@@ -46,6 +49,11 @@ export default class MainProvider extends React.PureComponent {
       proposalData = sortedProposals;
     }
 
+    const slatesByID = keyBy(slates, 'id');
+    console.log('slatesByID:', slatesByID);
+    const proposalsByID = keyBy(proposalData, 'id');
+    console.log('proposalsByID:', proposalsByID);
+
     const oneWeekSeconds: number = 604800;
     // Epoch 3
     // beginning of week 1 (2/1)
@@ -61,6 +69,8 @@ export default class MainProvider extends React.PureComponent {
     this.setState({
       slates,
       proposals: proposalData,
+      proposalsByID,
+      slatesByID,
       currentBallot: {
         startDate: epochStartDate,
         votingOpenDate: week11EndDate,

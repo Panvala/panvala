@@ -1,8 +1,8 @@
-import { ethers, providers, Signer, Contract } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { IContracts } from '../interfaces';
 import getConfig from 'next/config';
 import { panvala_utils } from '.';
-
+import { ParameterStore, TokenCapacitor, Gatekeeper, BasicToken } from '../types';
 
 // Defaults are a workaround for https://github.com/zeit/next.js/issues/4024
 const { publicRuntimeConfig = {} } = getConfig() || {};
@@ -26,29 +26,32 @@ export async function connectContracts(provider: providers.Web3Provider): Promis
     publicRuntimeConfig.tokenCapacitorAddress || process.env.STORYBOOK_TOKEN_CAPACITOR_ADDRESS;
 
   // init ethers contract abstractions
-  const signer: Signer = provider.getSigner();
-  const tc: Contract = new ethers.Contract(tcAddress, tcAbi, provider);
-  const gc: Contract = new ethers.Contract(gcAddress, gcAbi, provider);
+  const tc: ethers.Contract = new ethers.Contract(tcAddress, tcAbi, provider);
+  const gc: ethers.Contract = new ethers.Contract(gcAddress, gcAbi, provider);
 
   // connect metamask wallet/signer to contracts
-  const tokenCapacitor: Contract = tc.connect(signer);
-  const gateKeeper: Contract = gc.connect(signer);
+  const signer: providers.JsonRpcSigner = provider.getSigner();
+  const tokenCapacitor: TokenCapacitor = tc.connect(signer) as TokenCapacitor;
+  const gatekeeper: Gatekeeper = gc.connect(signer) as Gatekeeper;
 
-  let token, parameterStore;
   // get the token and parameter_store associated with the gate_keeper
   try {
     const tokenAddress: string = await gc.functions.token();
-    const tokenContract: Contract = new ethers.Contract(tokenAddress, tokenAbi, provider);
+    const tokenContract: ethers.Contract = new ethers.Contract(tokenAddress, tokenAbi, provider);
     // connect metamask wallet/signer to token contract
-    token = tokenContract.connect(signer);
+    const token: BasicToken = tokenContract.connect(signer) as BasicToken;
 
     const paramsAddress: string = await gc.functions.parameters();
-    parameterStore = new ethers.Contract(paramsAddress, paramsAbi, provider);
-  } catch (error) {
-    console.log(error);
-  }
+    const parameterStore: ParameterStore = new ethers.Contract(
+      paramsAddress,
+      paramsAbi,
+      provider
+    ) as ParameterStore;
 
-  return { tokenCapacitor, gateKeeper, token, parameterStore };
+    return { tokenCapacitor, gatekeeper, token, parameterStore };
+  } catch (error) {
+    throw error;
+  }
 }
 
 // ethers-metamask-provider
