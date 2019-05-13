@@ -27,7 +27,7 @@ async function getAllEvents() {
   const events = await Promise.all(
     blocksRange.map(async blockNumber => {
       const block = await provider.getBlock(blockNumber, true);
-      const logsInBlock = await getLogsInBlock(block, gatekeeper, tokenCapacitor);
+      const logsInBlock = await getLogsInBlock(block, provider, gatekeeper, tokenCapacitor);
       // [[Log, Log]] -> [Log, Log]
       // [[]] -> []
       return flatten(logsInBlock);
@@ -43,7 +43,7 @@ async function getAllEvents() {
  * @param {*} block
  * @returns {Array}
  */
-async function getLogsInBlock(block, gatekeeper, tokenCapacitor) {
+async function getLogsInBlock(block, provider, gatekeeper, tokenCapacitor) {
   return Promise.all(
     block.transactions.map(async tx => {
       return provider.getTransactionReceipt(tx.hash).then(receipt => {
