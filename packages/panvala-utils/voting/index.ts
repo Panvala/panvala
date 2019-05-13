@@ -6,6 +6,20 @@ interface IChoices {
   secondChoice: utils.BigNumber;
 }
 
+const SlateCategories = {
+  GRANT: '0',
+  GOVERNANCE: '1',
+};
+
+const ContestStatus = {
+  Empty: '0',
+  NoContest: '1',
+  Started: '2',
+  VoteFinalized: '3',
+  RunoffPending: '4',
+  RunoffFinalized: '5',
+};
+
 /**
  * generateCommitHash
  *
@@ -74,4 +88,6 @@ module.exports = {
   randomSalt,
   generateCommitMessage,
   encodeBallot,
+  SlateCategories,
+  ContestStatus,
 };

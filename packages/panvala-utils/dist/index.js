@@ -2,6 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
 const { solidityKeccak256, randomBytes, bigNumberify } = ethers_1.utils;
+const SlateCategories = {
+    GRANT: '0',
+    GOVERNANCE: '1',
+};
+const ContestStatus = {
+    Empty: '0',
+    NoContest: '1',
+    Started: '2',
+    VoteFinalized: '3',
+    RunoffPending: '4',
+    RunoffFinalized: '5',
+};
 /**
  * generateCommitHash
  *
@@ -61,4 +73,6 @@ module.exports = {
     randomSalt,
     generateCommitMessage,
     encodeBallot,
+    SlateCategories,
+    ContestStatus,
 };
