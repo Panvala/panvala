@@ -3,7 +3,9 @@ const config = require('./config');
 const { rpcEndpoint } = config;
 const { gatekeeperAddress } = config.contracts;
 
-const Gatekeeper = require('../contracts/Gatekeeper.json');
+const {
+  contractABIs: { Gatekeeper },
+} = require('../../packages/panvala-utils');
 
 /**
  * Check connection
@@ -15,14 +17,13 @@ function checkConnection() {
   return provider.getBlockNumber();
 }
 
-
 function getContracts() {
   const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
   const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, provider);
 
   return {
     gatekeeper,
-  }
+  };
 }
 
 module.exports = {
