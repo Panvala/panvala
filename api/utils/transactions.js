@@ -10,15 +10,15 @@ const {
   rpcEndpoint,
 } = require('./config');
 
-const provider = new providers.JsonRpcProvider(rpcEndpoint);
-// Get an interface to the Gatekeeper contract
-const gatekeeper = new Contract(gatekeeperAddress, Gatekeeper.abi, provider);
-const tokenCapacitor = new Contract(tokenCapacitorAddress, TokenCapacitor.abi, provider);
-
 /**
  * Gets all events from genesis block (contract) -> current block
  */
 async function getAllEvents() {
+  const provider = new providers.JsonRpcProvider(rpcEndpoint);
+  // Get an interface to the Gatekeeper contract
+  const gatekeeper = new Contract(gatekeeperAddress, Gatekeeper.abi, provider);
+  const tokenCapacitor = new Contract(tokenCapacitorAddress, TokenCapacitor.abi, provider);
+
   const currentBlockNumber = await provider.getBlockNumber();
   console.log('currentBlockNumber:', currentBlockNumber);
 
@@ -27,7 +27,7 @@ async function getAllEvents() {
   const events = await Promise.all(
     blocksRange.map(async blockNumber => {
       const block = await provider.getBlock(blockNumber, true);
-      const logsInBlock = await getLogsInBlock(block);
+      const logsInBlock = await getLogsInBlock(block, gatekeeper, tokenCapacitor);
       // [[Log, Log]] -> [Log, Log]
       // [[]] -> []
       return flatten(logsInBlock);
@@ -43,7 +43,7 @@ async function getAllEvents() {
  * @param {*} block
  * @returns {Array}
  */
-async function getLogsInBlock(block) {
+async function getLogsInBlock(block, gatekeeper, tokenCapacitor) {
   return Promise.all(
     block.transactions.map(async tx => {
       return provider.getTransactionReceipt(tx.hash).then(receipt => {
