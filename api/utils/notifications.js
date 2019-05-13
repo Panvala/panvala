@@ -1,7 +1,6 @@
 const { utils } = require('ethers');
 const groupBy = require('lodash/groupBy');
 const ipfs = require('./ipfs');
-const { Slate } = require('../models');
 
 const notifications = {
   PROPOSAL_INCLUDED_IN_SLATE: {
@@ -91,7 +90,7 @@ async function getNormalizedNotificationByEvents(events, address) {
 
   // this is hacky. should compare against SlateCreated events
   const proposalCreatedEvents = events.filter(
-    event => event.name === 'ProposalCreated' && event.values.proposer === address
+    event => event.name === 'ProposalCreated' && event.values.to === address
   );
   const proposalIncludedInSlateNotifications = await Promise.all(
     proposalCreatedEvents.map(async event => {
