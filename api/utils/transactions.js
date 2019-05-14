@@ -62,10 +62,6 @@ const extraneousEventNames = [
   'PermissionRequested',
   'VotingTokensDeposited',
   'VotingTokensWithdrawn',
-  'BallotCommitted',
-  'BallotRevealed',
-  'ConfidenceVoteCounted',
-  'RunoffCounted',
 ];
 
 /**

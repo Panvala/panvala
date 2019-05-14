@@ -1,5 +1,5 @@
 const { utils } = require('ethers');
-const groupBy = require('lodash/groupBy');
+const flatten = require('lodash/flatten');
 const ipfs = require('./ipfs');
 
 const notifications = {
@@ -44,49 +44,32 @@ const notifications = {
 async function getNormalizedNotificationByEvents(events, address) {
   // this would be useful for saving in the db
   // const eventsByName = groupBy(events, 'name');
-  // console.log('eventsByName:', eventsByName);
-
-  // get all StakeWithdrawn events
-  const stakeWithdrawnEventsByAddress = events.filter(
-    e => e.name === 'StakeWithdrawn' && e.values.staker === address
-  );
-  // get all SlateStaked events, filtered through StakeWithdrawn events
-  const slateStakedEventsNotWithdrawnByAddress = events.filter(
-    e =>
-      e.name === 'SlateStaked' &&
-      e.values.staker === address &&
-      !stakeWithdrawnEventsByAddress.find(
-        event => event.values.slateID.toString() === e.values.slateID.toString()
-      )
-  );
-  // convert to notifications
-  const stakingNotifications = slateStakedEventsNotWithdrawnByAddress.map(event => {
-    const { slateID, numTokens } = event.values;
-    // TODO: filter for slate.status === Accepted
-    return {
-      ...notifications.WITHDRAW_STAKE,
-      event,
-      slateID: utils.bigNumberify(slateID).toString(),
-      numTokens,
-    };
-  });
 
   // get all events for 'Slate Accepted'
   const slateAcceptedEvents = events.filter(
-    e => e.name === 'ConfidenceVoteCounted' || e.name === 'RunoffCounted'
+    e => e.name === 'ConfidenceVoteFinalized' || e.name === 'RunoffFinalized'
   );
-  const slateAcceptedNotifications = slateAcceptedEvents.map(event => {
-    const { winningSlate, ballotID, categoryID } = event.values;
-    // TODO: filter for recommender === address
-    return {
-      ...notifications.SLATE_ACCEPTED,
-      event,
-      slateID: utils.bigNumberify(winningSlate).toString(),
-      ballotID,
-      categoryID,
-      // recommender,
-    };
-  });
+  const slateAcceptedNotifications = flatten(
+    slateAcceptedEvents.map(event => {
+      const { winningSlate, ballotID, categoryID, category } = event.values;
+      // TODO: filter for staker === address
+      return [
+        {
+          ...notifications.WITHDRAW_STAKE,
+          event,
+          slateID: utils.bigNumberify(winningSlate).toString(),
+        },
+        {
+          ...notifications.SLATE_ACCEPTED,
+          event,
+          slateID: utils.bigNumberify(winningSlate).toString(),
+          ballotID,
+          categoryID: category ? category : categoryID,
+          // recommender,
+        },
+      ];
+    })
+  );
 
   // this is hacky. should compare against SlateCreated events
   const proposalCreatedEvents = events.filter(
@@ -104,14 +87,13 @@ async function getNormalizedNotificationByEvents(events, address) {
         event,
         proposer,
         recipient: to,
-        slateID: '1', // TEMPORARY HACK
+        slateID: '0', // TEMPORARY HACK
       };
     })
   );
 
-  return stakingNotifications
-    .concat(slateAcceptedNotifications)
-    .concat(proposalIncludedInSlateNotifications);
+  // return stakingNotifications
+  return slateAcceptedNotifications.concat(proposalIncludedInSlateNotifications);
 }
 
 module.exports = {
