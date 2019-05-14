@@ -19,15 +19,16 @@ async function tally(gatekeeper, ballotID, categoryID) {
   let status = await gatekeeper.functions.contestStatus(ballotID, categoryID);
   // console.log('status', status);
 
-  if (status === ContestStatus.Started) {
-    console.log('counting votes');
+  if (status.toString() === ContestStatus.Started) {
+    console.log('counting votes for ballotID, categoryID, status', ballotID, categoryID, status);
     await gatekeeper.functions.countVotes(ballotID, categoryID);
+    console.log('counted votes!');
 
     status = await gatekeeper.functions.contestStatus(ballotID, categoryID);
-    // console.log('status', status);
+    console.log('new status', status);
   }
 
-  if (status === ContestStatus.RunoffPending) {
+  if (status.toString() === ContestStatus.RunoffPending) {
     await gatekeeper.functions.countRunoffVotes(ballotID, categoryID);
   }
 }
@@ -45,7 +46,7 @@ async function run() {
   console.log('gatekeeper', gatekeeper.address);
 
   // TODO: pass in the batch number or get from the contract
-  const batchNumber = '1';
+  const batchNumber = '0';
   const contests = [categories.GRANT, categories.GOVERNANCE];
 
   try {

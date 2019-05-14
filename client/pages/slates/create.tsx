@@ -134,7 +134,7 @@ const CreateSlate: React.FunctionComponent<{ router: SingletonRouter }> = ({ rou
    */
   function submitGrantSlate(requestIDs: any[], metadataHash: string): Promise<any> {
     // these are placeholders for now
-    const epochNumber = 1;
+    const epochNumber = 0;
     const category = 0; // Grant
 
     if (contracts) {
