@@ -16,7 +16,10 @@ module.exports = function (deployer, network) {
     // console.log('skipping deployment');
   } else {
     // TODO: read from file
-    const tokenAddress = '';
+    const deployedToken = '0x5Cb4b57510Feb5438C90d6e17B39c2c910051859'; // Rinkeby
+    const useExistingToken = false;
+
+    const tokenAddress = useExistingToken ? deployedToken : '';
     const name = 'Basic Token';
     const symbol = 'BSC';
     const decimals = '18';

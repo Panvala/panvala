@@ -3852,20 +3852,20 @@ tree-kill@^1.2.0:
   resolved "https://registry.yarnpkg.com/tree-kill/-/tree-kill-1.2.1.tgz#5398f374e2f292b9dcc7b2e71e30a5c3bb6c743a"
   integrity sha512-4hjqbObwlh2dLyW4tcz0Ymw0ggoaVDMveUB9w8kFSQScdRLo0gxO9J7WFcUBo+W3C1TLdFIEwNOWebgZZ0RH9Q==
 
-truffle-hdwallet-provider@1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/truffle-hdwallet-provider/-/truffle-hdwallet-provider-1.0.8.tgz#76ab28e08b4c84dc8b3c98c9c2b4bba9c9d834e0"
-  integrity sha512-kG/WSEvwWSRuFbyEnoNgGQtKrKJMr/MwKoZfiPeT6L6d2gS2QnH2xbJbWxV+LtENjERSodjI9bbO/TN73CXWSQ==
+truffle-hdwallet-provider@1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/truffle-hdwallet-provider/-/truffle-hdwallet-provider-1.0.9.tgz#1e7f239631ada08cacd7cdf3fdbc39f2033e04e7"
+  integrity sha512-1PfQgyOOapirCK8L/EiApzAo6mhlrnKi6GdXvNX2Gt/635QtYlGPwdFC6zMm5plEcOegdCz2CgbhXI6Fdbp98A==
   dependencies:
     any-promise "^1.3.0"
     bindings "^1.3.1"
     web3 "1.0.0-beta.37"
     websocket "^1.0.28"
 
-truffle@5.0.12:
-  version "5.0.12"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.0.12.tgz#05ab7d2561a3ee4fd5e026dcc4b91b8f3c6e3795"
-  integrity sha512-dqnDmtTGNcnL29PHQwPE/CVmFFeGLuTFeb4TS3VY/vbASefu118IKXcadOWzkCPPwktv/njwylHSPhwoS00F2A==
+truffle@5.0.17:
+  version "5.0.17"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.0.17.tgz#5a404b63e8d3da6a431cbcdac7df6e2e02d1262e"
+  integrity sha512-SroP2oUwwLjr7g3niD0gRgNzuS0MmMYZDdaNxnwGo5AfhUCnjTp7xSgqFSnTKjvVIhRcZ2lO+b3kVaC+y0R94Q==
   dependencies:
     app-module-path "^2.2.0"
     mocha "^4.1.0"

@@ -40,8 +40,8 @@ if (process.env.MNEMONIC) {
   mnemonic = process.env.MNEMONIC;
 }
 
-if (process.env.INFURA_API_KEY) {
-  infuraKey = process.env.INFURA_API_KEY;
+if (process.env.PANVALA_PROJECT_ID) {
+  infuraKey = process.env.PANVALA_PROJECT_ID;
 }
 
 
@@ -89,7 +89,7 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     // ropsten: {
-    // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/${infuraKey}`),
+    // provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/${infuraKey}`),
     // network_id: 3,       // Ropsten's id
     // gas: 5500000,        // Ropsten has a lower block limit than mainnet
     // confirmations: 2,    // # of confs to wait between deployments. (default: 0)
@@ -99,7 +99,7 @@ module.exports = {
 
     mainnet: {
       // TODO: check for valid `infuraKey`?
-      provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/${infuraKey}`),
+      provider: () => new HDWalletProvider(mnemonic, `https://mainnet.infura.io/v3/${infuraKey}`),
       network_id: 1,
       gas: 5500000,
       gasPrice: 4e9, // 4 gwei
@@ -109,10 +109,10 @@ module.exports = {
 
     rinkeby: {
       // TODO: check for valid `infuraKey`?
-      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/${infuraKey}`),
+      provider: () => new HDWalletProvider(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
       network_id: 4,
-      gas: 5500000,
-      gasPrice: 4e9, // 4 gwei
+      gas: 6500000,
+      gasPrice: 2e9, // 4 gwei
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
       // skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
