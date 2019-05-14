@@ -38,9 +38,21 @@ app.prepare().then(() => {
   // SLATE STAKING
   // ----------------------------------------------
 
-  server.get('/slates/stake/:id', (req, res) => {
+  server.get('/slates/:id/stake', (req, res) => {
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/slates/stake', requestParams);
+  });
+  server.get('/withdraw/:id/stake', (req, res) => {
+    const requestParams = setIdParamsByRequestQuery(req);
+    return app.render(req, res, '/Withdraw', requestParams);
+  });
+  server.get('/withdraw/:id/grant', (req, res) => {
+    const requestParams = setIdParamsByRequestQuery(req);
+    return app.render(req, res, '/Withdraw', requestParams);
+  });
+  server.get('/withdraw/:id/voting', (req, res) => {
+    const requestParams = setIdParamsByRequestQuery(req);
+    return app.render(req, res, '/Withdraw', requestParams);
   });
 
   // ----------------------------------------------
@@ -55,10 +67,6 @@ app.prepare().then(() => {
   server.get('/proposals/:id', (req, res) => {
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/proposals/proposal', requestParams);
-  });
-  server.get('/withdraw/:id', (req, res) => {
-    const requestParams = setIdParamsByRequestQuery(req);
-    return app.render(req, res, '/Withdraw', requestParams);
   });
 
   // ----------------------------------------------

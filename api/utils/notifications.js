@@ -53,6 +53,7 @@ async function getNormalizedNotificationByEvents(events, address) {
     slateAcceptedEvents.map(event => {
       const { winningSlate, ballotID, categoryID, category } = event.values;
       // TODO: filter for staker === address
+      // TODO: filter against withdrawn stakes
       return [
         {
           ...notifications.WITHDRAW_STAKE,

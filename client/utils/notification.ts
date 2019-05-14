@@ -88,8 +88,8 @@ export function normalizeNotifications(
         return {
           action: 'Withdraw Voting Rights',
           text: `The ballot has concluded. The tokens you previously deposited are now available to be withdrawn`,
-          href: `/Withdraw`,
-          asPath: `/withdraw`,
+          href: `/Withdraw/voting`,
+          asPath: `/withdraw/voting`,
         };
       }
       case NotificationTypes.WITHDRAW_STAKE: {
@@ -98,16 +98,16 @@ export function normalizeNotifications(
           text: `Congratulations! The slate ${
             slate.title
           } you previously supported has been accepted. Please withdraw your tokens.`,
-          href: `/Withdraw?id=${slate.id}`,
-          asPath: `/withdraw/${slate.id}`,
+          href: `/Withdraw/stake?id=${slateID}`,
+          asPath: `/withdraw/${slateID}/stake`,
         };
       }
       case NotificationTypes.WITHDRAW_GRANT: {
         return {
           action: 'Withdraw Grant',
           text: `The tokens you previously deposited are now available to be withdrawn.`,
-          href: `/Withdraw?id=${proposalID}`,
-          asPath: `/withdraw/${proposalID}`,
+          href: `/Withdraw/grant?id=${proposalID}`,
+          asPath: `/withdraw/${proposalID}/grant`,
         };
       }
       default:

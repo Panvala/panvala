@@ -81,7 +81,7 @@ export const SlateSidebar = ({ slate, requiredStake }: IStakeSidebarProps): any 
   // button: 'Stake Tokens' or 'View Ballot' or null
   const button =
     status === statuses.PENDING_TOKENS ? (
-      <RouterLink href={`/slates/stake?id=${slate.id}`} as={`/slates/stake/${slate.id}`}>
+      <RouterLink href={`/slates/stake?id=${slate.id}`} as={`/slates/${slate.id}/stake`}>
         <Button large type="default">
           {'Stake Tokens'}
         </Button>

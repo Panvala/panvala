@@ -24,8 +24,8 @@ interface IProps {
   query: any;
 }
 
-const Withdraw: StatelessPage<IProps> = ({ query }) => {
-  const { slates }: IMainContext = React.useContext(MainContext);
+const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
+  const { proposals, slates }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
     votingRights,
@@ -34,14 +34,30 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   }: IEthereumContext = React.useContext(EthereumContext);
 
   const slate = (slates as any[]).find(s => s.id === parseInt(query.id));
-  console.log('slate:', slate);
+  const proposal = (proposals as any[]).find(p => p.id === parseInt(query.id));
 
   async function handleWithdraw() {
     try {
       if (ethProvider && contracts) {
-        await sendAndWaitForTransaction(ethProvider, contracts.gatekeeper, 'withdrawVoteTokens', [
-          votingRights,
-        ]);
+        // console.log('slates:', slates);
+        // console.log('query:', query);
+        // console.log('asPath:', asPath);
+        // console.log('slate:', slate);
+        if (asPath.includes('voting')) {
+          await sendAndWaitForTransaction(ethProvider, contracts.gatekeeper, 'withdrawVoteTokens', [
+            votingRights,
+          ]);
+        } else if (asPath.includes('stake')) {
+          await sendAndWaitForTransaction(ethProvider, contracts.gatekeeper, 'withdrawStake', [
+            slate.id,
+          ]);
+        } else if (asPath.includes('grant')) {
+          await sendAndWaitForTransaction(ethProvider, contracts.tokenCapacitor, 'withdrawTokens', [
+            proposal.id,
+          ]);
+        } else {
+          console.log('Invalid asPath', asPath);
+        }
         onRefreshBalances();
       }
     } catch (error) {
@@ -76,8 +92,8 @@ const Withdraw: StatelessPage<IProps> = ({ query }) => {
   );
 };
 
-Withdraw.getInitialProps = async ({ query }) => {
-  return { query };
+Withdraw.getInitialProps = async ({ query, asPath }) => {
+  return { query, asPath };
 };
 
 export default Withdraw;
