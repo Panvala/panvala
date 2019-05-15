@@ -51,7 +51,7 @@ async function getNormalizedNotificationByEvents(events, address) {
   );
   const slateAcceptedNotifications = flatten(
     slateAcceptedEvents.map(event => {
-      const { winningSlate, ballotID, categoryID, category } = event.values;
+      const { winningSlate, ballotID, categoryID } = event.values;
       // TODO: filter for staker === address
       // TODO: filter against withdrawn stakes
       return [
@@ -65,7 +65,7 @@ async function getNormalizedNotificationByEvents(events, address) {
           event,
           slateID: utils.bigNumberify(winningSlate).toString(),
           ballotID,
-          categoryID: category ? category : categoryID,
+          categoryID,
           // recommender,
         },
       ];
@@ -74,11 +74,11 @@ async function getNormalizedNotificationByEvents(events, address) {
 
   // this is hacky. should compare against SlateCreated events
   const proposalCreatedEvents = events.filter(
-    event => event.name === 'ProposalCreated' && event.values.to === address
+    event => event.name === 'ProposalCreated' && event.values.recipient === address
   );
   const proposalIncludedInSlateNotifications = await Promise.all(
     proposalCreatedEvents.map(async event => {
-      const { proposer, to, metadataHash } = event.values;
+      const { proposer, recipient, metadataHash } = event.values;
       const proposalMetadata = await ipfs.get(utils.toUtf8String(metadataHash), {
         json: true,
       });
@@ -87,14 +87,17 @@ async function getNormalizedNotificationByEvents(events, address) {
         proposalID: proposalMetadata.id,
         event,
         proposer,
-        recipient: to,
+        recipient,
         slateID: '0', // TEMPORARY HACK
       };
     })
   );
 
-  // return stakingNotifications
-  return slateAcceptedNotifications.concat(proposalIncludedInSlateNotifications);
+  const withdrawGrantNotifications = [];
+
+  return slateAcceptedNotifications
+    .concat(proposalIncludedInSlateNotifications)
+    .concat(withdrawGrantNotifications);
 }
 
 module.exports = {

@@ -28,7 +28,7 @@ event RunoffCounted(
     uint losingSlate,
     uint loserVotes
 );
-event RunoffFinalized(uint indexed ballotID, uint indexed category, uint winningSlate);
+event RunoffFinalized(uint indexed ballotID, uint indexed categoryID, uint winningSlate);
 event StakeWithdrawn(uint slateID, address indexed staker, uint numTokens);
 ```
 
@@ -52,22 +52,10 @@ SlateRejected(ballotID, categoryID, slateID)
 event ProposalCreated(
     address indexed proposer,
     uint indexed requestID,
-    address indexed to,
+    address indexed recipient,
     uint tokens,
     bytes metadataHash
 );
 event TokensWithdrawn(uint proposalID, address indexed to, uint numTokens);
 event Donation(address indexed payer, address indexed donor, uint numTokens, bytes metadataHash);
-```
-
-CHANGES / ADD:
-
-```js
-ProposalCreated(
-    address indexed proposer,
-    uint indexed requestID,
-    address indexed recipient,
-    uint tokens,
-    bytes metadataHash
-);
 ```
