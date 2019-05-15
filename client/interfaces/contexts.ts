@@ -125,7 +125,7 @@ export interface IMainContext {
   proposals?: IProposal[];
   proposalsByID?: any;
   slatesByID?: any;
-  currentBallot: IBallotDates;
+  currentBallot?: IBallotDates;
   onRefreshProposals?(): any;
   onRefreshSlates?(): any;
 }

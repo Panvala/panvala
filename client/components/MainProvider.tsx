@@ -10,6 +10,8 @@ import { baseToConvertedUnits } from '../utils/format';
 export const MainContext: React.Context<IMainContext> = React.createContext<IMainContext>({
   slates: [],
   proposals: [],
+  slatesByID: {},
+  proposalsByID: {},
   currentBallot: {
     startDate: 0,
     votingOpenDate: 0,
@@ -18,116 +20,131 @@ export const MainContext: React.Context<IMainContext> = React.createContext<IMai
   },
 });
 
-export default class MainProvider extends React.PureComponent {
-  readonly state: IMainContext = {
+async function handleGetAllProposals() {
+  // TODO: get or sort proposals by category
+  let proposals: IProposal[] | AxiosResponse = await getAllProposals();
+
+  // convert tokensRequested: base -> human
+  if (Array.isArray(proposals)) {
+    proposals = proposals.map((p: any) => {
+      p.tokensRequested = baseToConvertedUnits(p.tokensRequested, 18);
+      p.category = 'GRANT';
+      return p;
+    });
+    return proposals;
+  }
+
+  return [];
+}
+
+async function handleGetAllSlates() {
+  const slates: ISlate[] | AxiosResponse = await getAllSlates();
+  if (Array.isArray(slates)) {
+    return slates;
+  }
+
+  return [];
+}
+
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case 'all':
+      return {
+        slates: action.slates,
+        proposals: action.proposals,
+        slatesByID: action.slatesByID,
+        proposalsByID: action.proposalsByID,
+        currentBallot: action.currentBallot,
+      };
+    case 'slates':
+      return { slates: action.payload };
+    case 'proposals':
+      return { proposals: action.payload };
+    default:
+      throw new Error();
+  }
+}
+
+export default function MainProvider(props: any) {
+  const [state, dispatch] = React.useReducer(reducer, {
     slates: [],
     proposals: [],
-    proposalsByID: {},
     slatesByID: {},
+    proposalsByID: {},
     currentBallot: {
       startDate: 0,
       votingOpenDate: 0,
       votingCloseDate: 0,
       finalityDate: 0,
     },
-  };
+  });
 
-  async componentDidMount() {
-    const [slates, proposals]: [ISlate[], IProposal[]] = await Promise.all([
-      this.handleGetAllSlates(),
-      this.handleGetAllProposals(),
-    ]);
+  React.useEffect(() => {
+    async function setInitialState() {
+      const [slates, proposals]: [ISlate[], IProposal[]] = await Promise.all([
+        handleGetAllSlates(),
+        handleGetAllProposals(),
+      ]);
 
-    let proposalData: IProposal[] = [];
-    // sort proposals by createdAt
-    if (Array.isArray(proposals)) {
-      const sortedProposals: IProposal[] = proposals.sort((a: IProposal, b: IProposal) => {
-        const timestampA = format(a.createdAt, 'x');
-        const timestampB = format(b.createdAt, 'x');
-        return parseInt(timestampA) - parseInt(timestampB);
-      });
-      proposalData = sortedProposals;
-    }
+      let proposalData: IProposal[] = [];
+      // sort proposals by createdAt
+      if (Array.isArray(proposals)) {
+        const sortedProposals: IProposal[] = proposals.sort((a: IProposal, b: IProposal) => {
+          const timestampA = format(a.createdAt, 'x');
+          const timestampB = format(b.createdAt, 'x');
+          return parseInt(timestampA) - parseInt(timestampB);
+        });
+        proposalData = sortedProposals;
+      }
 
-    const slatesByID = keyBy(slates, 'id');
-    console.log('slatesByID:', slatesByID);
-    const proposalsByID = keyBy(proposalData, 'id');
-    console.log('proposalsByID:', proposalsByID);
+      const slatesByID = keyBy(slates, 'id');
+      console.log('slatesByID:', slatesByID);
+      const proposalsByID = keyBy(proposalData, 'id');
+      console.log('proposalsByID:', proposalsByID);
 
-    const oneWeekSeconds: number = 604800;
-    // Epoch 3
-    // beginning of week 1 (2/1)
-    const epochStartDate: number = 1549040400; // gatekeeper.functions.currentBatchStart()
-    // end of week 11 (4/19)
-    const week11EndDate: number = epochStartDate + oneWeekSeconds * 11; // 1555689601
-    // end of week 12 (4/26)
-    const week12EndDate: number = week11EndDate + oneWeekSeconds;
-    // end of week 13 (5/3)
-    const week13EndDate: number = week12EndDate + oneWeekSeconds;
-
-    // prettier-ignore
-    this.setState({
-      slates,
-      proposals: proposalData,
-      proposalsByID,
-      slatesByID,
-      currentBallot: {
+      const oneWeekSeconds: number = 604800;
+      // Epoch 3
+      // beginning of week 1 (2/1)
+      const epochStartDate: number = 1549040400; // gatekeeper.functions.currentBatchStart()
+      // end of week 11 (4/19)
+      const week11EndDate: number = epochStartDate + oneWeekSeconds * 11; // 1555689601
+      // end of week 12 (4/26)
+      const week12EndDate: number = week11EndDate + oneWeekSeconds;
+      // end of week 13 (5/3)
+      const week13EndDate: number = week12EndDate + oneWeekSeconds;
+      const currentBallot = {
         startDate: epochStartDate,
         votingOpenDate: week11EndDate,
         votingCloseDate: week12EndDate,
         finalityDate: week13EndDate,
-      },
-    });
-  }
+      };
 
-  async handleGetAllProposals() {
-    // TODO: get or sort proposals by category
-    let proposals: IProposal[] | AxiosResponse = await getAllProposals();
-
-    // convert tokensRequested: base -> human
-    if (Array.isArray(proposals)) {
-      proposals = proposals.map((p: any) => {
-        p.tokensRequested = baseToConvertedUnits(p.tokensRequested, 18);
-        p.category = 'GRANT';
-        return p;
+      dispatch({
+        type: 'all',
+        slates,
+        proposals,
+        slatesByID,
+        proposalsByID,
+        currentBallot,
       });
-    } else {
-      throw new Error('invalid proposals type -- AxiosResponse');
     }
+    setInitialState();
+  }, []);
 
-    return proposals;
+  async function handleRefreshProposals() {
+    const proposals: IProposal[] = await handleGetAllProposals();
+    return dispatch({ type: 'proposals', payload: proposals });
+  }
+  async function handleRefreshSlates() {
+    const slates: ISlate[] = await handleGetAllSlates();
+    return dispatch({ type: 'slates', payload: slates });
   }
 
-  async handleGetAllSlates() {
-    const slates: ISlate[] | AxiosResponse = await getAllSlates();
-    if (Array.isArray(slates)) {
-      return slates;
-    }
-
-    return [];
-  }
-
-  handleRefreshProposals = async () => {
-    const proposals: IProposal[] = await this.handleGetAllProposals();
-    return this.setState({ proposals });
-  };
-  handleRefreshSlates = async () => {
-    const slates: ISlate[] = await this.handleGetAllSlates();
-    return this.setState({ slates });
+  const value: IMainContext = {
+    ...state,
+    onRefreshProposals: handleRefreshProposals,
+    onRefreshSlates: handleRefreshSlates,
   };
 
-  render() {
-    const { children } = this.props;
-    return (
-      <MainContext.Provider
-        value={{
-          ...this.state,
-          onRefreshProposals: this.handleRefreshProposals,
-          onRefreshSlates: this.handleRefreshSlates,
-        }}
-      >
-        {children}
-      </MainContext.Provider>
-    );
-  }
+  return <MainContext.Provider value={value}>{props.children}</MainContext.Provider>;
 }
