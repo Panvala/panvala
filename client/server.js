@@ -50,9 +50,8 @@ app.prepare().then(() => {
     const requestParams = setIdParamsByRequestQuery(req);
     return app.render(req, res, '/Withdraw', requestParams);
   });
-  server.get('/withdraw/:id/voting', (req, res) => {
-    const requestParams = setIdParamsByRequestQuery(req);
-    return app.render(req, res, '/Withdraw', requestParams);
+  server.get('/withdraw/voting', (req, res) => {
+    return app.render(req, res, '/Withdraw');
   });
 
   // ----------------------------------------------

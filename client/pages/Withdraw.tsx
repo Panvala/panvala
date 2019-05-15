@@ -22,10 +22,11 @@ const SectionDialog = styled.div`
 
 interface IProps {
   query: any;
+  asPath: string;
 }
 
 const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
-  const { proposals, slates }: IMainContext = React.useContext(MainContext);
+  const { slates }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
     votingRights,
@@ -34,7 +35,6 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
   }: IEthereumContext = React.useContext(EthereumContext);
 
   const slate = (slates as any[]).find(s => s.id === parseInt(query.id));
-  const proposal = (proposals as any[]).find(p => p.id === parseInt(query.id));
 
   async function handleWithdraw() {
     try {
@@ -53,7 +53,7 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
           ]);
         } else if (asPath.includes('grant')) {
           await sendAndWaitForTransaction(ethProvider, contracts.tokenCapacitor, 'withdrawTokens', [
-            proposal.id,
+            query.id,
           ]);
         } else {
           console.log('Invalid asPath', asPath);
