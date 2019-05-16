@@ -151,5 +151,5 @@ export interface INotification {
 
 export interface INotificationsContext {
   notifications: INotification[];
-  onHandleGetUnreadNotifications(account: string): void;
+  onHandleGetUnreadNotifications(account: string, slatesByID: any, proposalsByID: any): void;
 }

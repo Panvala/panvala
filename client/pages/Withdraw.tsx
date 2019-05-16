@@ -10,6 +10,7 @@ import { StatelessPage, IMainContext, IEthereumContext } from '../interfaces';
 import { EthereumContext } from '../components/EthereumProvider';
 import { MainContext } from '../components/MainProvider';
 import { sendAndWaitForTransaction } from '../utils/transaction';
+import { NotificationsContext } from '../components/NotificationsProvider';
 
 const CenteredSection = styled.div`
   padding: 2rem;
@@ -26,19 +27,23 @@ interface IProps {
 }
 
 const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
-  const { slates, onRefreshSlates }: IMainContext = React.useContext(MainContext);
+  const { slates, onRefreshSlates, slatesByID, proposalsByID }: IMainContext = React.useContext(
+    MainContext
+  );
   const {
+    account,
     contracts,
     votingRights,
     ethProvider,
     onRefreshBalances,
   }: IEthereumContext = React.useContext(EthereumContext);
+  const { onHandleGetUnreadNotifications } = React.useContext(NotificationsContext);
 
   const slate = (slates as any[]).find(s => s.id === parseInt(query.id));
 
   async function handleWithdraw() {
     try {
-      if (ethProvider && contracts) {
+      if (account && ethProvider && contracts && slatesByID && proposalsByID) {
         // console.log('slates:', slates);
         // console.log('query:', query);
         // console.log('asPath:', asPath);
@@ -60,6 +65,7 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
         }
         onRefreshBalances();
         onRefreshSlates();
+        onHandleGetUnreadNotifications(account, slatesByID, proposalsByID);
       }
     } catch (error) {
       throw error;
