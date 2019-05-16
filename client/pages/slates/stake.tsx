@@ -142,7 +142,7 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
         <StepperMetamaskDialog />
         <MetamaskButton
           handleClick={approveOrStakeTokens}
-          text={approved ? 'Stake Tokens' : `Approve ${slateStakeAmount} PAN`}
+          text={approved ? 'Stake Tokens' : `Approve ${formatPanvalaUnits(slateStakeAmount)}`}
         />
       </Stepper>
 

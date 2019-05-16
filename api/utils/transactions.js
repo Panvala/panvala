@@ -60,8 +60,8 @@ async function getLogsInBlock(block, provider, gatekeeper, tokenCapacitor) {
 
 const extraneousEventNames = [
   'PermissionRequested',
-  'VotingTokensDeposited',
-  'VotingTokensWithdrawn',
+  // 'VotingTokensDeposited',
+  // 'VotingTokensWithdrawn',
 ];
 
 /**

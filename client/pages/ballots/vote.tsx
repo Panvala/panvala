@@ -181,7 +181,6 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
 
             setOpenModal(true);
             toast.success('Successfully submitted a ballot');
-            router.push('/ballots');
           }
         } catch (error) {
           let toastMessage = error.toastMessage;
@@ -203,7 +202,13 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
         <ModalDescription className="flex flex-wrap">
           Your vote has been recorded. It won't be revealed publicly until the vote concludes.
         </ModalDescription>
-        <Button type="default" onClick={() => setOpenModal(false)}>
+        <Button
+          type="default"
+          onClick={() => {
+            setOpenModal(false);
+            router.push('/ballots');
+          }}
+        >
           {'Done'}
         </Button>
       </Modal>

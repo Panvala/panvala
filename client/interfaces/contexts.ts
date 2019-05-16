@@ -126,13 +126,13 @@ export interface IMainContext {
   proposalsByID?: any;
   slatesByID?: any;
   currentBallot?: IBallotDates;
-  onRefreshProposals?(): any;
-  onRefreshSlates?(): any;
+  onRefreshProposals(): any;
+  onRefreshSlates(): any;
 }
 export interface IEthereumContext {
   account?: string;
-  ethProvider?: providers.Web3Provider | {};
-  contracts?: IContracts | {};
+  ethProvider?: providers.Web3Provider;
+  contracts?: IContracts;
   panBalance: utils.BigNumber;
   gkAllowance: utils.BigNumber;
   tcAllowance: utils.BigNumber;
@@ -151,5 +151,5 @@ export interface INotification {
 
 export interface INotificationsContext {
   notifications: INotification[];
-  onHandleGetUnreadNotifications?(account: string): void;
+  onHandleGetUnreadNotifications(account: string): void;
 }

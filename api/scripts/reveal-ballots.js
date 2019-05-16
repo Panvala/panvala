@@ -6,17 +6,15 @@ const { getContracts } = require('../utils/eth');
 
 const mnemonic = process.env.MNEMONIC;
 
-
 async function getBallots(epochNumber) {
   const data = await SubmittedBallot.findAll({
     where: {
       epochNumber,
     },
-    include: [ VoteChoice ],
+    include: [VoteChoice],
   });
   return data;
 }
-
 
 function encode(choices) {
   const categories = [];
@@ -24,28 +22,22 @@ function encode(choices) {
   const secondChoices = [];
 
   choices.forEach(choice => {
-    const cat = choice.id - 1;
+    const cat = 0; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
     categories.push(cat.toString());
     firstChoices.push(choice.firstChoice);
     secondChoices.push(choice.secondChoice);
   });
 
-  const encodedBallot = voting.encodeBallot(
-    categories,
-    firstChoices,
-    secondChoices,
-  );
+  const encodedBallot = voting.encodeBallot(categories, firstChoices, secondChoices);
 
   return encodedBallot;
 }
-
 
 async function run() {
   const { gatekeeper: ROGatekeeper } = getContracts();
   const provider = ROGatekeeper.provider;
   const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
   const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
-
 
   // get the contract interface for the Gatekeeper
   const gatekeeper = ROGatekeeper.connect(wallet);
@@ -65,7 +57,7 @@ async function run() {
     const _ballot = b.get({ plain: true });
     return gatekeeper.functions.didReveal(batchNumber, _ballot.voterAddress).then(didReveal => {
       // console.log(didReveal, _ballot);
-      return {..._ballot, didReveal };
+      return { ..._ballot, didReveal };
     });
   });
 
@@ -101,10 +93,9 @@ async function run() {
   });
 
   // Reveal
-  console.log(voters);
+  console.log('voters:', voters);
   console.log(encodedBallots);
-  console.log(salts);
-
+  console.log('salts:', salts);
 
   try {
     console.log(`Revealing ${voters.length} ballot(s)...`);
@@ -122,7 +113,6 @@ async function run() {
       // console.error(a.error.message);
       process.exit(1);
     }
-
   } catch (error) {
     console.error(error);
     process.exit(1);

@@ -52,7 +52,7 @@ async function run() {
   try {
     console.log('Tallying votes for all categories...');
     const tallyAllCategories = contests.map(contest => tally(gatekeeper, batchNumber, contest));
-    await tallyAllCategories;
+    await Promise.all(tallyAllCategories);
     console.log('DONE');
   } catch (error) {
     console.error(error);

@@ -3,7 +3,7 @@ const { checkSchema } = require('express-validator/check');
 
 // Validation
 const { proposalSchema } = require('./utils/proposals');
-const { ballotSchema, ballotInsertSchema } = require('./utils/ballots');
+const { ballotInsertSchema } = require('./utils/ballots');
 const { slateSchema } = require('./utils/slates');
 const eth = require('./utils/eth');
 
@@ -60,12 +60,7 @@ module.exports = app => {
   app.post('/api/slates', checkSchema(slateSchema), slate.create);
 
   // BALLOTS
-  app.post(
-    '/api/ballots',
-    ballot.process,
-    checkSchema(ballotInsertSchema),
-    ballot.create
-  );
+  app.post('/api/ballots', ballot.process, checkSchema(ballotInsertSchema), ballot.create);
 
   // NOTIFICATIONS
   app.get('/api/notifications/:address', notification.getByAddress);

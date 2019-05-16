@@ -26,7 +26,7 @@ interface IProps {
 }
 
 const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
-  const { slates }: IMainContext = React.useContext(MainContext);
+  const { slates, onRefreshSlates }: IMainContext = React.useContext(MainContext);
   const {
     contracts,
     votingRights,
@@ -59,6 +59,7 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
           console.log('Invalid asPath', asPath);
         }
         onRefreshBalances();
+        onRefreshSlates();
       }
     } catch (error) {
       throw error;
