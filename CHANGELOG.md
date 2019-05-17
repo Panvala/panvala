@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
+## [0.3.0] 2019-05-17
+
 ### Changed
 - Fix `UNDEFINED PROPOSAL` label on proposals when creating a slate
 - Make sure the stake amount is consistent throughout the interface
@@ -46,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2019-04-02
 
-[Unreleased]: https://github.com/ConsenSys/panvala/compare/v0.2.0...develop
+[Unreleased]: https://github.com/ConsenSys/panvala/compare/v0.3.0...develop
+[0.3.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.3.0
 [0.2.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.2.0
 [0.1.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.1.0
