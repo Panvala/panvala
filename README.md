@@ -9,6 +9,14 @@ Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.
 
 ## Release Notes
 
+### 0.3.0
+
+- *Slate staking* has been added to the application. PAN token holders can now use their PAN tokens to stake on a specific slate to add that slate to Panvala's quarterly ballot. This staking can be be done during the creation of a slate OR afterwards by a seperate third party. For instance, some individuals will want to do the work of recommending a slate, but may not have the requisite tokens to add their slate to the ballot. In that instance, another party can stake their slate.
+- Users will now see a system of modals letting them know that their transaction is still processing.
+- A new in-app notification system has been added to the application
+- Users who have deposited their tokens for voting can now recieve a notification that they need to retrieve these tokens, and are able to retrieve the tokens from the voting contract.
+- A bug labelling grant proposals as "undefined proposal" has been resolved.
+
 ### 0.2.0
 
 - Users now have a *notification panel* where they can find important information after signing in with MetaMask.
