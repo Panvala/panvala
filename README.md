@@ -16,6 +16,7 @@ Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.
 - A new in-app notification system has been added to the application
 - Users who have deposited their tokens for voting can now recieve a notification that they need to retrieve these tokens, and are able to retrieve the tokens from the voting contract.
 - A bug labelling grant proposals as "undefined proposal" has been resolved.
+- Core contracts have been updated and refactored. Full full details, see the changelog. 
 
 ### 0.2.0
 
