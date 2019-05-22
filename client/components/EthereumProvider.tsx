@@ -14,12 +14,15 @@ declare global {
   }
 }
 
-async function getBalances(account: string, contracts: IContracts): Promise<utils.BigNumber[]> {
+async function getBalances(account: string, contracts: IContracts): Promise<any[]> {
   return Promise.all([
     contracts.token.functions.balanceOf(account),
     contracts.token.functions.allowance(account, contracts.gatekeeper.address),
     contracts.token.functions.allowance(account, contracts.tokenCapacitor.address),
     contracts.gatekeeper.functions.voteTokenBalance(account),
+    contracts.parameterStore.functions.get('slateStakeAmount'), // TODO: move to /stake route
+    contracts.token.functions.balanceOf(contracts.tokenCapacitor.address),
+    contracts.token.functions.balanceOf(contracts.gatekeeper.address),
   ]);
 }
 
@@ -34,6 +37,9 @@ export default function EthereumProvider(props: any) {
     gkAllowance: utils.bigNumberify('0'),
     tcAllowance: utils.bigNumberify('0'),
     votingRights: utils.bigNumberify('0'),
+    slateStakeAmount: utils.bigNumberify('0'),
+    tcBalance: utils.bigNumberify('0'),
+    gkBalance: utils.bigNumberify('0'),
   });
 
   // runs once, on-load
@@ -84,15 +90,23 @@ export default function EthereumProvider(props: any) {
 
   async function handleRefreshBalances(address: string) {
     if (address && !isEmpty(ethState.contracts)) {
-      const [panBalance, gkAllowance, tcAllowance, votingRights] = await getBalances(
-        address,
-        ethState.contracts
-      );
+      const [
+        panBalance,
+        gkAllowance,
+        tcAllowance,
+        votingRights,
+        slateStakeAmount,
+        tcBalance,
+        gkBalance,
+      ] = await getBalances(address, ethState.contracts);
       setBalances({
         panBalance,
         gkAllowance,
         tcAllowance,
         votingRights,
+        slateStakeAmount,
+        tcBalance,
+        gkBalance,
       });
     }
   }

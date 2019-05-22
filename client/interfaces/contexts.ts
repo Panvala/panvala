@@ -1,4 +1,5 @@
-import { providers, Contract, utils } from 'ethers';
+import { providers, utils } from 'ethers';
+import { BasicToken, Gatekeeper, TokenCapacitor, ParameterStore } from '../types';
 
 /**
  * Proposal fields that gets loaded/rendered in the frontend
@@ -114,10 +115,10 @@ export interface IBallotDates {
 }
 
 export interface IContracts {
-  tokenCapacitor: Contract;
-  gatekeeper: Contract;
-  token: Contract;
-  parameterStore: Contract;
+  tokenCapacitor: TokenCapacitor;
+  gatekeeper: Gatekeeper;
+  token: BasicToken;
+  parameterStore: ParameterStore;
 }
 
 export interface IMainContext {
@@ -125,7 +126,7 @@ export interface IMainContext {
   proposals?: IProposal[];
   proposalsByID?: any;
   slatesByID?: any;
-  currentBallot?: IBallotDates;
+  currentBallot: IBallotDates;
   onRefreshProposals(): any;
   onRefreshSlates(): any;
 }

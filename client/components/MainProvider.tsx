@@ -57,9 +57,15 @@ function reducer(state: any, action: any) {
         currentBallot: action.currentBallot,
       };
     case 'slates':
-      return { slates: action.payload };
+      return {
+        ...state,
+        slates: action.payload,
+      };
     case 'proposals':
-      return { proposals: action.payload };
+      return {
+        ...state,
+        proposals: action.payload,
+      };
     default:
       throw new Error();
   }
