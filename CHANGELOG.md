@@ -7,8 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Recommenders can stake on their slates as they are creating them instead of waiting for someone to do it later
+- Add admin scripts to reveal ballots and tally votes
+- Greatly expanded notifications to include the following types
+  - Proposal Recommended
+  - Grant Proposal Not Funded
+  - Slate Adopted
+  - Slate Not Adopted
+  - Ballot Opened
+  - Ballot Concluded
+  - Action Required: Withdraw Voting Tokens
+  - Action Required: Withdraw Staked Tokens
+  - Action Required: Withdraw Grant Proposal Tokens
+- Add Typescript types for the contracts using typechain
+- Add form for creating governance slates
+  - `/slates/create` now lets you choose the type of slate you want to create
+  - `/slates/create/grant` and `/slates/create/governance` point to the forms
+- Contracts: unopposed slates automatically win
+- Contracts: enforce slate submission and voting (commit, reveal) periods
+  - Extend the slate submission period each time someone stakes on a slate. Extension is half the time until voting starts.
+- Contracts: temporarily add an owner who can shift the start time (and therefore the current position in the timeline). This feature is to be removed in the final version.
 
 ### Changed
+- Only display staked slates on the ballot
+- Make more fields optional when creating grant proposals -- `totalBudget` and `otherFunding`
+- Fix: do not display email addresses, and do not return them from the API
+- Fix: do not allow a slate to be stake multiple times
+- Improve the pending transaction flow
+- Improve error handling in IPFS fetching
+- Many improvements to state updating in the frontend
+- Add/update routes, splitting `/withdraw/{id}` into separate routes
+  - `/slates/{slateID}/stake` - stake on a slate
+  - `/withdraw/stake/{slateID}` - withdraw stake for a slate
+  - `/withdraw/grant/{proposalID}` - withdraw tokens for a grant
+  - `/withdraw/voting` - withdraw voting tokens
+- Upgrade Sequelize and Axios to address security issues
+- Improved definition of styles using styled-system
+- Contracts: only include staked slates when determining the state of a contest, and only count votes for staked slates
 
 ## [0.3.0] 2019-05-17
 
