@@ -1184,7 +1184,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.depositVoteTokens(numTokens, { from: voter });
 
       await increaseTime(timing.VOTING_PERIOD_START);
-      const receipt = await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      const receipt = await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // Emit an event with the correct values
       const {
@@ -1215,7 +1215,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // Do not deposit any vote tokens, but commit anyway
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // Voter's token balance has increased
       const finalVotingBalance = await gatekeeper.voteTokenBalance(voter);
@@ -1233,7 +1233,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.depositVoteTokens(numTokens, { from: voter });
 
       try {
-        await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+        await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'not active');
@@ -1252,7 +1252,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START.add(timing.COMMIT_PERIOD_LENGTH));
 
       try {
-        await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+        await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'not active');
@@ -1269,11 +1269,11 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // commit
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // try to commit again
       try {
-        await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+        await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
         return;
@@ -1289,7 +1289,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       try {
-        await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+        await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'zero hash');
@@ -1336,7 +1336,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // commit
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       const didCommit = await gatekeeper.didCommit(ballotID, voter);
       assert(didCommit, 'Voter committed, but didCommit returned false');
@@ -1380,7 +1380,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // commit
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       const storedCommitHash = await gatekeeper.getCommitHash(ballotID, voter);
       assert.strictEqual(
@@ -1512,7 +1512,7 @@ contract('Gatekeeper', (accounts) => {
 
       // commit here
       await increaseTime(timing.VOTING_PERIOD_START);
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // set up reveal data
       const resources = Object.keys(votes);
@@ -2104,7 +2104,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // commit
-      await gatekeeper.commitBallot(commitHash, numTokens, { from: voter });
+      await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // set up reveal data
       const resources = Object.keys(votes);
