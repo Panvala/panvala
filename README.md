@@ -9,6 +9,15 @@ Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.
 
 ## Release Notes
 
+### 0.4.0
+
+- Grant recipients can now retrieve their tokens from the token capacitor
+- Tokens staked on a slate can now be retrieved if the slate is approved by token holders. For slates that were not approved, the staked tokens are donated to the token capacitor to fund future grants.
+- The staking period for slates is now extended by 50% of the remaining time when a slate is staked. This prevents the equivalent behavior of "ebay sniping" to manipulate the ballot.
+- The ballot will now only display staked slates.
+- If a slate enters the ballot period uncontested by a competing slate, it will now automatically win the ballot.
+- Significant contract work has been added. See changelog for details
+
 ### 0.3.0
 
 - *Slate staking* has been added to the application. PAN token holders can now use their PAN tokens to stake on a specific slate to add that slate to Panvala's quarterly ballot. This staking can be be done during the creation of a slate OR afterwards by a seperate third party. For instance, some individuals will want to do the work of recommending a slate, but may not have the requisite tokens to add their slate to the ballot. In that instance, another party can stake their slate.
