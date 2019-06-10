@@ -660,7 +660,7 @@ contract('Gatekeeper', (accounts) => {
       stakeAmount = await parameters.getAsUint('slateStakeAmount');
 
       // Give out tokens
-      const allocatedTokens = stakeAmount.add(new BN('1000'));
+      const allocatedTokens = stakeAmount.add(new BN('10000'));
       await token.transfer(staker, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: staker });
     });
@@ -805,6 +805,61 @@ contract('Gatekeeper', (accounts) => {
         return;
       }
       assert.fail('Allowed slate staking after the slate submission deadline');
+    });
+
+    it('should correctly extend the deadline in future epochs', async () => {
+      // move to a future epoch
+      await increaseTime(timing.EPOCH_LENGTH.mul(new BN(3)));
+      const futureEpoch = await gatekeeper.currentEpochNumber();
+      const epochStart = await currentEpochStart(gatekeeper);
+
+      const resource = GRANT;
+
+      // Create a new slate
+      const proposals = [
+        { to: staker, tokens: '1000', metadataHash: createMultihash('a') },
+      ];
+      const metadata = asBytes(createMultihash('grant slate'));
+
+      const thisSlateID = await gatekeeper.slateCount();
+      await utils.grantSlateFromProposals({
+        gatekeeper,
+        proposals,
+        capacitor,
+        metadata,
+        recommender,
+      });
+
+      // Check deadlines
+      const two = new BN(2);
+      const halfVoting = timing.VOTING_PERIOD_START.div(two);
+      const expectedDeadline = epochStart.add(halfVoting);
+      const deadline = await gatekeeper.slateSubmissionDeadline(futureEpoch, resource);
+
+      // console.log('actual', printDate(deadline), deadline);
+      // console.log('expected', printDate(expectedDeadline), expectedDeadline);
+      assert.strictEqual(deadline.toString(), expectedDeadline.toString(), 'Wrong deadline');
+
+      // move forward and stake
+      await increaseTime(ONE_WEEK);
+      // const dt = await utils.evm.timestamp();
+      // console.log('epochTime', await utils.epochTime(gatekeeper, dt, 'days'));
+
+      await gatekeeper.stakeTokens(thisSlateID, {
+        from: staker,
+      });
+      const now = await utils.evm.timestamp();
+      const submissionTime = new BN(now);
+
+      // check the new deadline
+      const extendedDeadline = await gatekeeper.slateSubmissionDeadline(futureEpoch, resource);
+      const remaining = timing.VOTING_PERIOD_START.sub(submissionTime.sub(epochStart));
+      const expectedExtendedDeadline = submissionTime.add(remaining.div(two));
+      assert.strictEqual(
+        extendedDeadline.toString(),
+        expectedExtendedDeadline.toString(),
+        'Extension was wrong',
+      );
     });
 
     afterEach(async () => {

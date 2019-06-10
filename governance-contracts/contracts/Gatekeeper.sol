@@ -297,6 +297,8 @@ contract Gatekeeper {
 
         // Submission period must be active
         require(now < slateSubmissionDeadline(slate.epochNumber, slate.resource), "deadline passed");
+        uint256 epochNumber = currentEpochNumber();
+        assert(slate.epochNumber == epochNumber);
 
         // Transfer tokens and update the slate's staking info
         // Must successfully transfer tokens from staker to this contract
@@ -309,7 +311,8 @@ contract Gatekeeper {
         // A vote can only happen if there is more than one associated slate
         Contest storage contest = ballots[slate.epochNumber].contests[slate.resource];
         contest.stakedSlates.push(slateID);
-        contest.lastStaked = now.sub(startTime);
+        // offset from the start of the epoch, for easier calculations
+        contest.lastStaked = now.sub(epochStart(epochNumber));
 
         uint256 numSlates = contest.stakedSlates.length;
         if (numSlates == 1) {
