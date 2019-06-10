@@ -1110,7 +1110,7 @@ contract('Gatekeeper', (accounts) => {
     });
   });
 
-  describe('delegateVote', () => {
+  describe('delegateVotingRights', () => {
     const [creator, voter, delegate] = accounts;
     let gatekeeper;
 
@@ -1119,7 +1119,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should allow a voter to set a delegate account', async () => {
-      const receipt = await gatekeeper.delegateVote(delegate, { from: voter });
+      const receipt = await gatekeeper.delegateVotingRights(delegate, { from: voter });
 
       assert.strictEqual(receipt.logs[0].event, 'DelegateSet', 'Wrong event was emitted');
       const { voter: emittedVoter, delegate: emittedDelegate } = receipt.logs[0].args;
@@ -1133,7 +1133,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should revert if the delegate is the same as the sender', async () => {
       try {
-        await gatekeeper.delegateVote(voter, { from: voter });
+        await gatekeeper.delegateVotingRights(voter, { from: voter });
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'equal');
@@ -1144,12 +1144,12 @@ contract('Gatekeeper', (accounts) => {
 
     it('should allow the voter to unset the delegate', async () => {
       // Set delegate
-      const receipt = await gatekeeper.delegateVote(delegate, { from: voter });
+      const receipt = await gatekeeper.delegateVotingRights(delegate, { from: voter });
       const { delegate: setDelegate } = receipt.logs[0].args;
 
       // Unset delegate by setting to zero
       const noDelegate = utils.zeroAddress();
-      await gatekeeper.delegateVote(noDelegate, { from: voter });
+      await gatekeeper.delegateVotingRights(noDelegate, { from: voter });
 
       assert.notStrictEqual(setDelegate, noDelegate, 'Should have unset delegate');
     });
@@ -1303,7 +1303,7 @@ contract('Gatekeeper', (accounts) => {
       const numTokens = '1000';
 
       beforeEach(async () => {
-        await gatekeeper.delegateVote(delegate, { from: voter });
+        await gatekeeper.delegateVotingRights(delegate, { from: voter });
       });
 
       it('should let a delegate commit a ballot for the voter', async () => {
@@ -1356,6 +1356,7 @@ contract('Gatekeeper', (accounts) => {
           await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: delegate });
         } catch (error) {
           expectRevert(error);
+          expectErrorLike(error, 'Insufficient tokens');
           return;
         }
 
@@ -1429,7 +1430,7 @@ contract('Gatekeeper', (accounts) => {
 
     it("should return true if a delegate voted on the voter's behalf", async () => {
       const [, , delegate] = accounts;
-      await gatekeeper.delegateVote(delegate, { from: voter });
+      await gatekeeper.delegateVotingRights(delegate, { from: voter });
 
       const commitHash = utils.keccak('data');
       const numTokens = '1000';
