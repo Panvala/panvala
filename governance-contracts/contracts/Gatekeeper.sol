@@ -63,6 +63,7 @@ contract Gatekeeper {
         // The resource (contract) the permission is being requested for
         address resource;
         bool approved;
+        uint expirationTime;
     }
 
     // The requests made to the Gatekeeper. Maps requestID -> Request.
@@ -908,7 +909,8 @@ contract Gatekeeper {
         Request memory r = Request({
             metadataHash: metadataHash,
             resource: resource,
-            approved: false
+            approved: false,
+            expirationTime: 0
         });
 
         // Record request and return its ID
@@ -931,18 +933,20 @@ contract Gatekeeper {
 
         // mark all of its requests as approved
         uint[] memory requestIDs = s.requests;
+        uint256 expirationTime = now.add(EPOCH_LENGTH);
         for (uint i = 0; i < requestIDs.length; i++) {
             uint requestID = requestIDs[i];
             requests[requestID].approved = true;
+            requests[requestID].expirationTime = expirationTime;
         }
     }
 
     /**
-    @dev Return true if the requestID has been approved via slate governance
+    @dev Return true if the requestID has been approved via slate governance and has not expired
     @param requestID The ID of the request to check
      */
     function hasPermission(uint requestID) public view returns(bool) {
-        return requests[requestID].approved;
+        return requests[requestID].approved && now < requests[requestID].expirationTime;
     }
 
 
