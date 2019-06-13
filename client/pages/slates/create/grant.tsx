@@ -140,13 +140,8 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
   // Submit requestIDs and metadataHash to the Gatekeeper.
   async function submitGrantSlate(requestIDs: any[], metadataHash: string): Promise<any> {
     if (contracts) {
-      const epochNumber = await contracts.gatekeeper.functions.currentEpochNumber();
-      // placeholder
-      const category = 0; // Grant
-
       const response = await contracts.gatekeeper.functions.recommendSlate(
-        epochNumber,
-        category,
+        contracts.tokenCapacitor.address,
         requestIDs,
         Buffer.from(metadataHash)
       );

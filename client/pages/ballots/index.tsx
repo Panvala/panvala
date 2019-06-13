@@ -29,7 +29,7 @@ const Ballots: React.FunctionComponent<any> = () => {
   const { currentBallot }: IMainContext = React.useContext(MainContext);
   return (
     <>
-      {!isBallotOpen(currentBallot) ? ( // temporary hack to bypass ballot opening deadline
+      {isBallotOpen(currentBallot) ? ( // temporary hack to bypass ballot opening deadline
         <>
           <Flex justifyEnd>
             <Deadline ballot={currentBallot} route="ballots" />
@@ -60,7 +60,7 @@ const Ballots: React.FunctionComponent<any> = () => {
             <RouteActions href="/ballots/vote" as="/ballots/vote" text="Continue" />
           </CenteredWrapper>
         </>
-      ) : !isBallotOpen(currentBallot) ? (
+      ) : (
         <>
           <Flex justifyBetween>
             <Flex>
@@ -75,7 +75,7 @@ const Ballots: React.FunctionComponent<any> = () => {
             )}`}
           </Box>
         </>
-      ) : null}
+      )}
     </>
   );
 };

@@ -8,6 +8,19 @@ import { TransactionOverrides } from '.';
 
 export class ParameterStore extends Contract {
   functions: {
+    proposals(
+      arg0: number | string | BigNumber
+    ): Promise<{
+      key: string;
+      value: string;
+      metadataHash: (string)[];
+      executed: boolean;
+      0: string;
+      1: string;
+      2: (string)[];
+      3: boolean;
+    }>;
+
     params(arg0: string): Promise<string>;
 
     get(_name: string): Promise<string>;
@@ -23,8 +36,39 @@ export class ParameterStore extends Contract {
       _value: string,
       overrides?: TransactionOverrides
     ): Promise<ContractTransaction>;
+
+    createProposal(
+      key: string,
+      value: string,
+      metadataHash: (string)[],
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    createManyProposals(
+      keys: (string)[],
+      values: (string)[],
+      metadataHashes: ((string)[])[],
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    setValue(
+      proposalID: number | string | BigNumber,
+      overrides?: TransactionOverrides
+    ): Promise<ContractTransaction>;
+
+    proposalCount(): Promise<BigNumber>;
   };
   filters: {
-    ParameterSet(key: null, value: null): EventFilter;
+    ParameterInitialized(key: null, value: null): EventFilter;
+
+    ProposalCreated(
+      proposer: string | null,
+      requestID: null,
+      key: null,
+      value: null,
+      metadataHash: null
+    ): EventFilter;
+
+    ParameterSet(proposalID: null, key: null, value: null): EventFilter;
   };
 }

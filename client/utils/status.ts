@@ -1,5 +1,6 @@
 import { IBallotDates } from '../interfaces';
 import { dateHasPassed } from './datetime';
+import { utils } from 'ethers';
 
 export const statuses = {
   PENDING_TOKENS: 'PENDING TOKENS',
@@ -64,6 +65,7 @@ export function getPrefixAndDeadline(
   ballot: IBallotDates,
   route: string
 ): { deadline: number; prefix: string } {
+  console.log('ballot:', ballot);
   let deadline = 0,
     prefix = '';
 
@@ -84,7 +86,7 @@ export function getPrefixAndDeadline(
     deadline = ballot.votingCloseDate;
   } else if (isBallotFinalized(ballot)) {
     prefix = 'BALLOT FINALIZED';
-    deadline = ballot.finalityDate + 1;
+    deadline = ballot.finalityDate;
   }
 
   return { deadline, prefix };
@@ -100,14 +102,14 @@ export function slateSubmissionDeadline(votingOpenDate: number, lastStaked: numb
 
 export function ballotDates(startDate: number = 1549040400): IBallotDates {
   const oneWeekSeconds = 604800;
-  const epochStartDate = startDate;
+  const epochStartDate = utils.bigNumberify(startDate).toNumber();
   const week11EndDate: number = epochStartDate + oneWeekSeconds * 11; // 1555689600
   const week12EndDate: number = week11EndDate + oneWeekSeconds;
   const week13EndDate: number = week12EndDate + oneWeekSeconds;
   const initialSlateSubmissionDeadline = slateSubmissionDeadline(week11EndDate, startDate);
 
   return {
-    startDate,
+    startDate: epochStartDate,
     votingOpenDate: week11EndDate,
     votingCloseDate: week12EndDate,
     finalityDate: week13EndDate,
