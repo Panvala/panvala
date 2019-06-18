@@ -89,7 +89,9 @@ interface IProps {
 
 const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
   // get proposals and eth context
-  const { proposals, onRefreshSlates }: IMainContext = React.useContext(MainContext);
+  const { proposals, onRefreshSlates, onRefreshCurrentBallot }: IMainContext = React.useContext(
+    MainContext
+  );
   const {
     account,
     contracts,
@@ -292,6 +294,7 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
 
             setOpenModal(true);
             onRefreshSlates();
+            onRefreshCurrentBallot();
             onRefreshBalances();
           } else {
             errorMessage = `problem saving slate info ${response.data}`;
