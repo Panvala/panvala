@@ -197,30 +197,57 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
 
       <CenteredWrapper>
         <Formik
-          initialValues={{
-            email: 'email@email.io',
-            firstName: 'First',
-            lastName: 'Last',
-            organization: 'Ethereum',
-            title: 'Change required stake',
-            summary: 'fdsfdsfasdfadsfsad',
-            parameters: {
-              slateStakeAmount: {
-                oldValue: '',
-                newValue: '',
-                type: 'uint256',
-                key: 'slateStakeAmount',
-              },
-              gatekeeperAddress: {
-                oldValue: '',
-                newValue: '',
-                type: 'address',
-                key: 'gatekeeperAddress',
-              },
-            },
-            recommendation: 'governance',
-            stake: 'no',
-          }}
+          initialValues={
+            process.env.NODE_ENV === 'development'
+              ? {
+                  email: 'email@email.io',
+                  firstName: 'First',
+                  lastName: 'Last',
+                  organization: 'Ethereum',
+                  title: 'Change required stake',
+                  summary: 'fdsfdsfasdfadsfsad',
+                  parameters: {
+                    slateStakeAmount: {
+                      oldValue: '',
+                      newValue: '',
+                      type: 'uint256',
+                      key: 'slateStakeAmount',
+                    },
+                    gatekeeperAddress: {
+                      oldValue: '',
+                      newValue: '',
+                      type: 'address',
+                      key: 'gatekeeperAddress',
+                    },
+                  },
+                  recommendation: 'governance',
+                  stake: 'no',
+                }
+              : {
+                  email: '',
+                  firstName: '',
+                  lastName: '',
+                  organization: '',
+                  title: '',
+                  summary: '',
+                  parameters: {
+                    slateStakeAmount: {
+                      oldValue: '',
+                      newValue: '',
+                      type: 'uint256',
+                      key: 'slateStakeAmount',
+                    },
+                    gatekeeperAddress: {
+                      oldValue: '',
+                      newValue: '',
+                      type: 'address',
+                      key: 'gatekeeperAddress',
+                    },
+                  },
+                  recommendation: 'governance',
+                  stake: 'no',
+                }
+          }
           validationSchema={GovernanceSlateFormSchema}
           onSubmit={async (values: IGovernanceSlateFormValues, { setSubmitting }: any) => {
             await handleSubmitSlate(values);
