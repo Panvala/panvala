@@ -6,6 +6,7 @@ import { LogDescription } from 'ethers/utils';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { CircularProgress, withStyles } from '@material-ui/core';
+import isEmpty from 'lodash/isEmpty';
 
 import { COLORS } from '../../../styles';
 import CenteredTitle from '../../../components/CenteredTitle';
@@ -140,11 +141,20 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
 
   // Submit requestIDs and metadataHash to the Gatekeeper.
   async function submitGrantSlate(requestIDs: any[], metadataHash: string): Promise<any> {
-    if (contracts) {
-      const response = await contracts.gatekeeper.functions.recommendSlate(
+    if (!isEmpty(contracts.gatekeeper)) {
+      const estimate = await contracts.gatekeeper.estimate.recommendSlate(
         contracts.tokenCapacitor.address,
         requestIDs,
         Buffer.from(metadataHash)
+      );
+      const txOptions = {
+        gasLimit: estimate.add('70000').toHexString(),
+      };
+      const response = await contracts.gatekeeper.functions.recommendSlate(
+        contracts.tokenCapacitor.address,
+        requestIDs,
+        Buffer.from(metadataHash),
+        txOptions
       );
       setTxPending(true);
 
