@@ -113,12 +113,13 @@ export interface IChoices {
 export interface ISubmitBallot {
   choices: {
     [key: string]: {
-      firstChoice: utils.BigNumber;
-      secondChoice: utils.BigNumber;
+      firstChoice: string;
+      secondChoice: string;
     };
   };
   salt: string;
   voterAddress: string;
+  epochNumber: string;
 }
 
 export interface IBallotDates {
