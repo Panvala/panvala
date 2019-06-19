@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Formik, Form, FormikContext } from 'formik';
 import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
-import { LogDescription } from 'ethers/utils';
+import { utils } from 'ethers';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { CircularProgress, withStyles } from '@material-ui/core';
@@ -148,7 +148,8 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
         Buffer.from(metadataHash)
       );
       const txOptions = {
-        gasLimit: estimate.add('70000').toHexString(),
+        gasLimit: estimate.add('100000').toHexString(),
+        gasPrice: utils.parseUnits('9.0', 'gwei'),
       };
       const response = await contracts.gatekeeper.functions.recommendSlate(
         contracts.tokenCapacitor.address,
