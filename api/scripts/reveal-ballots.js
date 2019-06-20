@@ -1,10 +1,6 @@
 const { voting } = require('../../packages/panvala-utils');
-const ethers = require('ethers');
-
 const { SubmittedBallot, VoteChoice } = require('../models');
 const { getContracts } = require('../utils/eth');
-
-const mnemonic = process.env.MNEMONIC;
 
 async function getBallots(epochNumber) {
   const data = await SubmittedBallot.findAll({
@@ -22,53 +18,48 @@ function encode(choices) {
   const secondChoices = [];
 
   choices.forEach(choice => {
-    const cat = 0; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
-    categories.push(cat.toString());
+    const cat = '0'; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
+    categories.push(cat);
     firstChoices.push(choice.firstChoice);
     secondChoices.push(choice.secondChoice);
   });
 
-  const encodedBallot = voting.encodeBallot(categories, firstChoices, secondChoices);
-
-  return encodedBallot;
+  return voting.encodeBallot(categories, firstChoices, secondChoices);
 }
 
 async function run() {
-  const { gatekeeper: ROGatekeeper } = getContracts();
-  const provider = ROGatekeeper.provider;
-  const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
-  const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
+  const { gatekeeper } = await getContracts();
+  console.log('gatekeeper:', gatekeeper.address);
 
-  // get the contract interface for the Gatekeeper
-  const gatekeeper = ROGatekeeper.connect(wallet);
-  console.log('gatekeeper', gatekeeper.address);
+  const epochNumber = (await gatekeeper.functions.currentEpochNumber()).toString();
+  console.log('epochNumber:', epochNumber);
 
   // read ballots from the database
-  const batchNumber = '0';
-  const ballots = await getBallots(batchNumber);
+  const ballots = await getBallots(epochNumber);
+  console.log('ballots:', ballots);
 
   if (ballots.length === 0) {
-    console.log(`No ballots for batch ${batchNumber}`);
+    console.log(`No ballots for batch ${epochNumber}`);
     process.exit();
   }
 
   // Filter out the ones that have already been revealed
-  const p = ballots.map(b => {
+  const ballotPromises = ballots.map(b => {
     const _ballot = b.get({ plain: true });
-    return gatekeeper.functions.didReveal(batchNumber, _ballot.voterAddress).then(didReveal => {
+    return gatekeeper.functions.didReveal(epochNumber, _ballot.voterAddress).then(didReveal => {
       // console.log(didReveal, _ballot);
       return { ..._ballot, didReveal };
     });
   });
 
-  const enriched = await Promise.all(p);
-  // console.log('ENRICHED', enriched);
+  const enriched = await Promise.all(ballotPromises);
+  console.log('ENRICHED', enriched);
 
   const toReveal = enriched.filter(e => e.didReveal === false);
-  // console.log('TO REVEAL', toReveal);
+  console.log('TO REVEAL', toReveal);
 
   if (toReveal.length === 0) {
-    console.log(`All ballots already revealed for batch ${batchNumber}`);
+    console.log(`All ballots already revealed for batch ${epochNumber}`);
     process.exit(0);
   }
 
@@ -94,7 +85,7 @@ async function run() {
 
   // Reveal
   console.log('voters:', voters);
-  console.log(encodedBallots);
+  console.log('encodedBallots:', encodedBallots);
   console.log('salts:', salts);
 
   try {
@@ -102,7 +93,7 @@ async function run() {
 
     try {
       const tx = await gatekeeper.functions.revealManyBallots(
-        batchNumber,
+        epochNumber,
         voters,
         encodedBallots,
         salts
