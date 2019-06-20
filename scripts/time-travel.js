@@ -76,7 +76,7 @@ async function timeTravel(days) {
   console.log(`  ${(now - epochStart.toNumber()) / (ONE_DAY * 7)} weeks`);
 
   // Send the tx, with confirmation from the user
-  rl.question(`Do you want to time travel ${days} days? [y/N]`, (answer) => {
+  rl.question(`Do you want to time travel ${days} days? [y/N]`, async (answer) => {
     if (answer === 'y') {
       console.log('traveling');
       const receipt = await gatekeeper.functions.timeTravel(daysInSeconds);
