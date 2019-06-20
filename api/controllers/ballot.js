@@ -69,16 +69,19 @@ module.exports = {
 
     // Transform into the structure to be inserted into the database
     const { ballot, signature, commitHash } = req.body;
+    console.log("ballot:", ballot);
     // TODO: send over the data in a smaller format (JSON.stringify)
 
-    const { epochNumber, salt, voterAddress, choices } = ballot;
+    const { epochNumber, salt, voterAddress, choices, delegate } = ballot;
 
     // Regenerate commit message
     const message = voting.generateCommitMessage(commitHash, choices['0'], salt);
     // Recover address from signed message
     const recoveredAddress = utils.verifyMessage(message, signature);
+    console.log("recovered:", recoveredAddress);
+
     // Validate the signature
-    if (recoveredAddress !== voterAddress) {
+    if (recoveredAddress !== voterAddress && recoveredAddress !== delegate) {
       return res.status(400).json({
         msg: 'Invalid signature. Recovered signature did not match signer of the commit message.',
         errors: [
@@ -97,6 +100,7 @@ module.exports = {
     req.body = {
       epochNumber,
       voterAddress,
+      delegate,
       salt,
       signature,
       VoteChoices,

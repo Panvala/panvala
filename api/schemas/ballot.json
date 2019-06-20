@@ -48,6 +48,11 @@
             }
           }
         },
+        "delegate": {
+          "$comment": "Length is `0x` + 40 hex characters",
+          "type": "string",
+          "pattern": "^0x[a-fA-F0-9]{40}$"
+        },
         "voterAddress": {
           "$comment": "Length is `0x` + 40 hex characters",
           "type": "string",

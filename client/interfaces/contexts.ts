@@ -120,6 +120,7 @@ export interface ISubmitBallot {
   salt: string;
   voterAddress: string;
   epochNumber: string;
+  delegate?: string;
 }
 
 export interface IBallotDates {

@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
+      delegate: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       signature: {
         type: DataTypes.STRING,
         validate: {

@@ -133,7 +133,8 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
           },
         },
         salt,
-        voterAddress: account,
+        voterAddress: tokenHolder,
+        ...(tokenHolder !== account && { delegate: account }),
       };
 
       if (!isEmpty(ethProvider) && numTokens.gt('0')) {
@@ -229,6 +230,8 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
                       asPath={'/ballots/vote'}
                       type={SLATE}
                       incumbent={slate.incumbent}
+                      recommender={slate.organization}
+                      verifiedRecommender={slate.verifiedRecommender}
                     />
                   ))
               : null}
