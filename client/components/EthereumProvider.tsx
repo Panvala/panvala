@@ -126,6 +126,8 @@ const EthereumProvider: React.FC = (props: any) => {
 
           // set state
           if (account && !isEmpty(ethProvider)) {
+            console.log('account:', account);
+            console.log('contracts:', contracts);
             dispatch({
               type: 'eth_state',
               ethProvider,
