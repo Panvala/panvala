@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import isEmpty from 'lodash/isEmpty';
 
 import CenteredWrapper from '../components/CenteredWrapper';
 import CenteredTitle from '../components/CenteredTitle';
@@ -7,11 +8,12 @@ import SectionLabel from '../components/SectionLabel';
 import { Separator } from '../components/Separator';
 import Actions from '../components/Actions';
 import A from '../components/A';
-import { EthereumContext } from '../components/EthereumProvider';
+import { EthereumContext, IEthereumContext } from '../components/EthereumProvider';
 import { MainContext } from '../components/MainProvider';
 import { NotificationsContext } from '../components/NotificationsProvider';
-import { StatelessPage, IMainContext, IEthereumContext } from '../interfaces';
+import { StatelessPage, IMainContext } from '../interfaces';
 import { sendAndWaitForTransaction } from '../utils/transaction';
+import { tsToDeadline } from '../utils/datetime';
 
 const CenteredSection = styled.div`
   padding: 2rem;
@@ -33,17 +35,27 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
   );
   const {
     account,
-    contracts,
+    contracts: { gatekeeper, tokenCapacitor },
     votingRights,
     ethProvider,
     onRefreshBalances,
   }: IEthereumContext = React.useContext(EthereumContext);
   const { onHandleGetUnreadNotifications } = React.useContext(NotificationsContext);
+  const [deadline, setDeadline] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!isEmpty(gatekeeper) && asPath.includes('grant')) {
+      gatekeeper.functions
+        .requests(query.id)
+        .then(p => p.approved && setDeadline(p.expirationTime.toNumber()));
+    }
+  }, [gatekeeper, query.id]);
 
   async function handleWithdraw(method: string, args: string) {
     try {
-      if (account && ethProvider && contracts && slatesByID && proposalsByID) {
-        await sendAndWaitForTransaction(ethProvider, contracts.gatekeeper, method, [args]);
+      if (account && !isEmpty(gatekeeper) && !isEmpty(slatesByID) && !isEmpty(proposalsByID)) {
+        const contract = method === 'withdrawTokens' ? tokenCapacitor : gatekeeper;
+        await sendAndWaitForTransaction(ethProvider, contract, method, [args]);
         onRefreshBalances();
         onRefreshSlates();
         onHandleGetUnreadNotifications(account, slatesByID, proposalsByID);
@@ -63,7 +75,6 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
         The tokens you previously deposited for <strong>voting on the ballot</strong> can be
         withdrawn. Upon selecting Confirm and Withdraw, you'll be prompted to confirm in your
         MetaMask wallet.
-        <strong>You must withdraw these tokens by 00/00/0000.</strong>
       </SectionDialog>
     );
     method = 'withdrawVoteTokens';
@@ -74,7 +85,6 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
         The tokens you previously deposited for <strong>staking on the slate</strong> can be
         withdrawn. Upon selecting Confirm and Withdraw, you'll be prompted to confirm in your
         MetaMask wallet.
-        <strong>You must withdraw these tokens by 00/00/0000.</strong>
       </SectionDialog>
     );
     method = 'withdrawStake';
@@ -84,7 +94,9 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
       <SectionDialog>
         The tokens you were awarded for <strong>grant proposal</strong> can be withdrawn. Upon
         selecting Confirm and Withdraw, you'll be prompted to confirm in your MetaMask wallet.
-        <strong>You must withdraw these tokens by 00/00/0000.</strong>
+        <strong>
+          {deadline !== 0 && `You must withdraw these tokens by ${tsToDeadline(deadline)}`}
+        </strong>
       </SectionDialog>
     );
     method = 'withdrawTokens';
@@ -102,7 +114,7 @@ const Withdraw: StatelessPage<IProps> = ({ query, asPath }) => {
           {dialog}
           <SectionDialog>
             {'Contact us at '}
-            <A blue href="mailto:help@panvala.com">
+            <A color="blue" href="mailto:help@panvala.com">
               help@panvala.com
             </A>
             {' if you have any questions.'}
