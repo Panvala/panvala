@@ -12,24 +12,26 @@ const ipfs = new IPFS({ host: ipfsHost, port: ipfsPort, protocol: 'https' });
  * @param {String} multihash
  * @param {Object} options
  */
-async function get(multihash, options) {
-  try {
-    const result = await ipfs.cat(multihash);
-    console.log('');
-    console.log('result:', result);
-    if (options.json) {
-      try {
-        const data = JSON.parse(result);
-        return data;
-      } catch (error) {
-        console.log(`ERROR: while JSON.parse result: ${error.message}`);
-        throw error;
+function get(multihash, options) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('ipfs request timed out'));
+    }, 7000);
+
+    ipfs.cat(multihash).then(response => {
+      clearTimeout(timer);
+
+      if (options.json) {
+        try {
+          const data = JSON.parse(response);
+          resolve(data);
+        } catch (error) {
+          console.log(`ERROR: while JSON.parse result: ${error.message}`);
+          throw error;
+        }
       }
-    }
-  } catch (error) {
-    console.log('ERROR: while retrieving an object from ipfs:', error.message);
-    throw error;
-  }
+    });
+  });
 }
 
 module.exports = {
