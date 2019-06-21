@@ -314,6 +314,8 @@ describe('POST /api/proposals', () => {
 describe('POST /api/ballots', () => {
   let data, wallet;
   let route = '/api/ballots';
+  const grantResource = '0xEe6069F52bC7111c218280a232671a627b1d3e1b';
+  // const governanceResource = '0xC42F9084ee2C6a2295226cAf86111Ce71DFFC139';
 
   beforeAll(() => {
     const mnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat';
@@ -323,18 +325,18 @@ describe('POST /api/ballots', () => {
   beforeEach(async () => {
     const salt = voting.randomSalt();
     const choices = {
-      0: {
+      [grantResource]: {
         firstChoice: '0',
         secondChoice: '1',
       },
-      1: {
-        firstChoice: '1',
-        secondChoice: '2',
-      },
+      // [governanceResource]: {
+      //   firstChoice: '1',
+      //   secondChoice: '2',
+      // },
     };
     // NOTE: this might be problematic for testing specific fields
     const commitHash = voting.generateCommitHash(choices, salt);
-    const commitMessage = voting.generateCommitMessage(commitHash, choices['0'], salt);
+    const commitMessage = voting.generateCommitMessage(commitHash, choices[grantResource], salt);
     const signature = await wallet.signMessage(commitMessage);
     // Set up the ballot data
     data = {
@@ -475,7 +477,7 @@ describe('POST /api/ballots', () => {
       test.each(choiceFields)(
         'it should return a 400 if any of the votes is missing a `%s`',
         async field => {
-          data.ballot.choices[0][field] = undefined;
+          data.ballot.choices[grantResource][field] = undefined;
           const result = await request(app)
             .post(route)
             .send(data);
@@ -486,7 +488,7 @@ describe('POST /api/ballots', () => {
       test.each(choiceFields)(
         'it should return a 400 if any of the votes has a null `%s`',
         async field => {
-          data.ballot.choices[0][field] = null;
+          data.ballot.choices[grantResource][field] = null;
           const result = await request(app)
             .post(route)
             .send(data);
@@ -498,7 +500,7 @@ describe('POST /api/ballots', () => {
       test.each(choiceFields)(
         'it should return a 400 if any of the votes has a `%s` that does not parse as an integer',
         async field => {
-          data.ballot.choices[0][field] = 'not a number';
+          data.ballot.choices[grantResource][field] = 'not a number';
           const result = await request(app)
             .post(route)
             .send(data);
@@ -509,7 +511,7 @@ describe('POST /api/ballots', () => {
       test.each(choiceFields)(
         'it should return a 400 if any of the votes has a `%s` that parses as a float',
         async field => {
-          data.ballot.choices[0][field] = 0.3;
+          data.ballot.choices[grantResource][field] = 0.3;
           const result = await request(app)
             .post(route)
             .send(data);
