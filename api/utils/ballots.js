@@ -40,13 +40,6 @@ const ballotSchema = {
       options: isEthereumAddress,
     },
   },
-  'ballot.delegate': {
-    in: ['body'],
-    optional: true,
-    custom: {
-      options: isEthereumAddress,
-    },
-  },
   'ballot.choices': {
     in: ['body'],
     exists: true,
@@ -99,13 +92,6 @@ const ballotInsertSchema = {
   voterAddress: {
     in: ['body'],
     ...nonEmptyString,
-    custom: {
-      options: isEthereumAddress,
-    },
-  },
-  delegate: {
-    in: ['body'],
-    optional: true,
     custom: {
       options: isEthereumAddress,
     },
