@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import { space, width, typography, color } from 'styled-system';
-import { COLORS } from '../../styles';
+import { colors } from '../../styles';
 
 const Text: any = styled.p`
   font-family: 'Roboto';
-  color: ${COLORS.grey2};
+  color: ${colors.greys.dark};
+  ${({ bold }: any) => bold && 'font-weight: bold'};
   ${space};
   ${width};
   ${color};

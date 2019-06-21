@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { color, typography } from 'styled-system';
+import { color } from 'styled-system';
 
 const A: any = styled.a`
   color: inherit;

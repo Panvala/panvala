@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-import { COLORS } from '../styles';
+import { colors } from '../styles';
+import { space } from 'styled-system';
 
-const RouteTitle = styled.h1`
+const RouteTitle: any = styled.h1`
   letter-spacing: 0.02em;
-  color: ${COLORS.text};
+  color: ${colors.greys.dark};
   font-weight: bold;
+  ${space};
 `;
 
 export default RouteTitle;

@@ -78,7 +78,7 @@ export const ProposalHeader = ({
             </Tag>
           )}
         </Flex>
-        {slate.deadline && <Deadline ballot={currentBallot} route="/proposals" />}
+        <Deadline ballot={currentBallot} route="/proposals" />
       </Flex>
     );
   } else {

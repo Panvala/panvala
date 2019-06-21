@@ -6,6 +6,7 @@ import { MainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Deadline from '../../components/Deadline';
+import Flex from '../../components/system/Flex';
 import RouteTitle from '../../components/RouteTitle';
 import RouterLink from '../../components/RouterLink';
 import { ISlate, IMainContext } from '../../interfaces';
@@ -31,16 +32,16 @@ const Slates: React.SFC = () => {
 
   return (
     <div>
-      <div className="flex justify-between">
+      <Flex justifyBetween>
         {/* TODO: componentize */}
-        <div className="flex">
-          <RouteTitle className="mr3">{'Slates'}</RouteTitle>
-          <RouterLink href="/slates/create" as="/slates/create" classNames="flex items-center">
+        <Flex alignCenter>
+          <RouteTitle mr={3}>{'Slates'}</RouteTitle>
+          <RouterLink href="/slates/create" as="/slates/create">
             <Button type="default">{'Add Slate'}</Button>
           </RouterLink>
-        </div>
+        </Flex>
         <Deadline ballot={currentBallot} route="slates" />
-      </div>
+      </Flex>
 
       <VisibilityFilterContainer>
         <Button active={visibilityFilter === 'all'}>{'All'}</Button>

@@ -172,7 +172,7 @@ export const SlateHeader = ({ slate, currentBallot }: IStakeHeaderProps) => {
         <Tag status={''}>{slate.category.toUpperCase()}</Tag>
         <Tag status={status}>{status}</Tag>
       </Flex>
-      {slate.deadline && <Deadline ballot={currentBallot} route={'/slates'} />}
+      <Deadline ballot={currentBallot} route={'/slates'} />
     </Flex>
   );
 };
