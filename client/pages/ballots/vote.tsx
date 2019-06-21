@@ -24,7 +24,6 @@ import {
   generateCommitMessage,
   getMaxVotingRights,
 } from '../../utils/voting';
-import { baseToConvertedUnits } from '../../utils/format';
 import { postBallot } from '../../utils/api';
 import { convertEVMSlateStatus, SlateStatus } from '../../utils/status';
 import Actions from '../../components/Actions';
@@ -45,7 +44,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   // get contexts
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
   const {
-    contracts: { token, gatekeeper },
+    contracts: { token, gatekeeper, tokenCapacitor, parameterStore },
     account,
     panBalance,
     gkAllowance,
@@ -123,12 +122,11 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
       }
       console.log('numTokens:', numTokens);
 
-      // TODO: use resource (addresses) for choices
       const ballot: ISubmitBallot = {
         epochNumber: currentBallot.epochNumber.toString(),
         choices: {
-          0: {
-            firstChoice: utils.bigNumberify(choices.firstChoice).toString(), // NOTE: api expects strings
+          [tokenCapacitor.address]: {
+            firstChoice: utils.bigNumberify(choices.firstChoice).toString(),
             secondChoice: utils.bigNumberify(choices.secondChoice).toString(),
           },
         },
@@ -136,12 +134,17 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
         voterAddress: tokenHolder,
         ...(tokenHolder !== account && { delegate: account }),
       };
+      console.log('ballot:', ballot);
 
       if (!isEmpty(ethProvider) && numTokens.gt('0')) {
         const commitHash: string = generateCommitHash(ballot.choices, salt);
 
         // 'Commit hash, first choice, second choice, salt'
-        const message = generateCommitMessage(commitHash, ballot.choices['0'], salt);
+        const message = generateCommitMessage(
+          commitHash,
+          ballot.choices[tokenCapacitor.address],
+          salt
+        );
         // sign mesage with metamask signer
         const signer: Signer = ethProvider.getSigner();
         const signature = await signer.signMessage(message);

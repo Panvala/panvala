@@ -22,21 +22,21 @@ const ContestStatus = {
 /**
  * generateCommitHash
  *
- * Concatenate each (category, firstChoice, secondChoice), followed
+ * Concatenate each (resource, firstChoice, secondChoice), followed
  * by the salt, each element as a full 32-byte word. Hash the result.
  *
- * keccak256(category + firstChoice + secondChoice ... + salt)
- * @param {*} votes { category: { firstChoice, secondChoice }}
+ * keccak256(resource + firstChoice + secondChoice ... + salt)
+ * @param {*} votes { resource: { firstChoice, secondChoice }}
  * @param {ethers.BN} salt Random 256-bit number
  */
 function generateCommitHash(votes: any, salt: utils.BigNumber): string {
   const types: string[] = [];
   const values: any[] = [];
 
-  Object.keys(votes).forEach((category: string) => {
-    const { firstChoice, secondChoice }: IChoices = votes[category];
-    types.push('uint', 'uint', 'uint');
-    values.push(category, firstChoice, secondChoice);
+  Object.keys(votes).forEach((resource: string) => {
+    const { firstChoice, secondChoice }: IChoices = votes[resource];
+    types.push('address', 'uint', 'uint');
+    values.push(resource, firstChoice, secondChoice);
   });
   types.push('uint');
   values.push(salt);
@@ -70,13 +70,13 @@ function generateCommitMessage(commitHash: string, ballotChoices: any, salt: str
 
 /**
  * Encode a ballot to be submitted to Gatekeeper.revealManyBallots()
- * @param {*} categories
+ * @param {*} resources
  * @param {*} firstChoices
  * @param {*} secondChoices
  */
-function encodeBallot(categories: string[], firstChoices: string[], secondChoices: string[]) {
-  const types = ['uint256[]', 'uint256[]', 'uint256[]'];
-  const values = [categories, firstChoices, secondChoices];
+function encodeBallot(resources: string[], firstChoices: string[], secondChoices: string[]) {
+  const types = ['address[]', 'uint256[]', 'uint256[]'];
+  const values = [resources, firstChoices, secondChoices];
 
   const encoded = utils.defaultAbiCoder.encode(types, values);
   return encoded;

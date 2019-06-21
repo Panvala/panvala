@@ -58,7 +58,8 @@ export async function postProposal(data: IProposal): Promise<AxiosResponse> {
     // TODO: handle response status
     return response;
   } catch (error) {
-    throw new Error(error);
+    console.error('error while getting proposals:', error);
+    throw error;
   }
 }
 
@@ -82,9 +83,8 @@ export async function getAllSlates(): Promise<ISlate[] | AxiosResponse> {
     // TODO: handle response status
     return response;
   } catch (error) {
-    console.log('error while getting slates:', error);
-    // console.log('returning dummy data');
-    throw new Error(error);
+    console.error('error while getting slates:', error);
+    throw error;
   }
 }
 
@@ -150,7 +150,7 @@ export async function getNotificationsByAddress(address: string): Promise<any | 
     // TODO: handle response status
     return response;
   } catch (error) {
-    console.log('error while getting notifcations:', error);
-    throw new Error(error);
+    console.error('error while getting notifcations:', error);
+    throw error;
   }
 }

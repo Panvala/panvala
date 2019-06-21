@@ -16,20 +16,20 @@ const ContestStatus = {
 /**
  * generateCommitHash
  *
- * Concatenate each (category, firstChoice, secondChoice), followed
+ * Concatenate each (resource, firstChoice, secondChoice), followed
  * by the salt, each element as a full 32-byte word. Hash the result.
  *
- * keccak256(category + firstChoice + secondChoice ... + salt)
- * @param {*} votes { category: { firstChoice, secondChoice }}
+ * keccak256(resource + firstChoice + secondChoice ... + salt)
+ * @param {*} votes { resource: { firstChoice, secondChoice }}
  * @param {ethers.BN} salt Random 256-bit number
  */
 function generateCommitHash(votes, salt) {
     const types = [];
     const values = [];
-    Object.keys(votes).forEach((category) => {
-        const { firstChoice, secondChoice } = votes[category];
-        types.push('uint', 'uint', 'uint');
-        values.push(category, firstChoice, secondChoice);
+    Object.keys(votes).forEach((resource) => {
+        const { firstChoice, secondChoice } = votes[resource];
+        types.push('address', 'uint', 'uint');
+        values.push(resource, firstChoice, secondChoice);
     });
     types.push('uint');
     values.push(salt);
@@ -57,13 +57,13 @@ function generateCommitMessage(commitHash, ballotChoices, salt) {
 }
 /**
  * Encode a ballot to be submitted to Gatekeeper.revealManyBallots()
- * @param {*} categories
+ * @param {*} resources
  * @param {*} firstChoices
  * @param {*} secondChoices
  */
-function encodeBallot(categories, firstChoices, secondChoices) {
-    const types = ['uint256[]', 'uint256[]', 'uint256[]'];
-    const values = [categories, firstChoices, secondChoices];
+function encodeBallot(resources, firstChoices, secondChoices) {
+    const types = ['address[]', 'uint256[]', 'uint256[]'];
+    const values = [resources, firstChoices, secondChoices];
     const encoded = ethers_1.utils.defaultAbiCoder.encode(types, values);
     return encoded;
 }

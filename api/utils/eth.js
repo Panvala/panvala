@@ -17,18 +17,15 @@ function checkConnection() {
   return provider.getBlockNumber();
 }
 
-async function getContracts() {
+function getContracts() {
   const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
   const signer = provider.getSigner();
   const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, signer);
   const tokenCapacitor = new ethers.Contract(tokenCapacitorAddress, TokenCapacitor.abi, signer);
 
-  const parameterStoreAddress = await gatekeeper.functions.parameters();
-  const parameterStore = new ethers.Contract(parameterStoreAddress, ParameterStore.abi, signer);
-
   return {
+    provider,
     gatekeeper,
-    parameterStore,
     tokenCapacitor,
   };
 }

@@ -20,12 +20,12 @@
         },
         "choices": {
           "type": "object",
-          "$comment": "Choices must parse as BigNumber",
+          "$comment": "Choices must parse as address",
           "minProperties": 1,
           "propertyNames": {
-            "$comment": "Keys for choices are numerical",
-            "pattern": "^[0-9]+$",
-            "bigNumber": true
+            "$comment": "Length is `0x` + 40 hex characters",
+            "type": "string",
+            "pattern": "^0x[a-fA-F0-9]{40}$"
           },
           "patternProperties": {
             "": {

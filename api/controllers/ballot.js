@@ -3,6 +3,7 @@ const { utils } = require('ethers');
 const { voting } = require('../../packages/panvala-utils');
 const { SubmittedBallot, VoteChoice } = require('../models');
 const { validateBallot } = require('../utils/validation');
+const { getContracts } = require('../utils/eth');
 
 module.exports = {
   /**
@@ -53,7 +54,7 @@ module.exports = {
   /**
    * Transform into the right format to be saved
    */
-  process(req, res, next) {
+  async process(req, res, next) {
     // Validate input
     const valid = validateBallot(req.body);
     if (!valid) {
@@ -69,30 +70,38 @@ module.exports = {
 
     // Transform into the structure to be inserted into the database
     const { ballot, signature, commitHash } = req.body;
-    console.log("ballot:", ballot);
+    console.log('ballot:', ballot);
     // TODO: send over the data in a smaller format (JSON.stringify)
 
     const { epochNumber, salt, voterAddress, choices, delegate } = ballot;
 
-    // Regenerate commit message
-    const message = voting.generateCommitMessage(commitHash, choices['0'], salt);
-    // Recover address from signed message
-    const recoveredAddress = utils.verifyMessage(message, signature);
-    console.log("recovered:", recoveredAddress);
-
-    // Validate the signature
-    if (recoveredAddress !== voterAddress && recoveredAddress !== delegate) {
-      return res.status(400).json({
-        msg: 'Invalid signature. Recovered signature did not match signer of the commit message.',
-        errors: [
-          new Error(
-            'Invalid signature. Recovered signature did not match signer of the commit message.'
-          ),
-        ],
-      });
-    }
+    const { gatekeeper } = getContracts();
+    const voterDelegate = await gatekeeper.functions.delegate(voterAddress);
 
     const contests = Object.keys(choices);
+    contests.forEach(resource => {
+      // Regenerate commit message
+      const message = voting.generateCommitMessage(commitHash, choices[resource], salt);
+      // Recover address from signed message
+      const recoveredAddress = utils.verifyMessage(message, signature);
+      console.log('recovered:', recoveredAddress);
+
+      // Validate the signature
+      if (
+        recoveredAddress !== voterAddress &&
+        recoveredAddress !== delegate &&
+        recoveredAddress !== voterDelegate
+      ) {
+        return res.status(400).json({
+          msg: 'Invalid signature. Recovered signature did not match signer of the commit message.',
+          errors: [
+            new Error(
+              'Invalid signature. Recovered signature did not match signer of the commit message.'
+            ),
+          ],
+        });
+      }
+    });
     // Need to use capital `VoteChoices` for creation
     const VoteChoices = contests.map(contest => choices[contest]);
 
@@ -100,7 +109,6 @@ module.exports = {
     req.body = {
       epochNumber,
       voterAddress,
-      delegate,
       salt,
       signature,
       VoteChoices,
