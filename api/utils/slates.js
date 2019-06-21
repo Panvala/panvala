@@ -92,6 +92,8 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake, currentE
       },
     });
 
+    console.log();
+    console.log('getting slate metadata:', metadataHash);
     // --------------------------
     // IPFS -- slate metadata
     // --------------------------
@@ -114,13 +116,6 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake, currentE
     const deadline = 1539044131;
 
     let incumbent = false;
-    // prettier-ignore
-    if (
-      slate.status === 3 &&
-      BN(slate.epochNumber).eq(BN(currentEpoch)).sub('1')
-    ) {
-      incumbent = true;
-    }
 
     let category = 'GOVERNANCE';
     if (getAddress(slate.resource) === getAddress(tokenCapacitorAddress)) {
@@ -150,7 +145,7 @@ async function getSlateWithMetadata(slate, metadataHash, requiredStake, currentE
     };
     return slateData;
   } catch (error) {
-    console.log('ERROR: while combining slate with metadata: ', error.message);
+    console.log('ERROR: while combining slate with metadata:', error.message);
     throw error;
   }
 }
