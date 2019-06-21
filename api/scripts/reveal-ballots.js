@@ -1,6 +1,9 @@
 const { voting } = require('../../packages/panvala-utils');
+const ethers = require('ethers');
 const { SubmittedBallot, VoteChoice } = require('../models');
 const { getContracts } = require('../utils/eth');
+
+const mnemonic = process.env.MNEMONIC;
 
 async function getBallots(epochNumber) {
   const data = await SubmittedBallot.findAll({
@@ -12,23 +15,26 @@ async function getBallots(epochNumber) {
   return data;
 }
 
-function encode(choices) {
-  const categories = [];
+function encode(choices, tc) {
+  const resources = [];
   const firstChoices = [];
   const secondChoices = [];
 
   choices.forEach(choice => {
-    const cat = '0'; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
-    categories.push(cat);
+    const cat = tc.address; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
+    resources.push(cat);
     firstChoices.push(choice.firstChoice);
     secondChoices.push(choice.secondChoice);
   });
 
-  return voting.encodeBallot(categories, firstChoices, secondChoices);
+  return voting.encodeBallot(resources, firstChoices, secondChoices);
 }
 
 async function run() {
-  const { gatekeeper } = await getContracts();
+  const { provider, gatekeeper: ROGatekeeper, tokenCapacitor } = getContracts();
+  const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+  const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
+  const gatekeeper = ROGatekeeper.connect(wallet);
   console.log('gatekeeper:', gatekeeper.address);
 
   const epochNumber = (await gatekeeper.functions.currentEpochNumber()).toString();
@@ -77,7 +83,7 @@ async function run() {
     console.log('did reveal? ', data.didReveal);
     voters.push(data.voterAddress);
 
-    const encodedBallot = encode(data.VoteChoices);
+    const encodedBallot = encode(data.VoteChoices, tokenCapacitor);
     encodedBallots.push(encodedBallot);
 
     salts.push(data.salt);

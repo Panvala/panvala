@@ -1,7 +1,11 @@
+const ethers = require('ethers');
+
 const { voting } = require('../../packages/panvala-utils');
 const { ContestStatus } = voting;
 
 const { getContracts } = require('../utils/eth');
+
+const mnemonic = process.env.MNEMONIC;
 
 const categoryName = {
   '0': 'GRANT',
@@ -38,12 +42,16 @@ async function tally(gatekeeper, ballotID, resource, index) {
 }
 
 async function run() {
-  const { gatekeeper, tokenCapacitor, parameterStore } = await getContracts();
+  const { provider, gatekeeper: ROGatekeeper, tokenCapacitor } = getContracts();
+  const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
+  const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
+  const gatekeeper = ROGatekeeper.connect(wallet);
 
-  // const epochNumber = (await gatekeeper.functions.currentEpochNumber()).sub(1);
-  const epochNumber = 1;
-  console.log("epochNumber:", epochNumber);
-  const contests = [tokenCapacitor.address, parameterStore.address];
+  // NOTE: make sure you are running this script during +1 epoch of the one you are finalizing
+  const epochNumber = (await gatekeeper.functions.currentEpochNumber()).sub(1);
+  console.log('epochNumber:', epochNumber);
+  const parameterStoreAddress = await gatekeeper.functions.parameters();
+  const contests = [tokenCapacitor.address, parameterStoreAddress];
 
   try {
     console.log('Tallying votes for all categories...');
