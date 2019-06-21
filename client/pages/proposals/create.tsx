@@ -7,11 +7,11 @@ import Button from '../../components/Button';
 import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
 import Image from '../../components/Image';
-import { MainContext } from '../../components/MainProvider';
+import { MainContext, IMainContext } from '../../components/MainProvider';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import ProposalForm from '../../components/ProposalForm';
 import { postProposal } from '../../utils/api';
-import { IProposal, IMainContext } from '../../interfaces';
+import { IProposal } from '../../interfaces';
 
 type IProps = {
   router: SingletonRouter;

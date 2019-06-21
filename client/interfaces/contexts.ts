@@ -1,4 +1,4 @@
-import { providers, utils } from 'ethers';
+import { utils } from 'ethers';
 import { BasicToken, Gatekeeper, TokenCapacitor, ParameterStore } from '../types';
 import { IParameterChangesObject } from './components';
 
@@ -141,27 +141,6 @@ export interface IContracts {
   gatekeeper: Gatekeeper;
   token: BasicToken;
   parameterStore: ParameterStore;
-}
-
-export interface IMainContext {
-  slates?: ISlate[];
-  proposals?: IProposal[];
-  proposalsByID?: any;
-  slatesByID?: any;
-  currentBallot: IBallotDates;
-  onRefreshProposals(): any;
-  onRefreshSlates(): any;
-  onRefreshCurrentBallot(): any;
-}
-export interface IEthereumContext {
-  account?: string;
-  ethProvider?: providers.Web3Provider;
-  contracts?: IContracts;
-  panBalance: utils.BigNumber;
-  gkAllowance: utils.BigNumber;
-  tcAllowance: utils.BigNumber;
-  votingRights: utils.BigNumber;
-  onRefreshBalances(): any;
 }
 
 export interface INotification {

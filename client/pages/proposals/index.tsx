@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { MainContext } from '../../components/MainProvider';
+import { MainContext, IMainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Deadline from '../../components/Deadline';
 import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
-import { IMainContext, IProposal } from '../../interfaces';
+import { IProposal } from '../../interfaces';
 import { PROPOSAL } from '../../utils/constants';
 
 const CardsWrapper = styled.div`

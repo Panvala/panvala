@@ -6,7 +6,7 @@ import { utils, Signer } from 'ethers';
 import isEmpty from 'lodash/isEmpty';
 
 import { COLORS } from '../../styles';
-import { MainContext } from '../../components/MainProvider';
+import { MainContext, IMainContext } from '../../components/MainProvider';
 import { EthereumContext, IEthereumContext } from '../../components/EthereumProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -17,7 +17,7 @@ import Image from '../../components/Image';
 import Label from '../../components/Label';
 import Modal, { ModalTitle, ModalDescription } from '../../components/Modal';
 import SectionLabel from '../../components/SectionLabel';
-import { ISlate, IMainContext, ISubmitBallot, IChoices } from '../../interfaces';
+import { ISlate, ISubmitBallot, IChoices } from '../../interfaces';
 import {
   randomSalt,
   generateCommitHash,

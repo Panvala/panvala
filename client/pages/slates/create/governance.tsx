@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import * as ethUtils from 'ethereumjs-util';
 import { Formik, Form, FormikContext } from 'formik';
 import { CircularProgress, withStyles } from '@material-ui/core';
 import { toast } from 'react-toastify';
@@ -9,7 +8,7 @@ import clone from 'lodash/clone';
 import { COLORS } from '../../../styles';
 import Box from '../../../components/system/Box';
 import Flex from '../../../components/system/Flex';
-import { MainContext } from '../../../components/MainProvider';
+import { MainContext, IMainContext } from '../../../components/MainProvider';
 import { EthereumContext, IEthereumContext } from '../../../components/EthereumProvider';
 import Button from '../../../components/Button';
 import Image from '../../../components/Image';
@@ -25,12 +24,7 @@ import SectionLabel from '../../../components/SectionLabel';
 import { convertedToBaseUnits, formatPanvalaUnits } from '../../../utils/format';
 import { ipfsAddObject } from '../../../utils/ipfs';
 import { postSlate } from '../../../utils/api';
-import {
-  ISaveSlate,
-  IMainContext,
-  StatelessPage,
-  IGovernanceSlateFormValues,
-} from '../../../interfaces';
+import { ISaveSlate, StatelessPage, IGovernanceSlateFormValues } from '../../../interfaces';
 import ParametersForm from '../../../components/ParametersForm';
 import {
   sendRecommendGovernanceSlateTx,

@@ -5,10 +5,21 @@ import keyBy from 'lodash/keyBy';
 import isEmpty from 'lodash/isEmpty';
 
 import { EthereumContext } from './EthereumProvider';
-import { IProposal, ISlate, IMainContext } from '../interfaces';
+import { IProposal, ISlate, IBallotDates } from '../interfaces';
 import { getAllProposals, getAllSlates } from '../utils/api';
 import { baseToConvertedUnits } from '../utils/format';
 import { ballotDates } from '../utils/status';
+
+export interface IMainContext {
+  slates?: ISlate[];
+  proposals?: IProposal[];
+  proposalsByID?: any;
+  slatesByID?: any;
+  currentBallot: IBallotDates;
+  onRefreshProposals(): void;
+  onRefreshSlates(): void;
+  onRefreshCurrentBallot(): void;
+}
 
 export const MainContext: React.Context<IMainContext> = React.createContext<any>({});
 
@@ -62,7 +73,7 @@ function reducer(state: any, action: any) {
   }
 }
 
-export default function MainProvider(props: any) {
+const MainProvider: React.FC = (props: any) => {
   const [state, dispatch] = React.useReducer(reducer, {
     slates: [],
     proposals: [],
@@ -79,11 +90,16 @@ export default function MainProvider(props: any) {
     contracts: { gatekeeper, tokenCapacitor, parameterStore },
   } = React.useContext(EthereumContext);
 
+  // init slates and proposals from api
+  React.useEffect(() => {
+    refreshProposals();
+    refreshSlates();
+  }, []);
+
+  // init current ballot
   React.useEffect(() => {
     if (!isEmpty(gatekeeper)) {
       refreshCurrentBallot();
-      refreshProposals();
-      refreshSlates();
     }
   }, [gatekeeper]);
 
@@ -141,4 +157,6 @@ export default function MainProvider(props: any) {
   };
 
   return <MainContext.Provider value={value}>{props.children}</MainContext.Provider>;
-}
+};
+
+export default React.memo(MainProvider);

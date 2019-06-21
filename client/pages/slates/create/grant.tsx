@@ -11,7 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import { COLORS } from '../../../styles';
 import CenteredTitle from '../../../components/CenteredTitle';
 import Checkbox from '../../../components/Checkbox';
-import { MainContext } from '../../../components/MainProvider';
+import { MainContext, IMainContext } from '../../../components/MainProvider';
 import Button from '../../../components/Button';
 import Card from '../../../components/Card';
 import { EthereumContext, IEthereumContext } from '../../../components/EthereumProvider';
@@ -24,7 +24,6 @@ import Modal, { ModalTitle, ModalDescription } from '../../../components/Modal';
 import Image from '../../../components/Image';
 import RouterLink from '../../../components/RouterLink';
 import {
-  IMainContext,
   IProposal,
   IGrantProposalMetadata,
   ISlateMetadata,

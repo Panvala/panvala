@@ -44,4 +44,4 @@ export function formatPanvalaUnits(base: BigNumberish): string {
   return converted + ' PAN';
 }
 
-export const BN = (small: number) => utils.bigNumberify(small);
+export const BN = (small: BigNumberish) => utils.bigNumberify(small);

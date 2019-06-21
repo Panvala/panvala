@@ -2,14 +2,14 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 
-import { MainContext } from '../../components/MainProvider';
+import { MainContext, IMainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Deadline from '../../components/Deadline';
 import Flex from '../../components/system/Flex';
 import RouteTitle from '../../components/RouteTitle';
 import RouterLink from '../../components/RouterLink';
-import { ISlate, IMainContext } from '../../interfaces';
+import { ISlate } from '../../interfaces';
 import { convertEVMSlateStatus } from '../../utils/status';
 import { SLATE } from '../../utils/constants';
 

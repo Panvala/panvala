@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import isEmpty from 'lodash/isEmpty';
 import { connectProvider, connectContracts } from '../utils/provider';
 import { IContracts } from '../interfaces';
-import { baseToConvertedUnits } from '../utils/format';
+import { baseToConvertedUnits, BN } from '../utils/format';
 import { saveState, loadState, ENABLED_ACCOUNTS } from '../utils/localStorage';
 
 export interface IEthereumContext {
@@ -16,7 +16,7 @@ export interface IEthereumContext {
   tcAllowance: utils.BigNumber;
   votingRights: utils.BigNumber;
   slateStakeAmount: utils.BigNumber;
-  onRefreshBalances(): any;
+  onRefreshBalances(): void;
 }
 export const EthereumContext: React.Context<IEthereumContext> = React.createContext<any>({});
 
@@ -27,22 +27,8 @@ declare global {
   }
 }
 
-async function getBalances(account: string, contracts: IContracts): Promise<any[]> {
-  return Promise.all([
-    contracts.token.functions.balanceOf(account),
-    contracts.token.functions.allowance(account, contracts.gatekeeper.address),
-    contracts.token.functions.allowance(account, contracts.tokenCapacitor.address),
-    contracts.gatekeeper.functions.voteTokenBalance(account),
-    contracts.token.functions.balanceOf(contracts.tokenCapacitor.address),
-    contracts.token.functions.balanceOf(contracts.gatekeeper.address),
-  ]);
-}
-
 function reducer(state: any, action: any) {
-  console.info(`Eth state change (${action.type})`, state, action);
   switch (action.type) {
-    // case 'all':
-    //   return action.payload;
     case 'eth_state':
       return {
         ...state,
@@ -68,21 +54,23 @@ function reducer(state: any, action: any) {
   }
 }
 
-export default function EthereumProvider(props: any) {
+const EthereumProvider: React.FC = (props: any) => {
   const [state, dispatch] = React.useReducer(reducer, {
     ethProvider: {},
-    contracts: {},
+    contracts: {
+      gatekeeper: {},
+      tokenCapacitor: {},
+      token: {},
+      parameterStore: {},
+    },
     account: '',
-    panBalance: utils.bigNumberify('0'),
-    gkAllowance: utils.bigNumberify('0'),
-    tcAllowance: utils.bigNumberify('0'),
-    votingRights: utils.bigNumberify('0'),
-    tcBalance: utils.bigNumberify('0'),
-    gkBalance: utils.bigNumberify('0'),
-    panHuman: utils.bigNumberify('0'),
-    gkHuman: utils.bigNumberify('0'),
-    tcHuman: utils.bigNumberify('0'),
-    slateStakeAmount: utils.bigNumberify('0'),
+    panBalance: BN('0'),
+    gkAllowance: BN('0'),
+    tcAllowance: BN('0'),
+    votingRights: BN('0'),
+    tcBalance: BN('0'),
+    gkBalance: BN('0'),
+    slateStakeAmount: BN('0'),
   });
 
   // runs once, on-load
@@ -105,18 +93,23 @@ export default function EthereumProvider(props: any) {
             saveState(ENABLED_ACCOUNTS, enabledAccounts);
           } catch (error) {
             console.error(`ERROR failed to enable metamask: ${error.message}`);
+            throw error;
           }
+
           // selected account
           const account = utils.getAddress(addresses[0]);
+
           // wrap MetaMask with ethers
-          let ethProvider: providers.Web3Provider | {} = {};
+          let ethProvider: providers.Web3Provider;
           try {
             ethProvider = await connectProvider(ethereum);
           } catch (error) {
             console.error(`ERROR failed to connect eth provider: ${error.message}`);
+            throw error;
           }
+
           // contract abstractions (w/ metamask signer)
-          let contracts: IContracts | {} = {};
+          let contracts: IContracts;
           try {
             contracts = await connectContracts(ethProvider);
           } catch (error) {
@@ -124,7 +117,9 @@ export default function EthereumProvider(props: any) {
             if (error.message.includes('contract not deployed')) {
               toast.error(`Contracts not deployed on current network`);
             }
+            throw error;
           }
+
           const slateStakeAmount = await contracts.parameterStore.functions.getAsUint(
             'slateStakeAmount'
           );
@@ -139,64 +134,81 @@ export default function EthereumProvider(props: any) {
               slateStakeAmount,
             });
             if (contracts.hasOwnProperty('token')) {
-              toast.success('MetaMask successfully connected!');
+              // toast.success('MetaMask successfully connected!');
             }
           }
 
           // register an event listener to handle account-switching in metamask
           ethereum.once('accountsChanged', (accounts: string[]) => {
-            console.log('MetaMask account changed:', accounts[0]);
+            console.info('MetaMask account changed:', accounts[0]);
             handleConnectEthereum();
           });
+          // ethereum.once('networkChanged', (network: any) => {
+          //   console.info('MetaMask network changed:', network);
+          //   handleConnectEthereum();
+          // });
         }
       } catch (error) {
         console.error(error);
-        toast.error('Error while attempting to connect to Ethereum.');
       }
     }
 
     handleConnectEthereum();
   }, []);
 
-  async function handleRefreshBalances(address: string) {
-    if (address && !isEmpty(state.contracts)) {
-      const [
+  async function handleRefreshBalances() {
+    const {
+      account,
+      contracts: { token, gatekeeper, tokenCapacitor },
+    } = state;
+    if (account && !isEmpty(token) && !isEmpty(gatekeeper)) {
+      // prettier-ignore
+      const [panBalance, gkAllowance, tcAllowance, votingRights, tcBalance, gkBalance] = await Promise.all([
+        token.functions.balanceOf(account),
+        token.functions.allowance(account, gatekeeper.address),
+        token.functions.allowance(account, tokenCapacitor.address),
+        gatekeeper.functions.voteTokenBalance(account),
+        token.functions.balanceOf(tokenCapacitor.address),
+        token.functions.balanceOf(gatekeeper.address),
+      ]);
+      const balances = {
         panBalance,
+        gkBalance,
+        tcBalance,
         gkAllowance,
         tcAllowance,
         votingRights,
-        tcBalance,
-        gkBalance,
-      ] = await getBalances(address, state.contracts);
+      };
+      const converted = {
+        votingRights: baseToConvertedUnits(votingRights),
+        balance: baseToConvertedUnits(panBalance),
+        gatekeeper: baseToConvertedUnits(gkBalance),
+        tokenCapacitor: baseToConvertedUnits(tcBalance),
+        gkAllowance: baseToConvertedUnits(gkAllowance),
+        tcAllowance: baseToConvertedUnits(tcAllowance),
+      };
+      console.log('balances:', converted);
       dispatch({
         type: 'balances',
-        payload: {
-          panBalance,
-          gkBalance,
-          tcBalance,
-          gkAllowance,
-          tcAllowance,
-          votingRights,
-          panHuman: baseToConvertedUnits(panBalance),
-          gkHuman: baseToConvertedUnits(gkBalance),
-          tcHuman: baseToConvertedUnits(tcBalance),
-        },
+        payload: balances,
       });
     }
   }
 
   // runs whenever account changes
   React.useEffect(() => {
-    if (state.account && !isEmpty(state.contracts)) {
+    if (state.account && !isEmpty(state.contracts.token)) {
       console.info('Refreshing balances for:', state.account.slice(0, 10));
-      handleRefreshBalances(state.account);
+      handleRefreshBalances();
     }
-  }, [state.account]);
+  }, [state.account, state.contracts.token]);
 
   const ethContext: IEthereumContext = {
     ...state,
-    onRefreshBalances: () => handleRefreshBalances(state.account),
+    onRefreshBalances: handleRefreshBalances,
   };
 
   return <EthereumContext.Provider value={ethContext}>{props.children}</EthereumContext.Provider>;
-}
+};
+
+export default React.memo(EthereumProvider);

@@ -9,9 +9,9 @@ import { Separator } from '../components/Separator';
 import Actions from '../components/Actions';
 import A from '../components/A';
 import { EthereumContext, IEthereumContext } from '../components/EthereumProvider';
-import { MainContext } from '../components/MainProvider';
+import { MainContext, IMainContext } from '../components/MainProvider';
 import { NotificationsContext } from '../components/NotificationsProvider';
-import { StatelessPage, IMainContext } from '../interfaces';
+import { StatelessPage } from '../interfaces';
 import { sendAndWaitForTransaction } from '../utils/transaction';
 import { tsToDeadline } from '../utils/datetime';
 

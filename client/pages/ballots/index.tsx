@@ -2,13 +2,12 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 import { COLORS } from '../../styles';
-import { MainContext } from '../../components/MainProvider';
+import { MainContext, IMainContext } from '../../components/MainProvider';
 import CenteredTitle from '../../components/CenteredTitle';
 import CenteredWrapper from '../../components/CenteredWrapper';
 import Deadline from '../../components/Deadline';
 import RouteTitle from '../../components/RouteTitle';
 import SectionLabel from '../../components/SectionLabel';
-import { IMainContext } from '../../interfaces';
 import { tsToDeadline } from '../../utils/datetime';
 import { isBallotOpen } from '../../utils/status';
 import Flex from '../../components/system/Flex';
