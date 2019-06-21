@@ -19,9 +19,8 @@ function checkConnection() {
 
 function getContracts() {
   const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
-  const signer = provider.getSigner();
-  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, signer);
-  const tokenCapacitor = new ethers.Contract(tokenCapacitorAddress, TokenCapacitor.abi, signer);
+  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, provider);
+  const tokenCapacitor = new ethers.Contract(tokenCapacitorAddress, TokenCapacitor.abi, provider);
 
   return {
     provider,
