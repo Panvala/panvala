@@ -75,8 +75,11 @@ module.exports = {
 
     const { epochNumber, salt, voterAddress, choices, delegate } = ballot;
 
-    const { gatekeeper } = getContracts();
-    const voterDelegate = await gatekeeper.functions.delegate(voterAddress);
+    let voterDelegate;
+    if (process.env.NODE_ENV !== 'test') {
+      const { gatekeeper } = getContracts();
+      voterDelegate = await gatekeeper.functions.delegate(voterAddress);
+    }
 
     const contests = Object.keys(choices);
     contests.forEach(resource => {

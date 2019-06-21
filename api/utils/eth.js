@@ -4,7 +4,7 @@ const { rpcEndpoint } = config;
 const { gatekeeperAddress, tokenCapacitorAddress } = config.contracts;
 
 const {
-  contractABIs: { Gatekeeper, ParameterStore, TokenCapacitor, BasicToken },
+  contractABIs: { Gatekeeper, TokenCapacitor },
 } = require('../../packages/panvala-utils');
 
 /**
