@@ -144,7 +144,6 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
       stake: slate.stake,
       staker: slate.staker,
       status: slate.status,
-      title,
       verifiedRecommender: dbSlate.verifiedRecommender,
     };
     return slateData;

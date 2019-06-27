@@ -99,7 +99,7 @@ const SlateSidebar = ({ slate, requiredStake, currentBallot }: IStakeSidebarProp
         <TokensSection>
           <SectionLabel my="1rem">{'CREATED BY'}</SectionLabel>
           <Box color="black">{slate.owner}</Box>
-          <CardAddress>{splitAddressHumanReadable(slate.recommenderAddress)}</CardAddress>
+          <CardAddress>{splitAddressHumanReadable(slate.recommender)}</CardAddress>
 
           <SectionLabel my="1rem">{'ORGANIZATION'}</SectionLabel>
           <Box color="black">{slate.organization}</Box>
