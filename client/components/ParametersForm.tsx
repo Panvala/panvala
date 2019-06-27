@@ -28,7 +28,8 @@ const ParameterRow: React.SFC<any> = props => {
           name="new-value"
           onChange={(e: any) => props.onChange(props.name, e.target.value)}
           value={props.newValue}
-          placeholder="Propose New Value"
+          placeholder={props.type}
+          type={props.type === 'Number' ? 'number' : 'text'}
         />
       </BreakableFlex>
     </Flex>
@@ -43,16 +44,18 @@ const ParametersForm: React.SFC<any> = props => {
 
   const parameters = [
     {
-      parameterName: 'Gatekeeper Address',
-      name: 'parameters.gatekeeperAddress.newValue',
-      value: gatekeeper.address,
-      newValue: props.newSlateStakeAmount,
-    },
-    {
       parameterName: 'Slate Stake Amount',
       name: 'parameters.slateStakeAmount.newValue',
       value: formatPanvalaUnits(slateStakeAmount),
+      newValue: props.newSlateStakeAmount,
+      type: 'Number',
+    },
+    {
+      parameterName: 'Gatekeeper Address',
+      name: 'parameters.gatekeeperAddress.newValue',
+      value: gatekeeper.address,
       newValue: props.newGatekeeperAddress,
+      type: 'Address',
     },
   ];
   return (
@@ -76,6 +79,7 @@ const ParametersForm: React.SFC<any> = props => {
             name={p.name}
             oldValue={p.value}
             newValue={p.newValue}
+            type={p.type}
             onChange={props.onChange}
           />
         ))}

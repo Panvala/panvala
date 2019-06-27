@@ -7,7 +7,6 @@ import Text from '../components/system/Text';
 import { EthereumContext } from '../components/EthereumProvider';
 import { formatPanvalaUnits } from '../utils/format';
 
-
 const ParameterRow: React.SFC<any> = props => {
   return (
     <Flex
@@ -37,12 +36,12 @@ const Parameters: React.FC = () => {
 
   const parameters = [
     {
-      name: 'Gatekeeper Address',
-      value: gatekeeper.address,
-    },
-    {
       name: 'Slate Stake Amount',
       value: formatPanvalaUnits(slateStakeAmount),
+    },
+    {
+      name: 'Gatekeeper Address',
+      value: gatekeeper.address,
     },
   ];
 
