@@ -17,7 +17,6 @@ storiesOf('Card', module)
       <StoryWrapper>
         <Card
           key={newSlate.id}
-          title={newSlate.title}
           subtitle={newSlate.proposals && newSlate.proposals.length + ' Grants Included'}
           description={newSlate.description}
           category={newSlate.category}
@@ -41,7 +40,6 @@ storiesOf('Card', module)
       <StoryWrapper>
         <Card
           key={newSlate.id}
-          title={newSlate.title}
           subtitle={newSlate.proposals && newSlate.proposals.length + ' Grants Included'}
           description={newSlate.description}
           category={newSlate.category}
@@ -65,7 +63,6 @@ storiesOf('Card', module)
       <StoryWrapper>
         <Card
           key={newSlate.id}
-          title={newSlate.title}
           subtitle={newSlate.proposals && newSlate.proposals.length + ' Grants Included'}
           description={newSlate.description}
           category={newSlate.category}
@@ -89,7 +86,6 @@ storiesOf('Card', module)
       <StoryWrapper>
         <Card
           key={newSlate.id}
-          title={newSlate.title}
           subtitle={newSlate.proposals && newSlate.proposals.length + ' Grants Included'}
           description={newSlate.description}
           category={newSlate.category}
@@ -115,7 +111,6 @@ storiesOf('Card', module)
       <StoryWrapper>
         <Card
           key={newSlate.id}
-          title={newSlate.title}
           subtitle={
             newSlate.proposals && newSlate.proposals.length > 0
               ? newSlate.proposals.length + ' Grants Included'

@@ -82,7 +82,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
         id: Object.keys(parameterChanges).length,
         firstName: values.firstName,
         lastName: values.lastName,
-        title: values.title,
         summary: values.summary,
         organization: values.organization,
         parameterChanges: {
@@ -125,7 +124,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
       const slateMetadata: any = {
         firstName: values.firstName,
         lastName: values.lastName,
-        title: values.title,
         summary: values.summary,
         organization: values.organization,
         requestIDs,
@@ -199,7 +197,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
                   firstName: 'First',
                   lastName: 'Last',
                   organization: 'Ethereum',
-                  title: 'Change required stake',
                   summary: 'fdsfdsfasdfadsfsad',
                   parameters: {
                     slateStakeAmount: {
@@ -223,7 +220,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
                   firstName: '',
                   lastName: '',
                   organization: '',
-                  title: '',
                   summary: '',
                   parameters: {
                     slateStakeAmount: {
@@ -256,7 +252,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
                 <SectionLabel>{'ABOUT'}</SectionLabel>
 
                 <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
-                <FieldText required label={'Slate Title'} name="title" placeholder="Enter title" />
 
                 <FieldText
                   required

@@ -38,13 +38,11 @@ export function normalizeNotifications(
     }
     switch (noti.type) {
       case NotificationTypes.PROPOSAL_INCLUDED_IN_SLATE: {
-        let text = `The proposal you created has been included in slate ${
-          slate.title
-        }. Token holders can vote for this slate to execute your proposal.`;
+        let text = `The proposal you created has been included in slate ${slateID}. Token holders can vote for this slate to execute your proposal.`;
         if (!isEmpty(proposal)) {
-          text = `The grant proposal ${proposal.title} you created has been included in slate ${
-            slate.title
-          }. Token holders can vote for this slate to fund your proposal.`;
+          text = `The grant proposal ${
+            proposal.title
+          } you created has been included in slate ${slateID}. Token holders can vote for this slate to fund your proposal.`;
         }
         return {
           action: 'Proposal Recommended',
@@ -102,9 +100,7 @@ export function normalizeNotifications(
       case NotificationTypes.WITHDRAW_STAKE: {
         return {
           action: 'Action Required: Withdraw Staked Tokens',
-          text: `Congratulations! The slate ${
-            slate.title
-          } you previously supported has been accepted. Please withdraw your tokens.`,
+          text: `Congratulations! The slate ${slateID} you previously supported has been accepted. Please withdraw your tokens.`,
           href: `/Withdraw/stake?id=${slateID}`,
           asPath: `/withdraw/stake/${slateID}`,
         };

@@ -102,7 +102,7 @@ const CardProposal = styled.div`
 
 interface ICardProps {
   category: string;
-  title: string;
+  title?: string;
   subtitle: string;
   description: string;
   address?: string;
@@ -180,7 +180,7 @@ const Card: React.FunctionComponent<ICardProps> = props => {
           ? props.recommender
           : props.address
           ? splitAddressHumanReadable(props.address)
-          : props.title}
+          : props.title && props.title}
       </CardTitle>
       <CardSubTitle>{props.subtitle}</CardSubTitle>
       <CardDescription>{props.description}</CardDescription>
