@@ -64,37 +64,35 @@ interface IPanelProps {
 }
 
 // list of notifications and the currently selected one
-interface INotificationsProps {
-  notifications: INotification[];
+interface INotificationProps {
   selectedItem?: number;
+  key: number;
+  item: {
+    href?: string;
+    asPath?: string;
+    text: string;
+    action: string;
+  }
 }
 
-const NotificationItems: React.FunctionComponent<INotificationsProps> = props => {
-  if (props.notifications.length === 0) {
-    return <ItemWrapper>Nothing here!</ItemWrapper>;
-  }
-
+const NotificationItem: React.FunctionComponent<INotificationProps> = ({ item }) => {
   // TODO: if the item is selected, change its background
   return (
-    <div>
-      {props.notifications.map((item, index) => (
-        <ItemWrapper key={index} index={index}>
-          {item.href ? (
-            <>
-              <RouterLink href={item.href} as={item.asPath}>
-                <ItemAction>{item.action}</ItemAction>
-              </RouterLink>
-              {item.text && <ItemText>{item.text}</ItemText>}
-            </>
-          ) : (
-            <>
-              <ItemAction>{item.action}</ItemAction>
-              {item.text && <ItemText>{item.text}</ItemText>}
-            </>
-          )}
-        </ItemWrapper>
-      ))}
-    </div>
+    <ItemWrapper>
+      {item.href ? (
+        <>
+          <RouterLink href={item.href} as={item.asPath}>
+            <ItemAction>{item.action}</ItemAction>
+          </RouterLink>
+          {item.text && <ItemText>{item.text}</ItemText>}
+        </>
+      ) : (
+        <>
+          <ItemAction>{item.action}</ItemAction>
+          {item.text && <ItemText>{item.text}</ItemText>}
+        </>
+      )}
+    </ItemWrapper>
   );
 };
 
@@ -125,7 +123,13 @@ const NotificationPanel: React.FunctionComponent<IPanelProps> = props => {
       {isOpen && (
         <PanelWrapper onClick={handleTogglePanelOpen}>
           <PanelHeading>Notifications</PanelHeading>
-          <NotificationItems notifications={props.notifications} />
+          {props.notifications.length > 0 ? (
+            props.notifications.map((notification, index) => (
+              <NotificationItem key={index} item={notification} />
+            ))
+          ) : (
+            <ItemWrapper>Nothing here!</ItemWrapper>
+          )}
         </PanelWrapper>
       )}
     </Wrapper>

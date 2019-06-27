@@ -19,6 +19,7 @@ export interface IButton {
   width?: string;
   color?: string;
   bg?: string;
+  m?: string;
 }
 
 export interface ITag {

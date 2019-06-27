@@ -32,8 +32,7 @@ const Slates: React.SFC = () => {
 
   return (
     <div>
-      <Flex justifyBetween>
-        {/* TODO: componentize */}
+      <Flex justifyBetween alignCenter wrap mb={2}>
         <Flex alignCenter>
           <RouteTitle mr={3}>{'Slates'}</RouteTitle>
           <RouterLink href="/slates/create" as="/slates/create">

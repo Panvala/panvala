@@ -8,6 +8,7 @@ import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
 import { IProposal } from '../../interfaces';
 import { PROPOSAL } from '../../utils/constants';
+import Flex from '../../components/system/Flex';
 
 const CardsWrapper = styled.div`
   display: flex;
@@ -19,20 +20,15 @@ const Proposals: React.SFC = () => {
 
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="flex">
-          {/* TODO: componentize */}
-          <RouteTitle className="mr3">{'Proposals'}</RouteTitle>
-          <RouterLink
-            href="/proposals/create"
-            as="/proposals/create"
-            classNames="flex items-center"
-          >
+      <Flex justifyBetween>
+        <Flex alignCenter>
+          <RouteTitle mr={3}>{'Proposals'}</RouteTitle>
+          <RouterLink href="/proposals/create" as="/proposals/create">
             <Button type="default">{'Add Proposal'}</Button>
           </RouterLink>
-        </div>
+        </Flex>
         <Deadline ballot={currentBallot} route="proposals" />
-      </div>
+      </Flex>
 
       <CardsWrapper>
         {proposals && proposals.length > 0

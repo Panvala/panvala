@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../styles';
+import Flex from './system/Flex';
 
 export const ModalTitle = styled.div`
   font-size: 1.5em;
@@ -55,10 +56,10 @@ const Modal: React.FunctionComponent<Props> = props => {
   return (
     <div>
       {props.isOpen && (
-        <div className="flex justify-center">
+        <Flex justifyCenter>
           <ModalOverlay onClick={props.handleClick} className="Modal-overlay" />
           <ModalBody {...props}>{props.children}</ModalBody>
-        </div>
+        </Flex>
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import React, { Children } from 'react';
 import styled, { css } from 'styled-components';
 import { COLORS, BUTTON_COLORS } from '../styles';
 import { IButton } from '../interfaces';
-import { color, layout } from 'styled-system';
+import { color, layout, space } from 'styled-system';
 
 const BaseButton: any = styled.button`
   display: flex;
@@ -42,6 +42,7 @@ const StyledButton: any = styled(BaseButton)`
   line-height: 1rem;
   ${color};
   ${layout};
+  ${space};
 `;
 
 const LargeButton: any = styled(BaseButton)`
@@ -54,6 +55,7 @@ const LargeButton: any = styled(BaseButton)`
   font-size: 1rem;
   ${color};
   ${layout};
+  ${space};
 `;
 
 const Button: React.FunctionComponent<IButton> = props => {

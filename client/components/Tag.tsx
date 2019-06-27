@@ -2,7 +2,7 @@ import React, { Children } from 'react';
 import styled from 'styled-components';
 import { color } from 'styled-system';
 import { ITag } from '../interfaces';
-import { COLORS } from '../styles';
+import { COLORS, colors } from '../styles';
 
 const StyledTag = styled.div`
   display: flex;
@@ -27,7 +27,7 @@ const StyledTag = styled.div`
       ? COLORS.green2
       : status === 'REJECTED'
       ? COLORS.red2
-      : COLORS.blue2};
+      : colors.blue};
   letter-spacing: 0.03rem;
   font-size: 0.7rem;
   font-weight: bold;
