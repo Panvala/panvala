@@ -1717,10 +1717,34 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
+eth-events@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/eth-events/-/eth-events-0.7.0.tgz#857a44db3250ecdc519736e396890414225fdd11"
+  integrity sha512-G8OvKPcDowq54kLIUgzT/p8jl7zRDt1QImJcJi0OAgDISZqbfDvToE0qyJRtkoWF5EaEk03jDwVwNIKASVPTNg==
+  dependencies:
+    ethers "^4.0.28"
+    lodash "4.17.11"
+
 ethers@^4.0.26:
   version "4.0.26"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.26.tgz#a4b17184a0ed3db9c88d1b6d28beaa7d0e0ba3e4"
   integrity sha512-3hK4S8eAGhuWZ/feip5z17MswjGgjb4lEPJqWO/O0dNqToYLSHhvu6gGQPs8d9f+XfpEB2EYexfF0qjhWiZjUA==
+  dependencies:
+    "@types/node" "^10.3.2"
+    aes-js "3.0.0"
+    bn.js "^4.4.0"
+    elliptic "6.3.3"
+    hash.js "1.1.3"
+    js-sha3 "0.5.7"
+    scrypt-js "2.0.4"
+    setimmediate "1.0.4"
+    uuid "2.0.1"
+    xmlhttprequest "1.8.0"
+
+ethers@^4.0.28:
+  version "4.0.31"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.31.tgz#50b066d8c74140944edfd2ad0a805162c30e3a20"
+  integrity sha512-S2zKBGvEBIng7hghAXZ9259xCkClyRr/bM0F297O3lAnC6sYjTHNIMtiqWmA89qieAIyzWUZn/aCLUslRlJFkw==
   dependencies:
     "@types/node" "^10.3.2"
     aes-js "3.0.0"
