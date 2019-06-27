@@ -55,4 +55,8 @@ export const Column = styled.div`
   padding: ${(props: any) => (props.noPadding ? 0 : '15px')};
 `;
 
+export const BreakableFlex = styled(Flex)`
+  word-break: break-all;
+`;
+
 export default Flex;

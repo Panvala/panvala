@@ -3,9 +3,10 @@ import { withRouter } from 'next/router';
 import styled from 'styled-components';
 import Button from './Button';
 import Image from './Image';
-import NotificationPanel from './NotificationPanel';
 import RouterLink from './RouterLink';
+import NotificationPanel from './NotificationPanel';
 import { NotificationsContext } from './NotificationsProvider';
+import { EthereumContext } from './EthereumProvider';
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -21,6 +22,7 @@ const NavWrapper = styled(FlexContainer)`
 `;
 const NavItems = styled(FlexContainer)`
   justify-content: flex-start;
+  align-items: center;
 `;
 const NavItem = styled(FlexContainer)`
   margin-right: 1rem;
@@ -63,6 +65,13 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
               <RouterLink href="/ballots" as="/ballots">
                 <Button active={router && router.asPath && router.asPath.startsWith('/ballots')}>
                   {'Ballots'}
+                </Button>
+              </RouterLink>
+            </NavItem>
+            <NavItem>
+              <RouterLink href="/parameters" as="/parameters">
+                <Button active={router && router.asPath && router.asPath.startsWith('/parameters')}>
+                  {'Parameters'}
                 </Button>
               </RouterLink>
             </NavItem>
