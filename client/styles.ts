@@ -15,7 +15,7 @@ export const COLORS: any = {
   white: '#FFFFFF',
 
   blue1: '#1872A0',
-  blue2: '#59B6E6',
+  blue2: '#489FCC',
   blue3: '#DEF0FA',
 
   yellow1: 'rgba(255, 245, 2, 0.2)',
@@ -48,7 +48,7 @@ export const colors: any = {
   },
   white: '#FFF',
   transparent: 'transparent',
-  blue: '#59B6E6',
+  blue: '#489FCC',
   blues: {
     dark: '#1872A0',
     light: '#DEF0FA',
@@ -69,6 +69,7 @@ export const colors: any = {
 };
 
 export const theme: Theme = {
+  // 640px, 832px, 1024px, 1440px
   breakpoints: ['40em', '52em', '64em', '90em'],
   space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   fontSizes: [12, 14, 16, 20, 24, 36, 48, 80, 96],

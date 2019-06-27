@@ -8,6 +8,7 @@ import RouterLink from './RouterLink';
 import { NotificationsContext } from './NotificationsProvider';
 
 const StyledHeader = styled.header`
+  width: 100%;
   margin-bottom: 2rem;
 `;
 const FlexContainer = styled.div`
@@ -16,6 +17,7 @@ const FlexContainer = styled.div`
 const NavWrapper = styled(FlexContainer)`
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 `;
 const NavItems = styled(FlexContainer)`
   justify-content: flex-start;
@@ -35,6 +37,7 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
               <Image src="/static/logo-black.svg" alt="panvala logo" />
             </RouterLink>
           </FlexContainer>
+
           <NavItems>
             <NavItem>
               <RouterLink href="/slates" as="/slates">

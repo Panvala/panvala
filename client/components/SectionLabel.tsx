@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { space } from 'styled-system';
 import { COLORS } from '../styles';
 
 const StyledSectionLabel = styled.div`
@@ -7,6 +8,7 @@ const StyledSectionLabel = styled.div`
   font-size: 0.9rem;
   font-weight: bold;
   color: ${COLORS.grey3};
+  ${space};
 `;
 
 const SectionLabel: React.FunctionComponent<any> = props => {
