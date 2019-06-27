@@ -68,7 +68,7 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
       <RouteTitle>
         {slate.verifiedRecommender
           ? slate.organization
-          : splitAddressHumanReadable(slate.recommenderAddress)}
+          : splitAddressHumanReadable(slate.recommender)}
       </RouteTitle>
       <Container>
         <MetaColumn>

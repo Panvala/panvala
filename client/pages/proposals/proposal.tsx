@@ -113,7 +113,7 @@ export const ProposalSidebar = ({ proposal, includedInSlates }: IProposalSidebar
             as={`/slates/${includedInSlate.id}`}
             key={includedInSlate.id}
           >
-            <DarkText>{includedInSlate.recommenderAddress}</DarkText>
+            <DarkText>{includedInSlate.id}</DarkText>
           </RouterLink>
         ))
       : 'None';
