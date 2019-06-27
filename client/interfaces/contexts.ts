@@ -52,7 +52,6 @@ export interface IGovernanceProposalMetadata {
   id: number;
   firstName: string;
   lastName?: string;
-  title: string;
   summary: string;
   organization?: string;
   parameterChanges: IParameterChangesObject;
@@ -71,7 +70,6 @@ export interface ISlate {
   category: string;
   status: number;
   deadline: number | false;
-  title: string;
   owner: string;
   organization?: string;
   description: string;
@@ -90,7 +88,6 @@ export interface ISlateMetadata {
   firstName: string;
   lastName?: string;
   organization?: string;
-  title: string;
   description: string;
   proposalMultihashes: string[];
   proposals: IGrantProposalMetadata[] | IGovernanceProposalMetadata[];

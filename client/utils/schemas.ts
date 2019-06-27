@@ -5,10 +5,6 @@ export const GovernanceSlateFormSchema = yup.object().shape({
     .string()
     .email('Invalid email')
     .required('Required'),
-  title: yup
-    .string()
-    .max(80, 'Too Long!')
-    .required('Required'),
   firstName: yup.string().required('Required'),
   summary: yup
     .string()

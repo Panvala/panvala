@@ -65,7 +65,6 @@ const Slates: React.SFC = () => {
                 <RouterLink href={`/slates/slate?id=${slate.id}`} as={`/slates/${slate.id}`}>
                   <Card
                     key={slate.id}
-                    title={slate.title}
                     subtitle={slate.proposals && slate.proposals.length + ' Grants Included'}
                     description={slate.description}
                     category={slate.category}

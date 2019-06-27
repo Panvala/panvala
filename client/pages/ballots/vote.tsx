@@ -220,7 +220,6 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
                   .map((slate: ISlate) => (
                     <Card
                       key={slate.id}
-                      title={slate.title}
                       subtitle={slate.proposals.length + ' Grants Included'}
                       description={slate.description}
                       category={slate.category}

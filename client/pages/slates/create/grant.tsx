@@ -49,10 +49,6 @@ const FormSchema = yup.object().shape({
     .string()
     .email('Invalid email')
     .required('Required'),
-  title: yup
-    .string()
-    .max(80, 'Too Long!')
-    .required('Required'),
   firstName: yup.string().required('Required'),
   description: yup
     .string()
@@ -71,7 +67,6 @@ interface IProposalsObject {
 }
 interface IFormValues {
   email: string;
-  title: string;
   firstName: string;
   lastName?: string;
   organization?: string;
@@ -253,7 +248,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
         firstName: values.firstName,
         lastName: values.lastName,
         organization: values.organization,
-        title: values.title,
         description: values.description,
         proposalMultihashes: proposalMultihashes.map(md => md.toString()),
         proposals: proposalMetadatas,
@@ -325,7 +319,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
           firstName: 'Guy',
           lastName: 'Reid',
           organization: 'Panvala',
-          title: 'Test Slate',
           description: 'Only the best proposals',
           recommendation: query && query.id ? 'grant' : '',
           proposals: query && query.id ? { [query.id.toString()]: true } : {},
@@ -337,7 +330,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
           firstName: '',
           lastName: '',
           organization: '',
-          title: '',
           description: '',
           recommendation: query && query.id ? 'grant' : '',
           proposals: query && query.id ? { [query.id.toString()]: true } : {},
@@ -414,7 +406,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
                 <SectionLabel>{'ABOUT'}</SectionLabel>
 
                 <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
-                <FieldText required label={'Slate Title'} name="title" placeholder="Enter title" />
 
                 <FieldText
                   required

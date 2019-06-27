@@ -107,7 +107,6 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
       firstName,
       lastName,
       proposals,
-      title,
       description,
       organization,
       proposalMultihashes,
