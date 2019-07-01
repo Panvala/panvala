@@ -1,6 +1,8 @@
 import * as React from 'react';
-import Flex from './system/Flex';
+import Flex, { BreakableFlex } from './system/Flex';
 import Input from './Input';
+import { EthereumContext } from './EthereumProvider';
+import { formatPanvalaUnits } from '../utils/format';
 
 const ParameterRow: React.SFC<any> = props => {
   return (
@@ -16,24 +18,46 @@ const ParameterRow: React.SFC<any> = props => {
       <Flex justifyStart width="25%" fontSize={1}>
         {props.parameterName}
       </Flex>
-      <Flex justifyStart width="50%" fontSize={1}>
+      <BreakableFlex justifyStart width="35%" fontSize={1}>
         {props.oldValue}
-      </Flex>
-      <Flex justifyStart width="25%" fontSize={1}>
+      </BreakableFlex>
+      <BreakableFlex justifyStart width="35%" fontSize={1}>
         <Input
           m={0}
           fontFamily="Fira Code"
           name="new-value"
           onChange={(e: any) => props.onChange(props.name, e.target.value)}
           value={props.newValue}
-          placeholder="Propose New Value"
+          placeholder={props.type}
+          type={props.type === 'Number' ? 'number' : 'text'}
         />
-      </Flex>
+      </BreakableFlex>
     </Flex>
   );
 };
 
 const ParametersForm: React.SFC<any> = props => {
+  const {
+    contracts: { gatekeeper },
+    slateStakeAmount,
+  } = React.useContext(EthereumContext);
+
+  const parameters = [
+    {
+      parameterName: 'Slate Stake Amount',
+      name: 'parameters.slateStakeAmount.newValue',
+      value: formatPanvalaUnits(slateStakeAmount),
+      newValue: props.newSlateStakeAmount,
+      type: 'Number',
+    },
+    {
+      parameterName: 'Gatekeeper Address',
+      name: 'parameters.gatekeeperAddress.newValue',
+      value: gatekeeper.address,
+      newValue: props.newGatekeeperAddress,
+      type: 'Address',
+    },
+  ];
   return (
     <>
       <Flex column>
@@ -41,27 +65,24 @@ const ParametersForm: React.SFC<any> = props => {
           <Flex justifyStart width="25%">
             Current Parameter
           </Flex>
-          <Flex justifyStart width="50%">
+          <Flex justifyStart width="35%">
             Current Value
           </Flex>
-          <Flex justifyStart width="25%">
+          <Flex justifyStart width="35%">
             Propose New Value
           </Flex>
         </Flex>
-        <ParameterRow
-          parameterName="Required Stake"
-          name="parameters.slateStakeAmount.newValue"
-          oldValue={props.slateStakeAmount}
-          newValue={props.newSlateStakeAmount}
-          onChange={props.onChange}
-        />
-        <ParameterRow
-          parameterName="Gatekeeper Address"
-          name="parameters.gatekeeperAddress.newValue"
-          oldValue={props.gatekeeperAddress}
-          newValue={props.newGatekeeperAddress}
-          onChange={props.onChange}
-        />
+        {parameters.map(p => (
+          <ParameterRow
+            key={p.name}
+            parameterName={p.parameterName}
+            name={p.name}
+            oldValue={p.value}
+            newValue={p.newValue}
+            type={p.type}
+            onChange={props.onChange}
+          />
+        ))}
       </Flex>
     </>
   );

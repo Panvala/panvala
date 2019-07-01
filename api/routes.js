@@ -12,6 +12,7 @@ const proposal = require('./controllers/proposal');
 const slate = require('./controllers/slate');
 const ballot = require('./controllers/ballot');
 const notification = require('./controllers/notification');
+const parameter = require('./controllers/parameter');
 
 // Routes
 module.exports = app => {
@@ -64,4 +65,7 @@ module.exports = app => {
 
   // NOTIFICATIONS
   app.get('/api/notifications/:address', notification.getByAddress);
+
+  // PARAMETERS
+  app.get('/api/parameters', parameter.getAll);
 };
