@@ -19,6 +19,12 @@ async function getAllEvents() {
   const gatekeeper = new Contract(gatekeeperAddress, Gatekeeper.abi, provider);
   const tokenCapacitor = new Contract(tokenCapacitorAddress, TokenCapacitor.abi, provider);
 
+  // TEMPORARY WORKAROUND: prevent app from crashing on rinkeby network
+  const network = await provider.getNetwork();
+  if (network.chainId === 4) {
+    return [];
+  }
+
   const currentBlockNumber = await provider.getBlockNumber();
   console.log('currentBlockNumber:', currentBlockNumber);
 
