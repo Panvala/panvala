@@ -852,7 +852,7 @@ contract Gatekeeper {
         address tokenCapacitorAddress = parameters.getAsAddress("tokenCapacitorAddress");
         TokenCapacitor capacitor = TokenCapacitor(tokenCapacitorAddress);
         IERC20 token = token();
-        bytes memory emptyHash = new bytes(0);
+        bytes memory stakeDonationHash = "Qmepxeh4KVkyHYgt3vTjmodB5RKZgUEmdohBZ37oKXCUCm";
 
         uint256 numSlates = contest.stakedSlates.length;
         for (uint256 i = 0; i < numSlates; i++) {
@@ -868,7 +868,7 @@ contract Gatekeeper {
                         token.approve(address(capacitor), donationAmount),
                         "Failed to approve Gatekeeper to spend tokens"
                     );
-                    capacitor.donate(address(this), donationAmount, emptyHash);
+                    capacitor.donate(address(this), donationAmount, stakeDonationHash);
                 }
             }
         }
