@@ -62,7 +62,7 @@ contract ParameterStore {
      */
     function init() public {
         require(msg.sender == owner, "Only the owner can initialize the ParameterStore");
-        require(initialized == false, "Contract has already been initalized");
+        require(initialized == false, "Contract has already been initialized");
 
         initialized = true;
     }
