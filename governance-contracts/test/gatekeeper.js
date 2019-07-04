@@ -430,6 +430,7 @@ contract('Gatekeeper', (accounts) => {
         );
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'metadataHash cannot be empty');
         return;
       }
       assert.fail('Recommended a slate with an empty metadataHash');
@@ -448,7 +449,7 @@ contract('Gatekeeper', (accounts) => {
         );
       } catch (error) {
         expectRevert(error);
-        assert(error.toString().includes('Invalid requestID'));
+        expectErrorLike(error, 'invalid requestID');
         return;
       }
       assert.fail('Recommended a slate with an invalid requestID');
@@ -467,7 +468,7 @@ contract('Gatekeeper', (accounts) => {
         );
       } catch (error) {
         expectRevert(error);
-        assert(error.toString().includes('Duplicate requests'));
+        expectErrorLike(error, 'Duplicate requests');
         return;
       }
       assert.fail('Recommended a slate with duplicate requestIDs');
@@ -655,8 +656,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.stakeTokens(badSlateID, { from: staker });
       } catch (error) {
         expectRevert(error);
-        assert(error.toString().includes('No slate exists'));
-
+        expectErrorLike(error, 'No slate exists');
         return;
       }
       assert.fail('Staked on a non-existent stake');
@@ -673,7 +673,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.stakeTokens(slateID, { from: poorStaker });
       } catch (error) {
         expectRevert(error);
-        assert(error.toString().includes('Insufficient token balance'));
+        expectErrorLike(error, 'Insufficient token balance');
         return;
       }
       assert.fail('Staked with insufficient balance');
@@ -690,6 +690,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.stakeTokens(slateID, { from: thisStaker });
       } catch (error) {
         expectRevert(error);
+        // No message - SafeMath
         return;
       }
       assert.fail('Staked even though token transfer failed');
@@ -856,6 +857,7 @@ contract('Gatekeeper', (accounts) => {
         );
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'metadataHash cannot be empty');
         return;
       }
       assert.fail('allowed creation of a request with an empty metadataHash');
@@ -916,6 +918,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.depositVoteTokens(requestedTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'insufficient token balance');
         return;
       }
       assert.fail('allowed voter to request rights for more tokens than they have');
@@ -935,6 +938,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.depositVoteTokens(allocatedTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
+        // no reason - SafeMath
         return;
       }
       assert.fail('allowed voter to request rights even though the token transfer failed');
@@ -1003,7 +1007,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.withdrawVoteTokens(numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
-        assert(error.toString().includes('Insufficient vote token balance'));
+        expectErrorLike(error, 'Insufficient vote token balance');
         return;
       }
       assert.fail('Withdrew more vote tokens than allowed');
@@ -1215,6 +1219,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'already committed');
         return;
       }
       assert.fail('Committed a ballot more than once');
@@ -2398,6 +2403,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.countVotes(ballotID, GOVERNANCE);
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'no contest is in progress');
         return;
       }
 
@@ -3551,6 +3557,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.countRunoffVotes(ballotID, GRANT);
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'not pending');
         return;
       }
       assert.fail('Ran runoff even though none was pending');
@@ -3668,6 +3675,7 @@ contract('Gatekeeper', (accounts) => {
         await gatekeeper.getWinningSlate(ballotID, GRANT);
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'not finalized');
         return;
       }
       assert.fail('Returned a winner even though the contest has not been finalized');

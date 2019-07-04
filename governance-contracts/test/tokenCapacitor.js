@@ -187,6 +187,7 @@ contract('TokenCapacitor', (accounts) => {
         );
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'cannot be empty');
         return;
       }
       assert.fail('allowed creation of a proposal with an empty metadataHash');
@@ -687,6 +688,7 @@ contract('TokenCapacitor', (accounts) => {
         await capacitor.donate(donor, numTokens, utils.asBytes(metadataHash), { from: payer });
       } catch (error) {
         expectRevert(error);
+        // no message - SafeMath
         return;
       }
       assert.fail('Donation succeeded even though token transfer failed');
@@ -831,6 +833,7 @@ contract('TokenCapacitor', (accounts) => {
           await capacitor.updateBalances({ from: creator });
         } catch (error) {
           expectRevert(error);
+          expectErrorLike(error, 'interval too large');
           return;
         }
         assert.fail(`Called updateBalances() after more than ${days} days`);
@@ -888,7 +891,7 @@ contract('TokenCapacitor', (accounts) => {
         });
       });
 
-      it('should revert if time is in the past', async () => {
+      it('should revert if time is before lastLockedTime', async () => {
         const now = await utils.evm.timestamp();
         const time = (new BN(now)).sub(timing.ONE_SECOND);
 
@@ -896,6 +899,7 @@ contract('TokenCapacitor', (accounts) => {
           await capacitor.projectedLockedBalance(time);
         } catch (error) {
           expectRevert(error);
+          expectErrorLike(error, 'before last locked');
           return;
         }
         assert.fail('Allowed projection into the past');
@@ -968,7 +972,7 @@ contract('TokenCapacitor', (accounts) => {
         });
       });
 
-      it('should revert if time is in the past', async () => {
+      it('should revert if time is before lastLockedTime', async () => {
         const now = await utils.evm.timestamp();
         const time = (new BN(now)).sub(timing.ONE_SECOND);
 
@@ -976,6 +980,7 @@ contract('TokenCapacitor', (accounts) => {
           await capacitor.projectedUnlockedBalance(time);
         } catch (error) {
           expectRevert(error);
+          expectErrorLike(error, 'before last locked');
           return;
         }
         assert.fail('Allowed projection into the past');

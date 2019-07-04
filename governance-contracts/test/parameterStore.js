@@ -66,6 +66,7 @@ contract('ParameterStore', (accounts) => {
         await parameters.init({ from: creator });
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'already been initialized');
         return;
       }
       assert.fail('Allowed multiple initializations');
@@ -76,6 +77,7 @@ contract('ParameterStore', (accounts) => {
         await parameters.init({ from: user });
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'only the owner');
         return;
       }
       assert.fail('Allowed someone other than the creator to initialize');
@@ -106,6 +108,7 @@ contract('ParameterStore', (accounts) => {
         await parameters.setInitialValue('test', value, { from: user });
       } catch (error) {
         expectRevert(error);
+        expectErrorLike(error, 'only the owner');
         return;
       }
 
