@@ -220,7 +220,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
                   .map((slate: ISlate) => (
                     <Card
                       key={slate.id}
-                      subtitle={slate.proposals.length + ' Grants Included'}
+                      subtitle={slate.proposals ? slate.proposals.length + ' Grants Included' : ''}
                       description={slate.description}
                       category={slate.category}
                       status={convertEVMSlateStatus(slate.status)}
