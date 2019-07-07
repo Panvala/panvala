@@ -13,5 +13,10 @@
   "capacitor": {
     "charge": true,
     "initialBalance": "50000000"
+  },
+  "parameterStore": {
+      "parameters": {
+          "slateStakeAmount": 50000
+      }
   }
 }
