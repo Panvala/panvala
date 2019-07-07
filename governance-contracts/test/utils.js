@@ -21,6 +21,7 @@ const {
   bytesAsString,
   zeroHash,
   sha256,
+  toPanBase,
 } = require('../utils');
 
 const testProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
@@ -622,6 +623,7 @@ const utils = {
   bytesAsString,
   abiCoder,
   abiEncode,
+  toPanBase,
   newToken,
   keccak: ethUtils.keccak,
   zeroHash,

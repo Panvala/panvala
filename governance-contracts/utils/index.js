@@ -47,6 +47,17 @@ function zeroHash() {
   return ethUtils.zeros(32);
 }
 
+
+/**
+ * Convert the amount to PAN base units
+ * @param {number|string} tokens
+ */
+function toPanBase(tokens) {
+  const decimals = 18;
+  const baseUnits = `${tokens}${'0'.repeat(decimals)}`;
+  return baseUnits;
+}
+
 module.exports = {
   BN: ethUtils.BN,
   abiEncode,
@@ -55,4 +66,5 @@ module.exports = {
   bytesAsString,
   zeroHash,
   sha256: ethUtils.sha256,
+  toPanBase,
 };

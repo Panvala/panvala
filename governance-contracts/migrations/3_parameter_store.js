@@ -1,10 +1,9 @@
 /* eslint-disable no-console */
 /* globals artifacts */
 const ParameterStore = artifacts.require('ParameterStore');
-const BasicToken = artifacts.require('BasicToken');
 
 const { isValidAddress } = require('ethereumjs-util');
-const { abiEncode } = require('../utils');
+const { abiEncode, toPanBase } = require('../utils');
 
 // eslint-disable-next-line func-names
 module.exports = async function (deployer, networks) {
@@ -18,18 +17,12 @@ module.exports = async function (deployer, networks) {
   if (isValidAddress(parameterStoreAddress)) {
     info(`Using ParameterStore at ${parameterStoreAddress}`);
   } else {
-    const stakeAmount = '5000000000000000000000';
+    const { parameterStore: paramInfo } = global.panvalaConfig;
 
-    const { token: tokenInfo } = global.panvalaConfig;
-    const token = tokenInfo.deploy
-      ? await BasicToken.deployed()
-      : await BasicToken.at(tokenInfo.address);
+    const stakeAmount = toPanBase(paramInfo.parameters.slateStakeAmount);
 
-    const names = ['slateStakeAmount', 'tokenAddress'];
-    const values = [
-      abiEncode('uint256', stakeAmount),
-      abiEncode('address', token.address),
-    ];
+    const names = ['slateStakeAmount'];
+    const values = [abiEncode('uint256', stakeAmount)];
 
     info(names, values);
     await deployer.deploy(ParameterStore, names, values);
