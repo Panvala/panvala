@@ -23,10 +23,12 @@ const {
   getResource,
   asBytes,
   createMultihash,
+  toPanBase,
 } = utils;
 
 const { increaseTime } = utils.evm;
 const { ONE_WEEK } = timing;
+const { defaultParams } = utils.pan;
 
 
 async function doRunoff(gatekeeper, ballotID, voters, options) {
@@ -100,17 +102,19 @@ async function verifyFinalizedSlates(gatekeeper, slateIDs) {
   });
 }
 
+const expectedVotes = (first, second) => `${toPanBase(first)},${toPanBase(second)}`;
+
 contract('Gatekeeper', (accounts) => {
   let parameters;
 
   before(async () => {
-    const stakeAmount = '5000';
+    const { slateStakeAmount } = defaultParams;
     const [creator] = accounts;
     const token = await BasicToken.deployed();
 
     parameters = await ParameterStore.new(
       ['slateStakeAmount'],
-      [abiCoder.encode(['uint256'], [stakeAmount])],
+      [abiCoder.encode(['uint256'], [slateStakeAmount])],
       { from: creator },
     );
     await parameters.setInitialValue(
@@ -152,6 +156,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(epochLength.toString(), timing.EPOCH_LENGTH.toString());
 
       // token
+      // TODO: remove
       const actualToken = await gatekeeper.token();
       assert.strictEqual(actualToken, expectedToken.address, 'Token not stored');
     });
@@ -189,9 +194,10 @@ contract('Gatekeeper', (accounts) => {
     let createdParameters;
 
     beforeEach(async () => {
+      const { slateStakeAmount } = defaultParams;
       createdParameters = await ParameterStore.new(
         ['slateStakeAmount'],
-        [abiCoder.encode(['uint256'], ['5000'])],
+        [abiCoder.encode(['uint256'], [slateStakeAmount])],
         { from: creator },
       );
     });
@@ -338,9 +344,10 @@ contract('Gatekeeper', (accounts) => {
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Get requestIDs for the slate
+      const tokenAmounts = ['1000', '1000', '2000', '2000'].map(toPanBase);
       const proposalsReceipt = await capacitor.createManyProposals(
         [creator, recommender, creator, recommender],
-        ['1000', '1000', '2000', '2000'],
+        tokenAmounts,
         ['proposal1', 'proposal2', 'proposal3', 'proposal4'].map(p => utils.asBytes(utils.createMultihash(p))),
         { from: recommender },
       );
@@ -480,7 +487,7 @@ contract('Gatekeeper', (accounts) => {
       // Create grant proposal
       const grantRequestReceipt = await capacitor.createProposal(
         recommender,
-        '1000',
+        toPanBase('1000'),
         asBytes(utils.createMultihash('grant proposal')),
       );
 
@@ -554,7 +561,6 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let capacitor;
     let token;
-    const initialTokens = '20000000';
     let GRANT;
 
     let epochNumber;
@@ -563,17 +569,18 @@ contract('Gatekeeper', (accounts) => {
     let snapshotID;
 
     beforeEach(async () => {
-      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       snapshotID = await utils.evm.snapshot();
 
       epochNumber = await gatekeeper.currentEpochNumber();
 
+      const tokens = '1000';
       const proposals = [
-        { to: staker, tokens: '1000', metadataHash: createMultihash('a') },
-        { to: staker, tokens: '1000', metadataHash: createMultihash('b') },
-        { to: staker, tokens: '1000', metadataHash: createMultihash('c') },
+        { to: staker, tokens, metadataHash: createMultihash('a') },
+        { to: staker, tokens, metadataHash: createMultihash('b') },
+        { to: staker, tokens, metadataHash: createMultihash('c') },
       ];
       const metadata = asBytes(createMultihash('grant slate'));
 
@@ -588,7 +595,7 @@ contract('Gatekeeper', (accounts) => {
       stakeAmount = await parameters.getAsUint('slateStakeAmount');
 
       // Give out tokens
-      const allocatedTokens = stakeAmount.add(new BN('10000'));
+      const allocatedTokens = stakeAmount.add(new BN(toPanBase('10000')));
       await token.transfer(staker, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: staker });
     });
@@ -697,8 +704,9 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should revert if the slate has already been staked on', async () => {
-      await token.transfer(staker, '10000', { from: creator });
-      await token.approve(gatekeeper.address, '10000', { from: staker });
+      const amount = defaultParams.slateStakeAmount;
+      await token.transfer(staker, amount, { from: creator });
+      await token.approve(gatekeeper.address, amount, { from: staker });
 
       await gatekeeper.stakeTokens(slateID, { from: staker });
 
@@ -876,7 +884,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should increase the user\'s voting balance', async () => {
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens
       await token.transfer(voter, allocatedTokens, { from: creator });
@@ -906,8 +914,8 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should fail if the voter does not have enough tokens', async () => {
-      const allocatedTokens = '1000';
-      const requestedTokens = '1001';
+      const allocatedTokens = toPanBase('1000');
+      const requestedTokens = toPanBase('1001');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(voter, allocatedTokens, { from: creator });
@@ -925,9 +933,9 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should fail if the token transfer to the contract fails', async () => {
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
       // use an allowance that is too small
-      const allowance = '999';
+      const allowance = toPanBase('999');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(voter, allocatedTokens, { from: creator });
@@ -956,7 +964,7 @@ contract('Gatekeeper', (accounts) => {
       gatekeeper = await utils.newGatekeeper({ tokenAddress: token.address, from: creator });
 
       // Give the user some tokens
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
       await token.transfer(voter, allocatedTokens, { from: creator });
 
       // Deposit the tokens
@@ -965,7 +973,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should decrease the user\'s voting balance', async () => {
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
       const initialBalance = await token.balanceOf(voter);
       const initialVoteBalance = await gatekeeper.voteTokenBalance(voter);
 
@@ -997,7 +1005,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should fail if the amount is greater than the user\'s vote token balance', async () => {
-      const numTokens = '5000';
+      const numTokens = toPanBase('5000');
 
       const initialVoteBalance = await gatekeeper.voteTokenBalance(voter);
       assert(initialVoteBalance.lt(new BN(numTokens)), 'Balance should have been less than numTokens');
@@ -1017,7 +1025,7 @@ contract('Gatekeeper', (accounts) => {
 
     describe('timing', () => {
       let snapshotID;
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       beforeEach(async () => {
         snapshotID = await utils.evm.snapshot();
@@ -1113,7 +1121,7 @@ contract('Gatekeeper', (accounts) => {
       gatekeeper = await utils.newGatekeeper({ tokenAddress: token.address, from: creator });
       ballotID = await gatekeeper.currentEpochNumber();
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(voter, allocatedTokens, { from: creator });
@@ -1122,7 +1130,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should successfully commit a ballot', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       await gatekeeper.depositVoteTokens(numTokens, { from: voter });
 
@@ -1148,7 +1156,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should automatically deposit more vote tokens if the balance is low', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Voter has no vote tokens
       const initialVotingBalance = await gatekeeper.voteTokenBalance(voter);
@@ -1171,7 +1179,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should fail if the commit period has not started', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       await gatekeeper.depositVoteTokens(numTokens, { from: voter });
 
@@ -1187,7 +1195,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should fail if the commit period has ended', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       await gatekeeper.depositVoteTokens(numTokens, { from: voter });
 
@@ -1206,7 +1214,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should fail if the voter has already committed for this ballot', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Advance to commit period
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -1227,7 +1235,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should fail if commit hash is zero', async () => {
       const commitHash = utils.zeroHash();
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Advance to commit period
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -1284,7 +1292,7 @@ contract('Gatekeeper', (accounts) => {
 
       it('should revert if the delegate has tokens but the voter does not', async () => {
         // Give the delegate tokens and deposit them
-        const delegateTokens = '10000';
+        const delegateTokens = toPanBase('10000');
         await token.transfer(delegate, delegateTokens, { from: creator });
         await token.approve(gatekeeper.address, delegateTokens, { from: delegate });
         await gatekeeper.depositVoteTokens(delegateTokens, { from: delegate });
@@ -1343,7 +1351,7 @@ contract('Gatekeeper', (accounts) => {
       });
       ballotID = await gatekeeper.currentEpochNumber();
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       const tokenAddress = await gatekeeper.token();
       const token = await BasicToken.at(tokenAddress);
@@ -1355,7 +1363,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should return true if the voter has committed for the ballot', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Advance to commit period
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -1377,7 +1385,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.delegateVotingRights(delegate, { from: voter });
 
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Advance to commit period
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -1404,7 +1412,7 @@ contract('Gatekeeper', (accounts) => {
       gatekeeper = await utils.newGatekeeper({ from: creator });
       ballotID = await gatekeeper.currentEpochNumber();
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       const tokenAddress = await gatekeeper.token();
       const token = await BasicToken.at(tokenAddress);
@@ -1416,7 +1424,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should return the commit hash if the voter has committed for the ballot', async () => {
       const commitHash = utils.keccak('data');
-      const numTokens = '1000';
+      const numTokens = toPanBase('1000');
 
       // Advance to commit period
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -1453,7 +1461,6 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    const initialTokens = '20000000';
     let snapshotID;
     let GRANT;
     let GOVERNANCE;
@@ -1470,21 +1477,20 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, capacitor, token, parameters,
       } = await utils.newPanvala({
-        initialTokens,
         from: creator,
       }));
       ballotID = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(voter, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: voter });
 
       // Make sure the recommender has plenty of tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -1549,7 +1555,7 @@ contract('Gatekeeper', (accounts) => {
 
       // helper: commitBallot -> revealData
       const salt = 2000;
-      numTokens = '1000';
+      numTokens = toPanBase('1000');
       commitHash = utils.generateCommitHash(votes, salt);
 
       // commit here
@@ -1899,7 +1905,6 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    const initialTokens = '20000000';
     let ballotID;
     let snapshotID;
     let GRANT;
@@ -1910,13 +1915,13 @@ contract('Gatekeeper', (accounts) => {
 
       ({
         gatekeeper, capacitor, token, parameters,
-      } = await utils.newPanvala({ initialTokens, from: creator }));
+      } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -1975,7 +1980,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(3, { from: recommender });
 
       // Give everyone tokens
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
       await token.transfer(alice, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: alice });
 
@@ -2019,16 +2024,17 @@ contract('Gatekeeper', (accounts) => {
         'Incorrect events emitted',
       );
 
+
       // check first and second choice votes
       const slate0Votes = await utils.getVotes(gatekeeper, ballotID, GRANT, 0);
       const slate1Votes = await utils.getVotes(gatekeeper, ballotID, GRANT, 1);
-      assert.strictEqual(slate0Votes.toString(), '2000,1000');
-      assert.strictEqual(slate1Votes.toString(), '1000,2000');
+      assert.strictEqual(slate0Votes.toString(), expectedVotes('2000', '1000'));
+      assert.strictEqual(slate1Votes.toString(), expectedVotes('1000', '2000'));
 
       const slate2Votes = await utils.getVotes(gatekeeper, ballotID, GOVERNANCE, 2);
       const slate3Votes = await utils.getVotes(gatekeeper, ballotID, GOVERNANCE, 3);
-      assert.strictEqual(slate2Votes.toString(), '3000,0');
-      assert.strictEqual(slate3Votes.toString(), '0,3000');
+      assert.strictEqual(slate2Votes.toString(), expectedVotes('3000', '0'));
+      assert.strictEqual(slate3Votes.toString(), expectedVotes('0', '3000'));
 
       // Everyone should be marked as having revealed
       const didReveal = await Promise.all(voters.map(v => gatekeeper.didReveal(ballotID, v)));
@@ -2045,7 +2051,6 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
     let parameterStore;
-    const initialTokens = '20000000';
     let snapshotID;
     let GRANT;
     let GOVERNANCE;
@@ -2062,7 +2067,6 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, token, capacitor, parameters: parameterStore,
       } = await utils.newPanvala({
-        initialTokens,
         from: creator,
       }));
       ballotID = await gatekeeper.currentEpochNumber();
@@ -2070,14 +2074,14 @@ contract('Gatekeeper', (accounts) => {
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(voter, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: voter });
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -2139,7 +2143,7 @@ contract('Gatekeeper', (accounts) => {
       };
 
       const salt = 2000;
-      numTokens = '1000';
+      numTokens = toPanBase('1000');
       commitHash = utils.generateCommitHash(votes, salt);
 
       // Advance to commit period
@@ -2203,7 +2207,6 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
     let parameterStore;
-    const initialTokens = '20000000';
     let ballotID;
     let snapshotID;
     let GRANT;
@@ -2222,13 +2225,13 @@ contract('Gatekeeper', (accounts) => {
 
       ({
         gatekeeper, token, capacitor, parameters: parameterStore,
-      } = await utils.newPanvala({ initialTokens, from: creator }));
+      } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -2241,7 +2244,7 @@ contract('Gatekeeper', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -2316,8 +2319,8 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(ballotID0.toString(), ballotID.toString(), 'Emitted ballotID did not match');
       assert.strictEqual(resource0.toString(), GRANT.toString(), 'Emitted resource did not match');
       assert.strictEqual(emittedWinner.toString(), '0', 'Slate 0 should have won');
-      assert.strictEqual(emittedWinnerVotes.toString(), '2000', 'Winner had the wrong number of votes');
-      assert.strictEqual(emittedTotal.toString(), '3000', 'Total vote count was wrong');
+      assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
+      assert.strictEqual(emittedTotal.toString(), toPanBase('3000'), 'Total vote count was wrong');
 
       // ConfidenceVoteFinalized
       assert.strictEqual(receipt.logs[1].event, 'ConfidenceVoteFinalized');
@@ -2482,8 +2485,9 @@ contract('Gatekeeper', (accounts) => {
       // David votes for it with lots of power
       const david = accounts[5];
       const manyTokens = '10000';
-      await token.transfer(david, manyTokens, { from: creator });
-      await token.approve(gatekeeper.address, manyTokens, { from: david });
+      const manyTokensBase = toPanBase(manyTokens);
+      await token.transfer(david, manyTokensBase, { from: creator });
+      await token.approve(gatekeeper.address, manyTokensBase, { from: david });
 
       // Commit for voters
       await increaseTime(timing.VOTING_PERIOD_START);
@@ -2510,8 +2514,8 @@ contract('Gatekeeper', (accounts) => {
         totalVotes: emittedTotal,
       } = receipt.logs[0].args;
       assert.strictEqual(emittedWinner.toString(), expectedWinner, 'Emitted leader was wrong');
-      assert.strictEqual(emittedWinnerVotes.toString(), '2000', 'Winner had the wrong number of votes');
-      assert.strictEqual(emittedTotal.toString(), '3000', 'Total vote count was wrong');
+      assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
+      assert.strictEqual(emittedTotal.toString(), toPanBase('3000'), 'Total vote count was wrong');
 
       const { winningSlate } = receipt.logs[1].args;
       assert.strictEqual(
@@ -2546,8 +2550,8 @@ contract('Gatekeeper', (accounts) => {
       utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
 
       const { votes, totalVotes } = receipt.logs[0].args;
-      const winnerPercentage = votes.toNumber() / totalVotes.toNumber() * 100;
-      assert(winnerPercentage > 50.0, 'Winner should have had more than 50% of the votes');
+      const twiceVotes = votes.mul(new BN(2));
+      assert(twiceVotes.gt(totalVotes), 'Winner should have had more than 50% of the votes');
 
       const { winningSlate } = receipt.logs[1].args;
       assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
@@ -2765,7 +2769,6 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    const initialTokens = '20000000';
     let ballotID;
     let snapshotID;
     let GRANT;
@@ -2774,12 +2777,12 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -2792,7 +2795,7 @@ contract('Gatekeeper', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -2845,11 +2848,11 @@ contract('Gatekeeper', (accounts) => {
 
       // expect 2000, 1000, 0
       const slate0Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 0);
-      assert.strictEqual(slate0Votes.toString(), '2000');
+      assert.strictEqual(slate0Votes.toString(), toPanBase('2000'));
       const slate1Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 1);
-      assert.strictEqual(slate1Votes.toString(), '1000');
+      assert.strictEqual(slate1Votes.toString(), toPanBase('1000'));
       const slate2Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 2);
-      assert.strictEqual(slate2Votes.toString(), '0');
+      assert.strictEqual(slate2Votes.toString(), toPanBase('0'));
     });
 
     afterEach(async () => utils.evm.revert(snapshotID));
@@ -2862,7 +2865,6 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
 
-    const initialTokens = '20000000';
     let ballotID;
     let GRANT;
     const grantProposals = [{
@@ -2871,13 +2873,13 @@ contract('Gatekeeper', (accounts) => {
 
 
     beforeEach(async () => {
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
     });
@@ -2967,7 +2969,6 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
 
-    const initialTokens = '20000000';
     let epochNumber;
     let GRANT;
     const grantProposals = [{
@@ -2977,14 +2978,14 @@ contract('Gatekeeper', (accounts) => {
 
 
     beforeEach(async () => {
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       epochNumber = await gatekeeper.currentEpochNumber();
       snapshotID = await utils.evm.snapshot();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
     });
@@ -3061,7 +3062,7 @@ contract('Gatekeeper', (accounts) => {
 
     describe('after vote', () => {
       const [,, alice, bob, carol] = accounts;
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
       let stakingEpochTime;
 
       beforeEach(async () => {
@@ -3292,7 +3293,6 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    const initialTokens = '20000000';
     let ballotID;
     let GRANT;
     const grantProposals = [{
@@ -3303,13 +3303,13 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -3342,7 +3342,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender });
       await gatekeeper.stakeTokens(2, { from: recommender });
 
-      const allocatedTokens = '1500';
+      const allocatedTokens = toPanBase('1500');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -3396,12 +3396,12 @@ contract('Gatekeeper', (accounts) => {
       } = receipt.logs[1].args;
 
       const expectedWinner = '1';
-      const expectedVotes = (900 + 800).toString();
+      const expectedWinnerVotes = toPanBase(900 + 800);
       const expectedLoser = '2';
-      const expectedLoserVotes = '1000';
+      const expectedLoserVotes = toPanBase('1000');
 
       assert.strictEqual(countWinner.toString(), expectedWinner, 'Incorrect winner in runoff count');
-      assert.strictEqual(countWinnerVotes.toString(), expectedVotes, 'Incorrect winning votes in runoff count');
+      assert.strictEqual(countWinnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff count');
       assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
       assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
 
@@ -3481,12 +3481,12 @@ contract('Gatekeeper', (accounts) => {
       } = receipt.logs[1].args;
 
       const expectedWinner = '2';
-      const expectedVotes = (1000 + 101).toString();
+      const expectedWinnerVotes = toPanBase(1000 + 101);
       const expectedLoser = '1';
-      const expectedLoserVotes = (900).toString();
+      const expectedLoserVotes = toPanBase(900);
 
       assert.strictEqual(countWinner.toString(), expectedWinner, 'Incorrect winner in runoff count');
-      assert.strictEqual(countWinnerVotes.toString(), expectedVotes, 'Incorrect winning votes in runoff count');
+      assert.strictEqual(countWinnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff count');
       assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
       assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
 
@@ -3580,7 +3580,6 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    const initialTokens = '20000000';
     let ballotID;
     let GRANT;
     const grantProposals = [{
@@ -3591,13 +3590,13 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -3630,7 +3629,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender });
       await gatekeeper.stakeTokens(2, { from: recommender });
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -3690,7 +3689,6 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    const initialTokens = '20000000';
     let ballotID;
     let snapshotID;
     let GRANT;
@@ -3704,12 +3702,12 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ token, gatekeeper, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ token, gatekeeper, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -3722,7 +3720,7 @@ contract('Gatekeeper', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -3880,7 +3878,6 @@ contract('Gatekeeper', (accounts) => {
     let stakeAmount;
     let snapshotID;
 
-    const initialTokens = '20000000';
     let ballotID;
     let GRANT;
     const grantProposals = [{
@@ -3890,13 +3887,13 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000';
+      const recommenderTokens = toPanBase('500000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
 
@@ -3926,7 +3923,7 @@ contract('Gatekeeper', (accounts) => {
       });
 
 
-      const allocatedTokens = '10000';
+      const allocatedTokens = toPanBase('100000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -4179,7 +4176,6 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    const initialTokens = '20000000';
     let ballotID;
     let GRANT;
     const grantProposals = [{
@@ -4189,7 +4185,7 @@ contract('Gatekeeper', (accounts) => {
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
@@ -4219,7 +4215,7 @@ contract('Gatekeeper', (accounts) => {
         metadata: createMultihash('yet another slate'),
       });
 
-      const allocatedTokens = '10000';
+      const allocatedTokens = toPanBase('100000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -4421,7 +4417,7 @@ contract('Gatekeeper', (accounts) => {
         metadata: createMultihash('yet another slate'),
       });
 
-      const allocatedTokens = '10000';
+      const allocatedTokens = toPanBase('100000');
 
       // Make sure the voter has available tokens and the gatekeeper is approved to spend them
       await token.transfer(alice, allocatedTokens, { from: creator });
@@ -4465,7 +4461,7 @@ contract('Gatekeeper', (accounts) => {
         recommender: alice,
         metadata: createMultihash('the best slate'),
       });
-      const stake = '5000';
+      const stake = defaultParams.slateStakeAmount;
       await token.transfer(alice, stake, { from: creator });
       await token.approve(gatekeeper.address, stake, { from: alice });
       await gatekeeper.stakeTokens(slateID, { from: alice });

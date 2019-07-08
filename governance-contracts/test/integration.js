@@ -17,6 +17,7 @@ const {
   expectRevert,
   expectErrorLike,
   ContestStatus,
+  toPanBase,
 } = utils;
 
 const { increaseTime } = utils.evm;
@@ -43,26 +44,24 @@ contract('integration', (accounts) => {
     let gatekeeper;
     let capacitor;
     let token;
-    const initialTokens = new BN(100e6);
     let GRANT;
     let scale;
     let snapshotID;
-    const initialBalance = new BN(50e6);
+    const initialBalance = new BN(toPanBase(50e6));
     const zero = new BN(0);
     const tokenReleases = utils.loadTokenReleases();
     const daysPerEpoch = 91;
 
     beforeEach(async () => {
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       snapshotID = await utils.evm.snapshot();
-      await utils.chargeCapacitor(capacitor, initialBalance, token, { from: creator });
-      // await token.transfer(capacitor.address, initialBalance, { from: creator });
+      await utils.chargeCapacitor(capacitor, 50e6, token, { from: creator });
 
       GRANT = await getResource(gatekeeper, 'GRANT');
       scale = await capacitor.scale();
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000000';
+      const recommenderTokens = toPanBase('50000000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
     });
@@ -91,17 +90,19 @@ contract('integration', (accounts) => {
 
         // Create a grant slate for all the tokens
         // Calculate the number of tokens to request
-        const tokens = initialBalance.sub(totalRedeemed).sub(futureLockedBalance);
-        const expectedRelease = tokenReleases.quarterly[nextEpoch.toString()];
+        const baseTokens = initialBalance.sub(totalRedeemed).sub(futureLockedBalance);
+        const tokens = utils.fromPanBase(baseTokens);
+        const expectedRelease = new BN(tokenReleases.quarterly[nextEpoch.toString()]);
+        // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          tokens.toString(),
-          expectedRelease.toString(),
+          Math.round(tokens),
+          Math.round(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
 
         const grantProposals = [{
-          to: recommender, tokens, metadataHash: createMultihash('grant'),
+          to: recommender, tokens: baseTokens, metadataHash: createMultihash('grant'), convertTokens: false,
         }];
 
         slateID = await gatekeeper.slateCount();
@@ -112,6 +113,7 @@ contract('integration', (accounts) => {
           capacitor,
           recommender,
           metadata: createMultihash('my slate'),
+          convertTokens: false,
         });
         await gatekeeper.stakeTokens(slateID, { from: recommender });
 
@@ -129,7 +131,7 @@ contract('integration', (accounts) => {
         //   locked: l.toString(),
         // });
 
-        // console.log('withdraw', tokens.toString());
+        // console.log('withdraw', tokens.toString(), epochNumber.toString());
         await capacitor.withdrawTokens(requestID, { from: recommender });
 
         totalRedeemed = await capacitor.lifetimeReleasedTokens();
@@ -180,17 +182,19 @@ contract('integration', (accounts) => {
 
         // Create a grant slate for all the tokens
         // Calculate the number of tokens to request
-        const tokens = initialBalance.sub(totalRedeemed).sub(futureLockedBalance);
+        const baseTokens = initialBalance.sub(totalRedeemed).sub(futureLockedBalance);
+        const tokens = utils.fromPanBase(baseTokens);
         const expectedRelease = tokenReleases.daily[nextEpoch.toString()];
+        // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          tokens.toString(),
-          expectedRelease.toString(),
+          Math.round(tokens),
+          Math.round(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
 
         const grantProposals = [{
-          to: recommender, tokens, metadataHash: createMultihash('grant'),
+          to: recommender, tokens: baseTokens, metadataHash: createMultihash('grant'), convertTokens: false,
         }];
 
         slateID = await gatekeeper.slateCount();
@@ -201,6 +205,7 @@ contract('integration', (accounts) => {
           capacitor,
           recommender,
           metadata: createMultihash('my slate'),
+          convertTokens: false,
         });
         await gatekeeper.stakeTokens(slateID, { from: recommender });
 
@@ -225,7 +230,7 @@ contract('integration', (accounts) => {
 
         await capacitor.withdrawTokens(requestID, { from: recommender });
         totalRedeemed = await capacitor.lifetimeReleasedTokens();
-        // console.log('withdraw', tokens.toString());
+        // console.log('withdraw', tokens.toString(), epochNumber.toString());
 
         const { unlocked, locked } = await utils.capacitorBalances(capacitor);
         // console.log('capacitor balances', {
@@ -243,7 +248,6 @@ contract('integration', (accounts) => {
         );
       };
 
-      // await capacitor.updateBalances();
       const numEpochs = 16;
       const epochs = utils.range(numEpochs).map(i => (() => runEpoch(i)));
       await utils.chain(epochs);
@@ -259,7 +263,6 @@ contract('integration', (accounts) => {
     let capacitor;
     let token;
     let parameters;
-    const initialTokens = new BN(100e6);
     let GRANT;
     let GOVERNANCE;
     let snapshotID;
@@ -268,7 +271,7 @@ contract('integration', (accounts) => {
     beforeEach(async () => {
       ({
         gatekeeper, token, capacitor, parameters,
-      } = await utils.newPanvala({ initialTokens, from: creator }));
+      } = await utils.newPanvala({ from: creator }));
       snapshotID = await utils.evm.snapshot();
       await utils.chargeCapacitor(capacitor, initialBalance, token, { from: creator });
 
@@ -276,7 +279,7 @@ contract('integration', (accounts) => {
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
       // Make sure the recommender has tokens
-      const recommenderTokens = '50000000';
+      const recommenderTokens = toPanBase('5000000');
       await token.transfer(recommender, recommenderTokens, { from: creator });
       await token.approve(gatekeeper.address, recommenderTokens, { from: recommender });
     });
@@ -334,7 +337,7 @@ contract('integration', (accounts) => {
       await Promise.all(grantPermissions.map(r => capacitor.withdrawTokens(r)));
 
       const newBalance = await token.balanceOf(recommender);
-      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN(tokens)).toString(), 'Tokens not sent');
+      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN(toPanBase(tokens))).toString(), 'Tokens not sent');
 
       const setValue = await parameters.getAsUint(key);
       assert.strictEqual(setValue.toString(), value, 'Stake amount not updated');
@@ -398,7 +401,7 @@ contract('integration', (accounts) => {
       await Promise.all(grantPermissions.map(r => capacitor.withdrawTokens(r)));
 
       let newBalance = await token.balanceOf(recommender);
-      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN('1000')).toString(), 'Tokens not sent');
+      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN(toPanBase('1000'))).toString(), 'Tokens not sent');
 
       const setGatekeeper = await parameters.getAsAddress(gatekeeperKey);
       assert.strictEqual(setGatekeeper, newGatekeeper.address, 'Gatekeeper not updated');
@@ -472,7 +475,7 @@ contract('integration', (accounts) => {
       await Promise.all(nextGrantPermissions.map(r => capacitor.withdrawTokens(r)));
 
       newBalance = await token.balanceOf(recommender);
-      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN('1000')).toString(), 'Tokens not sent');
+      assert.strictEqual(newBalance.toString(), originalBalance.add(new BN(toPanBase('1000'))).toString(), 'Tokens not sent');
 
       const setStakeAmount = await parameters.getAsUint('slateStakeAmount');
       assert.strictEqual(setStakeAmount.toString(), '6000', 'Stake amount not updated');
@@ -490,7 +493,7 @@ contract('integration', (accounts) => {
       beforeEach(async () => {
         // ===== EPOCH 0
         const startingEpoch = await gatekeeper.currentEpochNumber();
-        await token.approve(gatekeeper.address, '10000', { from: creator });
+        await token.approve(gatekeeper.address, toPanBase('100000'), { from: creator });
 
         // deploy newer and shinier gatekeeper
         newGatekeeper = await UpgradedGatekeeper.new(parameters.address, token.address, {
@@ -575,10 +578,14 @@ contract('integration', (accounts) => {
 
         // Execute the grant proposals
         const originalBalance = await token.balanceOf(recommender);
-        utils.pMap(p => capacitor.withdrawTokens(p), grantPermissions);
+        await utils.pMap(p => capacitor.withdrawTokens(p), grantPermissions);
 
         const newBalance = await token.balanceOf(recommender);
-        assert.strictEqual(newBalance.toString(), originalBalance.add(new BN('1000')).toString(), 'Tokens not sent');
+        assert.strictEqual(
+          newBalance.toString(),
+          originalBalance.add(new BN(toPanBase('1000'))).toString(),
+          'Tokens not sent',
+        );
 
         transferEpoch = startingEpoch;
       });
@@ -762,13 +769,13 @@ contract('integration', (accounts) => {
           utils.pMap(p => capacitor.withdrawTokens(p), grantPermissions);
 
           const newBalance = await token.balanceOf(recommender);
-          assert.strictEqual(newBalance.toString(), originalBalance.add(new BN('1000')).toString(), 'Tokens not sent');
+          assert.strictEqual(newBalance.toString(), originalBalance.add(new BN(toPanBase('1000'))).toString(), 'Tokens not sent');
 
           const setStakeAmount = await parameters.getAsUint('slateStakeAmount');
           assert.strictEqual(setStakeAmount.toString(), '6000', 'Stake amount not updated');
 
           // Should be able to deposit tokens
-          await newGatekeeper.depositVoteTokens('1000', { from: recommender });
+          await newGatekeeper.depositVoteTokens(toPanBase('1000'), { from: recommender });
         });
 
         it('should not allow users to deposit vote tokens before the new gatekeeper has been initialized', async () => {

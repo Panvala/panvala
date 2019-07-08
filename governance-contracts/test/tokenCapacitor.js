@@ -15,6 +15,7 @@ const {
   BN,
   timing,
   loadDecayMultipliers,
+  toPanBase,
 } = utils;
 
 const { increaseTime } = utils.evm;
@@ -109,7 +110,7 @@ contract('TokenCapacitor', (accounts) => {
 
     it('should create a proposal to the appropriate beneficiary', async () => {
       const to = beneficiary;
-      const tokens = '1000';
+      const tokens = toPanBase('1000');
       const metadataHash = utils.createMultihash('my request data');
 
       const receipt = await capacitor.createProposal(
@@ -161,7 +162,7 @@ contract('TokenCapacitor', (accounts) => {
 
     it('should allow a proposal to send to the zero address', async () => {
       const to = utils.zeroAddress();
-      const tokens = '1000';
+      const tokens = toPanBase('1000');
       const metadataHash = utils.createMultihash('my request data');
 
       await capacitor.createProposal(
@@ -175,7 +176,7 @@ contract('TokenCapacitor', (accounts) => {
     // rejection criteria:
     it('should not allow creation of a proposal with an empty metadataHash', async () => {
       const to = beneficiary;
-      const tokens = '1000';
+      const tokens = toPanBase('1000');
       const emptyHash = '';
 
       try {
@@ -204,7 +205,7 @@ contract('TokenCapacitor', (accounts) => {
 
     it('should create proposals and emit an event for each', async () => {
       const beneficiaries = [beneficiary1, beneficiary2];
-      const tokenAmounts = ['1000', '2000'];
+      const tokenAmounts = ['1000', '2000'].map(toPanBase);
       const metadataHashes = ['request1', 'request2'].map(r => utils.createMultihash(r));
 
       const receipt = await capacitor.createManyProposals(
@@ -256,20 +257,20 @@ contract('TokenCapacitor', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    const initialTokens = '100000000';
     const capacitorSupply = '50000000';
     let ballotID;
 
     let proposals1;
     let proposals2;
     let winningSlate;
-    let approvedRequests;
     let losingSlate;
+    let winnerPermissions;
+    let loserPermissions;
 
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
-      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       ballotID = await gatekeeper.currentEpochNumber();
       const GRANT = await utils.getResource(gatekeeper, 'GRANT');
 
@@ -277,7 +278,7 @@ contract('TokenCapacitor', (accounts) => {
       await utils.chargeCapacitor(capacitor, capacitorSupply, token, { from: creator });
 
       // Allocate tokens
-      const allocatedTokens = '10000';
+      const allocatedTokens = toPanBase('10000');
       await token.transfer(alice, allocatedTokens, { from: creator });
       await token.transfer(bob, allocatedTokens, { from: creator });
       await token.transfer(carol, allocatedTokens, { from: creator });
@@ -290,10 +291,10 @@ contract('TokenCapacitor', (accounts) => {
       proposals1 = [
         { to: alice, tokens: '1000', metadataHash: utils.createMultihash('grant for Alice') },
         { to: alice, tokens: '1000', metadataHash: utils.createMultihash('another grant for Alice') },
-        { to: bob, tokens: '25000000', metadataHash: utils.createMultihash('a really large grant') },
+        { to: bob, tokens: '50000000', metadataHash: utils.createMultihash('a really large grant') },
       ];
 
-      await grantSlateFromProposals({
+      winnerPermissions = await grantSlateFromProposals({
         gatekeeper,
         proposals: proposals1,
         capacitor,
@@ -305,7 +306,7 @@ contract('TokenCapacitor', (accounts) => {
         { to: recommender2, tokens: '100000', metadataHash: utils.createMultihash('All to me') },
       ];
 
-      await grantSlateFromProposals({
+      loserPermissions = await grantSlateFromProposals({
         gatekeeper,
         proposals: proposals2,
         capacitor,
@@ -313,10 +314,11 @@ contract('TokenCapacitor', (accounts) => {
         metadata: 'slate 2',
       });
 
-      await token.transfer(recommender1, allocatedTokens, { from: creator });
-      await token.approve(gatekeeper.address, allocatedTokens, { from: recommender1 });
-      await token.transfer(recommender2, allocatedTokens, { from: creator });
-      await token.approve(gatekeeper.address, allocatedTokens, { from: recommender2 });
+      const recommenderTokens = toPanBase('500000');
+      await token.transfer(recommender1, recommenderTokens, { from: creator });
+      await token.approve(gatekeeper.address, recommenderTokens, { from: recommender1 });
+      await token.transfer(recommender2, recommenderTokens, { from: creator });
+      await token.approve(gatekeeper.address, recommenderTokens, { from: recommender2 });
 
       await gatekeeper.stakeTokens(0, { from: recommender1 });
       await gatekeeper.stakeTokens(1, { from: recommender2 });
@@ -337,14 +339,12 @@ contract('TokenCapacitor', (accounts) => {
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
       await gatekeeper.countVotes(ballotID, GRANT);
       winningSlate = await gatekeeper.getWinningSlate(ballotID, GRANT);
-      approvedRequests = await gatekeeper.slateRequests(winningSlate);
-
       losingSlate = new BN('1');
       assert(losingSlate.toString() !== winningSlate.toString());
     });
 
     it('should send tokens to the appropriate address if the request has been approved', async () => {
-      const proposalID = approvedRequests[0];
+      const proposalID = winnerPermissions[0];
 
       const { to: beneficiary, tokens: amount } = await capacitor.proposals(proposalID);
       const initialBalance = await token.balanceOf(beneficiary);
@@ -413,7 +413,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should allow someone other than the grantee to send the tokens', async () => {
-      const proposalID = approvedRequests[0];
+      const proposalID = winnerPermissions[0];
 
       const { to: beneficiary, tokens: amount } = await capacitor.proposals(proposalID);
       const initialBalance = await token.balanceOf(beneficiary);
@@ -434,7 +434,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should not allow multiple withdrawals for the same proposal ID', async () => {
-      const proposalID = approvedRequests[0];
+      const proposalID = winnerPermissions[0];
       const { to: beneficiary } = await capacitor.proposals(proposalID);
 
       // Withdraw tokens
@@ -452,8 +452,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should revert if the proposal has not been approved by the gatekeeper', async () => {
-      const rejectedRequests = await gatekeeper.slateRequests(losingSlate);
-      const proposalID = rejectedRequests[0];
+      const proposalID = loserPermissions[0];
       const { to: beneficiary } = await capacitor.proposals(proposalID);
 
       try {
@@ -479,7 +478,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should revert if the number of tokens requested is greater than the number of unlocked tokens', async () => {
-      const proposalID = approvedRequests[2]; // The large one
+      const proposalID = winnerPermissions[2]; // The large one
 
       try {
         await capacitor.withdrawTokens(proposalID, { from: bob });
@@ -500,24 +499,23 @@ contract('TokenCapacitor', (accounts) => {
     let token;
     let capacitor;
 
-    const initialTokens = '100000000';
     const capacitorSupply = '50000000';
 
     beforeEach(async () => {
-      ({ token, capacitor } = await utils.newPanvala({ initialTokens, from: creator }));
+      ({ token, capacitor } = await utils.newPanvala({ from: creator }));
 
       // Charge the capacitor
       await utils.chargeCapacitor(capacitor, capacitorSupply, token, { from: creator });
 
       // Allocate tokens
-      const allocatedTokens = '1000';
+      const allocatedTokens = toPanBase('1000');
       await token.transfer(payer, allocatedTokens, { from: creator });
       await token.approve(capacitor.address, allocatedTokens, { from: payer });
     });
 
     it('should let a payer donate tokens', async () => {
       const selfDonor = payer;
-      const numTokens = '100';
+      const numTokens = toPanBase('100');
       const metadataHash = utils.createMultihash('My donation');
 
       const initialBalance = await token.balanceOf(payer);
@@ -578,7 +576,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should let a payer donate tokens on behalf of a donor', async () => {
-      const numTokens = '100';
+      const numTokens = toPanBase('100');
       const metadataHash = utils.createMultihash('My donation');
 
       const initialBalance = await token.balanceOf(payer);
@@ -624,7 +622,7 @@ contract('TokenCapacitor', (accounts) => {
     it('should let a payer donate tokens on behalf of a unspecified donor (zero address)', async () => {
       const unspecifiedDonor = utils.zeroAddress();
 
-      const numTokens = '100';
+      const numTokens = toPanBase('100');
       const metadataHash = utils.createMultihash('My donation');
 
       // Donate on behalf of the donor
@@ -650,7 +648,7 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should allow a donation with an empty metadataHash', async () => {
-      const numTokens = '100';
+      const numTokens = toPanBase('100');
       const emptyHash = '';
 
       // Donate on behalf of the donor
@@ -680,7 +678,7 @@ contract('TokenCapacitor', (accounts) => {
     it('should revert if the token transfer fails', async () => {
       await token.approve(capacitor.address, '0', { from: payer });
 
-      const numTokens = '100';
+      const numTokens = toPanBase('100');
       const metadataHash = utils.createMultihash('My donation');
 
       // Try to donate
