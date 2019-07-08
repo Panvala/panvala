@@ -22,6 +22,7 @@ const {
   zeroHash,
   sha256,
   toPanBase,
+  fromPanBase,
 } = require('../utils');
 
 const testProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
@@ -36,6 +37,9 @@ const timing = {
   COMMIT_PERIOD_LENGTH: ONE_WEEK,
   REVEAL_PERIOD_LENGTH: ONE_WEEK,
 };
+
+const ten = new BN(10);
+const panDecimals = new BN(18);
 
 /**
  * Check that the error is an EVM `revert`
@@ -196,13 +200,25 @@ function createMultihash(data) {
 function calculateSupply(initialTokens, decimals) {
   // calculate the initial supply:
   const tokens = new BN(initialTokens);
-  const ten = new BN(10);
   const exponent = new BN(decimals);
 
   // const factor = ten.pow(exponent);
   const initialSupply = tokens.mul(ten.pow(exponent));
   return initialSupply;
 }
+
+/**
+ *
+ * @param {BN} baseValue
+ */
+function nearestToken(baseValue) {
+  const scale = ten.pow(panDecimals);
+  return baseValue.div(scale).mul(scale);
+}
+
+const defaultParams = {
+  slateStakeAmount: toPanBase(50000),
+};
 
 /**
  * Convenience function for creating a token
@@ -234,7 +250,7 @@ async function newGatekeeper(options) {
   // Deploy a token if the address of one isn't passed in
   if (typeof tokenAddress === 'undefined') {
     // console.log('deploying token');
-    const token = await newToken({ from: creator });
+    const token = await newToken({ initialTokens: '100000000', from: creator });
     tokenAddress = token.address;
   }
   // console.log(`token deployed at ${tokenAddress}`);
@@ -242,11 +258,11 @@ async function newGatekeeper(options) {
 
   // deploy a ParameterStore if the address of one isn't passed in
   if (typeof parameterStoreAddress === 'undefined') {
-    const stakeAmount = '5000';
+    const { slateStakeAmount } = defaultParams;
     parameters = await ParameterStore.new(
       ['slateStakeAmount'],
       [
-        abiCoder.encode(['uint256'], [stakeAmount]),
+        abiCoder.encode(['uint256'], [slateStakeAmount]),
       ],
       { from: creator },
     );
@@ -288,7 +304,8 @@ async function newGatekeeper(options) {
  * @param {*} options from, parameterStoreAddress, tokenAddress
  */
 async function newPanvala(options) {
-  const { from: creator } = options;
+  const { from: creator, initialTokens } = options;
+  assert(typeof initialTokens === 'undefined', 'should not have key initialTokens');
 
   const gatekeeper = await newGatekeeper({ ...options, init: false });
   const parametersAddress = await gatekeeper.parameters();
@@ -356,20 +373,22 @@ const proposalCategories = {
 
 /**
  * Create a grant proposal slate from proposal info
- * options include: gatekeeper, capacitor, proposals, recommender, metadata, batchNumber
+ * options include: gatekeeper, capacitor, proposals, recommender, metadata, batchNumber,
+ * convertTokens
  * @param {*} options
  * @returns proposalIDs
  */
 async function grantSlateFromProposals(options) {
   const {
-    gatekeeper, capacitor, proposals, recommender, metadata,
+    gatekeeper, capacitor, proposals, recommender, metadata, convertTokens = true,
   } = options;
   const beneficiaries = [];
   const tokenAmounts = [];
   const metadataHashes = [];
   proposals.forEach((p) => {
     beneficiaries.push(p.to);
-    tokenAmounts.push(p.tokens);
+    const baseTokens = convertTokens ? toPanBase(p.tokens) : p.tokens;
+    tokenAmounts.push(baseTokens);
     metadataHashes.push(asBytes(p.metadataHash));
   });
 
@@ -471,7 +490,7 @@ async function voteSingle(gatekeeper, voter, resource, firstChoice, secondChoice
   };
 
   const commitHash = generateCommitHash(votes, salt);
-  await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
+  await gatekeeper.commitBallot(voter, commitHash, toPanBase(numTokens), { from: voter });
 
   return {
     voter,
@@ -498,7 +517,7 @@ async function commitBallot(gatekeeper, voter, ballot, numTokens, salt) {
   });
 
   const commitHash = generateCommitHash(votes, salt);
-  await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
+  await gatekeeper.commitBallot(voter, commitHash, toPanBase(numTokens), { from: voter });
 
   const resources = Object.keys(votes);
   return {
@@ -587,7 +606,7 @@ function loadTokenReleases() {
 }
 
 async function chargeCapacitor(capacitor, numTokens, token, txOptions) {
-  await token.transfer(capacitor.address, numTokens, txOptions);
+  await token.transfer(capacitor.address, toPanBase(numTokens), txOptions);
   await capacitor.updateBalances(txOptions);
 }
 
@@ -624,9 +643,14 @@ const utils = {
   abiCoder,
   abiEncode,
   toPanBase,
+  fromPanBase,
   newToken,
   keccak: ethUtils.keccak,
   zeroHash,
+  pan: {
+    defaultParams,
+  },
+  nearestToken,
   generateCommitHash,
   grantSlateFromProposals,
   governanceSlateFromProposals,

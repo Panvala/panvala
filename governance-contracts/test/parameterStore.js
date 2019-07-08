@@ -4,7 +4,7 @@ const utils = require('./utils');
 
 const {
   abiCoder, abiEncode, expectErrorLike, expectRevert, governanceSlateFromProposals,
-  voteSingle, timing, revealVote, BN, getResource,
+  voteSingle, timing, revealVote, BN, getResource, toPanBase,
 } = utils;
 
 const { increaseTime } = utils.evm;
@@ -293,7 +293,6 @@ contract('ParameterStore', (accounts) => {
     let gatekeeper;
     let parameters;
     let token;
-    const initialTokens = '100000000';
 
     let ballotID;
 
@@ -307,7 +306,6 @@ contract('ParameterStore', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, parameters } = await utils.newPanvala({
-        initialTokens,
         from: creator,
       }));
 
@@ -315,7 +313,7 @@ contract('ParameterStore', (accounts) => {
       const GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
       // Allocate tokens
-      const allocatedTokens = '10000';
+      const allocatedTokens = toPanBase('10000');
       await token.transfer(alice, allocatedTokens, { from: creator });
       await token.transfer(bob, allocatedTokens, { from: creator });
       await token.transfer(carol, allocatedTokens, { from: creator });
@@ -362,10 +360,11 @@ contract('ParameterStore', (accounts) => {
         metadata: 'slate 2',
       });
 
-      await token.transfer(recommender1, allocatedTokens, { from: creator });
-      await token.approve(gatekeeper.address, allocatedTokens, { from: recommender1 });
-      await token.transfer(recommender2, allocatedTokens, { from: creator });
-      await token.approve(gatekeeper.address, allocatedTokens, { from: recommender2 });
+      const recommenderTokens = toPanBase('500000');
+      await token.transfer(recommender1, recommenderTokens, { from: creator });
+      await token.approve(gatekeeper.address, recommenderTokens, { from: recommender1 });
+      await token.transfer(recommender2, recommenderTokens, { from: creator });
+      await token.approve(gatekeeper.address, recommenderTokens, { from: recommender2 });
 
       await gatekeeper.stakeTokens(0, { from: recommender1 });
       await gatekeeper.stakeTokens(1, { from: recommender2 });

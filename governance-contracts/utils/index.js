@@ -1,5 +1,7 @@
 const ethers = require('ethers');
 const ethUtils = require('ethereumjs-util');
+const BigNumber = require('bignumber.js');
+
 
 const { defaultAbiCoder: abiCoder } = ethers.utils;
 
@@ -47,15 +49,30 @@ function zeroHash() {
   return ethUtils.zeros(32);
 }
 
+const ten = new BigNumber(10);
+const panDecimals = new BigNumber(18);
 
 /**
- * Convert the amount to PAN base units
- * @param {number|string} tokens
+ * Convert the amount to PAN base units (string)
+ * @param {number|string} tokens can be fractional
+ * @return {string}
  */
 function toPanBase(tokens) {
-  const decimals = 18;
-  const baseUnits = `${tokens}${'0'.repeat(decimals)}`;
-  return baseUnits;
+  const factor = ten.pow(panDecimals);
+  const baseUnits = factor.times(new BigNumber(tokens));
+  return baseUnits.toFixed();
+}
+
+/**
+ *
+ * @param {ethers.utils.BigNumberish} baseValue
+ * @return {string}
+ */
+function fromPanBase(baseValue) {
+  const base = new BigNumber(baseValue.toString());
+  const factor = ten.pow(panDecimals);
+  const tokens = base.div(factor);
+  return tokens.toFixed();
 }
 
 module.exports = {
@@ -67,4 +84,5 @@ module.exports = {
   zeroHash,
   sha256: ethUtils.sha256,
   toPanBase,
+  fromPanBase,
 };
