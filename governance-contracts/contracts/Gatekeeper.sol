@@ -777,8 +777,6 @@ contract Gatekeeper {
         uint voteWinner = contest.voteWinner;
         uint voteRunnerUp = contest.voteRunnerUp;
 
-        // emit RunoffStarted(epochNumber, resource, voteWinner, voteRunnerUp);
-
         // Get the number of first-choice votes for the top choices
         uint leaderTotal = getFirstChoiceVotes(epochNumber, resource, voteWinner);
         uint runnerUpTotal = getFirstChoiceVotes(epochNumber, resource, voteRunnerUp);
