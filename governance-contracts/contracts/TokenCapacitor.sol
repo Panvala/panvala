@@ -19,6 +19,12 @@ contract TokenCapacitor {
     );
     event TokensWithdrawn(uint proposalID, address indexed to, uint numTokens);
     event Donation(address indexed payer, address indexed donor, uint numTokens, bytes metadataHash);
+    event BalancesUpdated(
+        uint unlockedBalance,
+        uint lastLockedBalance,
+        uint lastLockedTime,
+        uint totalBalance
+    );
 
     // STATE
     using SafeMath for uint;
@@ -275,6 +281,7 @@ contract TokenCapacitor {
         lastLockedBalance = totalBalance.sub(unlockedBalance);
 
         lastLockedTime = time;
+        emit BalancesUpdated(unlockedBalance, lastLockedBalance, time, totalBalance);
     }
 
     /**

@@ -4,7 +4,7 @@ const utils = require('./utils');
 
 const {
   abiCoder, abiEncode, expectErrorLike, expectRevert, governanceSlateFromProposals,
-  voteSingle, timing, revealVote, BN, getResource, toPanBase,
+  voteSingle, timing, revealVote, BN, getResource, toPanBase, expectEvents,
 } = utils;
 
 const { increaseTime } = utils.evm;
@@ -56,7 +56,8 @@ contract('ParameterStore', (accounts) => {
     });
 
     it('should allow the creator to initialize', async () => {
-      await parameters.init({ from: creator });
+      const receipt = await parameters.init({ from: creator });
+      expectEvents(receipt, ['Initialized']);
     });
 
     it('should not allow multiple initializations', async () => {
@@ -95,7 +96,8 @@ contract('ParameterStore', (accounts) => {
 
     it('should allow the creator to set initial values', async () => {
       const value = abiEncode('uint256', 5);
-      await parameters.setInitialValue('test', value, { from: creator });
+      const receipt = await parameters.setInitialValue('test', value, { from: creator });
+      expectEvents(receipt, ['ParameterSet']);
 
       const test = await parameters.get('test');
       assert.strictEqual(test.toString(), value);
@@ -171,7 +173,7 @@ contract('ParameterStore', (accounts) => {
       );
 
       // Should emit event with requestID and other data
-      assert.strictEqual(receipt.logs[0].event, 'ProposalCreated');
+      expectEvents(receipt, ['ProposalCreated']);
       const {
         proposalID,
         proposer: emittedProposer,
@@ -251,7 +253,7 @@ contract('ParameterStore', (accounts) => {
           { from: proposer },
         );
 
-        assert.strictEqual(receipt.logs.length, keys.length, 'Wrong number of events');
+        expectEvents(receipt, ['ProposalCreated', 'ProposalCreated', 'ProposalCreated']);
 
         // eslint-disable-next-line
         for (let i = 0; i < keys.length; i++) {
@@ -294,7 +296,7 @@ contract('ParameterStore', (accounts) => {
     let parameters;
     let token;
 
-    let ballotID;
+    let epochNumber;
 
     let proposals1;
     let proposals2;
@@ -309,7 +311,7 @@ contract('ParameterStore', (accounts) => {
         from: creator,
       }));
 
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
       const GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
       // Allocate tokens
@@ -377,14 +379,14 @@ contract('ParameterStore', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await revealVote(ballotID, gatekeeper, aliceReveal);
-      await revealVote(ballotID, gatekeeper, bobReveal);
-      await revealVote(ballotID, gatekeeper, carolReveal);
+      await revealVote(epochNumber, gatekeeper, aliceReveal);
+      await revealVote(epochNumber, gatekeeper, bobReveal);
+      await revealVote(epochNumber, gatekeeper, carolReveal);
 
       // count votes
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-      await gatekeeper.countVotes(ballotID, GOVERNANCE);
-      winningSlate = await gatekeeper.getWinningSlate(ballotID, GOVERNANCE);
+      await gatekeeper.finalizeContest(epochNumber, GOVERNANCE);
+      winningSlate = await gatekeeper.getWinningSlate(epochNumber, GOVERNANCE);
       approvedRequests = await gatekeeper.slateRequests(winningSlate);
 
       losingSlate = new BN('1');
@@ -402,7 +404,7 @@ contract('ParameterStore', (accounts) => {
       const receipt = await parameters.setValue(proposalID, { from: alice });
 
       // Check logs
-      utils.expectEvents(receipt, ['ParameterInitialized', 'ParameterSet']);
+      expectEvents(receipt, ['ParameterSet', 'ProposalAccepted']);
 
       const {
         proposalID: emittedProposalID,

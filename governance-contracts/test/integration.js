@@ -124,7 +124,7 @@ contract('integration', (accounts) => {
           (await gatekeeper.currentEpochNumber()).toString(),
           nextEpoch.toString(),
         );
-        await gatekeeper.countVotes(epochNumber, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // const { unlocked: u, locked: l } = await utils.capacitorBalances(capacitor);
         // console.log('capacitor balances (before withdrawal)', {
@@ -221,7 +221,7 @@ contract('integration', (accounts) => {
           nextEpoch.toString(),
           'Should have reached the next epoch',
         );
-        await gatekeeper.countVotes(epochNumber, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // const { unlocked: u, locked: l } = await utils.capacitorBalances(capacitor);
         // console.log('capacitor balances (before withdrawal)', {
@@ -329,8 +329,8 @@ contract('integration', (accounts) => {
       assert.strictEqual(secondEpoch.toString(), startingEpoch.addn(1).toString(), 'Not in the next epoch');
 
       // Finalize for both resources
-      await gatekeeper.countVotes(startingEpoch, GRANT);
-      await gatekeeper.countVotes(startingEpoch, GOVERNANCE);
+      await gatekeeper.finalizeContest(startingEpoch, GRANT);
+      await gatekeeper.finalizeContest(startingEpoch, GOVERNANCE);
 
       // Execute the proposals
       const originalBalance = await token.balanceOf(recommender);
@@ -393,8 +393,8 @@ contract('integration', (accounts) => {
       assert.strictEqual(secondEpoch.toString(), startingEpoch.addn(1).toString(), 'Not second epoch');
 
       // Finalize for both resources
-      await gatekeeper.countVotes(startingEpoch, GRANT);
-      await gatekeeper.countVotes(startingEpoch, GOVERNANCE);
+      await gatekeeper.finalizeContest(startingEpoch, GRANT);
+      await gatekeeper.finalizeContest(startingEpoch, GOVERNANCE);
 
       // Execute the proposals
       let originalBalance = await token.balanceOf(recommender);
@@ -468,8 +468,8 @@ contract('integration', (accounts) => {
       const thirdEpoch = await gatekeeper.currentEpochNumber();
       assert.strictEqual(thirdEpoch.toString(), startingEpoch.addn(2).toString(), 'Not third epoch');
 
-      await newGatekeeper.countVotes(secondEpoch, GRANT);
-      await newGatekeeper.countVotes(secondEpoch, GOVERNANCE);
+      await newGatekeeper.finalizeContest(secondEpoch, GRANT);
+      await newGatekeeper.finalizeContest(secondEpoch, GOVERNANCE);
 
       originalBalance = await token.balanceOf(recommender);
       await Promise.all(nextGovernancePermissions.map(r => parameters.setValue(r)));
@@ -563,14 +563,14 @@ contract('integration', (accounts) => {
         assert.strictEqual(secondEpoch.toString(), startingEpoch.addn(1).toString(), 'Not second epoch');
 
         // Finalize for both resources
-        const grantReceipt = await gatekeeper.countVotes(startingEpoch, GRANT);
-        utils.expectEvents(grantReceipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
+        const grantReceipt = await gatekeeper.finalizeContest(startingEpoch, GRANT);
+        utils.expectEvents(grantReceipt, ['VoteFinalized']);
         ({
           winningSlate: grantWinner,
-        } = grantReceipt.logs[1].args);
+        } = grantReceipt.logs[0].args);
         assert.strictEqual(grantWinner.toString(), '1', 'Wrong grant winner');
 
-        const govReceipt = await gatekeeper.countVotes(startingEpoch, GOVERNANCE);
+        const govReceipt = await gatekeeper.finalizeContest(startingEpoch, GOVERNANCE);
         utils.expectEvents(govReceipt, ['ContestAutomaticallyFinalized']);
         ({
           winningSlate: govWinner,
@@ -762,8 +762,8 @@ contract('integration', (accounts) => {
           const nextEpoch = await gatekeeper.currentEpochNumber();
           assert.strictEqual(nextEpoch.toString(), epochNumber.addn(1).toString(), 'Not next epoch');
 
-          await newGatekeeper.countVotes(epochNumber, GRANT);
-          await newGatekeeper.countVotes(epochNumber, GOVERNANCE);
+          await newGatekeeper.finalizeContest(epochNumber, GRANT);
+          await newGatekeeper.finalizeContest(epochNumber, GOVERNANCE);
 
           const originalBalance = await token.balanceOf(recommender);
           utils.pMap(p => parameters.setValue(p), governancePermissions);
@@ -898,8 +898,8 @@ contract('integration', (accounts) => {
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      const receipt = await gatekeeper.countVotes(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
+      utils.expectEvents(receipt, ['VoteFinalized']);
       const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
       const { status, winner } = contest;
       assert.strictEqual(winner.toString(), '1', 'Wrong winning slate');

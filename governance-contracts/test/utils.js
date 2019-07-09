@@ -534,12 +534,12 @@ async function commitBallot(gatekeeper, voter, ballot, numTokens, salt) {
  * @param {Gatekeeper} gatekeeper
  * @param {*} revealData
  */
-async function revealVote(ballotID, gatekeeper, revealData) {
+async function revealVote(epochNumber, gatekeeper, revealData) {
   const {
     voter, resources, firstChoices, secondChoices, salt,
   } = revealData;
   await gatekeeper.revealBallot(
-    ballotID, voter, resources, firstChoices, secondChoices, salt, { from: voter },
+    epochNumber, voter, resources, firstChoices, secondChoices, salt, { from: voter },
   );
 }
 
@@ -560,14 +560,14 @@ function encodeBallot(resources, firstChoices, secondChoices) {
 /**
  * Get the number of first and second choice votes for a slate in a contest
  * @param {*} gatekeeper
- * @param {*} ballotID
+ * @param {*} epochNumber
  * @param {*} resource
  * @param {*} slateID
  */
-async function getVotes(gatekeeper, ballotID, resource, slateID) {
+async function getVotes(gatekeeper, epochNumber, resource, slateID) {
   const result = await Promise.all([
-    gatekeeper.getFirstChoiceVotes(ballotID, resource, slateID),
-    gatekeeper.getSecondChoiceVotes(ballotID, resource, slateID),
+    gatekeeper.getFirstChoiceVotes(epochNumber, resource, slateID),
+    gatekeeper.getSecondChoiceVotes(epochNumber, resource, slateID),
   ]);
   return result;
 }
