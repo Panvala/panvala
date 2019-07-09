@@ -7,8 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Users can assign an address as a delegate to commit ballots on behalf of a token-holding account at `/wallet`
+- Slates cards indicate if they were created by the incumbent
+- Current system parameters are displayed at `/parameters`
+- Contracts:
+  - Allow a user to delegate their voting rights, and allow a delegate to vote on behalf of the voter
+  - Store the incumbent for each resource
+  - Users can create proposals to change governance parameters
+  - Token capacitor releases tokens into the unlocked pool for withdrawal according to an exponential decay
+  - Requests made to the gatekeeper expire after an epoch (if created in epoch `n`, they expire at the start of epoch `n + 2`)
 
 ### Changed
+- Only recommenders that have been verified have their organization name shown on slate cards
+- Improve loading of the initial slate
+  - Decouple unrelated sets of state
+  - Allow users to view the slates without having MetaMask installed
+- Many improvements to styling and component organization
+- Increase the initial staking requirement to 50,000 PAN
+- Contracts:
+  - Replace `category` concept with `resource` (the address of the contract requesting permission)
+  - Modify the [permissions API](docs/permissions-api.md) to allow for multiple parallel contests and upgrading of the gatekeeper
+  - Include IPFS hash for [metadata for losing stake donations](governance-contracts/data/losingSlateDonation.json)
+  - In the case where a contest has a vote but no one commits, reject all the slates in the contest
+  - Add integration tests
+    - Running multiple parallel contests
+    - "Clean break" and data-migrating gatekeeper upgrades
+    - Finalization of a contest with many slates
+  - Fix: calculation of slate deadline extension
+  - Fix: bug in triggering runoff
+  - Fix: bug in runoff tiebreaker count
+  - General cleanup: rename functions, events, and fields for clarity, and consolidate finalization events
+  - Improvements to tests, particularly event checking
+    - Use base token amounts in tests
+
 
 ## [0.4.0] 2019-06-06
 
@@ -93,8 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2019-04-02
 
-[Unreleased]: https://github.com/ConsenSys/panvala/compare/v0.3.0...develop
-[0.4.0]: https://github.com/ConsenSys/panvala/compare/v0.4.0...develop
+[Unreleased]: https://github.com/ConsenSys/panvala/compare/v0.4.0...develop
+[0.4.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.3.0
 [0.2.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.2.0
 [0.1.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.1.0
