@@ -10,12 +10,18 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 contract Gatekeeper {
     // EVENTS
     event PermissionRequested(address resource, uint requestID, bytes metadataHash);
-    event SlateCreated(uint slateID, address indexed recommender, bytes metadataHash);
+    event SlateCreated(uint slateID, address indexed recommender, uint[] requestIDs, bytes metadataHash);
     event SlateStaked(uint slateID, address indexed staker, uint numTokens);
     event VotingTokensDeposited(address indexed voter, uint numTokens);
     event VotingTokensWithdrawn(address indexed voter, uint numTokens);
     event DelegateSet(address indexed voter, address delegate);
-    event BallotCommitted(uint indexed epochNumber, address indexed voter, uint numTokens, bytes32 commitHash);
+    event BallotCommitted(
+        uint indexed epochNumber,
+        address indexed committer,
+        address indexed voter,
+        uint numTokens,
+        bytes32 commitHash
+    );
     event BallotRevealed(uint indexed epochNumber, address indexed voter, uint numTokens);
     event ContestAutomaticallyFinalized(
         uint256 indexed epochNumber,
@@ -23,17 +29,23 @@ contract Gatekeeper {
         uint256 winningSlate
     );
     event ContestFinalizedWithoutWinner(uint indexed epochNumber, address indexed resource);
-    event VoteCounted(
+    event VoteFinalized(
         uint indexed epochNumber,
         address indexed resource,
         uint winningSlate,
-        uint votes,
+        uint winnerVotes,
         uint totalVotes
     );
-    event VoteFinalized(uint indexed epochNumber, address indexed resource, uint winningSlate);
-    event VoteFailed(uint indexed epochNumber, address indexed resource);
-    event RunoffStarted(uint indexed epochNumber, address indexed resource, uint winningSlate, uint runnerUpSlate);
-    event RunoffCounted(
+    event VoteFailed(
+        uint indexed epochNumber,
+        address indexed resource,
+        uint leadingSlate,
+        uint leaderVotes,
+        uint runnerUpSlate,
+        uint runnerUpVotes,
+        uint totalVotes
+    );
+    event RunoffFinalized(
         uint indexed epochNumber,
         address indexed resource,
         uint winningSlate,
@@ -41,7 +53,6 @@ contract Gatekeeper {
         uint losingSlate,
         uint loserVotes
     );
-    event RunoffFinalized(uint indexed epochNumber, address indexed resource, uint winningSlate);
     event StakeWithdrawn(uint slateID, address indexed staker, uint numTokens);
 
     // STATE
@@ -156,10 +167,9 @@ contract Gatekeeper {
 
     // A group of Contests in an epoch
     struct Ballot {
-        // status: Unopened, Open, Closed
-        uint contestCount;
         // resource -> Contest
         mapping(address => Contest) contests;
+        // NOTE: keep to avoid error about "internal or recursive type"
         bool created;
 
         // commitments for each voter
@@ -257,7 +267,7 @@ contract Gatekeeper {
         // Assign the slate to the appropriate contest
         ballots[epochNumber].contests[resource].slates.push(slateID);
 
-        emit SlateCreated(slateID, msg.sender, metadataHash);
+        emit SlateCreated(slateID, msg.sender, requestIDs, metadataHash);
         return slateID;
     }
 
@@ -427,10 +437,8 @@ contract Gatekeeper {
 
         assert(voteTokenBalance[voter] >= numTokens);
 
-        // TODO: If the ballot has not been created yet, create it
-        Ballot storage ballot = ballots[epochNumber];
-
         // Set the voter's commitment for the current ballot
+        Ballot storage ballot = ballots[epochNumber];
         VoteCommitment memory commitment = VoteCommitment({
             commitHash: commitHash,
             numTokens: numTokens,
@@ -440,7 +448,7 @@ contract Gatekeeper {
 
         ballot.commitments[voter] = commitment;
 
-        emit BallotCommitted(epochNumber, voter, numTokens, commitHash);
+        emit BallotCommitted(epochNumber, committer, voter, numTokens, commitHash);
     }
 
     /**
@@ -688,7 +696,6 @@ contract Gatekeeper {
         // Update state
         contest.voteWinner = winner;
         contest.voteRunnerUp = runnerUp;
-        emit VoteCounted(epochNumber, resource, winner, winnerVotes, total);
 
         // If the winner has more than 50%, we are done
         // Otherwise, trigger a runoff
@@ -701,7 +708,7 @@ contract Gatekeeper {
             rejectSlates(contest.stakedSlates, activeSlates);
 
             contest.status = ContestStatus.Finalized;
-            emit VoteFinalized(epochNumber, resource, winner);
+            emit VoteFinalized(epochNumber, resource, winner, winnerVotes, total);
         } else {
             uint256[] memory activeSlates = new uint256[](2);
             activeSlates[0] = contest.voteWinner;
@@ -709,7 +716,7 @@ contract Gatekeeper {
             rejectSlates(contest.stakedSlates, activeSlates);
 
             contest.status = ContestStatus.RunoffPending;
-            emit VoteFailed(epochNumber, resource);
+            emit VoteFailed(epochNumber, resource, winner, winnerVotes, runnerUp, runnerUpVotes, total);
         }
     }
 
@@ -770,7 +777,7 @@ contract Gatekeeper {
         uint voteWinner = contest.voteWinner;
         uint voteRunnerUp = contest.voteRunnerUp;
 
-        emit RunoffStarted(epochNumber, resource, voteWinner, voteRunnerUp);
+        // emit RunoffStarted(epochNumber, resource, voteWinner, voteRunnerUp);
 
         // Get the number of first-choice votes for the top choices
         uint leaderTotal = getFirstChoiceVotes(epochNumber, resource, voteWinner);
@@ -815,7 +822,6 @@ contract Gatekeeper {
             runoffLoser = voteWinner;
             runoffLoserVotes = leaderTotal;
         }
-        emit RunoffCounted(epochNumber, resource, runoffWinner, runoffWinnerVotes, runoffLoser, runoffLoserVotes);
 
         // Update state
         Contest storage updatedContest = ballots[epochNumber].contests[resource];
@@ -826,7 +832,7 @@ contract Gatekeeper {
         // Reject the losing slate
         slates[runoffLoser].status = SlateStatus.Rejected;
 
-        emit RunoffFinalized(epochNumber, resource, runoffWinner);
+        emit RunoffFinalized(epochNumber, resource, runoffWinner, runoffWinnerVotes, runoffLoser, runoffLoserVotes);
     }
 
 

@@ -564,10 +564,10 @@ contract('integration', (accounts) => {
 
         // Finalize for both resources
         const grantReceipt = await gatekeeper.finalizeContest(startingEpoch, GRANT);
-        utils.expectEvents(grantReceipt, ['VoteCounted', 'VoteFinalized']);
+        utils.expectEvents(grantReceipt, ['VoteFinalized']);
         ({
           winningSlate: grantWinner,
-        } = grantReceipt.logs[1].args);
+        } = grantReceipt.logs[0].args);
         assert.strictEqual(grantWinner.toString(), '1', 'Wrong grant winner');
 
         const govReceipt = await gatekeeper.finalizeContest(startingEpoch, GOVERNANCE);
@@ -895,7 +895,7 @@ contract('integration', (accounts) => {
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['VoteCounted', 'VoteFinalized']);
+      utils.expectEvents(receipt, ['VoteFinalized']);
       const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
       const { status, winner } = contest;
       assert.strictEqual(winner.toString(), '1', 'Wrong winning slate');

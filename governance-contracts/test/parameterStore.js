@@ -4,7 +4,7 @@ const utils = require('./utils');
 
 const {
   abiCoder, abiEncode, expectErrorLike, expectRevert, governanceSlateFromProposals,
-  voteSingle, timing, revealVote, BN, getResource, toPanBase,
+  voteSingle, timing, revealVote, BN, getResource, toPanBase, expectEvents,
 } = utils;
 
 const { increaseTime } = utils.evm;
@@ -56,7 +56,8 @@ contract('ParameterStore', (accounts) => {
     });
 
     it('should allow the creator to initialize', async () => {
-      await parameters.init({ from: creator });
+      const receipt = await parameters.init({ from: creator });
+      expectEvents(receipt, ['Initialized']);
     });
 
     it('should not allow multiple initializations', async () => {
@@ -95,7 +96,8 @@ contract('ParameterStore', (accounts) => {
 
     it('should allow the creator to set initial values', async () => {
       const value = abiEncode('uint256', 5);
-      await parameters.setInitialValue('test', value, { from: creator });
+      const receipt = await parameters.setInitialValue('test', value, { from: creator });
+      expectEvents(receipt, ['ParameterSet']);
 
       const test = await parameters.get('test');
       assert.strictEqual(test.toString(), value);
@@ -402,7 +404,7 @@ contract('ParameterStore', (accounts) => {
       const receipt = await parameters.setValue(proposalID, { from: alice });
 
       // Check logs
-      utils.expectEvents(receipt, ['ParameterInitialized', 'ParameterSet']);
+      expectEvents(receipt, ['ParameterSet', 'ProposalAccepted']);
 
       const {
         proposalID: emittedProposalID,

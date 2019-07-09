@@ -372,14 +372,17 @@ contract('Gatekeeper', (accounts) => {
       );
 
       // Verify log values
+      expectEvents(receipt, ['SlateCreated']);
       const {
         slateID,
         recommender: emittedRecommender,
+        requestIDs: emittedRequestIDs,
         metadataHash: emittedHash,
       } = receipt.logs[0].args;
 
       assert.strictEqual(slateID.toString(), '0', 'SlateID is incorrect');
       assert.strictEqual(emittedRecommender, recommender, 'Recommender is incorrect');
+      assert.deepStrictEqual(emittedRequestIDs, requestIDs, 'RequestIDs are incorrect');
       assert.strictEqual(utils.bytesAsString(emittedHash), metadataHash, 'Metadata hash is incorrect');
 
       // Incremented slate count
@@ -1139,14 +1142,17 @@ contract('Gatekeeper', (accounts) => {
       const receipt = await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
       // Emit an event with the correct values
+      expectEvents(receipt, ['BallotCommitted']);
       const {
         voter: emittedVoter,
+        committer,
         numTokens: emittedTokens,
         commitHash: emittedHash,
       } = receipt.logs[0].args;
 
       // console.log(epochNumber, emittedVoter, emittedTokens, emittedHash);
       assert.strictEqual(emittedVoter, voter, 'Emitted voter was wrong');
+      assert.strictEqual(committer, voter, 'Emitted committer was wrong');
       assert.strictEqual(emittedTokens.toString(), numTokens, 'Emitted token amount was wrong');
       assert.strictEqual(utils.stripHexPrefix(emittedHash), commitHash.toString('hex'), 'Emitted hash was wrong');
 
@@ -2304,33 +2310,22 @@ contract('Gatekeeper', (accounts) => {
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // should emit events
-      expectEvents(receipt, ['VoteCounted', 'VoteFinalized']);
+      expectEvents(receipt, ['VoteFinalized']);
 
-      // VoteCounted
+      // VoteFinalized
       const {
         epochNumber: epochNumber0,
         resource: resource0,
-        winningSlate: emittedWinner,
-        votes: emittedWinnerVotes,
+        winningSlate,
+        winnerVotes: emittedWinnerVotes,
         totalVotes: emittedTotal,
       } = receipt.logs[0].args;
 
       assert.strictEqual(epochNumber0.toString(), epochNumber.toString(), 'Emitted epochNumber did not match');
       assert.strictEqual(resource0.toString(), GRANT.toString(), 'Emitted resource did not match');
-      assert.strictEqual(emittedWinner.toString(), '0', 'Slate 0 should have won');
+      assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
       assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
       assert.strictEqual(emittedTotal.toString(), toPanBase('3000'), 'Total vote count was wrong');
-
-      // VoteFinalized
-      const {
-        epochNumber: epochNumber1,
-        resource: resource1,
-        winningSlate,
-      } = receipt.logs[1].args;
-
-      assert.strictEqual(epochNumber1.toString(), epochNumber.toString(), 'Emitted epochNumber did not match');
-      assert.strictEqual(resource1.toString(), GRANT.toString(), 'Emitted resource did not match');
-      assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
 
       // Status should be updated
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -2507,15 +2502,12 @@ contract('Gatekeeper', (accounts) => {
 
       const expectedWinner = '0';
       const {
-        winningSlate: emittedWinner,
-        votes: emittedWinnerVotes,
+        winningSlate,
+        winnerVotes: emittedWinnerVotes,
         totalVotes: emittedTotal,
       } = receipt.logs[0].args;
-      assert.strictEqual(emittedWinner.toString(), expectedWinner, 'Emitted leader was wrong');
       assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
       assert.strictEqual(emittedTotal.toString(), toPanBase('3000'), 'Total vote count was wrong');
-
-      const { winningSlate } = receipt.logs[1].args;
       assert.strictEqual(
         winningSlate.toString(),
         expectedWinner,
@@ -2545,13 +2537,11 @@ contract('Gatekeeper', (accounts) => {
 
       // Finalize
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      expectEvents(receipt, ['VoteCounted', 'VoteFinalized']);
+      expectEvents(receipt, ['VoteFinalized']);
 
-      const { votes, totalVotes } = receipt.logs[0].args;
-      const twiceVotes = votes.mul(new BN(2));
+      const { winnerVotes, totalVotes, winningSlate } = receipt.logs[0].args;
+      const twiceVotes = winnerVotes.mul(new BN(2));
       assert(twiceVotes.gt(totalVotes), 'Winner should have had more than 50% of the votes');
-
-      const { winningSlate } = receipt.logs[1].args;
       assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
 
       // Should be finalized
@@ -2649,7 +2639,7 @@ contract('Gatekeeper', (accounts) => {
 
       // Check logs
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['VoteCounted', 'VoteFailed']);
+      utils.expectEvents(receipt, ['VoteFailed']);
 
       // Should be waiting for a runoff
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -2678,7 +2668,23 @@ contract('Gatekeeper', (accounts) => {
 
       // Check logs
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['VoteCounted', 'VoteFailed']);
+      utils.expectEvents(receipt, ['VoteFailed']);
+      const {
+        epochNumber: emittedEpochNumber,
+        resource,
+        leadingSlate,
+        leaderVotes,
+        runnerUpSlate,
+        runnerUpVotes,
+        totalVotes,
+      } = receipt.logs[0].args;
+      assert.strictEqual(emittedEpochNumber.toString(), epochNumber.toString());
+      assert.strictEqual(resource, GRANT);
+      assert.strictEqual(leadingSlate.toString(), '0');
+      assert.strictEqual(leaderVotes.toString(), toPanBase('1000'));
+      assert.strictEqual(runnerUpSlate.toString(), '1');
+      assert.strictEqual(runnerUpVotes.toString(), toPanBase('1000'));
+      assert.strictEqual(totalVotes.toString(), toPanBase('2000'));
 
       // Should be waiting for a runoff
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -3375,38 +3381,23 @@ contract('Gatekeeper', (accounts) => {
       const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
       // Should emit events
-      assert.strictEqual(receipt.logs.length, 3);
-      assert.strictEqual(receipt.logs[0].event, 'RunoffStarted', 'First event is incorrect');
-      assert.strictEqual(receipt.logs[1].event, 'RunoffCounted', 'Second event is incorrect');
-      assert.strictEqual(receipt.logs[2].event, 'RunoffFinalized', 'Third event is incorrect');
-
-      // RunoffStarted
-      const { winningSlate: emittedWinner, runnerUpSlate: emittedRunnerUp } = receipt.logs[0].args;
-      assert.strictEqual(emittedWinner.toString(), '2', 'Vote winner should have been slate 2');
-      assert.strictEqual(emittedRunnerUp.toString(), '1', 'Vote runner-up should have been slate 1');
-
-      // RunoffCounted
+      expectEvents(receipt, ['RunoffFinalized']);
       const {
-        winningSlate: countWinner,
-        winnerVotes: countWinnerVotes,
-        losingSlate: countLoser,
-        loserVotes: countLoserVotes,
-      } = receipt.logs[1].args;
+        winningSlate,
+        winnerVotes,
+        losingSlate,
+        loserVotes,
+      } = receipt.logs[0].args;
 
       const expectedWinner = '1';
       const expectedWinnerVotes = toPanBase(900 + 800);
       const expectedLoser = '2';
       const expectedLoserVotes = toPanBase('1000');
 
-      assert.strictEqual(countWinner.toString(), expectedWinner, 'Incorrect winner in runoff count');
-      assert.strictEqual(countWinnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff count');
-      assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
-      assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
-
-      // RunoffFinalized
-      const { winningSlate } = receipt.logs[2].args;
-
       assert.strictEqual(winningSlate.toString(), expectedWinner, 'Runoff finalized with wrong winner');
+      assert.strictEqual(winnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff');
+      assert.strictEqual(losingSlate.toString(), expectedLoser, 'Runoff finalized with wrong loser');
+      assert.strictEqual(loserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff');
 
       // status should be Finalized at the end
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -3469,14 +3460,12 @@ contract('Gatekeeper', (accounts) => {
 
       // Runoff
       const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-
-      // RunoffCounted
       const {
         winningSlate: countWinner,
         winnerVotes: countWinnerVotes,
         losingSlate: countLoser,
         loserVotes: countLoserVotes,
-      } = receipt.logs[1].args;
+      } = receipt.logs[0].args;
 
       const expectedWinner = '2';
       const expectedWinnerVotes = toPanBase(1000 + 101);
@@ -3512,11 +3501,11 @@ contract('Gatekeeper', (accounts) => {
 
       // Runoff
       const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['RunoffStarted', 'RunoffCounted', 'RunoffFinalized']);
+      utils.expectEvents(receipt, ['RunoffFinalized']);
 
       const {
         winningSlate, winnerVotes, losingSlate, loserVotes,
-      } = receipt.logs[1].args;
+      } = receipt.logs[0].args;
 
       assert.strictEqual(winnerVotes.toString(), loserVotes.toString(), 'Runoff should end in a tie');
       assert(

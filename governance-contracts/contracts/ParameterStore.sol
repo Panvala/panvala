@@ -7,7 +7,6 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 contract ParameterStore {
     // EVENTS
-    event ParameterInitialized(bytes32 key, bytes32 value);
     event ProposalCreated(
         uint256 proposalID,
         address indexed proposer,
@@ -16,7 +15,9 @@ contract ParameterStore {
         bytes32 value,
         bytes metadataHash
     );
-    event ParameterSet(uint256 proposalID, string key, bytes32 value);
+    event Initialized();
+    event ParameterSet(string name, bytes32 key, bytes32 value);
+    event ProposalAccepted(uint256 proposalID, string key, bytes32 value);
 
 
     // STATE
@@ -65,6 +66,7 @@ contract ParameterStore {
         require(initialized == false, "Contract has already been initialized");
 
         initialized = true;
+        emit Initialized();
     }
 
     // GETTERS
@@ -105,7 +107,7 @@ contract ParameterStore {
     function set(string memory _name, bytes32 _value) private {
         bytes32 key = keccak256(abi.encodePacked(_name));
         params[key] = _value;
-        emit ParameterInitialized(key, _value);
+        emit ParameterSet(_name, key, _value);
     }
 
     /**
@@ -192,7 +194,7 @@ contract ParameterStore {
 
         set(p.key, p.value);
 
-        emit ParameterSet(proposalID, p.key, p.value);
+        emit ProposalAccepted(proposalID, p.key, p.value);
         return true;
     }
 

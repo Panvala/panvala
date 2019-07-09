@@ -9,6 +9,7 @@ const ParameterStore = artifacts.require('ParameterStore');
 const {
   expectRevert,
   expectErrorLike,
+  expectEvents,
   voteSingle,
   revealVote,
   grantSlateFromProposals,
@@ -358,13 +359,14 @@ contract('TokenCapacitor', (accounts) => {
 
       // Withdraw
       const receipt = await capacitor.withdrawTokens(proposalID, { from: beneficiary });
+      expectEvents(receipt, ['BalancesUpdated', 'TokensWithdrawn']);
 
       // Check logs
       const {
         proposalID: emittedProposalID,
         to: emittedBeneficiary,
         numTokens: emittedTokens,
-      } = receipt.logs[0].args;
+      } = receipt.logs[1].args;
 
       assert.strictEqual(
         emittedProposalID.toString(),
@@ -528,6 +530,7 @@ contract('TokenCapacitor', (accounts) => {
       const receipt = await capacitor.donate(selfDonor, numTokens, utils.asBytes(metadataHash), {
         from: payer,
       });
+      expectEvents(receipt, ['BalancesUpdated', 'Donation']);
 
       // Check logs
       const {
@@ -535,7 +538,7 @@ contract('TokenCapacitor', (accounts) => {
         donor: emittedDonor,
         numTokens: emittedTokens,
         metadataHash: emittedHash,
-      } = receipt.logs[0].args;
+      } = receipt.logs[1].args;
 
       assert.strictEqual(emittedPayer, payer, 'Emitted payer was incorrect');
       assert.strictEqual(emittedDonor, selfDonor, 'Emitted donor was incorrect');
@@ -586,6 +589,7 @@ contract('TokenCapacitor', (accounts) => {
       const receipt = await capacitor.donate(donor, numTokens, utils.asBytes(metadataHash), {
         from: payer,
       });
+      expectEvents(receipt, ['BalancesUpdated', 'Donation']);
 
       // Check logs
       const {
@@ -593,7 +597,7 @@ contract('TokenCapacitor', (accounts) => {
         donor: emittedDonor,
         numTokens: emittedTokens,
         metadataHash: emittedHash,
-      } = receipt.logs[0].args;
+      } = receipt.logs[1].args;
 
       assert.strictEqual(emittedPayer, payer, 'Emitted payer was incorrect');
       assert.strictEqual(emittedDonor, donor, 'Emitted donor was incorrect');
@@ -632,6 +636,7 @@ contract('TokenCapacitor', (accounts) => {
         utils.asBytes(metadataHash),
         { from: payer },
       );
+      expectEvents(receipt, ['BalancesUpdated', 'Donation']);
 
       // Check logs
       const {
@@ -639,7 +644,7 @@ contract('TokenCapacitor', (accounts) => {
         donor: emittedDonor,
         numTokens: emittedTokens,
         metadataHash: emittedHash,
-      } = receipt.logs[0].args;
+      } = receipt.logs[1].args;
 
       assert.strictEqual(emittedPayer, payer, 'Emitted payer was incorrect');
       assert.strictEqual(emittedDonor, unspecifiedDonor, 'Emitted donor was incorrect');
@@ -774,15 +779,28 @@ contract('TokenCapacitor', (accounts) => {
           await increaseTime(offset);
 
           // Update and check the balances
-          await capacitor.updateBalances({ from: creator });
+          const receipt = await capacitor.updateBalances({ from: creator });
+          expectEvents(receipt, ['BalancesUpdated']);
+
+          const expectedLocked = initial.mul(getMultiplier(test.days)).div(scale);
+          const expectedUnlocked = initial.sub(expectedLocked);
+          const now = await utils.evm.timestamp();
+          const balance = await token.balanceOf(capacitor.address);
+
+          const {
+            unlockedBalance: emittedUnlocked,
+            lastLockedBalance: emittedLocked,
+            lastLockedTime: emittedTime,
+            totalBalance,
+          } = receipt.logs[0].args;
+          assert.strictEqual(emittedLocked.toString(), expectedLocked.toString(), 'Emitted wrong locked');
+          assert.strictEqual(emittedUnlocked.toString(), expectedUnlocked.toString(), 'Emitted wrong unlocked');
+          assert.strictEqual(emittedTime.toString(), now.toString(), 'Emitted wrong time');
+          assert.strictEqual(totalBalance.toString(), balance.toString(), 'Emitted wrong balance');
 
           const unlockedBalance = await capacitor.unlockedBalance();
           const lastLockedBalance = await capacitor.lastLockedBalance();
           const lastLockedTime = await capacitor.lastLockedTime();
-          const now = await utils.evm.timestamp();
-
-          const expectedLocked = initial.mul(getMultiplier(test.days)).div(scale);
-          const expectedUnlocked = initial.sub(expectedLocked);
 
           assert.strictEqual(
             unlockedBalance.toString(),
