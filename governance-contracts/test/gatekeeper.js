@@ -31,7 +31,7 @@ const { ONE_WEEK } = timing;
 const { defaultParams } = utils.pan;
 
 
-async function doRunoff(gatekeeper, ballotID, voters, options) {
+async function doRunoff(gatekeeper, epochNumber, voters, options) {
   const { finalize = true } = options || {};
   const [alice, bob, carol] = voters;
 
@@ -45,19 +45,19 @@ async function doRunoff(gatekeeper, ballotID, voters, options) {
 
   // Reveal all votes
   await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-  await reveal(ballotID, gatekeeper, aliceReveal);
-  await reveal(ballotID, gatekeeper, bobReveal);
-  await reveal(ballotID, gatekeeper, carolReveal);
+  await reveal(epochNumber, gatekeeper, aliceReveal);
+  await reveal(epochNumber, gatekeeper, bobReveal);
+  await reveal(epochNumber, gatekeeper, carolReveal);
 
   // Run -- slate 1 wins
   if (finalize) {
     await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-    await gatekeeper.countVotes(ballotID, resource);
-    await gatekeeper.countRunoffVotes(ballotID, resource);
+    await gatekeeper.finalizeContest(epochNumber, resource);
+    await gatekeeper.finalizeRunoff(epochNumber, resource);
   }
 }
 
-async function doConfidenceVote(gatekeeper, ballotID, voters, options) {
+async function doConfidenceVote(gatekeeper, epochNumber, voters, options) {
   const { finalize = true } = options || {};
   const [alice, bob, carol] = voters;
 
@@ -70,14 +70,14 @@ async function doConfidenceVote(gatekeeper, ballotID, voters, options) {
 
   // Reveal all votes
   await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-  await reveal(ballotID, gatekeeper, aliceReveal);
-  await reveal(ballotID, gatekeeper, bobReveal);
-  await reveal(ballotID, gatekeeper, carolReveal);
+  await reveal(epochNumber, gatekeeper, aliceReveal);
+  await reveal(epochNumber, gatekeeper, bobReveal);
+  await reveal(epochNumber, gatekeeper, carolReveal);
 
   // Run - slate 0 wins
   if (finalize) {
     await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-    await gatekeeper.countVotes(ballotID, resource);
+    await gatekeeper.finalizeContest(epochNumber, resource);
   }
 }
 
@@ -1111,7 +1111,7 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     const initialTokens = '20000000';
-    let ballotID;
+    let epochNumber;
     let snapshotID;
 
     beforeEach(async () => {
@@ -1119,7 +1119,7 @@ contract('Gatekeeper', (accounts) => {
 
       token = await utils.newToken({ initialTokens, from: creator });
       gatekeeper = await utils.newGatekeeper({ tokenAddress: token.address, from: creator });
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       const allocatedTokens = toPanBase('1000');
 
@@ -1144,13 +1144,13 @@ contract('Gatekeeper', (accounts) => {
         commitHash: emittedHash,
       } = receipt.logs[0].args;
 
-      // console.log(ballotID, emittedVoter, emittedTokens, emittedHash);
+      // console.log(epochNumber, emittedVoter, emittedTokens, emittedHash);
       assert.strictEqual(emittedVoter, voter, 'Emitted voter was wrong');
       assert.strictEqual(emittedTokens.toString(), numTokens, 'Emitted token amount was wrong');
       assert.strictEqual(utils.stripHexPrefix(emittedHash), commitHash.toString('hex'), 'Emitted hash was wrong');
 
       // Correctly store commitment
-      const storedCommitHash = await gatekeeper.getCommitHash(ballotID, voter);
+      const storedCommitHash = await gatekeeper.getCommitHash(epochNumber, voter);
       assert.strictEqual(utils.stripHexPrefix(storedCommitHash.toString()), commitHash.toString('hex'), 'Stored commit hash is wrong');
     });
 
@@ -1173,7 +1173,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(finalVotingBalance.toString(), numTokens);
 
       // Correctly store commitment
-      const storedCommitHash = await gatekeeper.getCommitHash(ballotID, voter);
+      const storedCommitHash = await gatekeeper.getCommitHash(epochNumber, voter);
       assert.strictEqual(utils.stripHexPrefix(storedCommitHash.toString()), commitHash.toString('hex'), 'Stored commit hash is wrong');
     });
 
@@ -1282,7 +1282,7 @@ contract('Gatekeeper', (accounts) => {
         );
 
         // Correctly store commitment
-        const storedCommitHash = await gatekeeper.getCommitHash(ballotID, voter);
+        const storedCommitHash = await gatekeeper.getCommitHash(epochNumber, voter);
         assert.strictEqual(
           utils.stripHexPrefix(storedCommitHash.toString()),
           commitHash.toString('hex'),
@@ -1339,7 +1339,7 @@ contract('Gatekeeper', (accounts) => {
   describe('didCommit', () => {
     const [creator, voter] = accounts;
     let gatekeeper;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
 
     beforeEach(async () => {
@@ -1349,7 +1349,7 @@ contract('Gatekeeper', (accounts) => {
         // parameterStoreAddress: parameters.address,
         from: creator,
       });
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       const allocatedTokens = toPanBase('1000');
 
@@ -1371,12 +1371,12 @@ contract('Gatekeeper', (accounts) => {
       // commit
       await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
-      const didCommit = await gatekeeper.didCommit(ballotID, voter);
+      const didCommit = await gatekeeper.didCommit(epochNumber, voter);
       assert(didCommit, 'Voter committed, but didCommit returned false');
     });
 
     it('should return false if the voter has not committed for the ballot', async () => {
-      const didCommit = await gatekeeper.didCommit(ballotID, voter);
+      const didCommit = await gatekeeper.didCommit(epochNumber, voter);
       assert.strictEqual(didCommit, false, 'Voter did not commit, but didCommit returned true');
     });
 
@@ -1393,7 +1393,7 @@ contract('Gatekeeper', (accounts) => {
       // commit
       await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
-      const didCommit = await gatekeeper.didCommit(ballotID, voter);
+      const didCommit = await gatekeeper.didCommit(epochNumber, voter);
       assert(didCommit, 'Voter committed, but didCommit returned false');
     });
 
@@ -1403,14 +1403,14 @@ contract('Gatekeeper', (accounts) => {
   describe('getCommitHash', () => {
     const [creator, voter] = accounts;
     let gatekeeper;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
 
     beforeEach(async () => {
       snapshotID = await utils.evm.snapshot();
 
       gatekeeper = await utils.newGatekeeper({ from: creator });
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       const allocatedTokens = toPanBase('1000');
 
@@ -1432,7 +1432,7 @@ contract('Gatekeeper', (accounts) => {
       // commit
       await gatekeeper.commitBallot(voter, commitHash, numTokens, { from: voter });
 
-      const storedCommitHash = await gatekeeper.getCommitHash(ballotID, voter);
+      const storedCommitHash = await gatekeeper.getCommitHash(epochNumber, voter);
       assert.strictEqual(
         utils.stripHexPrefix(storedCommitHash.toString()),
         commitHash.toString('hex'),
@@ -1442,7 +1442,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should revert if the voter has not committed for the ballot', async () => {
       try {
-        await gatekeeper.getCommitHash(ballotID, voter);
+        await gatekeeper.getCommitHash(epochNumber, voter);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'not committed');
@@ -1465,7 +1465,7 @@ contract('Gatekeeper', (accounts) => {
     let GRANT;
     let GOVERNANCE;
 
-    let ballotID;
+    let epochNumber;
     let votes;
     let numTokens;
     let commitHash;
@@ -1479,7 +1479,7 @@ contract('Gatekeeper', (accounts) => {
       } = await utils.newPanvala({
         from: creator,
       }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
@@ -1577,7 +1577,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should successfully reveal a ballot', async () => {
       // didReveal should be false
-      const initialDidReveal = await gatekeeper.didReveal(ballotID, voter);
+      const initialDidReveal = await gatekeeper.didReveal(epochNumber, voter);
       assert.strictEqual(initialDidReveal, false, 'didReveal should have been false before reveal');
 
       // Advance to reveal period
@@ -1589,7 +1589,7 @@ contract('Gatekeeper', (accounts) => {
       } = revealData;
 
       const receipt = await gatekeeper.revealBallot(
-        ballotID,
+        epochNumber,
         voter,
         resources,
         firstChoices,
@@ -1599,14 +1599,14 @@ contract('Gatekeeper', (accounts) => {
 
       // Emit an event with the correct values
       const {
-        ballotID: emittedBallotID,
+        epochNumber: emittedepochNumber,
         voter: emittedVoter,
         numTokens: emittedTokens,
       } = receipt.logs[0].args;
 
       assert.strictEqual(
-        emittedBallotID.toString(),
-        ballotID.toString(),
+        emittedepochNumber.toString(),
+        epochNumber.toString(),
         'Emitted ballot ID was incorrect',
       );
       assert.strictEqual(emittedVoter, voter, 'Emitted voter address was incorrect');
@@ -1614,11 +1614,11 @@ contract('Gatekeeper', (accounts) => {
 
       // Check grant contest
       const [slate0Votes, slate1Votes] = await Promise.all(
-        [0, 1].map(slateID => gatekeeper.getFirstChoiceVotes(ballotID, GRANT, slateID)),
+        [0, 1].map(slateID => gatekeeper.getFirstChoiceVotes(epochNumber, GRANT, slateID)),
       );
 
       const [slate0SecondVotes, slate1SecondVotes] = await Promise.all(
-        [0, 1].map(slateID => gatekeeper.getSecondChoiceVotes(ballotID, GRANT, slateID)),
+        [0, 1].map(slateID => gatekeeper.getSecondChoiceVotes(epochNumber, GRANT, slateID)),
       );
       // First-choice votes all went to slate 0
       assert.strictEqual(slate0Votes.toString(), numTokens, 'Slate should have had all the votes');
@@ -1630,11 +1630,11 @@ contract('Gatekeeper', (accounts) => {
 
       // Check governance contest
       const [slate2Votes, slate3Votes] = await Promise.all(
-        [2, 3].map(slateID => gatekeeper.getFirstChoiceVotes(ballotID, GOVERNANCE, slateID)),
+        [2, 3].map(slateID => gatekeeper.getFirstChoiceVotes(epochNumber, GOVERNANCE, slateID)),
       );
 
       const [slate2SecondVotes, slate3SecondVotes] = await Promise.all(
-        [2, 3].map(slateID => gatekeeper.getSecondChoiceVotes(ballotID, GOVERNANCE, slateID)),
+        [2, 3].map(slateID => gatekeeper.getSecondChoiceVotes(epochNumber, GOVERNANCE, slateID)),
       );
 
       // First-choice votes all went to slate 2
@@ -1646,7 +1646,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(slate3SecondVotes.toString(), numTokens, 'Slate should have had all the second votes');
 
       // didReveal should be true
-      const didReveal = await gatekeeper.didReveal(ballotID, voter);
+      const didReveal = await gatekeeper.didReveal(epochNumber, voter);
       assert.strictEqual(didReveal, true, 'didReveal should have been true after reveal');
     });
 
@@ -1659,7 +1659,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices,
@@ -1688,7 +1688,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           badVoter,
           resources,
           firstChoices,
@@ -1713,7 +1713,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources.slice(0, 1),
           firstChoices,
@@ -1737,7 +1737,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices.slice(0, 1),
@@ -1761,7 +1761,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices,
@@ -1790,7 +1790,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           nonvoter,
           resources,
           firstChoices,
@@ -1816,7 +1816,7 @@ contract('Gatekeeper', (accounts) => {
       } = revealData;
 
       await gatekeeper.revealBallot(
-        ballotID,
+        epochNumber,
         voter,
         resources,
         firstChoices,
@@ -1827,7 +1827,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices,
@@ -1851,7 +1851,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices,
@@ -1878,7 +1878,7 @@ contract('Gatekeeper', (accounts) => {
 
       try {
         await gatekeeper.revealBallot(
-          ballotID,
+          epochNumber,
           voter,
           resources,
           firstChoices,
@@ -1905,7 +1905,7 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
     let GRANT;
     let GOVERNANCE;
@@ -1916,7 +1916,7 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, capacitor, token, parameters,
       } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
 
@@ -2014,7 +2014,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
 
       // Reveal
-      const receipt = await gatekeeper.revealManyBallots(ballotID, voters, ballots, salts);
+      const receipt = await gatekeeper.revealManyBallots(epochNumber, voters, ballots, salts);
 
       // should have emitted 3 BallotRevealed events
       assert.strictEqual(receipt.logs.length, 3);
@@ -2026,18 +2026,18 @@ contract('Gatekeeper', (accounts) => {
 
 
       // check first and second choice votes
-      const slate0Votes = await utils.getVotes(gatekeeper, ballotID, GRANT, 0);
-      const slate1Votes = await utils.getVotes(gatekeeper, ballotID, GRANT, 1);
+      const slate0Votes = await utils.getVotes(gatekeeper, epochNumber, GRANT, 0);
+      const slate1Votes = await utils.getVotes(gatekeeper, epochNumber, GRANT, 1);
       assert.strictEqual(slate0Votes.toString(), expectedVotes('2000', '1000'));
       assert.strictEqual(slate1Votes.toString(), expectedVotes('1000', '2000'));
 
-      const slate2Votes = await utils.getVotes(gatekeeper, ballotID, GOVERNANCE, 2);
-      const slate3Votes = await utils.getVotes(gatekeeper, ballotID, GOVERNANCE, 3);
+      const slate2Votes = await utils.getVotes(gatekeeper, epochNumber, GOVERNANCE, 2);
+      const slate3Votes = await utils.getVotes(gatekeeper, epochNumber, GOVERNANCE, 3);
       assert.strictEqual(slate2Votes.toString(), expectedVotes('3000', '0'));
       assert.strictEqual(slate3Votes.toString(), expectedVotes('0', '3000'));
 
       // Everyone should be marked as having revealed
-      const didReveal = await Promise.all(voters.map(v => gatekeeper.didReveal(ballotID, v)));
+      const didReveal = await Promise.all(voters.map(v => gatekeeper.didReveal(epochNumber, v)));
       didReveal.forEach(revealed => assert.strictEqual(revealed, true, 'Voter should have revealed'));
     });
 
@@ -2055,7 +2055,7 @@ contract('Gatekeeper', (accounts) => {
     let GRANT;
     let GOVERNANCE;
 
-    let ballotID;
+    let epochNumber;
     let votes;
     let numTokens;
     let commitHash;
@@ -2069,7 +2069,7 @@ contract('Gatekeeper', (accounts) => {
       } = await utils.newPanvala({
         from: creator,
       }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
@@ -2174,7 +2174,7 @@ contract('Gatekeeper', (accounts) => {
       } = revealData;
 
       await gatekeeper.revealBallot(
-        ballotID,
+        epochNumber,
         voter,
         resources,
         firstChoices,
@@ -2183,31 +2183,31 @@ contract('Gatekeeper', (accounts) => {
         { from: voter },
       );
 
-      const didReveal = await gatekeeper.didReveal(ballotID, voter);
+      const didReveal = await gatekeeper.didReveal(epochNumber, voter);
       assert.strictEqual(didReveal, true, 'didReveal returned false when the voter HAS revealed');
     });
 
     it('should return false if the voter has not revealed', async () => {
-      const didReveal = await gatekeeper.didReveal(ballotID, voter);
+      const didReveal = await gatekeeper.didReveal(epochNumber, voter);
       assert.strictEqual(didReveal, false, 'didReveal returned true when the voter has NOT revealed');
     });
 
     it('should return false if the voter has not committed', async () => {
-      const didReveal = await gatekeeper.didReveal(ballotID, nonvoter);
+      const didReveal = await gatekeeper.didReveal(epochNumber, nonvoter);
       assert.strictEqual(didReveal, false, 'didReveal returned true when the voter has NOT COMMITTED');
     });
 
     afterEach(async () => utils.evm.revert(snapshotID));
   });
 
-  describe('countVotes', () => {
+  describe('finalizeContest', () => {
     const [creator, recommender, alice, bob, carol] = accounts;
 
     let gatekeeper;
     let token;
     let capacitor;
     let parameterStore;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
     let GRANT;
     let GOVERNANCE;
@@ -2226,7 +2226,7 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, token, capacitor, parameters: parameterStore,
       } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
@@ -2286,22 +2286,22 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // status: Active
-      const initialStatus = await gatekeeper.contestStatus(ballotID, GRANT);
+      const initialStatus = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         initialStatus.toString(),
         ContestStatus.Active,
         'Contest status should have been Active',
       );
 
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // should emit events
       assert.strictEqual(receipt.logs.length, 2, 'Should have emitted 2 events');
@@ -2309,14 +2309,14 @@ contract('Gatekeeper', (accounts) => {
       // ConfidenceVoteCounted
       assert.strictEqual(receipt.logs[0].event, 'ConfidenceVoteCounted');
       const {
-        ballotID: ballotID0,
+        epochNumber: epochNumber0,
         resource: resource0,
         winningSlate: emittedWinner,
         votes: emittedWinnerVotes,
         totalVotes: emittedTotal,
       } = receipt.logs[0].args;
 
-      assert.strictEqual(ballotID0.toString(), ballotID.toString(), 'Emitted ballotID did not match');
+      assert.strictEqual(epochNumber0.toString(), epochNumber.toString(), 'Emitted epochNumber did not match');
       assert.strictEqual(resource0.toString(), GRANT.toString(), 'Emitted resource did not match');
       assert.strictEqual(emittedWinner.toString(), '0', 'Slate 0 should have won');
       assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
@@ -2325,17 +2325,17 @@ contract('Gatekeeper', (accounts) => {
       // ConfidenceVoteFinalized
       assert.strictEqual(receipt.logs[1].event, 'ConfidenceVoteFinalized');
       const {
-        ballotID: ballotID1,
+        epochNumber: epochNumber1,
         resource: resource1,
         winningSlate,
       } = receipt.logs[1].args;
 
-      assert.strictEqual(ballotID1.toString(), ballotID.toString(), 'Emitted ballotID did not match');
+      assert.strictEqual(epochNumber1.toString(), epochNumber.toString(), 'Emitted epochNumber did not match');
       assert.strictEqual(resource1.toString(), GRANT.toString(), 'Emitted resource did not match');
       assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
 
       // Status should be updated
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.Finalized,
@@ -2351,7 +2351,7 @@ contract('Gatekeeper', (accounts) => {
       );
 
       // All the other slates should have status Rejected
-      const contestSlates = await gatekeeper.contestSlates(ballotID, GRANT);
+      const contestSlates = await gatekeeper.contestSlates(epochNumber, GRANT);
       assert.deepStrictEqual(
         contestSlates.map(i => i.toString()),
         ['0', '1'],
@@ -2403,7 +2403,7 @@ contract('Gatekeeper', (accounts) => {
 
       // Governance has no staked slates, not in progress
       try {
-        await gatekeeper.countVotes(ballotID, GOVERNANCE);
+        await gatekeeper.finalizeContest(epochNumber, GOVERNANCE);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'no contest is in progress');
@@ -2427,7 +2427,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(slateID, { from: recommender });
 
       // status: NoContest
-      const initialStatus = await gatekeeper.contestStatus(ballotID, GOVERNANCE);
+      const initialStatus = await gatekeeper.contestStatus(epochNumber, GOVERNANCE);
       assert.strictEqual(
         initialStatus.toString(),
         ContestStatus.NoContest,
@@ -2435,16 +2435,16 @@ contract('Gatekeeper', (accounts) => {
       );
 
       await increaseTime(timing.EPOCH_LENGTH);
-      const receipt = await gatekeeper.countVotes(ballotID, GOVERNANCE);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GOVERNANCE);
 
       // Check events
       assert.strictEqual(receipt.logs[0].event, 'ContestAutomaticallyFinalized');
       const {
-        ballotID: emittedBallotID,
+        epochNumber: emittedepochNumber,
         resource: emittedResource,
         winningSlate: emittedWinner,
       } = receipt.logs[0].args;
-      assert.strictEqual(emittedBallotID.toString(), ballotID.toString(), 'Wrong ballotID emitted');
+      assert.strictEqual(emittedepochNumber.toString(), epochNumber.toString(), 'Wrong epochNumber emitted');
       assert.strictEqual(emittedResource.toString(), GOVERNANCE.toString(), 'Wrong resource emitted');
       assert.strictEqual(emittedWinner.toString(), slateID.toString(), 'Wrong winner emitted');
 
@@ -2457,14 +2457,14 @@ contract('Gatekeeper', (accounts) => {
       );
 
       // Contest should be Finalized
-      const contestStatus = await gatekeeper.contestStatus(ballotID, GOVERNANCE);
+      const contestStatus = await gatekeeper.contestStatus(epochNumber, GOVERNANCE);
       assert.strictEqual(
         contestStatus.toString(),
         ContestStatus.Finalized,
         'Contest should have status Finalized',
       );
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GOVERNANCE);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GOVERNANCE);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -2498,14 +2498,14 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
-      await reveal(ballotID, gatekeeper, davidReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, davidReveal);
 
       // Finalize
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       const expectedWinner = '0';
       const {
@@ -2524,7 +2524,7 @@ contract('Gatekeeper', (accounts) => {
         `Slate ${expectedWinner} should have won`,
       );
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -2538,15 +2538,15 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Finalize
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
       utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
 
       const { votes, totalVotes } = receipt.logs[0].args;
@@ -2557,7 +2557,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(winningSlate.toString(), '0', 'Slate 0 should have won');
 
       // Should be finalized
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.Finalized,
@@ -2572,7 +2572,7 @@ contract('Gatekeeper', (accounts) => {
         'Winning slate status should have been Accepted',
       );
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -2593,11 +2593,11 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(offset);
 
       // Finalize
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
       utils.expectEvents(receipt, ['ContestFinalizedWithoutWinner']);
 
       // Should be finalized
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.Finalized,
@@ -2605,7 +2605,7 @@ contract('Gatekeeper', (accounts) => {
       );
 
       // All slates should have been rejected or remain unstaked
-      const contestSlates = await gatekeeper.contestSlates(ballotID, GRANT);
+      const contestSlates = await gatekeeper.contestSlates(epochNumber, GRANT);
       assert.deepStrictEqual(contestSlates.map(i => i.toString()), ['0', '1', '2'], 'Wrong contest slates');
 
       const statusPromises = contestSlates.map(id => gatekeeper.slates(id).then(s => s.status));
@@ -2642,19 +2642,19 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Check logs
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
       utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFailed']);
 
       // Should be waiting for a runoff
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.RunoffPending,
@@ -2671,19 +2671,19 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Check logs
-      const receipt = await gatekeeper.countVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
       utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFailed']);
 
       // Should be waiting for a runoff
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.RunoffPending,
@@ -2700,24 +2700,24 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       try {
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'in progress');
         return;
       }
 
-      assert.fail('Called countVotes() more than once');
+      assert.fail('Called finalizeContest() more than once');
     });
 
     it('should revert if the contest has multiple slates and the reveal period is still active', async () => {
@@ -2725,7 +2725,7 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       try {
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'Reveal period still active');
@@ -2752,11 +2752,11 @@ contract('Gatekeeper', (accounts) => {
       await increaseTime(timing.VOTING_PERIOD_START);
 
       // Finalize
-      await gatekeeper.countVotes(ballotID, GOVERNANCE);
-      const status = await gatekeeper.contestStatus(ballotID, GOVERNANCE);
+      await gatekeeper.finalizeContest(epochNumber, GOVERNANCE);
+      const status = await gatekeeper.contestStatus(epochNumber, GOVERNANCE);
       assert.strictEqual(status.toString(), ContestStatus.Finalized);
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GOVERNANCE);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GOVERNANCE);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -2769,7 +2769,7 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
     let GRANT;
 
@@ -2778,7 +2778,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -2842,16 +2842,16 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // expect 2000, 1000, 0
-      const slate0Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 0);
+      const slate0Votes = await gatekeeper.getFirstChoiceVotes(epochNumber, GRANT, 0);
       assert.strictEqual(slate0Votes.toString(), toPanBase('2000'));
-      const slate1Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 1);
+      const slate1Votes = await gatekeeper.getFirstChoiceVotes(epochNumber, GRANT, 1);
       assert.strictEqual(slate1Votes.toString(), toPanBase('1000'));
-      const slate2Votes = await gatekeeper.getFirstChoiceVotes(ballotID, GRANT, 2);
+      const slate2Votes = await gatekeeper.getFirstChoiceVotes(epochNumber, GRANT, 2);
       assert.strictEqual(slate2Votes.toString(), toPanBase('0'));
     });
 
@@ -2865,7 +2865,7 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -2874,7 +2874,7 @@ contract('Gatekeeper', (accounts) => {
 
     beforeEach(async () => {
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -2893,7 +2893,7 @@ contract('Gatekeeper', (accounts) => {
         metadata: createMultihash('my slate'),
       });
 
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
 
       assert.strictEqual(
         status.toString(),
@@ -2921,7 +2921,7 @@ contract('Gatekeeper', (accounts) => {
       // Only stake on one
       await gatekeeper.stakeTokens(0, { from: recommender });
 
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
 
       assert.strictEqual(
         status.toString(),
@@ -2952,7 +2952,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender });
 
 
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
 
       assert.strictEqual(
         status.toString(),
@@ -3165,7 +3165,7 @@ contract('Gatekeeper', (accounts) => {
         assert.strictEqual(_confidenceVoteRunnerUp.toString(), '0', 'Vote runner-up should be zero');
         assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
 
-        await gatekeeper.countVotes(epochNumber, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
 
@@ -3227,7 +3227,7 @@ contract('Gatekeeper', (accounts) => {
         );
 
         // Initial vote
-        await gatekeeper.countVotes(epochNumber, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         const expected = {
           slates: ['0', '1', '2', '3'],
@@ -3259,7 +3259,7 @@ contract('Gatekeeper', (accounts) => {
         assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
 
         // Runoff
-        await gatekeeper.countRunoffVotes(epochNumber, GRANT);
+        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
         const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
         const {
@@ -3285,7 +3285,7 @@ contract('Gatekeeper', (accounts) => {
     afterEach(async () => utils.evm.revert(snapshotID));
   });
 
-  describe('countRunoffVotes', () => {
+  describe('finalizeRunoff', () => {
     const [creator, recommender, alice, bob, carol] = accounts;
 
     let gatekeeper;
@@ -3293,7 +3293,7 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -3304,7 +3304,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -3363,18 +3363,18 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
-      const receipt = await gatekeeper.countRunoffVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
       // Should emit events
       assert.strictEqual(receipt.logs.length, 3);
@@ -3411,7 +3411,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(winningSlate.toString(), expectedWinner, 'Runoff finalized with wrong winner');
 
       // status should be Finalized at the end
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(
         status.toString(),
         ContestStatus.Finalized,
@@ -3427,7 +3427,7 @@ contract('Gatekeeper', (accounts) => {
       );
 
       // All the other slates should have status Rejected
-      const contestSlates = await gatekeeper.contestSlates(ballotID, GRANT);
+      const contestSlates = await gatekeeper.contestSlates(epochNumber, GRANT);
       assert.deepStrictEqual(
         contestSlates.map(i => i.toString()),
         ['0', '1', '2'],
@@ -3459,18 +3459,18 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
-      const receipt = await gatekeeper.countRunoffVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
       // RunoffCounted
       const {
@@ -3490,7 +3490,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
       assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -3502,18 +3502,18 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
-      const receipt = await gatekeeper.countRunoffVotes(ballotID, GRANT);
+      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       utils.expectEvents(receipt, ['RunoffStarted', 'RunoffCounted', 'RunoffFinalized']);
 
       const {
@@ -3526,7 +3526,7 @@ contract('Gatekeeper', (accounts) => {
         `${winningSlate.toNumber()} > ${losingSlate.toNumber()} Winner should have been the slate with the lower ID`,
       );
 
-      const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
       await verifyFinalizedSlates(gatekeeper, slateIDs);
     });
 
@@ -3539,22 +3539,22 @@ contract('Gatekeeper', (accounts) => {
 
       // Reveal all votes
       await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(ballotID, gatekeeper, aliceReveal);
-      await reveal(ballotID, gatekeeper, bobReveal);
-      await reveal(ballotID, gatekeeper, carolReveal);
+      await reveal(epochNumber, gatekeeper, aliceReveal);
+      await reveal(epochNumber, gatekeeper, bobReveal);
+      await reveal(epochNumber, gatekeeper, carolReveal);
 
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
-      const status = await gatekeeper.contestStatus(ballotID, GRANT);
+      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
       assert.strictEqual(status.toString(), ContestStatus.Finalized);
 
       // Runoff
       try {
-        await gatekeeper.countRunoffVotes(ballotID, GRANT);
+        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'not pending');
@@ -3580,7 +3580,7 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -3591,7 +3591,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -3643,35 +3643,35 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should correctly get the winning slate after a finalized confidence vote', async () => {
-      await doConfidenceVote(gatekeeper, ballotID, [alice, bob, carol], { finalize: false });
+      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Check winner
-      const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+      const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
       assert.strictEqual(winner.toString(), '0', 'Returned the wrong winner');
     });
 
     it('should correctly get the winning slate after a finalized runoff', async () => {
-      await doRunoff(gatekeeper, ballotID, [alice, bob, carol], { finalize: false });
+      await doRunoff(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
       // Confidence vote
-      await gatekeeper.countVotes(ballotID, GRANT);
+      await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
-      await gatekeeper.countRunoffVotes(ballotID, GRANT);
+      await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
       // Check winner
-      const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+      const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
       assert.strictEqual(winner.toString(), '1', 'Returned the wrong winner');
     });
 
     it('should revert if the contest has not been finalized', async () => {
       try {
-        await gatekeeper.getWinningSlate(ballotID, GRANT);
+        await gatekeeper.getWinningSlate(epochNumber, GRANT);
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'not finalized');
@@ -3689,7 +3689,7 @@ contract('Gatekeeper', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    let ballotID;
+    let epochNumber;
     let snapshotID;
     let GRANT;
     const grantProposals = [
@@ -3703,7 +3703,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ token, gatekeeper, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -3773,13 +3773,13 @@ contract('Gatekeeper', (accounts) => {
 
         // Reveal all votes
         await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-        await reveal(ballotID, gatekeeper, aliceReveal);
-        await reveal(ballotID, gatekeeper, bobReveal);
-        await reveal(ballotID, gatekeeper, carolReveal);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
         // Advance past reveal period
         await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
       });
 
       it('should return true for a request that was included in an accepted slate', async () => {
@@ -3823,16 +3823,16 @@ contract('Gatekeeper', (accounts) => {
 
         // Reveal all votes
         await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-        await reveal(ballotID, gatekeeper, aliceReveal);
-        await reveal(ballotID, gatekeeper, bobReveal);
-        await reveal(ballotID, gatekeeper, carolReveal);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
         // Advance past reveal period
         await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
         // Run -- slate 1 wins
-        await gatekeeper.countVotes(ballotID, GRANT);
-        await gatekeeper.countRunoffVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
+        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       });
 
       it('should return true for a request that was included in an accepted slate', async () => {
@@ -3878,7 +3878,7 @@ contract('Gatekeeper', (accounts) => {
     let stakeAmount;
     let snapshotID;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -3888,7 +3888,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -3953,9 +3953,9 @@ contract('Gatekeeper', (accounts) => {
 
         // Reveal all votes
         await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-        await reveal(ballotID, gatekeeper, aliceReveal);
-        await reveal(ballotID, gatekeeper, bobReveal);
-        await reveal(ballotID, gatekeeper, carolReveal);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
         // Advance past reveal period
         await increaseTime(timing.REVEAL_PERIOD_LENGTH);
@@ -3963,10 +3963,10 @@ contract('Gatekeeper', (accounts) => {
 
       it('should withdraw tokens after a finalized confidence vote', async () => {
         // Confidence vote
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // Get winner
-        const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+        const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
         assert.strictEqual(winner.toString(), '0', 'Returned the wrong winner');
 
         const { staker } = await gatekeeper.slates(winner);
@@ -4010,7 +4010,7 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the slate has not been accepted', async () => {
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // Get a rejected slate
         const loser = '1';
@@ -4027,10 +4027,10 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the msg.sender is not the original staker', async () => {
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // Get winner
-        const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+        const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
         const { staker } = await gatekeeper.slates(winner);
 
         const badStaker = carol;
@@ -4047,10 +4047,10 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the stake has already been withdrawn', async () => {
-        await gatekeeper.countVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // Get winner
-        const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+        const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
         const { staker } = await gatekeeper.slates(winner);
 
         // Withdraw
@@ -4091,21 +4091,21 @@ contract('Gatekeeper', (accounts) => {
 
         // Reveal all votes
         await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-        await reveal(ballotID, gatekeeper, aliceReveal);
-        await reveal(ballotID, gatekeeper, bobReveal);
-        await reveal(ballotID, gatekeeper, carolReveal);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
         // Advance past reveal period
         await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
         // Run -- slate 1 wins
-        await gatekeeper.countVotes(ballotID, GRANT);
-        await gatekeeper.countRunoffVotes(ballotID, GRANT);
+        await gatekeeper.finalizeContest(epochNumber, GRANT);
+        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       });
 
       it('should withdraw tokens after a finalized runoff vote', async () => {
         // Get winner
-        const winner = await gatekeeper.getWinningSlate(ballotID, GRANT);
+        const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
         assert.strictEqual(winner.toString(), '1', 'Returned the wrong winner');
 
         const { staker } = await gatekeeper.slates(winner);
@@ -4176,7 +4176,7 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -4186,7 +4186,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -4236,14 +4236,14 @@ contract('Gatekeeper', (accounts) => {
 
     describe('confidence vote', () => {
       it('should send tokens to the capacitor after a finalized confidence vote', async () => {
-        await doConfidenceVote(gatekeeper, ballotID, [alice, bob, carol]);
+        await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
 
         // initial balances
         const initialTokenCapacitorBalance = await token.balanceOf(capacitor.address);
         const initialGatekeeperBalance = await token.balanceOf(gatekeeper.address);
 
         // get slates from the contest
-        const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+        const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
         assert.deepStrictEqual(
           slateIDs.map(i => i.toString()),
           ['0', '1', '2'],
@@ -4255,7 +4255,7 @@ contract('Gatekeeper', (accounts) => {
           .reduce((total, num) => total.add(num), new BN(0));
 
         // Donate tokens
-        await gatekeeper.donateChallengerStakes(ballotID, GRANT, { from: creator });
+        await gatekeeper.donateChallengerStakes(epochNumber, GRANT, { from: creator });
 
         // Tokens should have been transferred
         const expectedTokenCapacitorBalance = initialTokenCapacitorBalance.add(totalDonation);
@@ -4286,11 +4286,11 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the contest is not finalized', async () => {
-        await doConfidenceVote(gatekeeper, ballotID, [alice, bob, carol], { finalize: false });
+        await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
 
         // Try to donate
         try {
-          await gatekeeper.donateChallengerStakes(ballotID, GRANT, { from: creator });
+          await gatekeeper.donateChallengerStakes(epochNumber, GRANT, { from: creator });
         } catch (error) {
           expectRevert(error);
           expectErrorLike(error, 'not finalized');
@@ -4303,14 +4303,14 @@ contract('Gatekeeper', (accounts) => {
 
     describe('runoff vote', () => {
       it('should send tokens to the capacitor after a finalized runoff', async () => {
-        await doRunoff(gatekeeper, ballotID, [alice, bob, carol]);
+        await doRunoff(gatekeeper, epochNumber, [alice, bob, carol]);
 
         // initial balances
         const initialTokenCapacitorBalance = await token.balanceOf(capacitor.address);
         const initialGatekeeperBalance = await token.balanceOf(gatekeeper.address);
 
         // get slates from the contest
-        const slateIDs = await gatekeeper.contestSlates(ballotID, GRANT);
+        const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
         assert.deepStrictEqual(
           slateIDs.map(i => i.toString()),
           ['0', '1', '2'],
@@ -4322,7 +4322,7 @@ contract('Gatekeeper', (accounts) => {
           .reduce((total, num) => total.add(num), new BN(0));
 
         // Donate tokens
-        await gatekeeper.donateChallengerStakes(ballotID, GRANT, { from: creator });
+        await gatekeeper.donateChallengerStakes(epochNumber, GRANT, { from: creator });
 
         // Tokens should have been transferred
         const expectedTokenCapacitorBalance = initialTokenCapacitorBalance.add(totalDonation);
@@ -4353,11 +4353,11 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the contest is not finalized', async () => {
-        await doRunoff(gatekeeper, ballotID, [alice, bob, carol], { finalize: false });
+        await doRunoff(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
 
         // Try to donate
         try {
-          await gatekeeper.donateChallengerStakes(ballotID, GRANT, { from: creator });
+          await gatekeeper.donateChallengerStakes(epochNumber, GRANT, { from: creator });
         } catch (error) {
           expectRevert(error);
           expectErrorLike(error, 'not finalized');
@@ -4378,7 +4378,7 @@ contract('Gatekeeper', (accounts) => {
     let capacitor;
     let snapshotID;
 
-    let ballotID;
+    let epochNumber;
     let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
@@ -4388,7 +4388,7 @@ contract('Gatekeeper', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
-      ballotID = await gatekeeper.currentEpochNumber();
+      epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
 
@@ -4442,7 +4442,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should return a new incumbent if someone else wins', async () => {
       // run simple vote
-      await doConfidenceVote(gatekeeper, ballotID, [alice, bob, carol]);
+      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
       const previousIncumbent = await gatekeeper.incumbent(GRANT);
       const nextEpoch = await gatekeeper.currentEpochNumber();
 
@@ -4469,7 +4469,7 @@ contract('Gatekeeper', (accounts) => {
       const resource = await getResource(gatekeeper, 'GRANT');
 
       await increaseTime(timing.VOTING_PERIOD_START);
-      await gatekeeper.countVotes(epoch, resource);
+      await gatekeeper.finalizeContest(epoch, resource);
 
       // Check
       const incumbent = await gatekeeper.incumbent(GRANT);
@@ -4479,7 +4479,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should maintain the incumbent even if no action takes place in an epoch', async () => {
       // run simple vote
-      await doConfidenceVote(gatekeeper, ballotID, [alice, bob, carol]);
+      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
       const previousIncumbent = await gatekeeper.incumbent(GRANT);
       const nextEpoch = await gatekeeper.currentEpochNumber();
 
