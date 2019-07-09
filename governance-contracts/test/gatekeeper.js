@@ -1076,7 +1076,7 @@ contract('Gatekeeper', (accounts) => {
     it('should allow a voter to set a delegate account', async () => {
       const receipt = await gatekeeper.delegateVotingRights(delegate, { from: voter });
 
-      assert.strictEqual(receipt.logs[0].event, 'DelegateSet', 'Wrong event was emitted');
+      expectEvents(receipt, ['VotingRightsDelegated']);
       const { voter: emittedVoter, delegate: emittedDelegate } = receipt.logs[0].args;
 
       assert.strictEqual(emittedVoter, voter, 'Emitted wrong voter');
@@ -2024,13 +2024,7 @@ contract('Gatekeeper', (accounts) => {
       const receipt = await gatekeeper.revealManyBallots(epochNumber, voters, ballots, salts);
 
       // should have emitted 3 BallotRevealed events
-      assert.strictEqual(receipt.logs.length, 3);
-      assert.deepStrictEqual(
-        receipt.logs.map(l => l.event),
-        ['BallotRevealed', 'BallotRevealed', 'BallotRevealed'],
-        'Incorrect events emitted',
-      );
-
+      expectEvents(receipt, ['BallotRevealed', 'BallotRevealed', 'BallotRevealed']);
 
       // check first and second choice votes
       const slate0Votes = await utils.getVotes(gatekeeper, epochNumber, GRANT, 0);
@@ -3961,7 +3955,7 @@ contract('Gatekeeper', (accounts) => {
         // console.log(receipt);
 
         // Check logs
-        assert.strictEqual(receipt.logs[0].event, 'StakeWithdrawn', 'Wrong event was emitted');
+        expectEvents(receipt, ['StakeWithdrawn']);
 
         const { slateID, staker: emittedStaker, numTokens } = receipt.logs[0].args;
         assert.strictEqual(slateID.toString(), winner.toString(), 'Emitted wrong slateID');
@@ -4100,7 +4094,7 @@ contract('Gatekeeper', (accounts) => {
         // console.log(receipt);
 
         // Check logs
-        assert.strictEqual(receipt.logs[0].event, 'StakeWithdrawn', 'Wrong event was emitted');
+        expectEvents(receipt, ['StakeWithdrawn']);
 
         const { slateID, staker: emittedStaker, numTokens } = receipt.logs[0].args;
         assert.strictEqual(slateID.toString(), winner.toString(), 'Emitted wrong slateID');

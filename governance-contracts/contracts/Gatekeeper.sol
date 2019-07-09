@@ -14,7 +14,7 @@ contract Gatekeeper {
     event SlateStaked(uint slateID, address indexed staker, uint numTokens);
     event VotingTokensDeposited(address indexed voter, uint numTokens);
     event VotingTokensWithdrawn(address indexed voter, uint numTokens);
-    event DelegateSet(address indexed voter, address delegate);
+    event VotingRightsDelegated(address indexed voter, address delegate);
     event BallotCommitted(
         uint indexed epochNumber,
         address indexed committer,
@@ -403,7 +403,7 @@ contract Gatekeeper {
 
         delegate[voter] = _delegate;
 
-        emit DelegateSet(voter, _delegate);
+        emit VotingRightsDelegated(voter, _delegate);
         return true;
     }
 

@@ -173,7 +173,7 @@ contract('ParameterStore', (accounts) => {
       );
 
       // Should emit event with requestID and other data
-      assert.strictEqual(receipt.logs[0].event, 'ProposalCreated');
+      expectEvents(receipt, ['ProposalCreated']);
       const {
         proposalID,
         proposer: emittedProposer,
@@ -253,7 +253,7 @@ contract('ParameterStore', (accounts) => {
           { from: proposer },
         );
 
-        assert.strictEqual(receipt.logs.length, keys.length, 'Wrong number of events');
+        expectEvents(receipt, ['ProposalCreated', 'ProposalCreated', 'ProposalCreated']);
 
         // eslint-disable-next-line
         for (let i = 0; i < keys.length; i++) {
