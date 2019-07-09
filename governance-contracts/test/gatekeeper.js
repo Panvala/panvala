@@ -11,6 +11,7 @@ const BasicToken = artifacts.require('BasicToken');
 const {
   expectRevert,
   expectErrorLike,
+  expectEvents,
   voteSingle,
   revealVote: reveal,
   ContestStatus,
@@ -57,7 +58,7 @@ async function doRunoff(gatekeeper, epochNumber, voters, options) {
   }
 }
 
-async function doConfidenceVote(gatekeeper, epochNumber, voters, options) {
+async function doVote(gatekeeper, epochNumber, voters, options) {
   const { finalize = true } = options || {};
   const [alice, bob, carol] = voters;
 
@@ -2273,8 +2274,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender });
     });
 
-    it('should correctly tally the votes and finalize a confidence vote', async () => {
-      // basic confidence vote
+    it('should correctly tally the votes and finalize a contest', async () => {
       // slate 0 should win
 
       // Commit for voters
@@ -2304,10 +2304,9 @@ contract('Gatekeeper', (accounts) => {
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // should emit events
-      assert.strictEqual(receipt.logs.length, 2, 'Should have emitted 2 events');
+      expectEvents(receipt, ['VoteCounted', 'VoteFinalized']);
 
-      // ConfidenceVoteCounted
-      assert.strictEqual(receipt.logs[0].event, 'ConfidenceVoteCounted');
+      // VoteCounted
       const {
         epochNumber: epochNumber0,
         resource: resource0,
@@ -2322,8 +2321,7 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(emittedWinnerVotes.toString(), toPanBase('2000'), 'Winner had the wrong number of votes');
       assert.strictEqual(emittedTotal.toString(), toPanBase('3000'), 'Total vote count was wrong');
 
-      // ConfidenceVoteFinalized
-      assert.strictEqual(receipt.logs[1].event, 'ConfidenceVoteFinalized');
+      // VoteFinalized
       const {
         epochNumber: epochNumber1,
         resource: resource1,
@@ -2547,7 +2545,7 @@ contract('Gatekeeper', (accounts) => {
 
       // Finalize
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
+      expectEvents(receipt, ['VoteCounted', 'VoteFinalized']);
 
       const { votes, totalVotes } = receipt.logs[0].args;
       const twiceVotes = votes.mul(new BN(2));
@@ -2651,7 +2649,7 @@ contract('Gatekeeper', (accounts) => {
 
       // Check logs
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFailed']);
+      utils.expectEvents(receipt, ['VoteCounted', 'VoteFailed']);
 
       // Should be waiting for a runoff
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -2680,7 +2678,7 @@ contract('Gatekeeper', (accounts) => {
 
       // Check logs
       const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFailed']);
+      utils.expectEvents(receipt, ['VoteCounted', 'VoteFailed']);
 
       // Should be waiting for a runoff
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -2998,8 +2996,8 @@ contract('Gatekeeper', (accounts) => {
         allSlates: slates,
         stakedSlates,
         lastStaked,
-        confidenceVoteWinner,
-        confidenceVoteRunnerUp,
+        voteWinner,
+        voteRunnerUp,
         winner,
       } = contest;
 
@@ -3007,8 +3005,8 @@ contract('Gatekeeper', (accounts) => {
       assert.deepStrictEqual(slates, [], 'Slates should have been empty');
       assert.deepStrictEqual(stakedSlates, [], 'Staked slates should have been empty');
       assert.strictEqual(lastStaked.toString(), '0');
-      assert.strictEqual(confidenceVoteWinner.toString(), '0');
-      assert.strictEqual(confidenceVoteRunnerUp.toString(), '0');
+      assert.strictEqual(voteWinner.toString(), '0');
+      assert.strictEqual(voteRunnerUp.toString(), '0');
       assert.strictEqual(winner.toString(), '0');
     });
 
@@ -3046,8 +3044,8 @@ contract('Gatekeeper', (accounts) => {
         allSlates: slates,
         stakedSlates,
         lastStaked,
-        confidenceVoteWinner,
-        confidenceVoteRunnerUp,
+        voteWinner,
+        voteRunnerUp,
         winner,
       } = contest;
 
@@ -3055,8 +3053,8 @@ contract('Gatekeeper', (accounts) => {
       assert.deepStrictEqual(slates.map(i => i.toString()), ['0', '1'], 'Wrong slates');
       assert.deepStrictEqual(stakedSlates.map(i => i.toString()), ['0'], 'Wrong staked slates');
       assert.strictEqual(lastStaked.toString(), stakingEpochTime.toString());
-      assert.strictEqual(confidenceVoteWinner.toString(), '0');
-      assert.strictEqual(confidenceVoteRunnerUp.toString(), '0');
+      assert.strictEqual(voteWinner.toString(), '0');
+      assert.strictEqual(voteRunnerUp.toString(), '0');
       assert.strictEqual(winner.toString(), '0');
     });
 
@@ -3151,8 +3149,8 @@ contract('Gatekeeper', (accounts) => {
           allSlates: _allSlates,
           stakedSlates: _stakedSlates,
           lastStaked: _lastStaked,
-          confidenceVoteWinner: _confidenceVoteWinner,
-          confidenceVoteRunnerUp: _confidenceVoteRunnerUp,
+          voteWinner: _voteWinner,
+          voteRunnerUp: _voteRunnerUp,
           winner: _winner,
         } = contestBeforeTally;
 
@@ -3161,8 +3159,8 @@ contract('Gatekeeper', (accounts) => {
         assert.deepStrictEqual(_stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
         assert.strictEqual(_lastStaked.toString(), expected.lastStaked);
         // result values should be uninitialized
-        assert.strictEqual(_confidenceVoteWinner.toString(), '0', 'Vote winner should be zero');
-        assert.strictEqual(_confidenceVoteRunnerUp.toString(), '0', 'Vote runner-up should be zero');
+        assert.strictEqual(_voteWinner.toString(), '0', 'Vote winner should be zero');
+        assert.strictEqual(_voteRunnerUp.toString(), '0', 'Vote runner-up should be zero');
         assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
 
         await gatekeeper.finalizeContest(epochNumber, GRANT);
@@ -3174,8 +3172,8 @@ contract('Gatekeeper', (accounts) => {
           allSlates: slates,
           stakedSlates,
           lastStaked,
-          confidenceVoteWinner,
-          confidenceVoteRunnerUp,
+          voteWinner,
+          voteRunnerUp,
           winner,
         } = contest;
 
@@ -3183,8 +3181,8 @@ contract('Gatekeeper', (accounts) => {
         assert.deepStrictEqual(slates.map(i => i.toString()), expected.slates, 'Wrong slates');
         assert.deepStrictEqual(stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
         assert.strictEqual(lastStaked.toString(), expected.lastStaked);
-        assert.strictEqual(confidenceVoteWinner.toString(), expected.voteWinner);
-        assert.strictEqual(confidenceVoteRunnerUp.toString(), expected.voteRunnerUp);
+        assert.strictEqual(voteWinner.toString(), expected.voteWinner);
+        assert.strictEqual(voteRunnerUp.toString(), expected.voteRunnerUp);
         assert.strictEqual(winner.toString(), expected.winner);
       });
 
@@ -3244,8 +3242,8 @@ contract('Gatekeeper', (accounts) => {
           allSlates: _allSlates,
           stakedSlates: _stakedSlates,
           lastStaked: _lastStaked,
-          confidenceVoteWinner: _confidenceVoteWinner,
-          confidenceVoteRunnerUp: _confidenceVoteRunnerUp,
+          voteWinner: _voteWinner,
+          voteRunnerUp: _voteRunnerUp,
           winner: _winner,
         } = initialContest;
 
@@ -3253,8 +3251,8 @@ contract('Gatekeeper', (accounts) => {
         assert.deepStrictEqual(_allSlates.map(i => i.toString()), expected.slates, 'Wrong slates');
         assert.deepStrictEqual(_stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
         assert.strictEqual(_lastStaked.toString(), expected.lastStaked);
-        assert.strictEqual(_confidenceVoteWinner.toString(), expected.voteWinner, 'Wrong vote winner');
-        assert.strictEqual(_confidenceVoteRunnerUp.toString(), expected.voteRunnerUp, 'Wrong vote runner-up');
+        assert.strictEqual(_voteWinner.toString(), expected.voteWinner, 'Wrong vote winner');
+        assert.strictEqual(_voteRunnerUp.toString(), expected.voteRunnerUp, 'Wrong vote runner-up');
         // final result value should be uninitialized
         assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
 
@@ -3267,8 +3265,8 @@ contract('Gatekeeper', (accounts) => {
           allSlates: slates,
           stakedSlates,
           lastStaked,
-          confidenceVoteWinner,
-          confidenceVoteRunnerUp,
+          voteWinner,
+          voteRunnerUp,
           winner,
         } = contest;
 
@@ -3276,8 +3274,8 @@ contract('Gatekeeper', (accounts) => {
         assert.deepStrictEqual(slates.map(i => i.toString()), expected.slates, 'Wrong slates');
         assert.deepStrictEqual(stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
         assert.strictEqual(lastStaked.toString(), expected.lastStaked);
-        assert.strictEqual(confidenceVoteWinner.toString(), expected.voteWinner);
-        assert.strictEqual(confidenceVoteRunnerUp.toString(), expected.voteRunnerUp);
+        assert.strictEqual(voteWinner.toString(), expected.voteWinner);
+        assert.strictEqual(voteRunnerUp.toString(), expected.voteRunnerUp);
         assert.strictEqual(winner.toString(), expected.winner, 'Wrong contest winner');
       });
     });
@@ -3370,7 +3368,7 @@ contract('Gatekeeper', (accounts) => {
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
@@ -3384,8 +3382,8 @@ contract('Gatekeeper', (accounts) => {
 
       // RunoffStarted
       const { winningSlate: emittedWinner, runnerUpSlate: emittedRunnerUp } = receipt.logs[0].args;
-      assert.strictEqual(emittedWinner.toString(), '2', 'Confidence vote winner should have been slate 2');
-      assert.strictEqual(emittedRunnerUp.toString(), '1', 'Confidence vote runner-up should have been slate 1');
+      assert.strictEqual(emittedWinner.toString(), '2', 'Vote winner should have been slate 2');
+      assert.strictEqual(emittedRunnerUp.toString(), '1', 'Vote runner-up should have been slate 1');
 
       // RunoffCounted
       const {
@@ -3466,7 +3464,7 @@ contract('Gatekeeper', (accounts) => {
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // Vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
@@ -3509,7 +3507,7 @@ contract('Gatekeeper', (accounts) => {
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // Vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
@@ -3531,7 +3529,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should revert if a runoff is not pending', async () => {
-      // Run a straight-forward confidence vote
+      // Run a straight-forward vote
       await increaseTime(timing.VOTING_PERIOD_START);
       const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '800', '1234');
       const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
@@ -3546,7 +3544,7 @@ contract('Gatekeeper', (accounts) => {
       // Advance past reveal period
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // Vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       const status = await gatekeeper.contestStatus(epochNumber, GRANT);
@@ -3564,12 +3562,6 @@ contract('Gatekeeper', (accounts) => {
     });
 
     afterEach(async () => utils.evm.revert(snapshotID));
-  });
-
-  describe('post-voting', () => {
-    // before count
-    // confidence
-    // runoff
   });
 
   describe('getWinningSlate', () => {
@@ -3642,11 +3634,11 @@ contract('Gatekeeper', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
     });
 
-    it('should correctly get the winning slate after a finalized confidence vote', async () => {
-      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
+    it('should correctly get the winning slate after a finalized vote', async () => {
+      await doVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // Vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Check winner
@@ -3658,7 +3650,7 @@ contract('Gatekeeper', (accounts) => {
       await doRunoff(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
       await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Confidence vote
+      // Vote
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
@@ -3944,7 +3936,7 @@ contract('Gatekeeper', (accounts) => {
     });
 
 
-    describe('confidence vote', () => {
+    describe('initial vote', () => {
       beforeEach(async () => {
         await increaseTime(timing.VOTING_PERIOD_START);
         const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
@@ -3961,8 +3953,8 @@ contract('Gatekeeper', (accounts) => {
         await increaseTime(timing.REVEAL_PERIOD_LENGTH);
       });
 
-      it('should withdraw tokens after a finalized confidence vote', async () => {
-        // Confidence vote
+      it('should withdraw tokens after a finalized vote', async () => {
+        // Vote
         await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         // Get winner
@@ -4234,9 +4226,9 @@ contract('Gatekeeper', (accounts) => {
     });
 
 
-    describe('confidence vote', () => {
-      it('should send tokens to the capacitor after a finalized confidence vote', async () => {
-        await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
+    describe('vote', () => {
+      it('should send tokens to the capacitor after a finalized vote', async () => {
+        await doVote(gatekeeper, epochNumber, [alice, bob, carol]);
 
         // initial balances
         const initialTokenCapacitorBalance = await token.balanceOf(capacitor.address);
@@ -4286,7 +4278,7 @@ contract('Gatekeeper', (accounts) => {
       });
 
       it('should revert if the contest is not finalized', async () => {
-        await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
+        await doVote(gatekeeper, epochNumber, [alice, bob, carol], { finalize: false });
 
         // Try to donate
         try {
@@ -4442,7 +4434,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should return a new incumbent if someone else wins', async () => {
       // run simple vote
-      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
+      await doVote(gatekeeper, epochNumber, [alice, bob, carol]);
       const previousIncumbent = await gatekeeper.incumbent(GRANT);
       const nextEpoch = await gatekeeper.currentEpochNumber();
 
@@ -4479,7 +4471,7 @@ contract('Gatekeeper', (accounts) => {
 
     it('should maintain the incumbent even if no action takes place in an epoch', async () => {
       // run simple vote
-      await doConfidenceVote(gatekeeper, epochNumber, [alice, bob, carol]);
+      await doVote(gatekeeper, epochNumber, [alice, bob, carol]);
       const previousIncumbent = await gatekeeper.incumbent(GRANT);
       const nextEpoch = await gatekeeper.currentEpochNumber();
 

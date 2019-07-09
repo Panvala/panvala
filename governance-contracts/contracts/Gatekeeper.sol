@@ -23,15 +23,15 @@ contract Gatekeeper {
         uint256 winningSlate
     );
     event ContestFinalizedWithoutWinner(uint indexed epochNumber, address indexed resource);
-    event ConfidenceVoteCounted(
+    event VoteCounted(
         uint indexed epochNumber,
         address indexed resource,
         uint winningSlate,
         uint votes,
         uint totalVotes
     );
-    event ConfidenceVoteFinalized(uint indexed epochNumber, address indexed resource, uint winningSlate);
-    event ConfidenceVoteFailed(uint indexed epochNumber, address indexed resource);
+    event VoteFinalized(uint indexed epochNumber, address indexed resource, uint winningSlate);
+    event VoteFailed(uint indexed epochNumber, address indexed resource);
     event RunoffStarted(uint indexed epochNumber, address indexed resource, uint winningSlate, uint runnerUpSlate);
     event RunoffCounted(
         uint indexed epochNumber,
@@ -144,8 +144,8 @@ contract Gatekeeper {
         mapping(uint => SlateVotes) votes;
 
         // Intermediate results
-        uint confidenceVoteWinner;
-        uint confidenceVoteRunnerUp;
+        uint voteWinner;
+        uint voteRunnerUp;
 
         // Final results
         uint winner;
@@ -686,9 +686,9 @@ contract Gatekeeper {
         }
 
         // Update state
-        contest.confidenceVoteWinner = winner;
-        contest.confidenceVoteRunnerUp = runnerUp;
-        emit ConfidenceVoteCounted(epochNumber, resource, winner, winnerVotes, total);
+        contest.voteWinner = winner;
+        contest.voteRunnerUp = runnerUp;
+        emit VoteCounted(epochNumber, resource, winner, winnerVotes, total);
 
         // If the winner has more than 50%, we are done
         // Otherwise, trigger a runoff
@@ -701,15 +701,15 @@ contract Gatekeeper {
             rejectSlates(contest.stakedSlates, activeSlates);
 
             contest.status = ContestStatus.Finalized;
-            emit ConfidenceVoteFinalized(epochNumber, resource, winner);
+            emit VoteFinalized(epochNumber, resource, winner);
         } else {
             uint256[] memory activeSlates = new uint256[](2);
-            activeSlates[0] = contest.confidenceVoteWinner;
-            activeSlates[1] = contest.confidenceVoteRunnerUp;
+            activeSlates[0] = contest.voteWinner;
+            activeSlates[1] = contest.voteRunnerUp;
             rejectSlates(contest.stakedSlates, activeSlates);
 
             contest.status = ContestStatus.RunoffPending;
-            emit ConfidenceVoteFailed(epochNumber, resource);
+            emit VoteFailed(epochNumber, resource);
         }
     }
 
@@ -737,8 +737,8 @@ contract Gatekeeper {
             uint256[] memory allSlates,
             uint256[] memory stakedSlates,
             uint256 lastStaked,
-            uint256 confidenceVoteWinner,
-            uint256 confidenceVoteRunnerUp,
+            uint256 voteWinner,
+            uint256 voteRunnerUp,
             uint256 winner
         ) {
         Contest memory c =  ballots[epochNumber].contests[resource];
@@ -747,8 +747,8 @@ contract Gatekeeper {
         allSlates = c.slates;
         stakedSlates = c.stakedSlates;
         lastStaked = c.lastStaked;
-        confidenceVoteWinner = c.confidenceVoteWinner;
-        confidenceVoteRunnerUp = c.confidenceVoteRunnerUp;
+        voteWinner = c.voteWinner;
+        voteRunnerUp = c.voteRunnerUp;
         winner = c.winner;
     }
 
@@ -767,30 +767,30 @@ contract Gatekeeper {
         Contest memory contest = ballots[epochNumber].contests[resource];
         require(contest.status == ContestStatus.RunoffPending, "Runoff is not pending");
 
-        uint confidenceVoteWinner = contest.confidenceVoteWinner;
-        uint confidenceVoteRunnerUp = contest.confidenceVoteRunnerUp;
+        uint voteWinner = contest.voteWinner;
+        uint voteRunnerUp = contest.voteRunnerUp;
 
-        emit RunoffStarted(epochNumber, resource, confidenceVoteWinner, confidenceVoteRunnerUp);
+        emit RunoffStarted(epochNumber, resource, voteWinner, voteRunnerUp);
 
         // Get the number of first-choice votes for the top choices
-        uint confidenceWinnerVotes = getFirstChoiceVotes(epochNumber, resource, confidenceVoteWinner);
-        uint confidenceRunnerUpVotes = getFirstChoiceVotes(epochNumber, resource, confidenceVoteRunnerUp);
+        uint leaderTotal = getFirstChoiceVotes(epochNumber, resource, voteWinner);
+        uint runnerUpTotal = getFirstChoiceVotes(epochNumber, resource, voteRunnerUp);
 
         // For slates other than the winner and leader,
         // count second-choice votes for the top two slates
         for (uint i = 0; i < contest.stakedSlates.length; i++) {
             uint slateID = contest.stakedSlates[i];
-            if (slateID != confidenceVoteWinner && slateID != confidenceVoteRunnerUp) {
+            if (slateID != voteWinner && slateID != voteRunnerUp) {
                 // count second-choice votes for the top two slates
                 SlateVotes storage currentSlate = ballots[epochNumber].contests[resource].votes[slateID];
 
                 // Second-choice votes for the winning slate
-                uint votesForWinner = currentSlate.secondChoiceVotes[confidenceVoteWinner];
-                confidenceWinnerVotes = confidenceWinnerVotes.add(votesForWinner);
+                uint votesForWinner = currentSlate.secondChoiceVotes[voteWinner];
+                leaderTotal = leaderTotal.add(votesForWinner);
 
                 // Second-choice votes for the runner-up slate
-                uint votesForRunnerUp = currentSlate.secondChoiceVotes[confidenceVoteRunnerUp];
-                confidenceRunnerUpVotes = confidenceRunnerUpVotes.add(votesForRunnerUp);
+                uint votesForRunnerUp = currentSlate.secondChoiceVotes[voteRunnerUp];
+                runnerUpTotal = runnerUpTotal.add(votesForRunnerUp);
             }
         }
 
@@ -801,19 +801,19 @@ contract Gatekeeper {
         uint runoffLoserVotes = 0;
 
         // Original winner has more votes, or it's tied and the original winner has a smaller ID
-        if ((confidenceWinnerVotes > confidenceRunnerUpVotes) ||
-           ((confidenceWinnerVotes == confidenceRunnerUpVotes) &&
-            (confidenceVoteWinner < confidenceVoteRunnerUp)
+        if ((leaderTotal > runnerUpTotal) ||
+           ((leaderTotal == runnerUpTotal) &&
+            (voteWinner < voteRunnerUp)
             )) {
-            runoffWinner = confidenceVoteWinner;
-            runoffWinnerVotes = confidenceWinnerVotes;
-            runoffLoser = confidenceVoteRunnerUp;
-            runoffLoserVotes = confidenceRunnerUpVotes;
+            runoffWinner = voteWinner;
+            runoffWinnerVotes = leaderTotal;
+            runoffLoser = voteRunnerUp;
+            runoffLoserVotes = runnerUpTotal;
         } else {
-            runoffWinner = confidenceVoteRunnerUp;
-            runoffWinnerVotes = confidenceRunnerUpVotes;
-            runoffLoser = confidenceVoteWinner;
-            runoffLoserVotes = confidenceWinnerVotes;
+            runoffWinner = voteRunnerUp;
+            runoffWinnerVotes = runnerUpTotal;
+            runoffLoser = voteWinner;
+            runoffLoserVotes = leaderTotal;
         }
         emit RunoffCounted(epochNumber, resource, runoffWinner, runoffWinnerVotes, runoffLoser, runoffLoserVotes);
 

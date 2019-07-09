@@ -115,8 +115,8 @@ contract UpgradedGatekeeper is Gatekeeper {
             uint256[] memory allSlates,
             uint256[] memory stakedSlates,
             uint256 lastStaked,
-            uint256 confidenceVoteWinner,
-            uint256 confidenceVoteRunnerUp,
+            uint256 voteWinner,
+            uint256 voteRunnerUp,
             uint256 winner
         ) = previousGatekeeper.contestDetails(epochNumber, resource);
 
@@ -125,8 +125,8 @@ contract UpgradedGatekeeper is Gatekeeper {
             slates: allSlates,
             stakedSlates: stakedSlates,
             lastStaked: lastStaked,
-            confidenceVoteWinner: confidenceVoteWinner,
-            confidenceVoteRunnerUp: confidenceVoteRunnerUp,
+            voteWinner: voteWinner,
+            voteRunnerUp: voteRunnerUp,
             winner: winner
         });
 
