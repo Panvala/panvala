@@ -866,6 +866,10 @@ contract('integration', (accounts) => {
       // Make sure the recommender has tokens
       await token.approve(gatekeeper.address, balance, { from: recommender });
 
+      // Starting out with no slates
+      const slateCount = await gatekeeper.slateCount();
+      assert.strictEqual(slateCount.toString(), '0', 'Should be no slates');
+
       // create `numSlates` slates
       const createAndStake = async (slateID) => {
         await utils.grantSlateFromProposals({
