@@ -96,8 +96,8 @@ contract('integration', (accounts) => {
         const expectedRelease = new BN(tokenReleases.quarterly[nextEpoch.toString()]);
         // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          Math.round(tokens),
-          Math.round(utils.fromPanBase(expectedRelease)),
+          Math.floor(tokens),
+          Math.floor(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
@@ -188,8 +188,8 @@ contract('integration', (accounts) => {
         const expectedRelease = tokenReleases.daily[nextEpoch.toString()];
         // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          Math.round(tokens),
-          Math.round(utils.fromPanBase(expectedRelease)),
+          Math.floor(tokens),
+          Math.floor(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
@@ -866,6 +866,10 @@ contract('integration', (accounts) => {
       // Make sure the recommender has tokens
       await token.approve(gatekeeper.address, balance, { from: recommender });
 
+      // Starting out with no slates
+      const slateCount = await gatekeeper.slateCount();
+      assert.strictEqual(slateCount.toString(), '0', 'Should be no slates');
+
       // create `numSlates` slates
       const createAndStake = async (slateID) => {
         await utils.grantSlateFromProposals({
@@ -900,6 +904,12 @@ contract('integration', (accounts) => {
       const { status, winner } = contest;
       assert.strictEqual(winner.toString(), '1', 'Wrong winning slate');
       assert.strictEqual(status.toString(), ContestStatus.Finalized, 'Not finalized');
+
+      // Check the gas usage for finalization
+      const { gasUsed } = receipt.receipt;
+      const gasThreshold = 4000000;
+      // console.log('GAS USED', gasUsed);
+      assert(gasUsed < gasThreshold, `Gas exceeded acceptable threshold of ${gasThreshold}`);
 
       // The recommender (attacker) has spent at least 10,000,000 PAN
       const finalBalance = await token.balanceOf(recommender);
