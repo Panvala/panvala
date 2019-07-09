@@ -21,6 +21,7 @@ const {
 } = utils;
 
 const { increaseTime } = utils.evm;
+const { defaultParams } = utils.pan;
 
 /**
  * Calculate the number of locked tokens
@@ -817,6 +818,106 @@ contract('integration', (accounts) => {
           assert.fail('Allowed a slate to be staked before initialization');
         });
       });
+    });
+
+    afterEach(async () => utils.evm.revert(snapshotID));
+  });
+
+  describe('finalization stress testing', () => {
+    const [creator, alice, bob] = accounts;
+
+    let gatekeeper;
+    let capacitor;
+    let token;
+    let GRANT;
+    let snapshotID;
+    const initialBalance = new BN(50e6);
+    let epochNumber;
+
+    beforeEach(async () => {
+      ({
+        gatekeeper, token, capacitor,
+      } = await utils.newPanvala({ from: creator }));
+      snapshotID = await utils.evm.snapshot();
+      await utils.chargeCapacitor(capacitor, initialBalance, token, { from: creator });
+
+      GRANT = await getResource(gatekeeper, 'GRANT');
+      epochNumber = await gatekeeper.currentEpochNumber();
+
+      const voterTokens = toPanBase('100');
+      await token.transfer(alice, voterTokens, { from: creator });
+      await token.approve(gatekeeper.address, voterTokens, { from: alice });
+      await token.transfer(bob, voterTokens, { from: creator });
+      await token.approve(gatekeeper.address, voterTokens, { from: bob });
+    });
+
+    it('finalizes with a large number of slates', async () => {
+      const recommender = creator;
+      const balance = await token.balanceOf(recommender);
+
+      // eslint-disable-next-line no-unused-vars
+      const stakeAmount = new BN(defaultParams.slateStakeAmount);
+      // console.log(stakeAmount.toString(), 'stake amount');
+
+      // Create many slates
+      const numSlates = 200;
+      // console.log(numSlates, 'num slates');
+
+      // Make sure the recommender has tokens
+      await token.approve(gatekeeper.address, balance, { from: recommender });
+
+      // Starting out with no slates
+      const slateCount = await gatekeeper.slateCount();
+      assert.strictEqual(slateCount.toString(), '0', 'Should be no slates');
+
+      // create `numSlates` slates
+      const createAndStake = async (slateID) => {
+        await utils.grantSlateFromProposals({
+          gatekeeper,
+          proposals: [{
+            to: recommender, tokens: '1000', metadataHash: utils.createMultihash('grant'),
+          }],
+          capacitor,
+          recommender,
+          metadata: utils.createMultihash('Spam slate'),
+        });
+        await gatekeeper.stakeTokens(slateID, { from: recommender });
+      };
+
+      const slates = utils.range(numSlates);
+      await Promise.all(slates.map(createAndStake));
+
+      // vote: slate 1 wins
+      await increaseTime(timing.VOTING_PERIOD_START);
+      const aReveal = await utils.voteSingle(gatekeeper, alice, GRANT, 0, 1, '50', '1234');
+      const bReveal = await utils.voteSingle(gatekeeper, bob, GRANT, 1, 0, '100', '5678');
+      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
+      await utils.revealVote(epochNumber, gatekeeper, aReveal);
+      await utils.revealVote(epochNumber, gatekeeper, bReveal);
+
+      // Advance past reveal period
+      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
+
+      const receipt = await gatekeeper.countVotes(epochNumber, GRANT);
+      utils.expectEvents(receipt, ['ConfidenceVoteCounted', 'ConfidenceVoteFinalized']);
+      const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
+      const { status, winner } = contest;
+      assert.strictEqual(winner.toString(), '1', 'Wrong winning slate');
+      assert.strictEqual(status.toString(), ContestStatus.Finalized, 'Not finalized');
+
+      // Check the gas usage for finalization
+      const { gasUsed } = receipt.receipt;
+      const gasThreshold = 4000000;
+      // console.log('GAS USED', gasUsed);
+      assert(gasUsed < gasThreshold, `Gas exceeded acceptable threshold of ${gasThreshold}`);
+
+      // The recommender (attacker) has spent at least 10,000,000 PAN
+      const finalBalance = await token.balanceOf(recommender);
+      const spent = balance.sub(finalBalance);
+      // console.log(utils.fromPanBase(spent.toString()), 'tokens spent');
+
+      const tokenThreshold = new BN(toPanBase(10000000));
+      assert(spent.gte(tokenThreshold), 'Spent less than the threshold');
     });
 
     afterEach(async () => utils.evm.revert(snapshotID));
