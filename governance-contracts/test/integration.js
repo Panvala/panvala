@@ -901,6 +901,12 @@ contract('integration', (accounts) => {
       assert.strictEqual(winner.toString(), '1', 'Wrong winning slate');
       assert.strictEqual(status.toString(), ContestStatus.Finalized, 'Not finalized');
 
+      // Check the gas usage for finalization
+      const { gasUsed } = receipt.receipt;
+      const gasThreshold = 4000000;
+      // console.log('GAS USED', gasUsed);
+      assert(gasUsed < gasThreshold, `Gas exceeded acceptable threshold of ${gasThreshold}`);
+
       // The recommender (attacker) has spent at least 10,000,000 PAN
       const finalBalance = await token.balanceOf(recommender);
       const spent = balance.sub(finalBalance);
