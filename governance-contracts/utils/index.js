@@ -1,9 +1,9 @@
 const ethers = require('ethers');
 const ethUtils = require('ethereumjs-util');
-const BigNumber = require('bignumber.js');
 
 
-const { defaultAbiCoder: abiCoder } = ethers.utils;
+const { defaultAbiCoder: abiCoder, parseUnits, formatUnits } = ethers.utils;
+const { BN } = ethUtils;
 
 /**
  * ABI-encode a value to pass to a contract function
@@ -49,8 +49,7 @@ function zeroHash() {
   return ethUtils.zeros(32);
 }
 
-const ten = new BigNumber(10);
-const panDecimals = new BigNumber(18);
+const panDecimals = new BN(18);
 
 /**
  * Convert the amount to PAN base units (string)
@@ -58,9 +57,10 @@ const panDecimals = new BigNumber(18);
  * @return {string}
  */
 function toPanBase(tokens) {
-  const factor = ten.pow(panDecimals);
-  const baseUnits = factor.times(new BigNumber(tokens));
-  return baseUnits.toFixed();
+  // console.log('tokens', tokens);
+  const baseTokens = parseUnits(tokens.toString(), panDecimals.toString());
+  // console.log(`${tokens} -> ${baseTokens.toString()}`);
+  return baseTokens.toString();
 }
 
 /**
@@ -69,14 +69,14 @@ function toPanBase(tokens) {
  * @return {string}
  */
 function fromPanBase(baseValue) {
-  const base = new BigNumber(baseValue.toString());
-  const factor = ten.pow(panDecimals);
-  const tokens = base.div(factor);
-  return tokens.toFixed();
+  // console.log('baseValue', baseValue.toString());
+  const tokens = formatUnits(baseValue.toString(), panDecimals.toString());
+  // console.log(`${baseValue.toString()} -> ${tokens}`);
+  return tokens;
 }
 
 module.exports = {
-  BN: ethUtils.BN,
+  BN,
   abiEncode,
   asBytes,
   stripHexPrefix,

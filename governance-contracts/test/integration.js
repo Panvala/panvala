@@ -95,8 +95,8 @@ contract('integration', (accounts) => {
         const expectedRelease = new BN(tokenReleases.quarterly[nextEpoch.toString()]);
         // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          Math.round(tokens),
-          Math.round(utils.fromPanBase(expectedRelease)),
+          Math.floor(tokens),
+          Math.floor(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
@@ -187,8 +187,8 @@ contract('integration', (accounts) => {
         const expectedRelease = tokenReleases.daily[nextEpoch.toString()];
         // NOTE: should be accurate to the nearest token
         assert.strictEqual(
-          Math.round(tokens),
-          Math.round(utils.fromPanBase(expectedRelease)),
+          Math.floor(tokens),
+          Math.floor(utils.fromPanBase(expectedRelease)),
           `Wrong release for epoch ${epochNumber.toString()}`,
         );
         // console.log(`requesting ${tokens} tokens`);
