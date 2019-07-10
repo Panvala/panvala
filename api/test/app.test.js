@@ -366,6 +366,15 @@ describe('POST /api/ballots', () => {
     ['epochNumber', 'salt', 'signature'].forEach(property => {
       expect(created).toHaveProperty(property);
     });
+
+    // Each VoteChoice should have the given fields
+    const voteFields = ['firstChoice', 'secondChoice', 'resource'];
+    created.choices.forEach(choice => {
+      console.log('choice', choice);
+      voteFields.forEach(property => {
+        expect(choice).toHaveProperty(property);
+      });
+    });
   });
 
   test('it should return a 400 if the provided epochNumber && voterAddress already exist', async () => {
@@ -471,7 +480,18 @@ describe('POST /api/ballots', () => {
     });
 
     describe('ballot choices', () => {
-      const choiceFields = ['firstChoice', 'secondChoice'];
+      const choiceFields = ['firstChoice', 'secondChoice', 'resource'];
+      const choiceNumberFields = ['firstChoice', 'secondChoice'];
+
+      test('it should reject choices not keyed by address', async () => {
+        const grantChoice = data.ballot.choices[grantResource];
+        data.ballot.choices[0] = grantChoice;
+
+        const result = await request(app)
+          .post(route)
+          .send(data);
+        expect(result.status).toBe(400);
+      });
 
       // missing
       test.each(choiceFields)(
@@ -497,7 +517,7 @@ describe('POST /api/ballots', () => {
       );
 
       // not an integer
-      test.each(choiceFields)(
+      test.each(choiceNumberFields)(
         'it should return a 400 if any of the votes has a `%s` that does not parse as an integer',
         async field => {
           data.ballot.choices[grantResource][field] = 'not a number';
@@ -508,7 +528,7 @@ describe('POST /api/ballots', () => {
         }
       );
 
-      test.each(choiceFields)(
+      test.each(choiceNumberFields)(
         'it should return a 400 if any of the votes has a `%s` that parses as a float',
         async field => {
           data.ballot.choices[grantResource][field] = 0.3;

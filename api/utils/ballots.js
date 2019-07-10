@@ -7,64 +7,7 @@ const validBN = {
   },
 };
 
-/**
- * Ballot data received in a POST request
- {
-   ballot: {
-     epochNumber: Number,
-     choices: {
-       0: { firstChoice: String, secondChoice: String },
-       1: { firstChoice: String, secondChoice: String },
-     },
-     salt: String (BigNumber),
-     voterAddress: String,
-   }
-   signature: String,
- }
- *
- */
-const ballotSchema = {
-  // ballot data
-  'ballot.epochNumber': {
-    in: ['body'],
-    ...validBN,
-  },
-  'ballot.salt': {
-    in: ['body'],
-    ...validBN,
-  },
-  'ballot.voterAddress': {
-    in: ['body'],
-    ...nonEmptyString,
-    custom: {
-      options: isEthereumAddress,
-    },
-  },
-  'ballot.choices': {
-    in: ['body'],
-    exists: true,
-    custom: {
-      options: isObject,
-    },
-  },
-
-  // vote choices
-  'ballot.choices.*.firstChoice': {
-    in: ['body'],
-    isNull: false,
-    ...validBN,
-  },
-  'ballot.choices.*.secondChoice': {
-    in: ['body'],
-    ...validBN,
-  },
-
-  // signature of the ballot data
-  signature: {
-    in: ['body'],
-    ...nonEmptyString,
-  },
-};
+// NOTE: Ballot data received in a POST request is validated by schemas/ballot.json
 
 /**
  * Ballot data to be fed to the ORM
@@ -78,6 +21,7 @@ const ballotSchema = {
      {
        firstChoice: String,
        secondChoice: String,
+       resource: String, // address
      }
    ],
  }
@@ -116,6 +60,13 @@ const ballotInsertSchema = {
     in: ['body'],
     ...nonEmptyString,
   },
+  'voteChoices.*.resource': {
+    in: ['body'],
+    ...nonEmptyString,
+    custom: {
+      options: isEthereumAddress,
+    },
+  },
 
   // signature of the ballot data
   signature: {
@@ -125,6 +76,5 @@ const ballotInsertSchema = {
 };
 
 module.exports = {
-  ballotSchema,
   ballotInsertSchema,
 };

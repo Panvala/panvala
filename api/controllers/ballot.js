@@ -81,8 +81,8 @@ module.exports = {
       voterDelegate = await gatekeeper.functions.delegate(voterAddress);
     }
 
-    const contests = Object.keys(choices);
-    contests.forEach(resource => {
+    const resources = Object.keys(choices);
+    resources.forEach(resource => {
       // Regenerate commit message
       const message = voting.generateCommitMessage(commitHash, choices[resource], salt);
       // Recover address from signed message
@@ -106,7 +106,11 @@ module.exports = {
       }
     });
     // Need to use capital `VoteChoices` for creation
-    const VoteChoices = contests.map(contest => choices[contest]);
+    // Add the appropriate resource as a field to the choice
+    const VoteChoices = resources.map(resource => {
+      const choice = { resource, ...choices[resource] };
+      return choice;
+    });
 
     // Pass along the transformed data
     req.body = {
