@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
           notEmpty: true,
         },
       },
+      resource: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true,
+        },
+      },
     },
     {}
   );
