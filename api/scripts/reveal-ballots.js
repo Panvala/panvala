@@ -15,14 +15,13 @@ async function getBallots(epochNumber) {
   return data;
 }
 
-function encode(choices, tc) {
+function encode(choices) {
   const resources = [];
   const firstChoices = [];
   const secondChoices = [];
 
   choices.forEach(choice => {
-    const cat = tc.address; // NOTE: THIS IS A HACK. ONLY SUPPORTS 1 CATEGORY (GRANT PROPOSALS)
-    resources.push(cat);
+    resources.push(choice.resource);
     firstChoices.push(choice.firstChoice);
     secondChoices.push(choice.secondChoice);
   });
@@ -30,15 +29,40 @@ function encode(choices, tc) {
   return voting.encodeBallot(resources, firstChoices, secondChoices);
 }
 
+function parseArgs() {
+  const argv = process.argv;
+
+  const parsed = {};
+  // node reveal-ballots.js [EPOCH]
+  if (argv.length === 2) {
+    // default, use current epoch number - 1
+    parsed.targetEpoch = 'current';
+  } else if (argv.length === 3) {
+    const [, , rest] = argv;
+    parsed.targetEpoch = rest[0];
+  } else {
+    console.log('Usage: reveal-ballots.js [EPOCH]');
+    process.exit(0);
+  }
+
+  // console.log(parsed);
+  return parsed;
+}
+
 async function run() {
-  const { provider, gatekeeper: ROGatekeeper, tokenCapacitor } = getContracts();
+  const { targetEpoch } = parseArgs();
+
+  const { provider, gatekeeper: ROGatekeeper } = getContracts();
   const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
   const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
   const gatekeeper = ROGatekeeper.connect(wallet);
   console.log('gatekeeper:', gatekeeper.address);
 
-  const epochNumber = (await gatekeeper.functions.currentEpochNumber()).toString();
-  console.log('epochNumber:', epochNumber);
+  // If the user specified an epoch, use it. Otherwise, use the one before the current one
+  const currentEpoch = await gatekeeper.functions.currentEpochNumber();
+  const epochNumber = targetEpoch === 'current' ? currentEpoch.sub(1).toString() : targetEpoch;
+  console.log('Current epoch:', currentEpoch.toString());
+  console.log('Revealing for epoch:', epochNumber);
 
   // read ballots from the database
   const ballots = await getBallots(epochNumber);
@@ -83,7 +107,7 @@ async function run() {
     console.log('did reveal? ', data.didReveal);
     voters.push(data.voterAddress);
 
-    const encodedBallot = encode(data.VoteChoices, tokenCapacitor);
+    const encodedBallot = encode(data.VoteChoices);
     encodedBallots.push(encodedBallot);
 
     salts.push(data.salt);
@@ -110,9 +134,11 @@ async function run() {
       process.exit(0);
     } catch (error) {
       console.error('Error', error);
-      // const a = JSON.parse(error.responseText);
+      const a = JSON.parse(error.responseText);
       // console.log(a);
-      // console.error(a.error.message);
+
+      console.log('');
+      console.log(`Problem revealing ballots -- ${a.error.message}`);
       process.exit(1);
     }
   } catch (error) {
