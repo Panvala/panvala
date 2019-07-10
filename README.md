@@ -9,6 +9,20 @@ Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.
 
 ## Release Notes
 
+### 0.5.0
+
+The 0.5.0 release is a large release focused on getting our contracts in an auditable state. While there are quite a few additional features, the focus has the system's contracts and their security.
+
+- Governance slates are now available and users can modify the system's parameters
+- Token holders are now able to link hot an cold wallets in order to ensure that voting tokens are kept secure. This is accessible at the /wallet route for now, but will be available elsewhere throughout the user's journey in the near future.
+- New logic has been added to handle various ballot edge cases
+- Staked tokens on losing slates are now donated to the platforms token capacitor to fund teams doing the work that makes Ethereum safer.
+- Incumbants are now tracked in the front-end, to help Panvala token holders identify the parties who are currently responsible for selecting proposals to support
+- The system's solution for contract upgradability via decentralized governance has been implemented  (see whitepaper for more details)
+- The token capacitor's exponential decay has been implemented, including how this decay changes when tokens are donated (again, see whitepaper for more details)
+- Many bug fixes and UI improvements
+- More details in changelog
+
 ### 0.4.0
 
 - Grant recipients can now retrieve their tokens from the token capacitor
