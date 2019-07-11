@@ -1,6 +1,8 @@
 export interface IChoices {
-  firstChoice: string;
-  secondChoice: string;
+  [resource: string]: {
+    firstChoice: string;
+    secondChoice: string;
+  }
 }
 
 export interface ISubmitBallot {

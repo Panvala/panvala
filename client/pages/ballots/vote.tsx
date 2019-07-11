@@ -40,11 +40,16 @@ const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
 `;
 
+type ISectionProps = {
+  title: string;
+  slates: ISlate[];
+};
+
 const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   // get contexts
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
   const {
-    contracts: { token, gatekeeper, tokenCapacitor },
+    contracts: { token, gatekeeper, tokenCapacitor, parameterStore },
     account,
     panBalance,
     gkAllowance,
@@ -53,34 +58,69 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   }: IEthereumContext = React.useContext(EthereumContext);
 
   // component state
-  // choice selector
-  const [choices, setChoice]: [IChoices, any] = React.useState({
-    firstChoice: '',
-    secondChoice: '',
-  });
+  // choice selector - at the start, the user has not made any choices
+  const [choices, setChoice]: [IChoices, any] = React.useState({});
+
   // generate random salt on-load
   const [salt]: [string, any] = React.useState(randomSalt().toString());
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
 
+  // (GRANT | GOVERNANCE) => [slates]
+  const availableSlates = {};
+  slates.forEach(s => {
+    if (typeof availableSlates[s.category] === 'undefined') {
+      availableSlates[s.category] = [s];
+    } else {
+      availableSlates[s.category].push(s);
+    }
+  });
+
+  const [grantSlates] = React.useState(availableSlates['GRANT'] || []);
+  const [governanceSlates] = React.useState(availableSlates['GOVERNANCE'] || []);
+
+  // Temp: log the choices
+  React.useEffect(() => {
+    console.log('choices', choices);
+  }, [choices]);
+
+
   /**
    * Click handler for choosing which rank (first/second) a slate has
+   * @param category the category to set for: GRANT | GOVERNANCE
    * @param rank key to specify which choice to set
    * @param slateID id of slate choice
    */
-  function handleSetChoice(rank: string, slateID: string) {
+  function handleSetChoice(category: 'GRANT' | 'GOVERNANCE', rank: string, slateID: string) {
+    const currentChoice = choices[category] || {};
+
     if (
-      (rank === 'firstChoice' && choices.secondChoice === slateID) ||
-      (rank === 'secondChoice' && choices.firstChoice === slateID)
+      (rank === 'firstChoice' && currentChoice.secondChoice === slateID) ||
+      (rank === 'secondChoice' && currentChoice.firstChoice === slateID)
     ) {
       // user chose a different rank for a slate
-      setChoice({ [rank]: slateID });
+      setChoice({
+        ...choices,
+        [category]: { [rank]: slateID },
+      });
     } else {
       // user chose a unique rank for a slate
       setChoice({
         ...choices,
-        [rank]: slateID,
+        [category]: {
+          ...currentChoice,
+          [rank]: slateID,
+        },
       });
+    }
+  }
+
+  // TODO: move this somewhere better
+  function categoryToResource(category: string): string {
+    if (category === 'GRANT') {
+        return tokenCapacitor.address;
+    } else {
+        return parameterStore.address;
     }
   }
 
@@ -88,18 +128,31 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
    * Click handler for submitting/committing a vote
    */
   async function handleSubmitVote() {
-    // await gatekeeper.functions.depositVoteTokens(panBalance);
-    // return;
-    // enforce both first and second choices
-    if (choices.firstChoice === '' || typeof choices.firstChoice === 'undefined') {
-      toast.error('Must select a first choice');
-      return;
-    }
+    // enforce both first and second choices for each category
+    Object.keys(choices).forEach(category => {
+      const contest = choices[category];
+      if (contest.firstChoice === '' || typeof contest.firstChoice === 'undefined') {
+        toast.error(`Must select a first choice for ${category}`);
+        return;
+      }
 
-    if (choices.secondChoice === '' || typeof choices.secondChoice === 'undefined') {
-      toast.error('Must select a second choice');
-      return;
-    }
+      if (contest.secondChoice === '' || typeof contest.secondChoice === 'undefined') {
+        toast.error(`Must select a second choice for ${category}`);
+        return;
+      }
+    });
+
+    // Put choices in the format to submit
+    const submitChoices = {};
+    Object.keys(choices).forEach(category => {
+        const choice = choices[category];
+        const resource = categoryToResource(category);
+        submitChoices[resource] = {
+            firstChoice: utils.bigNumberify(choice.firstChoice).toString(),
+            secondChoice: utils.bigNumberify(choice.secondChoice).toString(),
+        };
+    });
+    console.log('choices to submit', submitChoices);
 
     if (account && !isEmpty(token)) {
       let numTokens = await getMaxVotingRights(
@@ -124,12 +177,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
 
       const ballot: ISubmitBallot = {
         epochNumber: currentBallot.epochNumber.toString(),
-        choices: {
-          [tokenCapacitor.address]: {
-            firstChoice: utils.bigNumberify(choices.firstChoice).toString(),
-            secondChoice: utils.bigNumberify(choices.secondChoice).toString(),
-          },
-        },
+        choices: submitChoices,
         salt,
         voterAddress: tokenHolder,
         ...(tokenHolder !== account && { delegate: account }),
@@ -186,6 +234,49 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
     }
   }
 
+
+  const BallotSection: React.FunctionComponent<ISectionProps> = ({ title, slates }) => {
+    const subtitle = (slate: ISlate) => {
+      if (slate.category === 'GRANT') {
+        return slate.proposals ? `${slate.proposals.length} Grants included` : '';
+      }
+      return '';
+    };
+
+    return (
+      <div className="pa4">
+        <SectionLabel>{title}</SectionLabel>
+        <Label required>{'Select your first and second choice slate'}</Label>
+        <div className="flex flex-wrap mt3">
+          {slates.length > 0
+            ? slates
+                .filter(s => s.status === SlateStatus.Staked)
+                .map((slate: ISlate) => (
+                  <Card
+                    key={slate.id}
+                    subtitle={subtitle(slate)}
+                    description={slate.description}
+                    category={slate.category}
+                    status={convertEVMSlateStatus(slate.status)}
+                    choices={choices}
+                    address={slate.recommender}
+                    onSetChoice={handleSetChoice}
+                    proposals={slate.proposals}
+                    slateID={slate.id.toString()}
+                    asPath={'/ballots/vote'}
+                    type={SLATE}
+                    incumbent={slate.incumbent}
+                    recommender={slate.organization}
+                    verifiedRecommender={slate.verifiedRecommender}
+                  />
+                ))
+            : null}
+        </div>
+      </div>
+    );
+  };
+
+
   return (
     <div>
       <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
@@ -210,35 +301,11 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
       </div>
       <CenteredTitle title="Submit Vote" />
       <CenteredWrapper>
-        <div className="pa4">
-          <SectionLabel>{'GRANTS'}</SectionLabel>
-          <Label required>{'Select your first and second choice slate'}</Label>
-          <div className="flex flex-wrap mt3">
-            {slates.length > 0
-              ? slates
-                  .filter(s => s.status === SlateStatus.Staked)
-                  .map((slate: ISlate) => (
-                    <Card
-                      key={slate.id}
-                      subtitle={slate.proposals ? slate.proposals.length + ' Grants Included' : ''}
-                      description={slate.description}
-                      category={slate.category}
-                      status={convertEVMSlateStatus(slate.status)}
-                      choices={choices}
-                      address={slate.recommender}
-                      onSetChoice={handleSetChoice}
-                      proposals={slate.proposals}
-                      slateID={slate.id.toString()}
-                      asPath={'/ballots/vote'}
-                      type={SLATE}
-                      incumbent={slate.incumbent}
-                      recommender={slate.organization}
-                      verifiedRecommender={slate.verifiedRecommender}
-                    />
-                  ))
-              : null}
-          </div>
-        </div>
+        {grantSlates.length > 0 ? <BallotSection title={'GRANTS'} slates={grantSlates} /> : null}
+
+        {governanceSlates.length > 0 ? (
+          <BallotSection title={'GOVERNANCE'} slates={governanceSlates} />
+        ) : null}
 
         <Separator />
         <Actions

@@ -141,6 +141,7 @@ const ChoiceButton: any = styled(Button)`
   margin-right: 1rem;
 `;
 
+// TODO: split this into multiple components
 const Card: React.FunctionComponent<ICardProps> = props => {
   const [animated, setAnimated] = React.useState(false);
   React.useEffect(() => {
@@ -148,6 +149,9 @@ const Card: React.FunctionComponent<ICardProps> = props => {
       setAnimated(true);
     }, 100);
   }, []);
+
+  const category = props.category.toUpperCase();
+  const cardChoices = props.choices ? props.choices[category] : null;
 
   return (
     <Wrapper
@@ -158,7 +162,7 @@ const Card: React.FunctionComponent<ICardProps> = props => {
     >
       <Flex>
         {/* GRANT | PENDING TOKENS */}
-        <Tag status={''}>{props.category.toUpperCase()}</Tag>
+        <Tag status={''}>{category}</Tag>
         {props.status && <Tag status={props.status}>{props.status}</Tag>}
       </Flex>
 
@@ -203,24 +207,28 @@ const Card: React.FunctionComponent<ICardProps> = props => {
           </RouterLink>
           <Separator />
 
-          <CardProposals>Grant Proposals:</CardProposals>
-          {props.proposals &&
-            props.proposals.length > 0 &&
-            props.proposals.map(p => <CardProposal key={p.id}>{p.title}</CardProposal>)}
+          {category === 'GRANT' ? (
+            <>
+              <CardProposals>Grant Proposals:</CardProposals>
+              {props.proposals &&
+                props.proposals.length > 0 &&
+                props.proposals.map(p => <CardProposal key={p.id}>{p.title}</CardProposal>)}
+            </>
+          ) : null}
 
           <Separator />
           <CardDescription>{'Select an option'}</CardDescription>
           <ChoiceOptions>
             <ChoiceButton
-              onClick={() => props.onSetChoice('firstChoice', props.slateID)}
-              firstChoice={props.choices.firstChoice === props.slateID}
+              onClick={() => props.onSetChoice(category, 'firstChoice', props.slateID)}
+              firstChoice={cardChoices && cardChoices.firstChoice === props.slateID}
               data-testid="first-choice"
             >
               {'1st Choice'}
             </ChoiceButton>
             <ChoiceButton
-              onClick={() => props.onSetChoice('secondChoice', props.slateID)}
-              secondChoice={props.choices.secondChoice === props.slateID}
+              onClick={() => props.onSetChoice(category, 'secondChoice', props.slateID)}
+              secondChoice={cardChoices && cardChoices.secondChoice === props.slateID}
               data-testid="second-choice"
             >
               {'2nd Choice'}
