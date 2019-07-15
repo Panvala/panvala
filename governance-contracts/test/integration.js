@@ -931,7 +931,7 @@ contract('integration', (accounts) => {
       snapshotID = await utils.evm.snapshot();
     });
 
-    it.only('deployment - should allow withdrawal of the correct number of tokens on Nov 1', async () => {
+    it('deployment - should allow withdrawal of the correct number of tokens on Nov 1', async () => {
       const initialTokens = 49906303;
       // const initialBalance = new BN(toPanBase(initialTokens));
       // const scale = new BN(1e12);
@@ -1006,10 +1006,10 @@ contract('integration', (accounts) => {
 
       const epochNumber = await gatekeeper.currentEpochNumber();
 
-      // // withdraw the right amount after epoch end
-      // // initial unlocked + decay from lockedAtLaunch
-      // const nextEpochStart = await gatekeeper.epochStart(epochNumber.addn(1));
-      // const projectedUnlocked = await capacitor.projectedUnlockedBalance(nextEpochStart);
+      // withdraw the right amount after epoch end
+      // initial unlocked + decay from lockedAtLaunch
+      const nextEpochStart = await gatekeeper.epochStart(epochNumber.addn(1));
+      const expectedProjectedUnlocked = await capacitor.projectedUnlockedBalance(nextEpochStart);
       // printTokens(projectedUnlocked, 'projected unlocked');
 
       // // check that our calculation matches the projection
@@ -1022,11 +1022,11 @@ contract('integration', (accounts) => {
       // printTokens(lockedAtNextEpoch, 'locked at next epoch');
       // printTokens(releasedAfterLaunch, 'released after launch');
       // printTokens(unlocked, 'calculated unlocked');
-      // assert.strictEqual(
-      //   unlocked.toString(),
-      //   projectedUnlocked.toString(),
-      //   'Wrong projected unlocked',
-      // );
+      assert.strictEqual(
+        projectedUnlocked.toString(),
+        expectedProjectedUnlocked.toString(),
+        'Wrong projected unlocked',
+      );
 
       // Run the epoch: should be able to withdraw more than the amount released after launch
       const GRANT = await getResource(gatekeeper, 'GRANT');
