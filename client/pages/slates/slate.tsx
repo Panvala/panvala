@@ -85,7 +85,7 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
             {slate.description}
           </Box>
 
-          {slate.proposals.length > 0 ? (
+          {slate.proposals && slate.proposals.length > 0 ? (
             <>
               <SectionLabel>{'GRANTS'}</SectionLabel>
               <SlateProposals>
