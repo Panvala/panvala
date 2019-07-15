@@ -190,7 +190,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
         // 'Commit hash, first choice, second choice, salt'
         const message = generateCommitMessage(
           commitHash,
-          ballot.choices[tokenCapacitor.address],
+          ballot.choices,
           salt
         );
         // sign mesage with metamask signer

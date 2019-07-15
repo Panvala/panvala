@@ -2,8 +2,10 @@ import { utils } from 'ethers';
 const { solidityKeccak256, randomBytes, bigNumberify } = utils;
 
 interface IChoices {
-  firstChoice: utils.BigNumber;
-  secondChoice: utils.BigNumber;
+  [resource: string]: {
+    firstChoice: string;
+    secondChoice: string;
+  }
 }
 
 const SlateCategories = {
@@ -19,6 +21,11 @@ const ContestStatus = {
   Finalized: '4',
 };
 
+
+function sortedResources(choices: IChoices): Array<string> {
+    return Object.keys(choices).sort();
+}
+
 /**
  * generateCommitHash
  *
@@ -26,18 +33,19 @@ const ContestStatus = {
  * by the salt, each element as a full 32-byte word. Hash the result.
  *
  * keccak256(resource + firstChoice + secondChoice ... + salt)
- * @param {*} votes { resource: { firstChoice, secondChoice }}
+ * @param {IChoices} votes { resource: { firstChoice, secondChoice }}
  * @param {ethers.BN} salt Random 256-bit number
  */
-function generateCommitHash(votes: any, salt: utils.BigNumber): string {
+function generateCommitHash(votes: IChoices, salt: utils.BigNumber): string {
   const types: string[] = [];
   const values: any[] = [];
 
-  Object.keys(votes).forEach((resource: string) => {
-    const { firstChoice, secondChoice }: IChoices = votes[resource];
+  sortedResources(votes).forEach((resource: string) => {
+    const { firstChoice, secondChoice } = votes[resource];
     types.push('address', 'uint', 'uint');
     values.push(resource, firstChoice, secondChoice);
   });
+
   types.push('uint');
   values.push(salt);
 
@@ -58,14 +66,19 @@ function randomSalt(): utils.BigNumber {
 /**
  * generateCommitMessage
  *
- * @param {string} commitHash keccak256(category + firstChoice + secondChoice ... + salt)
- * @param {*} ballotChoices { firstChoice, secondChoice }
+ * @param {string} commitHash keccak256(resource + firstChoice + secondChoice ... + salt)
+ * @param {IChoices} ballotChoices { resource: { firstChoice, secondChoice } }
  * @param {string} salt Random 256-bit number
  */
-function generateCommitMessage(commitHash: string, ballotChoices: any, salt: string) {
-  return `Commit hash: ${commitHash}. First choice: ${ballotChoices.firstChoice}. Second choice: ${
-    ballotChoices.secondChoice
-  }. Salt: ${salt}`;
+function generateCommitMessage(commitHash: string, ballotChoices: IChoices, salt: string) {
+  const choiceStrings = sortedResources(ballotChoices).map((resource: string) => {
+    const { firstChoice, secondChoice } = ballotChoices[resource];
+    return `    Resource: ${resource}. First choice: ${firstChoice}. Second choice: ${secondChoice}`;
+  });
+  const choices = choiceStrings.join('\n');
+
+  const msg = [`Commit hash: ${commitHash}`, `Choices:\n${choices}`, `Salt: ${salt}`].join('\n');
+  return msg;
 }
 
 /**

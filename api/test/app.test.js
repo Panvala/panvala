@@ -315,7 +315,7 @@ describe('POST /api/ballots', () => {
   let data, wallet;
   let route = '/api/ballots';
   const grantResource = '0xEe6069F52bC7111c218280a232671a627b1d3e1b';
-  // const governanceResource = '0xC42F9084ee2C6a2295226cAf86111Ce71DFFC139';
+  const governanceResource = '0xC42F9084ee2C6a2295226cAf86111Ce71DFFC139';
 
   beforeAll(() => {
     const mnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat';
@@ -329,14 +329,14 @@ describe('POST /api/ballots', () => {
         firstChoice: '0',
         secondChoice: '1',
       },
-      // [governanceResource]: {
-      //   firstChoice: '1',
-      //   secondChoice: '2',
-      // },
+      [governanceResource]: {
+        firstChoice: '2',
+        secondChoice: '3',
+      },
     };
     // NOTE: this might be problematic for testing specific fields
     const commitHash = voting.generateCommitHash(choices, salt);
-    const commitMessage = voting.generateCommitMessage(commitHash, choices[grantResource], salt);
+    const commitMessage = voting.generateCommitMessage(commitHash, choices, salt);
     const signature = await wallet.signMessage(commitMessage);
     // Set up the ballot data
     data = {
@@ -356,7 +356,7 @@ describe('POST /api/ballots', () => {
       .post('/api/ballots')
       .send(data);
 
-    // console.log('RESULT', result.body);
+    console.log('RESULT', result.body);
     expect(result.status).toEqual(200);
 
     const created = result.body;

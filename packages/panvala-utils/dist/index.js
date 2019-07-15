@@ -13,6 +13,9 @@ const ContestStatus = {
     RunoffPending: '3',
     Finalized: '4',
 };
+function sortedResources(choices) {
+    return Object.keys(choices).sort();
+}
 /**
  * generateCommitHash
  *
@@ -20,13 +23,13 @@ const ContestStatus = {
  * by the salt, each element as a full 32-byte word. Hash the result.
  *
  * keccak256(resource + firstChoice + secondChoice ... + salt)
- * @param {*} votes { resource: { firstChoice, secondChoice }}
+ * @param {IChoices} votes { resource: { firstChoice, secondChoice }}
  * @param {ethers.BN} salt Random 256-bit number
  */
 function generateCommitHash(votes, salt) {
     const types = [];
     const values = [];
-    Object.keys(votes).forEach((resource) => {
+    sortedResources(votes).forEach((resource) => {
         const { firstChoice, secondChoice } = votes[resource];
         types.push('address', 'uint', 'uint');
         values.push(resource, firstChoice, secondChoice);
@@ -48,12 +51,18 @@ function randomSalt() {
 /**
  * generateCommitMessage
  *
- * @param {string} commitHash keccak256(category + firstChoice + secondChoice ... + salt)
- * @param {*} ballotChoices { firstChoice, secondChoice }
+ * @param {string} commitHash keccak256(resource + firstChoice + secondChoice ... + salt)
+ * @param {IChoices} ballotChoices { resource: { firstChoice, secondChoice } }
  * @param {string} salt Random 256-bit number
  */
 function generateCommitMessage(commitHash, ballotChoices, salt) {
-    return `Commit hash: ${commitHash}. First choice: ${ballotChoices.firstChoice}. Second choice: ${ballotChoices.secondChoice}. Salt: ${salt}`;
+    const choiceStrings = sortedResources(ballotChoices).map((resource) => {
+        const { firstChoice, secondChoice } = ballotChoices[resource];
+        return `    Resource: ${resource}. First choice: ${firstChoice}. Second choice: ${secondChoice}`;
+    });
+    const choices = choiceStrings.join('\n');
+    const msg = [`Commit hash: ${commitHash}`, `Choices:\n${choices}`, `Salt: ${salt}`].join('\n');
+    return msg;
 }
 /**
  * Encode a ballot to be submitted to Gatekeeper.revealManyBallots()
@@ -107,5 +116,6 @@ module.exports = {
     encodeBallot,
     SlateCategories,
     ContestStatus,
+    slateSubmissionDeadline,
     ballotDates,
 };

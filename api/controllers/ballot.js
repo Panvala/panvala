@@ -81,33 +81,31 @@ module.exports = {
       voterDelegate = await gatekeeper.functions.delegate(voterAddress);
     }
 
-    const resources = Object.keys(choices);
-    resources.forEach(resource => {
-      // Regenerate commit message
-      const message = voting.generateCommitMessage(commitHash, choices[resource], salt);
-      // Recover address from signed message
-      const recoveredAddress = utils.verifyMessage(message, signature);
-      console.log('recovered:', recoveredAddress);
+    // Regenerate commit message
+    const message = voting.generateCommitMessage(commitHash, choices, salt);
+    // Recover address from signed message
+    const recoveredAddress = utils.verifyMessage(message, signature);
+    console.log('recovered:', recoveredAddress);
 
-      // Validate the signature
-      if (
-        recoveredAddress !== voterAddress &&
-        recoveredAddress !== delegate &&
-        recoveredAddress !== voterDelegate
-      ) {
-        return res.status(400).json({
-          msg: 'Invalid signature. Recovered signature did not match signer of the commit message.',
-          errors: [
-            new Error(
-              'Invalid signature. Recovered signature did not match signer of the commit message.'
-            ),
-          ],
-        });
-      }
-    });
+    // Validate the signature
+    if (
+      recoveredAddress !== voterAddress &&
+      recoveredAddress !== delegate &&
+      recoveredAddress !== voterDelegate
+    ) {
+      return res.status(400).json({
+        msg: 'Invalid signature. Recovered signature did not match signer of the commit message.',
+        errors: [
+          new Error(
+            'Invalid signature. Recovered signature did not match signer of the commit message.'
+          ),
+        ],
+      });
+    }
+
     // Need to use capital `VoteChoices` for creation
     // Add the appropriate resource as a field to the choice
-    const VoteChoices = resources.map(resource => {
+    const VoteChoices = Object.keys(choices).map(resource => {
       const choice = { resource, ...choices[resource] };
       return choice;
     });

@@ -88,7 +88,7 @@ const Slates: React.SFC = () => {
                 <RouterLink href={`/slates/slate?id=${slate.id}`} as={`/slates/${slate.id}`}>
                   <Card
                     key={slate.id}
-                    subtitle={slate.proposals.length + ' Grants Included'}
+                    subtitle={slate.proposals && slate.proposals.length + ' Grants Included'}
                     description={slate.description}
                     category={slate.category}
                     status={convertEVMSlateStatus(slate.status)}
