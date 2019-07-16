@@ -43,7 +43,51 @@ const Separator = styled.div`
 type ISectionProps = {
   title: string;
   slates: ISlate[];
+  choices: IChoices;
+  onSetChoice: any;
 };
+
+const BallotSection: React.FunctionComponent<ISectionProps> = ({ title, slates, choices, onSetChoice }) => {
+  const subtitle = (slate: ISlate) => {
+    if (slate.category === 'GRANT') {
+      return slate.proposals ? `${slate.proposals.length} Grants included` : '';
+    }
+    return '';
+  };
+
+  return (
+    <div className="pa4">
+      <SectionLabel>{title}</SectionLabel>
+      <Label required>{'Select your first and second choice slate'}</Label>
+      <div className="flex flex-wrap mt3">
+        {slates.length > 0
+          ? slates
+              .filter(s => s.status === SlateStatus.Staked)
+              .map((slate: ISlate) => (
+                <Card
+                  key={slate.id}
+                  subtitle={subtitle(slate)}
+                  description={slate.description}
+                  category={slate.category}
+                  status={convertEVMSlateStatus(slate.status)}
+                  choices={choices}
+                  address={slate.recommender}
+                  onSetChoice={onSetChoice}
+                  proposals={slate.proposals}
+                  slateID={slate.id.toString()}
+                  asPath={'/ballots/vote'}
+                  type={SLATE}
+                  incumbent={slate.incumbent}
+                  recommender={slate.organization}
+                  verifiedRecommender={slate.verifiedRecommender}
+                />
+              ))
+          : null}
+      </div>
+    </div>
+  );
+};
+
 
 const Vote: React.FunctionComponent<IProps> = ({ router }) => {
   // get contexts
@@ -234,49 +278,6 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
     }
   }
 
-
-  const BallotSection: React.FunctionComponent<ISectionProps> = ({ title, slates }) => {
-    const subtitle = (slate: ISlate) => {
-      if (slate.category === 'GRANT') {
-        return slate.proposals ? `${slate.proposals.length} Grants included` : '';
-      }
-      return '';
-    };
-
-    return (
-      <div className="pa4">
-        <SectionLabel>{title}</SectionLabel>
-        <Label required>{'Select your first and second choice slate'}</Label>
-        <div className="flex flex-wrap mt3">
-          {slates.length > 0
-            ? slates
-                .filter(s => s.status === SlateStatus.Staked)
-                .map((slate: ISlate) => (
-                  <Card
-                    key={slate.id}
-                    subtitle={subtitle(slate)}
-                    description={slate.description}
-                    category={slate.category}
-                    status={convertEVMSlateStatus(slate.status)}
-                    choices={choices}
-                    address={slate.recommender}
-                    onSetChoice={handleSetChoice}
-                    proposals={slate.proposals}
-                    slateID={slate.id.toString()}
-                    asPath={'/ballots/vote'}
-                    type={SLATE}
-                    incumbent={slate.incumbent}
-                    recommender={slate.organization}
-                    verifiedRecommender={slate.verifiedRecommender}
-                  />
-                ))
-            : null}
-        </div>
-      </div>
-    );
-  };
-
-
   return (
     <div>
       <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
@@ -301,10 +302,22 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
       </div>
       <CenteredTitle title="Submit Vote" />
       <CenteredWrapper>
-        {grantSlates.length > 0 ? <BallotSection title={'GRANTS'} slates={grantSlates} /> : null}
+        {grantSlates.length > 0 ? (
+          <BallotSection
+            title={'GRANTS'}
+            slates={grantSlates}
+            choices={choices}
+            onSetChoice={handleSetChoice}
+          />
+        ) : null}
 
         {governanceSlates.length > 0 ? (
-          <BallotSection title={'GOVERNANCE'} slates={governanceSlates} />
+          <BallotSection
+            title={'GOVERNANCE'}
+            slates={governanceSlates}
+            choices={choices}
+            onSetChoice={handleSetChoice}
+          />
         ) : null}
 
         <Separator />

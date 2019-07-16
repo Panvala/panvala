@@ -5,6 +5,9 @@ const { getContracts } = require('../utils/eth');
 
 const mnemonic = process.env.MNEMONIC;
 
+/**
+ * @param {string} epochNumber
+ */
 async function getBallots(epochNumber) {
   const data = await SubmittedBallot.findAll({
     where: {
@@ -30,27 +33,15 @@ function encode(choices) {
 }
 
 function parseArgs() {
-  const argv = process.argv;
-
-  const parsed = {};
-  // node reveal-ballots.js [EPOCH]
-  if (argv.length === 2) {
-    // default, use current epoch number - 1
-    parsed.targetEpoch = 'current';
-  } else if (argv.length === 3) {
-    const [, , rest] = argv;
-    parsed.targetEpoch = rest[0];
-  } else {
-    console.log('Usage: reveal-ballots.js [EPOCH]');
+  // node reveal-ballots.js
+  if (process.argv.length !== 2) {
+    console.log('Usage: reveal-ballots.js');
     process.exit(0);
   }
-
-  // console.log(parsed);
-  return parsed;
 }
 
 async function run() {
-  const { targetEpoch } = parseArgs();
+  parseArgs();
 
   const { provider, gatekeeper: ROGatekeeper } = getContracts();
   const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
@@ -58,10 +49,8 @@ async function run() {
   const gatekeeper = ROGatekeeper.connect(wallet);
   console.log('gatekeeper:', gatekeeper.address);
 
-  // If the user specified an epoch, use it. Otherwise, use the one before the current one
-  const currentEpoch = await gatekeeper.functions.currentEpochNumber();
-  const epochNumber = targetEpoch === 'current' ? currentEpoch.sub(1).toString() : targetEpoch;
-  console.log('Current epoch:', currentEpoch.toString());
+  // Reveal for the current epoch
+  const epochNumber = (await gatekeeper.functions.currentEpochNumber()).toString();
   console.log('Revealing for epoch:', epochNumber);
 
   // read ballots from the database
@@ -70,7 +59,7 @@ async function run() {
 
   if (ballots.length === 0) {
     console.log(`No ballots for batch ${epochNumber}`);
-    process.exit();
+    process.exit(0);
   }
 
   // Filter out the ones that have already been revealed
