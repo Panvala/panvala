@@ -5,6 +5,7 @@ import Tag from './Tag';
 import { splitAddressHumanReadable } from '../utils/format';
 import Button from './Button';
 import Flex from './system/Flex';
+import Box from './system/Box';
 import { Separator } from './Separator';
 import { IChoices, IProposal } from '../interfaces';
 import RouterLink from './RouterLink';
@@ -16,17 +17,16 @@ const animatedCss = css`
   transform: translateY(0);
 `;
 
-const Wrapper = styled.div<{ isActive?: boolean; asPath?: string; animated: boolean }>`
-  width: 300px;
-  display: flex;
-  flex-direction: column;
+const CardBody = styled.div<{ isActive?: boolean; asPath?: string; animated: boolean }>`
+  display: inline-block;
+  min-width: 100%;
   padding: 1rem;
   overflow: hidden;
   border: ${({ isActive }) => (isActive ? '3px solid #59B6E6' : '2px solid ' + COLORS.grey5)};
   box-shadow: 0px 5px 5px ${COLORS.grey5};
-  margin-bottom: 1rem;
-  margin-right: 1rem;
+  margin: 0.5rem;
   max-height: 100%;
+  float: left;
   ${({ asPath }) => asPath && asPath.startsWith('/ballots') && 'height: 100%'};
   ${({ asPath }) => !asPath && 'cursor: pointer'};
 
@@ -44,13 +44,14 @@ const CardTitle = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-top: 1rem;
 `;
 const CardSubTitle = styled.div`
-  font-size: 1rem;
+  font-size: 0.85rem;
   margin-top: 0.5rem;
 `;
 const CardDescription = styled.div`
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   margin-top: 1rem;
   color: ${COLORS.grey3};
   display: -webkit-box;
@@ -58,6 +59,7 @@ const CardDescription = styled.div`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.25rem;
 `;
 
 const CardUser = styled.div`
@@ -121,6 +123,7 @@ interface ICardProps {
   // /slates/create/grant
   isActive?: boolean;
   type: string;
+  width?: any;
 }
 
 const ChoiceButton: any = styled(Button)`
@@ -154,89 +157,91 @@ const Card: React.FunctionComponent<ICardProps> = props => {
   const cardChoices = props.choices ? props.choices[category] : null;
 
   return (
-    <Wrapper
-      onClick={props.onClick}
-      isActive={props.isActive}
-      asPath={props.asPath}
-      animated={animated}
-    >
-      <Flex>
-        {/* GRANT | PENDING TOKENS */}
-        <Tag status={''}>{category}</Tag>
-        {props.status && <Tag status={props.status}>{props.status}</Tag>}
-      </Flex>
+    <Box display="inline-block" padding="0.5rem" verticalAlign="top" width={props.width}>
+      <CardBody
+        onClick={props.onClick}
+        isActive={props.isActive}
+        asPath={props.asPath}
+        animated={animated}
+      >
+        <Flex>
+          {/* GRANT | PENDING TOKENS */}
+          <Tag status={''}>{category}</Tag>
+          {props.status && <Tag status={props.status}>{props.status}</Tag>}
+        </Flex>
 
-      {props.type === SLATE && props.incumbent ? (
-        <Text my={2} fontSize={11} color="blue" fontWeight="bold">
-          {'INCUMBENT'}
-        </Text>
-      ) : (
-        props.type === SLATE &&
-        !props.verifiedRecommender && (
-          <Text my={2} fontSize={11} color="reds.dark" fontWeight="bold">
-            {'UNVERIFIED RECOMMENDER'}
+        {props.type === SLATE && props.incumbent ? (
+          <Text my={2} fontSize={11} color="blue" fontWeight="bold">
+            {'INCUMBENT'}
           </Text>
-        )
-      )}
+        ) : (
+          props.type === SLATE &&
+          !props.verifiedRecommender && (
+            <Text my={2} fontSize={11} color="reds.dark" fontWeight="bold">
+              {'UNVERIFIED RECOMMENDER'}
+            </Text>
+          )
+        )}
 
-      <CardTitle>
-        {props.address && props.verifiedRecommender && props.recommender
-          ? props.recommender
-          : props.address
-          ? splitAddressHumanReadable(props.address)
-          : props.title && props.title}
-      </CardTitle>
-      <CardSubTitle>{props.subtitle}</CardSubTitle>
-      <CardDescription>{props.description}</CardDescription>
+        <CardTitle>
+          {props.address && props.verifiedRecommender && props.recommender
+            ? props.recommender
+            : props.address
+            ? splitAddressHumanReadable(props.address)
+            : props.title && props.title}
+        </CardTitle>
+        <CardSubTitle>{props.subtitle}</CardSubTitle>
+        <CardDescription>{props.description}</CardDescription>
 
-      {props.address && ( // 0x D09C C3BC 67E4 294C 4A44 6D8E 4A29 34A9 2141 0ED7
-        <CardUser>
-          {props.recommender && <div>{props.recommender}</div>}
-          <CardAddress>{splitAddressHumanReadable(props.address)}</CardAddress>
-        </CardUser>
-      )}
+        {props.address && ( // 0x D09C C3BC 67E4 294C 4A44 6D8E 4A29 34A9 2141 0ED7
+          <CardUser>
+            {props.recommender && <div>{props.recommender}</div>}
+            <CardAddress>{splitAddressHumanReadable(props.address)}</CardAddress>
+          </CardUser>
+        )}
 
-      {props.choices && ( // renders in /ballots/vote
-        <>
-          <RouterLink
-            newTab
-            href={`/slates/slate?id=${props.slateID}`}
-            as={`/slates/${props.slateID}`}
-          >
-            <ViewSlateDetails>View slate details</ViewSlateDetails>
-          </RouterLink>
-          <Separator />
-
-          {category === 'GRANT' ? (
-            <>
-              <CardProposals>Grant Proposals:</CardProposals>
-              {props.proposals &&
-                props.proposals.length > 0 &&
-                props.proposals.map(p => <CardProposal key={p.id}>{p.title}</CardProposal>)}
-            </>
-          ) : null}
-
-          <Separator />
-          <CardDescription>{'Select an option'}</CardDescription>
-          <ChoiceOptions>
-            <ChoiceButton
-              onClick={() => props.onSetChoice(category, 'firstChoice', props.slateID)}
-              firstChoice={cardChoices && cardChoices.firstChoice === props.slateID}
-              data-testid="first-choice"
+        {props.choices && ( // renders in /ballots/vote
+          <>
+            <RouterLink
+              newTab
+              href={`/slates/slate?id=${props.slateID}`}
+              as={`/slates/${props.slateID}`}
             >
-              {'1st Choice'}
-            </ChoiceButton>
-            <ChoiceButton
-              onClick={() => props.onSetChoice(category, 'secondChoice', props.slateID)}
-              secondChoice={cardChoices && cardChoices.secondChoice === props.slateID}
-              data-testid="second-choice"
-            >
-              {'2nd Choice'}
-            </ChoiceButton>
-          </ChoiceOptions>
-        </>
-      )}
-    </Wrapper>
+              <ViewSlateDetails>View slate details</ViewSlateDetails>
+            </RouterLink>
+            <Separator />
+
+            {category === 'GRANT' ? (
+              <>
+                <CardProposals>Grant Proposals:</CardProposals>
+                {props.proposals &&
+                  props.proposals.length > 0 &&
+                  props.proposals.map(p => <CardProposal key={p.id}>{p.title}</CardProposal>)}
+              </>
+            ) : null}
+
+            <Separator />
+            <CardDescription>{'Select an option'}</CardDescription>
+            <ChoiceOptions>
+              <ChoiceButton
+                onClick={() => props.onSetChoice(category, 'firstChoice', props.slateID)}
+                firstChoice={cardChoices && cardChoices.firstChoice === props.slateID}
+                data-testid="first-choice"
+              >
+                {'1st Choice'}
+              </ChoiceButton>
+              <ChoiceButton
+                onClick={() => props.onSetChoice(category, 'secondChoice', props.slateID)}
+                secondChoice={cardChoices && cardChoices.secondChoice === props.slateID}
+                data-testid="second-choice"
+              >
+                {'2nd Choice'}
+              </ChoiceButton>
+            </ChoiceOptions>
+          </>
+        )}
+      </CardBody>
+    </Box>
   );
 };
 
