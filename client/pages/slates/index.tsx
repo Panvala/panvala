@@ -17,8 +17,6 @@ const VisibilityFilterContainer = styled.div`
   display: flex;
   margin-bottom: 2rem;
 `;
-const CardsWrapper = styled.div`
-`;
 
 const Slates: React.SFC = () => {
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
@@ -46,7 +44,7 @@ const Slates: React.SFC = () => {
   }, [slates, visibilityFilter]);
 
   return (
-    <div>
+    <>
       <Flex justifyBetween alignCenter wrap="true" mb={2}>
         <Flex alignCenter>
           <RouteTitle mr={3}>{'Slates'}</RouteTitle>
@@ -79,10 +77,14 @@ const Slates: React.SFC = () => {
         </Button>
       </VisibilityFilterContainer>
 
-      <CardsWrapper>
+      <>
         {visibleSlates && visibleSlates.length > 0
           ? visibleSlates.map((slate: ISlate) => (
-              <RouterLink href={`/slates/slate?id=${slate.id}`} as={`/slates/${slate.id}`} key={slate.id}>
+              <RouterLink
+                href={`/slates/slate?id=${slate.id}`}
+                as={`/slates/${slate.id}`}
+                key={slate.id}
+              >
                 <Card
                   key={slate.id}
                   subtitle={slate.proposals && slate.proposals.length + ' Grants Included'}
@@ -94,12 +96,13 @@ const Slates: React.SFC = () => {
                   verifiedRecommender={slate.verifiedRecommender}
                   type={SLATE}
                   incumbent={slate.incumbent}
+                  width={['100%', '50%', '50%', '50%', '33.33%']}
                 />
               </RouterLink>
             ))
           : null}
-      </CardsWrapper>
-    </div>
+      </>
+    </>
   );
 };
 

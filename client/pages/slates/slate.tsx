@@ -101,6 +101,7 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
                         description={proposal.summary}
                         category={`${proposal.category} PROPOSAL`}
                         type={PROPOSAL}
+                        width={['100%', '100%', '100%', '50%']}
                       />
                     </RouterLink>
                   </div>

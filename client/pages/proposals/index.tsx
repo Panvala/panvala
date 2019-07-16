@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { MainContext, IMainContext } from '../../components/MainProvider';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -10,14 +9,11 @@ import { IProposal } from '../../interfaces';
 import { PROPOSAL } from '../../utils/constants';
 import Flex from '../../components/system/Flex';
 
-const CardsWrapper = styled.div`
-`;
-
 const Proposals: React.SFC = () => {
   const { proposals, currentBallot }: IMainContext = React.useContext(MainContext);
 
   return (
-    <div>
+    <>
       <Flex justifyBetween alignCenter>
         <Flex alignCenter>
           <RouteTitle mr={3}>{'Proposals'}</RouteTitle>
@@ -28,7 +24,7 @@ const Proposals: React.SFC = () => {
         <Deadline ballot={currentBallot} route="proposals" />
       </Flex>
 
-      <CardsWrapper>
+      <>
         {proposals && proposals.length > 0
           ? proposals.map((proposal: IProposal) => (
               <RouterLink
@@ -42,12 +38,13 @@ const Proposals: React.SFC = () => {
                   description={proposal.summary}
                   category={`${proposal.category} PROPOSAL`}
                   type={PROPOSAL}
+                  width={['100%', '50%', '50%', '33.33%', '33.33%']}
                 />
               </RouterLink>
             ))
           : null}
-      </CardsWrapper>
-    </div>
+      </>
+    </>
   );
 };
 

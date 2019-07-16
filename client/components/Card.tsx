@@ -123,6 +123,7 @@ interface ICardProps {
   // /slates/create/grant
   isActive?: boolean;
   type: string;
+  width?: any;
 }
 
 const ChoiceButton: any = styled(Button)`
@@ -130,14 +131,14 @@ const ChoiceButton: any = styled(Button)`
     firstChoice
       ? BUTTON_COLORS.firstChoice
       : secondChoice
-        ? BUTTON_COLORS.secondChoice
-        : COLORS.white};
+      ? BUTTON_COLORS.secondChoice
+      : COLORS.white};
   color: ${({ firstChoice, secondChoice }: any) =>
     firstChoice
       ? BUTTON_COLORS.firstChoiceFg
       : secondChoice
-        ? BUTTON_COLORS.secondChoiceFg
-        : COLORS.text};
+      ? BUTTON_COLORS.secondChoiceFg
+      : COLORS.text};
   border: ${({ firstChoice, secondChoice }: any) =>
     firstChoice || secondChoice ? '2px solid transparent' : '2px solid ' + COLORS.grey5};
   margin-right: 1rem;
@@ -152,11 +153,7 @@ const Card: React.FunctionComponent<ICardProps> = props => {
   }, []);
 
   return (
-    <Box
-      display="inline-block"
-      padding="0.5rem"
-      verticalAlign="top"
-      width={['100%', '50%', '33.3%', '33.3%']}>
+    <Box display="inline-block" padding="0.5rem" verticalAlign="top" width={props.width}>
       <CardBody
         onClick={props.onClick}
         isActive={props.isActive}
@@ -173,19 +170,21 @@ const Card: React.FunctionComponent<ICardProps> = props => {
           <Text my={2} fontSize={11} color="blue" fontWeight="bold">
             {'INCUMBENT'}
           </Text>
-        ) : props.type === SLATE &&
-        !props.verifiedRecommender && (
+        ) : (
+          props.type === SLATE &&
+          !props.verifiedRecommender && (
             <Text my={2} fontSize={11} color="reds.dark" fontWeight="bold">
               {'UNVERIFIED RECOMMENDER'}
             </Text>
-          )}
+          )
+        )}
 
         <CardTitle>
           {props.address && props.verifiedRecommender && props.recommender
             ? props.recommender
             : props.address
-              ? splitAddressHumanReadable(props.address)
-              : props.title && props.title}
+            ? splitAddressHumanReadable(props.address)
+            : props.title && props.title}
         </CardTitle>
         <CardSubTitle>{props.subtitle}</CardSubTitle>
         <CardDescription>{props.description}</CardDescription>

@@ -234,6 +234,7 @@ const Vote: React.FunctionComponent<IProps> = ({ router }) => {
                       incumbent={slate.incumbent}
                       recommender={slate.organization}
                       verifiedRecommender={slate.verifiedRecommender}
+                      width={['100%', '100%', '50%', '50%', '33.33%']}
                     />
                   ))
               : null}
