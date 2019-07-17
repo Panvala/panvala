@@ -2,6 +2,7 @@ const ethers = require('ethers');
 const flatten = require('lodash/flatten');
 const ipfs = require('./ipfs');
 const { utils } = ethers;
+const { IpfsMetadata } = require('../models');
 
 const {
   contractABIs: { Gatekeeper, TokenCapacitor },
@@ -130,9 +131,26 @@ async function getNormalizedNotificationsByEvents(events, address) {
   const proposalIncludedInSlateNotifications = await Promise.all(
     proposalCreatedEvents.map(async event => {
       const { proposer, recipient, metadataHash } = event.values;
-      const proposalMetadata = await ipfs.get(utils.toUtf8String(metadataHash), {
-        json: true,
-      });
+      let proposalMetadata;
+      try {
+        const dbIpfsMetadata = await IpfsMetadata.findOne({
+          where: {
+            multihash: utils.toUtf8String(metadataHash),
+          },
+          raw: true,
+        });
+        proposalMetadata = dbIpfsMetadata.data;
+      } catch (error) {
+        console.log('Proposal metadata not found in db. Getting from ipfs..');
+        proposalMetadata = await ipfs.get(utils.toUtf8String(metadataHash), {
+          json: true,
+        });
+        // write to db since there's not a row already
+        await IpfsMetadata.create({
+          multihash: utils.toUtf8String(metadataHash),
+          data: proposalMetadata,
+        });
+      }
       return {
         ...notifications.PROPOSAL_INCLUDED_IN_SLATE,
         proposalID: proposalMetadata.id,

@@ -121,6 +121,7 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
       });
       slateMetadata = dbIpfsMetadata.data;
     } catch (error) {
+      console.log('Slate metadata not found in db. Getting from ipfs..');
       slateMetadata = await ipfs.get(metadataHash, { json: true });
       // write to db since there's not a row already
       await IpfsMetadata.create({

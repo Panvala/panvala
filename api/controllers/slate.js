@@ -35,30 +35,54 @@ module.exports = {
       });
     }
 
-    const data = req.body;
+    const { slateID, metadataHash: multihash, email, proposalInfo } = req.body;
+
+    if (proposalInfo.multihashes.length !== proposalInfo.metadata) {
+      // prettier-ignore
+      res.status(400).send('Proposal multihashes did not have the same length as proposal metadata');
+    }
 
     // this could be problematic
     // maybe we should move all `ipfs.add` logic to the api (for adding slate metadata, that would be here)
-    const slateMetadata = await ipfs.get(data.metadataHash, { json: true });
+    const slateMetadata = await ipfs.get(multihash, { json: true });
 
-    // write to db, but don't duplicate
-    IpfsMetadata.findOrCreate({
+    // write proposal metadatas to db, but don't duplicate
+    await Promise.all(
+      proposalInfo.metadata.map(async (proposalMetadata, index) => {
+        await IpfsMetadata.findOrCreate({
+          where: {
+            multihash: proposalInfo.multihashes[index],
+          },
+          defaults: {
+            multihash: proposalInfo.multihashes[index],
+            data: proposalMetadata,
+          },
+        });
+      })
+    );
+
+    // write slate metadata to db, but don't duplicate
+    await IpfsMetadata.findOrCreate({
       where: {
-        multihash: data.metadataHash,
+        multihash,
       },
       defaults: {
-        multihash: data.metadataHash,
+        multihash,
         data: slateMetadata,
       },
-    }).then(() => {
-      Slate.create(data)
-        .then(s => {
-          res.send(s);
-        })
-        .catch(err => {
-          console.error('ERROR', err);
-          res.status(400).send(`Improper slate format: ${err}`);
-        });
     });
+
+    Slate.create({
+      slateID,
+      metadataHash: multihash,
+      email,
+    })
+      .then(s => {
+        res.send(s);
+      })
+      .catch(err => {
+        console.error('ERROR', err);
+        res.status(400).send(`Improper slate format: ${err}`);
+      });
   },
 };
