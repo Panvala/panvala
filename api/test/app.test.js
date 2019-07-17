@@ -613,6 +613,10 @@ describe('POST /api/slates', () => {
       slateID: 1,
       metadataHash: 'QmRZxt2b1FVZPNqd8hsiykDL3TdBDeTSPX9Kv46HmX4Gx1',
       email: 'jc@example.com',
+      proposalInfo: {
+        multihashes: [],
+        metadata: [],
+      },
     };
 
     // Allow us to use the same slateID each time
@@ -624,8 +628,8 @@ describe('POST /api/slates', () => {
       .post(route)
       .send(data);
 
-    // console.log('RESULT', result.body);
-    expect(result.status).toEqual(200);
+    console.log('RESULT', result.body);
+    expect(result.status).toBe(200);
 
     const created = result.body;
     expect(created).toHaveProperty('createdAt');

@@ -37,14 +37,10 @@ module.exports = {
 
     const { slateID, metadataHash: multihash, email, proposalInfo } = req.body;
 
-    if (proposalInfo.multihashes.length !== proposalInfo.metadata) {
+    if (proposalInfo.multihashes.length !== proposalInfo.metadata.length) {
       // prettier-ignore
       res.status(400).send('Proposal multihashes did not have the same length as proposal metadata');
     }
-
-    // this could be problematic
-    // maybe we should move all `ipfs.add` logic to the api (for adding slate metadata, that would be here)
-    const slateMetadata = await ipfs.get(multihash, { json: true });
 
     // write proposal metadatas to db, but don't duplicate
     await Promise.all(
@@ -61,16 +57,22 @@ module.exports = {
       })
     );
 
-    // write slate metadata to db, but don't duplicate
-    await IpfsMetadata.findOrCreate({
-      where: {
-        multihash,
-      },
-      defaults: {
-        multihash,
-        data: slateMetadata,
-      },
-    });
+    if (process.env.NODE_ENV !== 'test') {
+      // this could be problematic
+      // maybe we should move all `ipfs.add` logic to the api (for adding slate metadata, that would be here)
+      const slateMetadata = await ipfs.get(multihash, { json: true });
+
+      // write slate metadata to db, but don't duplicate
+      await IpfsMetadata.findOrCreate({
+        where: {
+          multihash,
+        },
+        defaults: {
+          multihash,
+          data: slateMetadata,
+        },
+      });
+    }
 
     Slate.create({
       slateID,
