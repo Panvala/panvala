@@ -3,7 +3,7 @@ const ipfs = require('./ipfs');
 const range = require('lodash/range');
 const { Promise } = require('bluebird');
 
-const { Slate } = require('../models');
+const { IpfsMetadata, Slate } = require('../models');
 
 const {
   contractABIs: { Gatekeeper, ParameterStore },
@@ -62,11 +62,11 @@ async function getAllSlates() {
     slateIDsToQuery,
     async (slateID, index) => {
       if (index !== 0) await Promise.delay(1000);
-      console.log('slateID:', slateID);
+      // console.log('slateID:', slateID);
       const slate = await gatekeeper.slates(slateID);
       // decode hash
       const decoded = toUtf8String(slate.metadataHash);
-      console.log('decoded hash', decoded);
+      // console.log('decoded hash', decoded);
       let incumbent = false;
       if (slate.recommender === grantsIncumbent && slate.resource === tokenCapacitorAddress) {
         incumbent = true;
@@ -111,7 +111,24 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
     // --------------------------
     // IPFS -- slate metadata
     // --------------------------
-    const slateMetadata = await ipfs.get(metadataHash, { json: true });
+    let slateMetadata;
+    try {
+      const dbIpfsMetadata = await IpfsMetadata.findOne({
+        where: {
+          multihash: metadataHash,
+        },
+        raw: true,
+      });
+      slateMetadata = dbIpfsMetadata.data;
+    } catch (error) {
+      slateMetadata = await ipfs.get(metadataHash, { json: true });
+      // write to db since there's not a row already
+      await IpfsMetadata.create({
+        multihash: metadataHash,
+        data: slateMetadata,
+      });
+    }
+
     const {
       firstName,
       lastName,
