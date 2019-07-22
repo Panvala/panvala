@@ -268,6 +268,8 @@ contract TokenCapacitor {
      @param time The time to update until. Must be less than 4096 days from the lastLockedTime.
      */
     function updateBalancesUntil(uint256 time) public {
+        require(time <= now, "No future updates");
+
         uint256 totalBalance = token.balanceOf(address(this));
 
         // Sweep the released tokens from locked into unlocked

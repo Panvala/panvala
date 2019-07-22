@@ -898,6 +898,21 @@ contract('TokenCapacitor', (accounts) => {
         await capacitor.updateBalances({ from: creator });
       });
 
+      it('should revert if updateBalancesUntil() is called with a time in the future', async () => {
+        const start = await utils.evm.timestamp();
+        const time = (new BN(start)).add(timing.ONE_DAY.muln(4000));
+
+        // Unlock those tokens, yeah!
+        try {
+          await capacitor.updateBalancesUntil(time, { from: creator });
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'No future');
+          return;
+        }
+        assert.fail('Called updateBalancesUntil() with a time in the future');
+      });
+
       afterEach(async () => utils.evm.revert(snapshotID));
     });
 
