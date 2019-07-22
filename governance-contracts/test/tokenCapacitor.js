@@ -774,8 +774,7 @@ contract('TokenCapacitor', (accounts) => {
 
       before(async () => {
         ({ token, capacitor } = await utils.newPanvala({ from: creator }));
-        await token.transfer(capacitor.address, supply, { from: creator });
-        await capacitor.updateBalances({ from: creator });
+        await utils.chargeCapacitor(capacitor, supply, token, { from: creator });
         scale = await capacitor.scale();
       });
 
@@ -794,7 +793,7 @@ contract('TokenCapacitor', (accounts) => {
         it(`should decrease the locked balance and increase the unlocked balance properly for ${
           test.label
         }`, async () => {
-          const initial = new BN(supply);
+          const initial = new BN(toPanBase(supply));
           assert.strictEqual(
             (await capacitor.lastLockedBalance()).toString(),
             initial.toString(),
@@ -848,7 +847,7 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should increase the locked balance if the balance increases outside `donate()`', async () => {
-        const increase = new BN(10000);
+        const increase = new BN(toPanBase(10000));
         await token.transfer(capacitor.address, increase, { from: creator });
 
         const {
