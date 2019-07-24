@@ -12,8 +12,8 @@ export const StoryWrapper = ({ children, proposals, slates, ballot }: any) => {
     <EthereumProvider>
       <MainContext.Provider
         value={{
-          proposals: !!proposals ? proposals : [],
-          slates: !!slates ? slates : [],
+          proposals: proposals || [],
+          slates: slates || [],
           slatesByID: !!slates ? keyBy(slates, 'id') : {},
           proposalsByID: !!proposals ? keyBy(proposals, 'id') : {},
           currentBallot: ballot || currentBallot,
