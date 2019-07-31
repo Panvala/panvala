@@ -50,6 +50,8 @@ contract TokenCapacitor {
     // Token decay table
     uint256 public constant SCALE = 10 ** 12;
     uint256[12] decayMultipliers;
+    uint256 constant MAX_UPDATE_DAYS = 4095; // 2^12 - 1
+    uint256 constant ONE_DAY_SECONDS = 86400;
 
     // Balances
     // Tokens available for withdrawal
@@ -229,7 +231,7 @@ contract TokenCapacitor {
         uint256 elapsedTime = time.sub(lastLockedTime);
 
         // Based on the elapsed time (in days), calculate the decay factor
-        uint256 decayFactor = calculateDecay(elapsedTime.div(86400));
+        uint256 decayFactor = calculateDecay(elapsedTime.div(ONE_DAY_SECONDS));
 
         return lastLockedBalance.mul(decayFactor).div(SCALE);
     }
@@ -238,7 +240,7 @@ contract TokenCapacitor {
      @dev Return a scaled decay multiplier. Multiply by the balance, then divide by the scale.
      */
     function calculateDecay(uint256 _days) public view returns(uint256) {
-        require(_days <= (2 ** decayMultipliers.length) - 1, "Time interval too large");
+        require(_days <= MAX_UPDATE_DAYS, "Time interval too large");
 
         uint256 decay = SCALE;
         uint256 d = _days;
@@ -265,16 +267,23 @@ contract TokenCapacitor {
      @dev Update the locked and unlocked balances according to the release rate, taking into account
      any donations or withdrawals since the last update. At each step, start decaying anew from the
      lastLockedBalance, as if it were the initial balance.
-     @param time The time to update until. Must be less than 4096 days from the lastLockedTime.
+     @param time The time to update until. Must be less than 4096 days from the lastLockedTime, and
+     cannot be in the future.
      */
-    function updateBalancesUntil(uint256 time) public {
+    function _updateBalancesUntil(uint256 time) internal {
         require(time <= now, "No future updates");
 
         uint256 totalBalance = token.balanceOf(address(this));
 
+        uint256 elapsedTime = _adjustedElapsedTime(time);
+        assert(elapsedTime % ONE_DAY_SECONDS == 0);
+
+        // This is the actual time we are updating until
+        uint256 nextLockedTime = lastLockedTime.add(elapsedTime);
+
         // Sweep the released tokens from locked into unlocked
         // Locked balance is based on the decay since the last update
-        uint256 newLockedBalance = projectedLockedBalance(time);
+        uint256 newLockedBalance = projectedLockedBalance(nextLockedTime);
         assert(newLockedBalance <= lastLockedBalance);
 
         // Calculate the number of tokens unlocked since the last update
@@ -283,18 +292,42 @@ contract TokenCapacitor {
         // Lock any tokens not currently unlocked
         lastLockedBalance = totalBalance.sub(unlockedBalance);
 
-        lastLockedTime = time;
-        emit BalancesUpdated(unlockedBalance, lastLockedBalance, time, totalBalance);
+        lastLockedTime = nextLockedTime;
+        emit BalancesUpdated(unlockedBalance, lastLockedBalance, nextLockedTime, totalBalance);
     }
 
     /**
-     @dev Update the locked and unlocked balances up until `now`.
+     @dev Update the locked and unlocked balances up until `now`. If necessary, update in intervals
+     of 4095 days.
      */
     function updateBalances() public {
-        updateBalancesUntil(now);
+        uint256 timeLeft = now.sub(lastLockedTime);
+        uint256 daysLeft = timeLeft.div(ONE_DAY_SECONDS);
+
+        // Catch up in intervals of 4095 days
+        if (daysLeft > MAX_UPDATE_DAYS) {
+            uint256 chunks = daysLeft.div(MAX_UPDATE_DAYS);
+            uint256 chunkDuration = MAX_UPDATE_DAYS.mul(ONE_DAY_SECONDS);
+
+            for (uint256 i = 0; i < chunks; i++) {
+                _updateBalancesUntil(lastLockedTime.add(chunkDuration));
+            }
+        }
+
+        // Process the rest of the time left
+        _updateBalancesUntil(now);
     }
 
     function proposalCount() public view returns(uint256) {
         return proposals.length;
+    }
+
+    /**
+     @dev Get the amount of time elapsed since the last update, adjusted down to the nearest day.
+     @param time The time to calculate for. Must be after the lastLockedTime.
+     */
+    function _adjustedElapsedTime(uint256 time) private view returns(uint256) {
+        uint256 elapsedTime = time.sub(lastLockedTime);
+        return elapsedTime.sub(elapsedTime.mod(ONE_DAY_SECONDS));
     }
 }

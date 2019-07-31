@@ -30,6 +30,7 @@ const testProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545
 const ONE_WEEK = new BN('604800');
 const timing = {
   ONE_SECOND: new BN(1),
+  ONE_HOUR: new BN(3600),
   ONE_DAY: new BN(3600 * 24),
   ONE_WEEK,
   EPOCH_LENGTH: ONE_WEEK.mul(new BN(13)),
