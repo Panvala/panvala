@@ -995,8 +995,8 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should revert if time is before lastLockedTime', async () => {
-        const now = await utils.evm.timestamp();
-        const time = (new BN(now)).sub(timing.ONE_SECOND);
+        const lastLockedTime = await capacitor.lastLockedTime();
+        const time = lastLockedTime.sub(timing.ONE_SECOND);
 
         try {
           await capacitor.projectedLockedBalance(time);
@@ -1076,8 +1076,8 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should revert if time is before lastLockedTime', async () => {
-        const now = await utils.evm.timestamp();
-        const time = (new BN(now)).sub(timing.ONE_SECOND);
+        const lastLockedTime = await capacitor.lastLockedTime();
+        const time = lastLockedTime.sub(timing.ONE_SECOND);
 
         try {
           await capacitor.projectedUnlockedBalance(time);
