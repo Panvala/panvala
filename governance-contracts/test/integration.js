@@ -970,9 +970,9 @@ contract('integration', (accounts) => {
 
       // expected values
       const initialUnlockedBalance = new BN('496443351836365210000000');
-      const projectedUnlocked = new BN('2093106861568889766839236');
+      const expectedProjectedUnlocked = new BN('2115863519962730001675795');
       const lockedAtLaunch = new BN('49409859648163634790000000');
-      const releasedAfterLaunch = projectedUnlocked.sub(initialUnlockedBalance);
+      const releasedAfterLaunch = expectedProjectedUnlocked.sub(initialUnlockedBalance);
 
       // const daysElapsed = daysBetween(systemStart, launchDay);
       // const lockedAtLaunch = decay(initialBalance, daysElapsed);
@@ -1009,7 +1009,7 @@ contract('integration', (accounts) => {
       // withdraw the right amount after epoch end
       // initial unlocked + decay from lockedAtLaunch
       const nextEpochStart = await gatekeeper.epochStart(epochNumber.addn(1));
-      const expectedProjectedUnlocked = await capacitor.projectedUnlockedBalance(nextEpochStart);
+      const projectedUnlocked = await capacitor.projectedUnlockedBalance(nextEpochStart);
       // printTokens(projectedUnlocked, 'projected unlocked');
 
       // // check that our calculation matches the projection

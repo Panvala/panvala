@@ -91,7 +91,10 @@ contract TokenCapacitor {
         decayMultipliers[11] = 377201310488;
 
         unlockedBalance = initialUnlockedBalance;
-        lastLockedTime = now;
+
+        // initialize update time at an even number of days relative to gatekeeper start
+        lastLockedTime = _gatekeeper().startTime();
+        lastLockedTime = lastLockedTime.add(_adjustedElapsedTime(now));
     }
 
     function _gatekeeper() private view returns(Gatekeeper) {
