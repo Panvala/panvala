@@ -635,6 +635,17 @@ async function capacitorBalances(capacitor) {
   return { unlocked, locked };
 }
 
+/**
+ * Get capacitor lock time adjusted to the initial lock time
+ * @param {BN} initialLockedTime
+ * @param {number) time
+ */
+function adjustedLockTime(initialLockedTime, time) {
+  const elapsedTime = (new BN(time)).sub(initialLockedTime);
+  const adjusted = elapsedTime.sub(elapsedTime.mod(timing.ONE_DAY));
+  return initialLockedTime.add(adjusted);
+}
+
 const utils = {
   expectRevert,
   expectEvents,
@@ -686,6 +697,7 @@ const utils = {
   loadTokenReleases,
   capacitorBalances,
   chargeCapacitor,
+  adjustedLockTime,
 };
 
 module.exports = utils;
