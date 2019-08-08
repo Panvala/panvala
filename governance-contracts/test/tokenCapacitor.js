@@ -774,9 +774,8 @@ contract('TokenCapacitor', (accounts) => {
 
       before(async () => {
         ({ token, capacitor } = await utils.newPanvala({ from: creator }));
-        await token.transfer(capacitor.address, supply, { from: creator });
-        await capacitor.updateBalances({ from: creator });
-        scale = await capacitor.scale();
+        await utils.chargeCapacitor(capacitor, supply, token, { from: creator });
+        scale = await capacitor.SCALE();
       });
 
       beforeEach(async () => {
@@ -794,7 +793,7 @@ contract('TokenCapacitor', (accounts) => {
         it(`should decrease the locked balance and increase the unlocked balance properly for ${
           test.label
         }`, async () => {
-          const initial = new BN(supply);
+          const initial = new BN(toPanBase(supply));
           assert.strictEqual(
             (await capacitor.lastLockedBalance()).toString(),
             initial.toString(),
@@ -848,7 +847,7 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should increase the locked balance if the balance increases outside `donate()`', async () => {
-        const increase = new BN(10000);
+        const increase = new BN(toPanBase(10000));
         await token.transfer(capacitor.address, increase, { from: creator });
 
         const {
@@ -898,6 +897,21 @@ contract('TokenCapacitor', (accounts) => {
         await capacitor.updateBalances({ from: creator });
       });
 
+      it('should revert if updateBalancesUntil() is called with a time in the future', async () => {
+        const start = await utils.evm.timestamp();
+        const time = (new BN(start)).add(timing.ONE_DAY.muln(4000));
+
+        // Unlock those tokens, yeah!
+        try {
+          await capacitor.updateBalancesUntil(time, { from: creator });
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'No future');
+          return;
+        }
+        assert.fail('Called updateBalancesUntil() with a time in the future');
+      });
+
       afterEach(async () => utils.evm.revert(snapshotID));
     });
 
@@ -912,7 +926,7 @@ contract('TokenCapacitor', (accounts) => {
         ({ token, capacitor } = await utils.newPanvala({ from: creator }));
         await token.transfer(capacitor.address, supply, { from: creator });
         await capacitor.updateBalances({ from: creator });
-        scale = await capacitor.scale();
+        scale = await capacitor.SCALE();
       });
 
       const tests = [
@@ -992,7 +1006,7 @@ contract('TokenCapacitor', (accounts) => {
         await token.transfer(capacitor.address, supply, { from: creator });
         await capacitor.updateBalances();
 
-        scale = await capacitor.scale();
+        scale = await capacitor.SCALE();
       });
 
       const tests = [
