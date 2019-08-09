@@ -2912,6 +2912,21 @@ contract('Gatekeeper', (accounts) => {
     });
 
     it('should wait for a runoff if the lead slate has exactly 50% of the votes', async () => {
+      // Add a third slate
+      const grantProposals = [{
+        to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
+      }];
+
+      await utils.grantSlateFromProposals({
+        gatekeeper,
+        proposals: grantProposals,
+        capacitor,
+        recommender,
+        metadata: createMultihash('third slate'),
+      });
+      await gatekeeper.stakeTokens(2, { from: recommender });
+
+
       // Split the votes evenly
       await goToPeriod(gatekeeper, epochPeriods.COMMIT);
       const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
@@ -3411,7 +3426,7 @@ contract('Gatekeeper', (accounts) => {
           winner: '2',
         };
 
-        const contestBeforeTally = await gatekeeper.contestDetails(epochNumber, GRANT);
+        const contestBeforeFinalization = await gatekeeper.contestDetails(epochNumber, GRANT);
         const {
           status: _status,
           allSlates: _allSlates,
@@ -3420,15 +3435,15 @@ contract('Gatekeeper', (accounts) => {
           voteWinner: _voteWinner,
           voteRunnerUp: _voteRunnerUp,
           winner: _winner,
-        } = contestBeforeTally;
+        } = contestBeforeFinalization;
 
         assert.strictEqual(_status.toString(), ContestStatus.Active, 'Status should be Active');
         assert.deepStrictEqual(_allSlates.map(i => i.toString()), expected.slates, 'Wrong slates');
         assert.deepStrictEqual(_stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
         assert.strictEqual(_lastStaked.toString(), expected.lastStaked);
-        // result values should be uninitialized
-        assert.strictEqual(_voteWinner.toString(), '0', 'Vote winner should be zero');
-        assert.strictEqual(_voteRunnerUp.toString(), '0', 'Vote runner-up should be zero');
+        // result values should be filled in
+        assert.strictEqual(_voteWinner.toString(), expected.voteWinner, 'Wrong vote winner');
+        assert.strictEqual(_voteRunnerUp.toString(), expected.voteRunnerUp, 'Wrong vote runner-up');
         assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
 
         await gatekeeper.finalizeContest(epochNumber, GRANT);

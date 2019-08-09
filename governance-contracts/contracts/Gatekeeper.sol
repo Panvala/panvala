@@ -134,6 +134,7 @@ contract Gatekeeper {
         uint firstChoiceVotes;
         // slateID -> count
         mapping(uint => uint) secondChoiceVotes;
+        uint totalSecondChoiceVotes;
     }
 
     enum ContestStatus {
@@ -157,8 +158,11 @@ contract Gatekeeper {
         uint256 stakesDonated;
 
         // Intermediate results
-        uint voteWinner;
+        uint voteLeader;
         uint voteRunnerUp;
+        uint256 leaderVotes;
+        uint256 runnerUpVotes;
+        uint256 totalVotes;
 
         // Final results
         uint winner;
@@ -539,11 +543,40 @@ contract Gatekeeper {
 
             // Increment totals for first and second choice slates
             uint firstChoice = firstChoices[i];
-            SlateVotes storage slateVotes = contest.votes[firstChoice];
-            slateVotes.firstChoiceVotes = slateVotes.firstChoiceVotes.add(v.numTokens);
-
             uint secondChoice = secondChoices[i];
-            slateVotes.secondChoiceVotes[secondChoice] = slateVotes.secondChoiceVotes[secondChoice].add(v.numTokens);
+
+            // Update first choice standings
+            if (slates[firstChoice].status == SlateStatus.Staked) {
+                SlateVotes storage firstChoiceSlate = contest.votes[firstChoice];
+                contest.totalVotes = contest.totalVotes.add(v.numTokens);
+                uint256 newCount = firstChoiceSlate.firstChoiceVotes.add(v.numTokens);
+
+                // Update first choice standings
+                if (firstChoice == contest.voteLeader) {
+                    // Leader is still the leader
+                    contest.leaderVotes = newCount;
+                } else if (newCount > contest.leaderVotes) {
+                    // This slate is now the leader, and the previous leader is now the runner-up
+                    contest.voteRunnerUp = contest.voteLeader;
+                    contest.runnerUpVotes = contest.leaderVotes;
+
+                    contest.voteLeader = firstChoice;
+                    contest.leaderVotes = newCount;
+                } else if (newCount > contest.runnerUpVotes) {
+                    // This slate overtook the previous runner-up
+                    contest.voteRunnerUp = firstChoice;
+                    contest.runnerUpVotes = newCount;
+                }
+
+                firstChoiceSlate.firstChoiceVotes = newCount;
+
+                // Update second choice standings
+                if (slates[secondChoice].status == SlateStatus.Staked) {
+                    SlateVotes storage secondChoiceSlate = contest.votes[secondChoice];
+                    secondChoiceSlate.totalSecondChoiceVotes = secondChoiceSlate.totalSecondChoiceVotes.add(v.numTokens);
+                    firstChoiceSlate.secondChoiceVotes[secondChoice] = firstChoiceSlate.secondChoiceVotes[secondChoice].add(v.numTokens);
+                }
+            }
         }
 
         // update state
@@ -657,63 +690,27 @@ contract Gatekeeper {
             return;
         }
 
-        // Iterate through the slates and get the one with the most votes
-        uint winner = 0;
-        uint winnerVotes = 0;
-        uint runnerUp = 0;
-        uint runnerUpVotes = 0;
+        // no votes
+        if (contest.totalVotes > 0) {
+            uint256 winnerVotes = contest.leaderVotes;
 
-        uint total = 0;
-        bool noVotes = true;
+            // If the winner has more than 50%, we are done
+            // Otherwise, trigger a runoff
+            if (winnerVotes.mul(2) > contest.totalVotes) {
+                contest.winner = contest.voteLeader;
+                acceptSlate(contest.winner);
 
-        for (uint i = 0; i < contest.stakedSlates.length; i++) {
-            uint slateID = contest.stakedSlates[i];
-            assert(slates[slateID].status == SlateStatus.Staked);
-
-            SlateVotes storage currentSlate = contest.votes[slateID];
-
-            uint votes = currentSlate.firstChoiceVotes;
-            if (noVotes && votes > 0) {
-                noVotes = false;
+                contest.status = ContestStatus.Finalized;
+                emit VoteFinalized(epochNumber, resource, contest.winner, winnerVotes, contest.totalVotes);
+            } else {
+                contest.status = ContestStatus.RunoffPending;
+                emit VoteFailed(epochNumber, resource, contest.voteLeader, winnerVotes, contest.voteRunnerUp, contest.runnerUpVotes, contest.totalVotes);
             }
-            total = total.add(votes);
-
-            if (votes > winnerVotes) {
-                // Previous winner is now the runner-up
-                runnerUp = winner;
-                runnerUpVotes = winnerVotes;
-
-                winner = slateID;
-                winnerVotes = votes;
-            } else if (votes > runnerUpVotes) {
-                // This slate overtook the previous runner-up
-                runnerUp = slateID;
-                runnerUpVotes = votes;
-            }
-        }
-
-        // If no one voted, reject all participating slates
-        if (noVotes) {
+        } else {
+            // no one voted
             contest.status = ContestStatus.Finalized;
             emit ContestFinalizedWithoutWinner(epochNumber, resource);
             return;
-        }
-
-        // Update state
-        contest.voteWinner = winner;
-        contest.voteRunnerUp = runnerUp;
-
-        // If the winner has more than 50%, we are done
-        // Otherwise, trigger a runoff
-        if (winnerVotes.mul(2) > total) {
-            contest.winner = winner;
-            acceptSlate(winner);
-
-            contest.status = ContestStatus.Finalized;
-            emit VoteFinalized(epochNumber, resource, winner, winnerVotes, total);
-        } else {
-            contest.status = ContestStatus.RunoffPending;
-            emit VoteFailed(epochNumber, resource, winner, winnerVotes, runnerUp, runnerUpVotes, total);
         }
     }
 
@@ -751,7 +748,7 @@ contract Gatekeeper {
         allSlates = c.slates;
         stakedSlates = c.stakedSlates;
         lastStaked = c.lastStaked;
-        voteWinner = c.voteWinner;
+        voteWinner = c.voteLeader;
         voteRunnerUp = c.voteRunnerUp;
         winner = c.winner;
     }
@@ -770,33 +767,26 @@ contract Gatekeeper {
     function finalizeRunoff(uint epochNumber, address resource) public {
         require(isCurrentGatekeeper(), "Not current gatekeeper");
 
-        Contest memory contest = ballots[epochNumber].contests[resource];
+        Contest storage contest = ballots[epochNumber].contests[resource];
         require(contest.status == ContestStatus.RunoffPending, "Runoff is not pending");
 
-        uint voteWinner = contest.voteWinner;
+        uint voteLeader = contest.voteLeader;
         uint voteRunnerUp = contest.voteRunnerUp;
 
-        // Get the number of first-choice votes for the top choices
-        uint leaderTotal = getFirstChoiceVotes(epochNumber, resource, voteWinner);
-        uint runnerUpTotal = getFirstChoiceVotes(epochNumber, resource, voteRunnerUp);
+        // Get the number of second-choice votes for the top two choices, subtracting
+        // any second choice votes where the first choice was for one of the top two
+        SlateVotes storage leader = contest.votes[voteLeader];
+        SlateVotes storage runnerUp = contest.votes[voteRunnerUp];
 
-        // For slates other than the winner and leader,
-        // count second-choice votes for the top two slates
-        for (uint i = 0; i < contest.stakedSlates.length; i++) {
-            uint slateID = contest.stakedSlates[i];
-            if (slateID != voteWinner && slateID != voteRunnerUp) {
-                // count second-choice votes for the top two slates
-                SlateVotes storage currentSlate = ballots[epochNumber].contests[resource].votes[slateID];
+        uint256 secondChoiceVotesForLeader = leader.totalSecondChoiceVotes
+            .sub(runnerUp.secondChoiceVotes[voteLeader]).sub(leader.secondChoiceVotes[voteLeader]);
 
-                // Second-choice votes for the winning slate
-                uint votesForWinner = currentSlate.secondChoiceVotes[voteWinner];
-                leaderTotal = leaderTotal.add(votesForWinner);
+        uint256 secondChoiceVotesForRunnerUp = runnerUp.totalSecondChoiceVotes
+            .sub(leader.secondChoiceVotes[voteRunnerUp]).sub(runnerUp.secondChoiceVotes[voteRunnerUp]);
 
-                // Second-choice votes for the runner-up slate
-                uint votesForRunnerUp = currentSlate.secondChoiceVotes[voteRunnerUp];
-                runnerUpTotal = runnerUpTotal.add(votesForRunnerUp);
-            }
-        }
+        uint256 leaderTotal = contest.leaderVotes.add(secondChoiceVotesForLeader);
+        uint256 runnerUpTotal = contest.runnerUpVotes.add(secondChoiceVotesForRunnerUp);
+
 
         // Tally for the runoff
         uint runoffWinner = 0;
@@ -807,23 +797,22 @@ contract Gatekeeper {
         // Original winner has more votes, or it's tied and the original winner has a smaller ID
         if ((leaderTotal > runnerUpTotal) ||
            ((leaderTotal == runnerUpTotal) &&
-            (voteWinner < voteRunnerUp)
+            (voteLeader < voteRunnerUp)
             )) {
-            runoffWinner = voteWinner;
+            runoffWinner = voteLeader;
             runoffWinnerVotes = leaderTotal;
             runoffLoser = voteRunnerUp;
             runoffLoserVotes = runnerUpTotal;
         } else {
             runoffWinner = voteRunnerUp;
             runoffWinnerVotes = runnerUpTotal;
-            runoffLoser = voteWinner;
+            runoffLoser = voteLeader;
             runoffLoserVotes = leaderTotal;
         }
 
         // Update state
-        Contest storage updatedContest = ballots[epochNumber].contests[resource];
-        updatedContest.winner = runoffWinner;
-        updatedContest.status = ContestStatus.Finalized;
+        contest.winner = runoffWinner;
+        contest.status = ContestStatus.Finalized;
         acceptSlate(runoffWinner);
 
         emit RunoffFinalized(epochNumber, resource, runoffWinner, runoffWinnerVotes, runoffLoser, runoffLoserVotes);
