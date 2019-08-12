@@ -141,7 +141,6 @@ contract Gatekeeper {
         Empty,
         NoContest,
         Active,
-        RunoffPending,
         Finalized
     }
 
@@ -703,8 +702,8 @@ contract Gatekeeper {
                 contest.status = ContestStatus.Finalized;
                 emit VoteFinalized(epochNumber, resource, contest.winner, winnerVotes, contest.totalVotes);
             } else {
-                contest.status = ContestStatus.RunoffPending;
                 emit VoteFailed(epochNumber, resource, contest.voteLeader, winnerVotes, contest.voteRunnerUp, contest.runnerUpVotes, contest.totalVotes);
+                _finalizeRunoff(epochNumber, resource);
             }
         } else {
             // no one voted
@@ -764,11 +763,10 @@ contract Gatekeeper {
      @param epochNumber The epoch
      @param resource The resource to count votes for
      */
-    function finalizeRunoff(uint epochNumber, address resource) public {
+    function _finalizeRunoff(uint epochNumber, address resource) internal {
         require(isCurrentGatekeeper(), "Not current gatekeeper");
 
         Contest storage contest = ballots[epochNumber].contests[resource];
-        require(contest.status == ContestStatus.RunoffPending, "Runoff is not pending");
 
         uint voteLeader = contest.voteLeader;
         uint voteRunnerUp = contest.voteRunnerUp;

@@ -56,7 +56,7 @@ async function doRunoff(gatekeeper, epochNumber, voters, options) {
   if (finalize) {
     await increaseTime(timing.REVEAL_PERIOD_LENGTH);
     await gatekeeper.finalizeContest(epochNumber, resource);
-    await gatekeeper.finalizeRunoff(epochNumber, resource);
+    // await gatekeeper.finalizeRunoff(epochNumber, resource);
   }
 }
 
@@ -2867,108 +2867,279 @@ contract('Gatekeeper', (accounts) => {
       });
     });
 
-    it('should wait for a runoff if no slate has more than 50% of the votes', async () => {
-      const slateID = await gatekeeper.slateCount();
-      // Add a third slate
-      const grantProposals = [{
-        to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
-      }];
+    describe('runoff', () => {
+      beforeEach(async () => {
+        const slateID = await gatekeeper.slateCount();
+        // Add a third slate
+        const grantProposals = [{
+          to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
+        }];
 
-      await utils.grantSlateFromProposals({
-        gatekeeper,
-        proposals: grantProposals,
-        capacitor,
-        recommender,
-        metadata: createMultihash('yet another slate'),
+        await utils.grantSlateFromProposals({
+          gatekeeper,
+          proposals: grantProposals,
+          capacitor,
+          recommender,
+          metadata: createMultihash('yet another slate'),
+        });
+        await gatekeeper.stakeTokens(slateID, { from: recommender });
       });
-      await gatekeeper.stakeTokens(slateID, { from: recommender });
 
-      // Split the votes among the three slates
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '1000', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 2, 1, '1000', '9012');
+      it('should correctly tally and finalize a runoff vote if no slate has more than 50% of the votes', async () => {
+        await goToPeriod(gatekeeper, epochPeriods.COMMIT);
+        const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '800', '1234');
+        const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
+        const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 2, 0, '1000', '9012');
 
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
+        // Reveal all votes
+        await increaseTime(timing.COMMIT_PERIOD_LENGTH);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
+        // Advance past reveal period
+        await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Check logs
-      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['VoteFailed']);
+        // Finalize
+        const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
-      // Should be waiting for a runoff
-      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
-      assert.strictEqual(
-        status.toString(),
-        ContestStatus.RunoffPending,
-        'Contest status should have been RunoffPending',
-      );
-    });
+        // Should emit events
+        expectEvents(receipt, ['VoteFailed', 'RunoffFinalized']);
 
-    it('should wait for a runoff if the lead slate has exactly 50% of the votes', async () => {
-      // Add a third slate
-      const grantProposals = [{
-        to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
-      }];
+        // VoteFailed
+        const {
+          epochNumber: emittedEpochNumber,
+          resource,
+          leadingSlate,
+          leaderVotes,
+          runnerUpSlate,
+          runnerUpVotes,
+          totalVotes,
+        } = receipt.logs[0].args;
+        assert.strictEqual(emittedEpochNumber.toString(), epochNumber.toString());
+        assert.strictEqual(resource, GRANT);
+        assert.strictEqual(leadingSlate.toString(), '2');
+        assert.strictEqual(leaderVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(runnerUpSlate.toString(), '1');
+        assert.strictEqual(runnerUpVotes.toString(), toPanBase('900'));
+        assert.strictEqual(totalVotes.toString(), toPanBase('2700'));
 
-      await utils.grantSlateFromProposals({
-        gatekeeper,
-        proposals: grantProposals,
-        capacitor,
-        recommender,
-        metadata: createMultihash('third slate'),
+        // RunoffFinalized
+        const {
+          winningSlate,
+          winnerVotes,
+          losingSlate,
+          loserVotes,
+        } = receipt.logs[1].args;
+
+        const expectedWinner = '1';
+        const expectedWinnerVotes = toPanBase(900 + 800);
+        const expectedLoser = '2';
+        const expectedLoserVotes = toPanBase('1000');
+
+        assert.strictEqual(winningSlate.toString(), expectedWinner, 'Runoff finalized with wrong winner');
+        assert.strictEqual(winnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff');
+        assert.strictEqual(losingSlate.toString(), expectedLoser, 'Runoff finalized with wrong loser');
+        assert.strictEqual(loserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff');
+
+        // status should be Finalized at the end
+        const status = await gatekeeper.contestStatus(epochNumber, GRANT);
+        assert.strictEqual(
+          status.toString(),
+          ContestStatus.Finalized,
+          'Contest status should have been Finalized',
+        );
+
+        // Winning slate should have status Accepted
+        const slate = await gatekeeper.slates(winningSlate);
+        assert.strictEqual(
+          slate.status.toString(),
+          SlateStatus.Accepted,
+          'Winning slate status should have been Accepted',
+        );
+
+        // All the other slates should be rejected
+        const contestSlates = await gatekeeper.contestSlates(epochNumber, GRANT);
+        assert.deepStrictEqual(
+          contestSlates.map(i => i.toString()),
+          ['0', '1', '2'],
+          'Wrong contest slates',
+        );
+        await verifyFinalizedSlates(gatekeeper, contestSlates);
+
+        // requests in the slate should all return true for hasPermission
+        const slateRequests = await gatekeeper.slateRequests(winningSlate);
+        const permissions = await Promise.all(slateRequests.map(r => gatekeeper.hasPermission(r)));
+        permissions.forEach((has) => {
+          assert.strictEqual(has, true, 'Request should have permission');
+        });
+
+        // the current incumbent should be the recommender of the winning slate
+        const incumbent = await gatekeeper.incumbent(GRANT);
+        assert.strictEqual(
+          incumbent,
+          slate.recommender,
+          'Incumbent should be the recommender of the winning slate',
+        );
       });
-      await gatekeeper.stakeTokens(2, { from: recommender });
 
+      it('should count correctly if the original leader wins the runoff', async () => {
+        await goToPeriod(gatekeeper, epochPeriods.COMMIT);
+        const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 2, '101', '1234');
+        const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
+        const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 2, 0, '1000', '9012');
 
-      // Split the votes evenly
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '500', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '500', '9012');
+        // Reveal all votes
+        await increaseTime(timing.COMMIT_PERIOD_LENGTH);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
 
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
+        // Advance past reveal period
+        await increaseTime(timing.REVEAL_PERIOD_LENGTH);
 
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
+        // Finalize
+        const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
 
-      // Check logs
-      const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['VoteFailed']);
-      const {
-        epochNumber: emittedEpochNumber,
-        resource,
-        leadingSlate,
-        leaderVotes,
-        runnerUpSlate,
-        runnerUpVotes,
-        totalVotes,
-      } = receipt.logs[0].args;
-      assert.strictEqual(emittedEpochNumber.toString(), epochNumber.toString());
-      assert.strictEqual(resource, GRANT);
-      assert.strictEqual(leadingSlate.toString(), '0');
-      assert.strictEqual(leaderVotes.toString(), toPanBase('1000'));
-      assert.strictEqual(runnerUpSlate.toString(), '1');
-      assert.strictEqual(runnerUpVotes.toString(), toPanBase('1000'));
-      assert.strictEqual(totalVotes.toString(), toPanBase('2000'));
+        // Should emit events
+        expectEvents(receipt, ['VoteFailed', 'RunoffFinalized']);
 
-      // Should be waiting for a runoff
-      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
-      assert.strictEqual(
-        status.toString(),
-        ContestStatus.RunoffPending,
-        'Contest status should have been RunoffPending',
-      );
+        // VoteFailed
+        const {
+          epochNumber: emittedEpochNumber,
+          resource,
+          leadingSlate,
+          leaderVotes,
+          runnerUpSlate,
+          runnerUpVotes,
+          totalVotes,
+        } = receipt.logs[0].args;
+        assert.strictEqual(emittedEpochNumber.toString(), epochNumber.toString());
+        assert.strictEqual(resource, GRANT);
+        assert.strictEqual(leadingSlate.toString(), '2');
+        assert.strictEqual(leaderVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(runnerUpSlate.toString(), '1');
+        assert.strictEqual(runnerUpVotes.toString(), toPanBase('900'));
+        assert.strictEqual(totalVotes.toString(), toPanBase('2001'));
+
+        // RunoffFinalized
+        const {
+          winningSlate: countWinner,
+          winnerVotes: countWinnerVotes,
+          losingSlate: countLoser,
+          loserVotes: countLoserVotes,
+        } = receipt.logs[1].args;
+
+        const expectedWinner = '2';
+        const expectedWinnerVotes = toPanBase(1000 + 101);
+        const expectedLoser = '1';
+        const expectedLoserVotes = toPanBase(900);
+
+        assert.strictEqual(countWinner.toString(), expectedWinner, 'Incorrect winner in runoff count');
+        assert.strictEqual(countWinnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff count');
+        assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
+        assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
+
+        const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
+        await verifyFinalizedSlates(gatekeeper, slateIDs);
+      });
+
+      it('should do a runoff if the lead slate has exactly 50% of the votes', async () => {
+        // Split the votes evenly
+        await goToPeriod(gatekeeper, epochPeriods.COMMIT);
+        const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
+        const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '500', '5678');
+        const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '500', '9012');
+
+        // Reveal all votes
+        await increaseTime(timing.COMMIT_PERIOD_LENGTH);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
+
+        // Advance past reveal period
+        await increaseTime(timing.REVEAL_PERIOD_LENGTH);
+
+        // Finalize
+        const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
+
+        // Should emit events
+        expectEvents(receipt, ['VoteFailed', 'RunoffFinalized']);
+
+        // VoteFailed
+        const {
+          epochNumber: emittedEpochNumber,
+          resource,
+          leadingSlate,
+          leaderVotes,
+          runnerUpSlate,
+          runnerUpVotes,
+          totalVotes,
+        } = receipt.logs[0].args;
+        assert.strictEqual(emittedEpochNumber.toString(), epochNumber.toString());
+        assert.strictEqual(resource, GRANT);
+        assert.strictEqual(leadingSlate.toString(), '0');
+        assert.strictEqual(leaderVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(runnerUpSlate.toString(), '1');
+        assert.strictEqual(runnerUpVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(totalVotes.toString(), toPanBase('2000'));
+
+        // RunoffFinalized
+        const {
+          winningSlate,
+          winnerVotes,
+          losingSlate,
+          loserVotes,
+        } = receipt.logs[1].args;
+        assert.strictEqual(winningSlate.toString(), '0');
+        assert.strictEqual(winnerVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(losingSlate.toString(), '1');
+        assert.strictEqual(loserVotes.toString(), toPanBase('1000'));
+        assert.strictEqual(totalVotes.toString(), toPanBase('2000'));
+
+        // Should be finalized
+        const status = await gatekeeper.contestStatus(epochNumber, GRANT);
+        assert.strictEqual(
+          status.toString(),
+          ContestStatus.Finalized,
+          'Contest status should have been Finalized',
+        );
+      });
+
+      it('should accept the slate with the lowest ID if the runoff ends in a tie', async () => {
+        await goToPeriod(gatekeeper, epochPeriods.COMMIT);
+        const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 2, '400', '1234');
+        const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 2, 1, '600', '5678');
+        const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '1000', '9012');
+
+        // Reveal all votes
+        await increaseTime(timing.COMMIT_PERIOD_LENGTH);
+        await reveal(epochNumber, gatekeeper, aliceReveal);
+        await reveal(epochNumber, gatekeeper, bobReveal);
+        await reveal(epochNumber, gatekeeper, carolReveal);
+
+        // Advance past reveal period
+        await increaseTime(timing.REVEAL_PERIOD_LENGTH);
+
+        // Finalize
+        const receipt = await gatekeeper.finalizeContest(epochNumber, GRANT);
+
+        utils.expectEvents(receipt, ['VoteFailed', 'RunoffFinalized']);
+
+        // RunoffFinalized
+        const {
+          winningSlate, winnerVotes, losingSlate, loserVotes,
+        } = receipt.logs[1].args;
+
+        assert.strictEqual(winnerVotes.toString(), loserVotes.toString(), 'Runoff should end in a tie');
+        assert(
+          winningSlate.toNumber() < losingSlate.toNumber(),
+          `${winningSlate.toNumber()} > ${losingSlate.toNumber()} Winner should have been the slate with the lower ID`,
+        );
+
+        const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
+        await verifyFinalizedSlates(gatekeeper, slateIDs);
+      });
     });
 
     it('should revert if called more than once', async () => {
@@ -3507,7 +3678,7 @@ contract('Gatekeeper', (accounts) => {
           'Contest status should have been Active',
         );
 
-        // Initial vote
+        // Finalize
         await gatekeeper.finalizeContest(epochNumber, GRANT);
 
         const expected = {
@@ -3518,29 +3689,6 @@ contract('Gatekeeper', (accounts) => {
           voteRunnerUp: '1',
           winner: '1',
         };
-
-        const initialContest = await gatekeeper.contestDetails(epochNumber, GRANT);
-        const {
-          status: _status,
-          allSlates: _allSlates,
-          stakedSlates: _stakedSlates,
-          lastStaked: _lastStaked,
-          voteWinner: _voteWinner,
-          voteRunnerUp: _voteRunnerUp,
-          winner: _winner,
-        } = initialContest;
-
-        assert.strictEqual(_status.toString(), ContestStatus.RunoffPending, 'Status should be RunoffPending');
-        assert.deepStrictEqual(_allSlates.map(i => i.toString()), expected.slates, 'Wrong slates');
-        assert.deepStrictEqual(_stakedSlates.map(i => i.toString()), expected.stakedSlates, 'Wrong staked slates');
-        assert.strictEqual(_lastStaked.toString(), expected.lastStaked);
-        assert.strictEqual(_voteWinner.toString(), expected.voteWinner, 'Wrong vote winner');
-        assert.strictEqual(_voteRunnerUp.toString(), expected.voteRunnerUp, 'Wrong vote runner-up');
-        // final result value should be uninitialized
-        assert.strictEqual(_winner.toString(), '0', 'Contest winner should be zero');
-
-        // Runoff
-        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
         const contest = await gatekeeper.contestDetails(epochNumber, GRANT);
         const {
@@ -3571,8 +3719,8 @@ contract('Gatekeeper', (accounts) => {
     let token;
     let capacitor;
 
-    let epochNumber;
-    let GRANT;
+    // let epochNumber;
+    // let GRANT;
     const grantProposals = [{
       to: recommender, tokens: '1000', metadataHash: createMultihash('grant'),
     }];
@@ -3580,9 +3728,9 @@ contract('Gatekeeper', (accounts) => {
 
     beforeEach(async () => {
       ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
-      epochNumber = await gatekeeper.currentEpochNumber();
+      // epochNumber = await gatekeeper.currentEpochNumber();
 
-      GRANT = await getResource(gatekeeper, 'GRANT');
+      // GRANT = await getResource(gatekeeper, 'GRANT');
 
       // Make sure the recommender has tokens
       const recommenderTokens = toPanBase('500000');
@@ -3630,197 +3778,6 @@ contract('Gatekeeper', (accounts) => {
 
       await token.transfer(carol, allocatedTokens, { from: creator });
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
-    });
-
-    it('should correctly tally and finalize a runoff vote', async () => {
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '800', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 2, 0, '1000', '9012');
-
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
-
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-
-      // vote
-      await gatekeeper.finalizeContest(epochNumber, GRANT);
-
-      // Runoff
-      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-
-      // Should emit events
-      expectEvents(receipt, ['RunoffFinalized']);
-      const {
-        winningSlate,
-        winnerVotes,
-        losingSlate,
-        loserVotes,
-      } = receipt.logs[0].args;
-
-      const expectedWinner = '1';
-      const expectedWinnerVotes = toPanBase(900 + 800);
-      const expectedLoser = '2';
-      const expectedLoserVotes = toPanBase('1000');
-
-      assert.strictEqual(winningSlate.toString(), expectedWinner, 'Runoff finalized with wrong winner');
-      assert.strictEqual(winnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff');
-      assert.strictEqual(losingSlate.toString(), expectedLoser, 'Runoff finalized with wrong loser');
-      assert.strictEqual(loserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff');
-
-      // status should be Finalized at the end
-      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
-      assert.strictEqual(
-        status.toString(),
-        ContestStatus.Finalized,
-        'Contest status should have been Finalized',
-      );
-
-      // Winning slate should have status Accepted
-      const slate = await gatekeeper.slates(winningSlate);
-      assert.strictEqual(
-        slate.status.toString(),
-        SlateStatus.Accepted,
-        'Winning slate status should have been Accepted',
-      );
-
-      // All the other slates should be rejected
-      const contestSlates = await gatekeeper.contestSlates(epochNumber, GRANT);
-      assert.deepStrictEqual(
-        contestSlates.map(i => i.toString()),
-        ['0', '1', '2'],
-        'Wrong contest slates',
-      );
-      await verifyFinalizedSlates(gatekeeper, contestSlates);
-
-      // requests in the slate should all return true for hasPermission
-      const slateRequests = await gatekeeper.slateRequests(winningSlate);
-      const permissions = await Promise.all(slateRequests.map(r => gatekeeper.hasPermission(r)));
-      permissions.forEach((has) => {
-        assert.strictEqual(has, true, 'Request should have permission');
-      });
-
-      // the current incumbent should be the recommender of the winning slate
-      const incumbent = await gatekeeper.incumbent(GRANT);
-      assert.strictEqual(
-        incumbent,
-        slate.recommender,
-        'Incumbent should be the recommender of the winning slate',
-      );
-    });
-
-    it('should count correctly if the original leader wins the runoff', async () => {
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 2, '101', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 2, 0, '1000', '9012');
-
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
-
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-
-      // Vote
-      await gatekeeper.finalizeContest(epochNumber, GRANT);
-
-      // Runoff
-      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-      const {
-        winningSlate: countWinner,
-        winnerVotes: countWinnerVotes,
-        losingSlate: countLoser,
-        loserVotes: countLoserVotes,
-      } = receipt.logs[0].args;
-
-      const expectedWinner = '2';
-      const expectedWinnerVotes = toPanBase(1000 + 101);
-      const expectedLoser = '1';
-      const expectedLoserVotes = toPanBase(900);
-
-      assert.strictEqual(countWinner.toString(), expectedWinner, 'Incorrect winner in runoff count');
-      assert.strictEqual(countWinnerVotes.toString(), expectedWinnerVotes, 'Incorrect winning votes in runoff count');
-      assert.strictEqual(countLoser.toString(), expectedLoser, 'Incorrect loser in runoff count');
-      assert.strictEqual(countLoserVotes.toString(), expectedLoserVotes, 'Incorrect loser votes in runoff count');
-
-      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
-      await verifyFinalizedSlates(gatekeeper, slateIDs);
-    });
-
-    it('should assign the slate with the lowest ID if the runoff ends in a tie', async () => {
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 2, '400', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 2, 1, '600', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '1000', '9012');
-
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
-
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-
-      // Vote
-      await gatekeeper.finalizeContest(epochNumber, GRANT);
-
-      // Runoff
-      const receipt = await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-      utils.expectEvents(receipt, ['RunoffFinalized']);
-
-      const {
-        winningSlate, winnerVotes, losingSlate, loserVotes,
-      } = receipt.logs[0].args;
-
-      assert.strictEqual(winnerVotes.toString(), loserVotes.toString(), 'Runoff should end in a tie');
-      assert(
-        winningSlate.toNumber() < losingSlate.toNumber(),
-        `${winningSlate.toNumber()} > ${losingSlate.toNumber()} Winner should have been the slate with the lower ID`,
-      );
-
-      const slateIDs = await gatekeeper.contestSlates(epochNumber, GRANT);
-      await verifyFinalizedSlates(gatekeeper, slateIDs);
-    });
-
-    it('should revert if a runoff is not pending', async () => {
-      // Run a straight-forward vote
-      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
-      const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '800', '1234');
-      const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 1, 2, '900', '5678');
-      const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '1000', '9012');
-
-      // Reveal all votes
-      await increaseTime(timing.COMMIT_PERIOD_LENGTH);
-      await reveal(epochNumber, gatekeeper, aliceReveal);
-      await reveal(epochNumber, gatekeeper, bobReveal);
-      await reveal(epochNumber, gatekeeper, carolReveal);
-
-      // Advance past reveal period
-      await increaseTime(timing.REVEAL_PERIOD_LENGTH);
-
-      // Vote
-      await gatekeeper.finalizeContest(epochNumber, GRANT);
-
-      const status = await gatekeeper.contestStatus(epochNumber, GRANT);
-      assert.strictEqual(status.toString(), ContestStatus.Finalized);
-
-      // Runoff
-      try {
-        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
-      } catch (error) {
-        expectRevert(error);
-        expectErrorLike(error, 'not pending');
-        return;
-      }
-      assert.fail('Ran runoff even though none was pending');
     });
   });
 
@@ -3912,7 +3869,7 @@ contract('Gatekeeper', (accounts) => {
       await gatekeeper.finalizeContest(epochNumber, GRANT);
 
       // Runoff
-      await gatekeeper.finalizeRunoff(epochNumber, GRANT);
+      // await gatekeeper.finalizeRunoff(epochNumber, GRANT);
 
       // Check winner
       const winner = await gatekeeper.getWinningSlate(epochNumber, GRANT);
@@ -4078,7 +4035,7 @@ contract('Gatekeeper', (accounts) => {
 
         // Run -- slate 1 wins
         await gatekeeper.finalizeContest(epochNumber, GRANT);
-        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
+        // await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       });
 
       it('should return true for a request that was included in an accepted slate', async () => {
@@ -4342,7 +4299,7 @@ contract('Gatekeeper', (accounts) => {
 
         // Run -- slate 1 wins
         await gatekeeper.finalizeContest(epochNumber, GRANT);
-        await gatekeeper.finalizeRunoff(epochNumber, GRANT);
+        // await gatekeeper.finalizeRunoff(epochNumber, GRANT);
       });
 
       it('should withdraw tokens after a finalized runoff vote', async () => {
