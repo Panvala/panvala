@@ -366,7 +366,7 @@ async function newPanvala(options) {
   );
 
   await parameters.setInitialValue(
-    'tokenCapacitorAddress',
+    'stakeDonationAddress',
     abiCoder.encode(['address'], [capacitor.address]),
     { from: creator },
   );
@@ -518,7 +518,8 @@ async function getResource(gatekeeper, name) {
 
   if (name === 'GRANT') {
     const parameterStore = await ParameterStore.at(parametersAddress);
-    source = await parameterStore.getAsAddress('tokenCapacitorAddress');
+    // NOTE: this is a hack, since in the future, this isn't guaranteed to be the token capacitor
+    source = await parameterStore.getAsAddress('stakeDonationAddress');
   } else if (name === 'GOVERNANCE') {
     source = parametersAddress;
   } else {

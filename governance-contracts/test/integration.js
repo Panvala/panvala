@@ -505,9 +505,13 @@ contract('integration', (accounts) => {
       let grantWinner;
       let oldGovernancePermissions;
       const gatekeeperKey = 'gatekeeperAddress';
+      const transferResources = [];
 
       // go through upgrade up until point before governance proposal execution
       beforeEach(async () => {
+        transferResources.push(capacitor.address);
+        transferResources.push(parameters.address);
+
         // ===== EPOCH 0
         const startingEpoch = await gatekeeper.currentEpochNumber();
         await token.approve(gatekeeper.address, toPanBase('100000'), { from: creator });
@@ -613,7 +617,7 @@ contract('integration', (accounts) => {
         assert(storedGatekeeper !== newGatekeeper.address, 'Wrong gatekeeper address');
 
         try {
-          await newGatekeeper.init({ from: creator });
+          await newGatekeeper.init(transferResources, { from: creator });
         } catch (error) {
           expectRevert(error);
           expectErrorLike(error, 'Not ready');
@@ -639,7 +643,7 @@ contract('integration', (accounts) => {
 
         // activate new gatekeeper
         utils.pMap(p => parameters.setValue(p), oldGovernancePermissions);
-        await newGatekeeper.init({ from: creator });
+        await newGatekeeper.init(transferResources, { from: creator });
 
         // stake
         try {
@@ -672,7 +676,7 @@ contract('integration', (accounts) => {
 
         // activate new gatekeeper
         utils.pMap(p => parameters.setValue(p), oldGovernancePermissions);
-        await newGatekeeper.init({ from: creator });
+        await newGatekeeper.init(transferResources, { from: creator });
 
         // try to finalize
         await goToPeriod(gatekeeper, epochPeriods.END);
@@ -697,7 +701,7 @@ contract('integration', (accounts) => {
 
         it('should do an upgrade of the gatekeeper while migrating existing state', async () => {
           // migrate state
-          await newGatekeeper.init({ from: creator });
+          await newGatekeeper.init(transferResources, { from: creator });
 
           // check state
           const epochNumber = await newGatekeeper.currentEpochNumber();

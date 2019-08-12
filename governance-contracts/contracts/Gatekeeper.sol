@@ -2,7 +2,7 @@ pragma solidity 0.5.10;
 pragma experimental ABIEncoderV2;
 
 import "./ParameterStore.sol";
-import "./TokenCapacitor.sol";
+import "./IDonationReceiver.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
@@ -835,8 +835,8 @@ contract Gatekeeper {
         uint256 endIndex = startIndex.add(count);
         require(endIndex <= numSlates, "Invalid end index");
 
-        address tokenCapacitorAddress = parameters.getAsAddress("tokenCapacitorAddress");
-        TokenCapacitor capacitor = TokenCapacitor(tokenCapacitorAddress);
+        address stakeDonationAddress = parameters.getAsAddress("stakeDonationAddress");
+        IDonationReceiver donationReceiver = IDonationReceiver(stakeDonationAddress);
         bytes memory stakeDonationHash = "Qmepxeh4KVkyHYgt3vTjmodB5RKZgUEmdohBZ37oKXCUCm";
 
         for (uint256 i = startIndex; i < endIndex; i++) {
@@ -849,10 +849,10 @@ contract Gatekeeper {
                 // Only donate for non-zero amounts
                 if (donationAmount > 0) {
                     require(
-                        token.approve(address(capacitor), donationAmount),
+                        token.approve(address(donationReceiver), donationAmount),
                         "Failed to approve Gatekeeper to spend tokens"
                     );
-                    capacitor.donate(address(this), donationAmount, stakeDonationHash);
+                    donationReceiver.donate(address(this), donationAmount, stakeDonationHash);
                 }
             }
         }

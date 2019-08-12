@@ -3,11 +3,12 @@ pragma experimental ABIEncoderV2;
 
 import "./Gatekeeper.sol";
 import "./ParameterStore.sol";
+import "./IDonationReceiver.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 
-contract TokenCapacitor {
+contract TokenCapacitor is IDonationReceiver {
     // EVENTS
     event ProposalCreated(
         uint256 proposalID,
@@ -18,7 +19,6 @@ contract TokenCapacitor {
         bytes metadataHash
     );
     event TokensWithdrawn(uint proposalID, address indexed to, uint numTokens);
-    event Donation(address indexed payer, address indexed donor, uint numTokens, bytes metadataHash);
     event BalancesUpdated(
         uint unlockedBalance,
         uint lastLockedBalance,

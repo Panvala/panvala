@@ -37,14 +37,14 @@ contract UpgradedGatekeeper is Gatekeeper {
         startTime = previousGatekeeper.startTime();
     }
 
-    function init() public {
+    function init(address[] memory resources) public {
         require(initialized == false, "Already initialized");
 
         // Do not allow initialization until this gatekeeper has been accepted
         address gatekeeperAddress = parameters.getAsAddress("gatekeeperAddress");
         require(gatekeeperAddress == address(this), "Not ready");
 
-        migrateState();
+        migrateState(resources);
 
         initialized = true;
     }
@@ -63,7 +63,7 @@ contract UpgradedGatekeeper is Gatekeeper {
     /**
      @dev Migrate state from the previous gatekeeper
      */
-    function migrateState() private {
+    function migrateState(address[] memory resources) private {
         // Continue from where the previous one left off
         // Note that some of the slates and requests will be uninitialized
         // If you were to use this pattern, then you would need to make sure to get the slates from
@@ -72,9 +72,9 @@ contract UpgradedGatekeeper is Gatekeeper {
         requests.length = previousGatekeeper.requestCount();
 
         // Handle contests we care about
-        address capacitor = parameters.getAsAddress("tokenCapacitorAddress");
-        migrateContest(epochToTransfer, capacitor);
-        migrateContest(epochToTransfer, address(parameters));
+        for (uint i = 0; i < resources.length; i++) {
+            migrateContest(epochToTransfer, resources[i]);
+        }
     }
 
     /**
