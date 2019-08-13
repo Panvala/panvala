@@ -171,12 +171,14 @@ contract('ParameterStore', (accounts) => {
 
     beforeEach(async () => {
       // deploy
-      ({ parameters, gatekeeper } = await utils.newPanvala({ from: creator }));
+      ({ parameters, gatekeeper } = await utils.newPanvala({ from: creator, init: false }));
       await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
     });
 
     it('it should create a proposal to change a parameter', async () => {
-      const key = 'someKey';
+      await parameters.init({ from: creator });
+
+      const key = 'somekey';
       const value = 5;
       const encodedValue = abiEncode('uint256', value);
       const metadataHash = utils.createMultihash('my request data');
@@ -232,6 +234,8 @@ contract('ParameterStore', (accounts) => {
 
     // rejection criteria
     it('should not allow creation of a proposal with an empty metadataHash', async () => {
+      await parameters.init({ from: creator });
+
       const key = 'someKey';
       const value = 5;
       const encodedValue = abiEncode('uint256', value);
@@ -252,8 +256,34 @@ contract('ParameterStore', (accounts) => {
       assert.fail('allowed creation of a proposal with an empty metadataHash');
     });
 
+    it('should not allow creation of a proposal before initialization', async () => {
+      const key = 'myKey';
+      const value = 5;
+      const encodedValue = abiEncode('uint256', value);
+      const metadataHash = utils.createMultihash('uninitialized parameter store proposal');
+
+      const initialized = await parameters.initialized();
+      assert(initialized === false, 'Should not be initialized');
+
+      try {
+        await parameters.createProposal(
+          key,
+          encodedValue,
+          utils.asBytes(metadataHash),
+          { from: creator },
+        );
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'Contract has not yet been initialized');
+        return;
+      }
+      assert.fail('allowed creation of a proposal before initialization');
+    });
+
     describe('createManyProposals', () => {
       it('should create proposals and emit an event for each', async () => {
+        await parameters.init({ from: creator });
+
         const keys = ['number1', 'number2', 'address'];
         const values = [
           abiEncode('uint256', 5),
@@ -324,7 +354,7 @@ contract('ParameterStore', (accounts) => {
       snapshotID = await utils.evm.snapshot();
 
       ({ gatekeeper, token, parameters } = await utils.newPanvala({
-        from: creator,
+        from: creator, init: true,
       }));
 
       epochNumber = await gatekeeper.currentEpochNumber();

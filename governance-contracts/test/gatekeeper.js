@@ -1108,10 +1108,6 @@ contract('Gatekeeper', (accounts) => {
       }
       assert.fail('allowed creation of a request after the deadline passed (reveal vote stage)');
     });
-
-    afterEach(async () => {
-      await utils.evm.revert(snapshotID);
-    });
   });
 
   describe('depositVoteTokens', () => {
@@ -1695,6 +1691,7 @@ contract('Gatekeeper', (accounts) => {
       } = await utils.newPanvala({
         from: creator,
       }));
+
       epochNumber = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
@@ -2126,6 +2123,7 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, capacitor, token, parameters,
       } = await utils.newPanvala({ from: creator }));
+
       epochNumber = await gatekeeper.currentEpochNumber();
       GRANT = await getResource(gatekeeper, 'GRANT');
       GOVERNANCE = await getResource(gatekeeper, 'GOVERNANCE');
@@ -2346,6 +2344,7 @@ contract('Gatekeeper', (accounts) => {
       } = await utils.newPanvala({
         from: creator,
       }));
+
       epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
@@ -2499,6 +2498,7 @@ contract('Gatekeeper', (accounts) => {
       ({
         gatekeeper, token, capacitor, parameters: parameterStore,
       } = await utils.newPanvala({ from: creator }));
+
       epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');

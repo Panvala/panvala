@@ -24,7 +24,7 @@ contract ParameterStore {
     using SafeMath for uint256;
 
     address owner;
-    bool initialized;
+    bool public initialized;
     mapping(bytes32 => bytes32) public params;
 
     // A proposal to change a value
@@ -150,6 +150,7 @@ contract ParameterStore {
      */
     function createProposal(string calldata key, bytes32 value, bytes calldata metadataHash) external returns(uint256) {
         require(metadataHash.length > 0, "metadataHash cannot be empty");
+        require(initialized, "Contract has not yet been initialized");
 
         Gatekeeper gatekeeper = _gatekeeper();
         return _createProposal(gatekeeper, key, value, metadataHash);
@@ -187,6 +188,7 @@ contract ParameterStore {
      */
     function setValue(uint256 proposalID) public returns(bool) {
         require(proposalID < proposalCount(), "Invalid proposalID");
+        require(initialized, "Contract has not yet been initialized");
 
         Proposal memory p = proposals[proposalID];
         Gatekeeper gatekeeper = Gatekeeper(p.gatekeeper);
