@@ -507,11 +507,13 @@ contract('integration', (accounts) => {
       const gatekeeperKey = 'gatekeeperAddress';
       const transferResources = [];
 
-      // go through upgrade up until point before governance proposal execution
-      beforeEach(async () => {
+      before(() => {
         transferResources.push(capacitor.address);
         transferResources.push(parameters.address);
+      });
 
+      // go through upgrade up until point before governance proposal execution
+      beforeEach(async () => {
         // ===== EPOCH 0
         const startingEpoch = await gatekeeper.currentEpochNumber();
         await token.approve(gatekeeper.address, toPanBase('100000'), { from: creator });
