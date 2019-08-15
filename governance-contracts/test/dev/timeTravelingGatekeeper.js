@@ -144,7 +144,7 @@ contract('TimeTravelGatekeeper', (accounts) => {
         });
       } catch (error) {
         expectRevert(error);
-        expectErrorLike(error, 'deadline passed');
+        expectErrorLike(error, 'Submission period not active');
       }
 
       // time travel

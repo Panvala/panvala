@@ -30,12 +30,21 @@ const testProvider = new ethers.providers.JsonRpcProvider('http://localhost:8545
 const ONE_WEEK = new BN('604800');
 const timing = {
   ONE_SECOND: new BN(1),
+  ONE_HOUR: new BN(3600),
   ONE_DAY: new BN(3600 * 24),
   ONE_WEEK,
   EPOCH_LENGTH: ONE_WEEK.mul(new BN(13)),
+  SLATE_SUBMISSION_PERIOD_START: ONE_WEEK,
   VOTING_PERIOD_START: ONE_WEEK.mul(new BN(11)),
   COMMIT_PERIOD_LENGTH: ONE_WEEK,
   REVEAL_PERIOD_LENGTH: ONE_WEEK,
+};
+
+const epochPeriods = {
+  SUBMISSION: 0,
+  COMMIT: 1,
+  REVEAL: 2,
+  END: 3,
 };
 
 const ten = new BN(10);
@@ -136,6 +145,28 @@ async function goTo(timestamp) {
   // console.log(timestamp.toNumber(), now);
   const adjustment = timestamp.sub(new BN(now));
   await increaseTime(adjustment);
+}
+
+async function goToPeriod(gatekeeper, period) {
+  let target;
+  const epochNumber = await gatekeeper.currentEpochNumber();
+  const epochStart = await gatekeeper.epochStart(epochNumber);
+  if (period === epochPeriods.SUBMISSION) {
+    target = epochStart.add(timing.SLATE_SUBMISSION_PERIOD_START);
+  } else if (period === epochPeriods.COMMIT) {
+    target = epochStart.add(timing.VOTING_PERIOD_START);
+  } else if (period === epochPeriods.REVEAL) {
+    target = epochStart.add(timing.VOTING_PERIOD_START).add(timing.COMMIT_PERIOD_LENGTH);
+  } else if (period === epochPeriods.END) {
+    target = epochStart
+      .add(timing.VOTING_PERIOD_START)
+      .add(timing.COMMIT_PERIOD_LENGTH)
+      .add(timing.REVEAL_PERIOD_LENGTH);
+  } else {
+    throw new Error('invalid epoch period');
+  }
+
+  await goTo(target);
 }
 
 /**
@@ -319,7 +350,12 @@ async function newGatekeeper(options) {
  * @param {*} options from, startTime, parameterStoreAddress, tokenAddress, initialUnlockedBalance
  */
 async function newPanvala(options) {
-  const { from: creator, initialTokens, initialUnlockedBalance = toPanBase('0') } = options;
+  const {
+    from: creator,
+    initialTokens,
+    initialUnlockedBalance = toPanBase('0'),
+    init = true,
+  } = options;
   assert(typeof initialTokens === 'undefined', 'should not have key initialTokens');
 
   const gatekeeper = await newGatekeeper({ ...options, init: false });
@@ -335,7 +371,7 @@ async function newPanvala(options) {
   );
 
   await parameters.setInitialValue(
-    'tokenCapacitorAddress',
+    'stakeDonationAddress',
     abiCoder.encode(['address'], [capacitor.address]),
     { from: creator },
   );
@@ -343,6 +379,10 @@ async function newPanvala(options) {
   // console.log(`Gatekeeper: ${gatekeeper.address}`);
   // console.log(`TokenCapacitor: ${capacitor.address}`);
   // console.log(`Token: ${token.address}`);
+
+  if (init) {
+    await parameters.init({ from: creator });
+  }
 
   return {
     gatekeeper, parameters, capacitor, token,
@@ -483,7 +523,8 @@ async function getResource(gatekeeper, name) {
 
   if (name === 'GRANT') {
     const parameterStore = await ParameterStore.at(parametersAddress);
-    source = await parameterStore.getAsAddress('tokenCapacitorAddress');
+    // NOTE: this is a hack, since in the future, this isn't guaranteed to be the token capacitor
+    source = await parameterStore.getAsAddress('stakeDonationAddress');
   } else if (name === 'GOVERNANCE') {
     source = parametersAddress;
   } else {
@@ -596,21 +637,23 @@ const ContestStatus = {
   Empty: '0',
   NoContest: '1',
   Active: '2',
-  RunoffPending: '3',
-  Finalized: '4',
+  Finalized: '3',
 };
 
 const SlateStatus = {
   Unstaked: '0',
   Staked: '1',
-  Rejected: '2',
-  Accepted: '3',
+  Accepted: '2',
 };
 
 
 async function getLosingSlates(gatekeeper, slateIDs) {
   const ls = await Promise.all(slateIDs.map(id => gatekeeper.slates(id)));
-  return ls.filter(s => s.status.toString() === SlateStatus.Rejected);
+  return ls.filter(s => s.status.toString() !== SlateStatus.Accepted);
+}
+
+function isRejected(slateStatus) {
+  return slateStatus.toString() !== SlateStatus.Accepted;
 }
 
 function loadJSON(filePath) {
@@ -642,14 +685,32 @@ async function capacitorBalances(capacitor) {
   return { unlocked, locked };
 }
 
+/**
+ * Get capacitor lock time adjusted to the initial lock time
+ * @param {BN} initialLockedTime
+ * @param {number) time
+ */
+function adjustedLockTime(initialLockedTime, time) {
+  const elapsedTime = (new BN(time)).sub(initialLockedTime);
+  const adjusted = elapsedTime.sub(elapsedTime.mod(timing.ONE_DAY));
+  return initialLockedTime.add(adjusted);
+}
+
 const utils = {
   expectRevert,
   expectEvents,
   expectErrorLike,
   zeroAddress: ethUtils.zeroAddress,
   BN,
+  epochPeriods,
   evm: {
-    increaseTime, snapshot: evmSnapshot, revert: evmRevert, timestamp: blockTime, futureTime, goTo,
+    increaseTime,
+    snapshot: evmSnapshot,
+    revert: evmRevert,
+    timestamp: blockTime,
+    futureTime,
+    goTo,
+    goToPeriod,
   },
   createMultihash,
   newGatekeeper,
@@ -689,12 +750,14 @@ const utils = {
   getVotes,
   categories: proposalCategories,
   getLosingSlates,
+  isRejected,
   timing,
   loadJSON,
   loadDecayMultipliers,
   loadTokenReleases,
   capacitorBalances,
   chargeCapacitor,
+  adjustedLockTime,
 };
 
 module.exports = utils;

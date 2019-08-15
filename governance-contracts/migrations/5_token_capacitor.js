@@ -28,7 +28,7 @@ module.exports = async function(deployer, _, accounts) {
   );
 
   await parameters.setInitialValue(
-    'tokenCapacitorAddress',
+    'stakeDonationAddress',
     abiEncode('address', capacitor.address) // eslint-disable-line comma-dangle
   );
 

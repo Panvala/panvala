@@ -17,15 +17,23 @@ const {
   timing,
   loadDecayMultipliers,
   toPanBase,
+  epochPeriods,
 } = utils;
 
-const { increaseTime } = utils.evm;
+const { increaseTime, goToPeriod } = utils.evm;
 
 
 contract('TokenCapacitor', (accounts) => {
   const multipliers = loadDecayMultipliers();
   const getMultiplier = days => new BN(multipliers[days]);
   const halfLife = 1456;
+  let snapshotID;
+
+  beforeEach(async () => {
+    snapshotID = await utils.evm.snapshot();
+  });
+
+  afterEach(async () => utils.evm.revert(snapshotID));
 
   describe('constructor', () => {
     const [creator] = accounts;
@@ -53,6 +61,8 @@ contract('TokenCapacitor', (accounts) => {
         },
       );
 
+      const initialLockedTime = await capacitor.lastLockedTime();
+
       // ParameterStore was connected
       const connectedParameterStore = await capacitor.parameters();
       assert.strictEqual(connectedParameterStore, parameters.address);
@@ -71,8 +81,9 @@ contract('TokenCapacitor', (accounts) => {
       assert.strictEqual(locked.toString(), '0', 'Wrong locked');
 
       const now = await utils.evm.timestamp();
+      const expectedLockedTime = utils.adjustedLockTime(initialLockedTime, new BN(now));
       const lastLockedTime = await capacitor.lastLockedTime();
-      assert.strictEqual(lastLockedTime.toString(), now.toString(), 'Wrong last locked');
+      assert.strictEqual(lastLockedTime.toString(), expectedLockedTime.toString(), 'Wrong last locked');
 
       const releasedTokens = await capacitor.lifetimeReleasedTokens();
       assert.strictEqual(releasedTokens.toString(), '0', 'Wrong released');
@@ -134,6 +145,7 @@ contract('TokenCapacitor', (accounts) => {
 
     beforeEach(async () => {
       ({ capacitor, gatekeeper } = await utils.newPanvala({ from: creator }));
+      await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
     });
 
     it('should create a proposal to the appropriate beneficiary', async () => {
@@ -226,9 +238,11 @@ contract('TokenCapacitor', (accounts) => {
   describe('createManyProposals', () => {
     const [creator, proposer, beneficiary1, beneficiary2] = accounts;
     let capacitor;
+    let gatekeeper;
 
     beforeEach(async () => {
-      ({ capacitor } = await utils.newPanvala({ from: creator }));
+      ({ capacitor, gatekeeper } = await utils.newPanvala({ from: creator }));
+      await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
     });
 
     it('should create proposals and emit an event for each', async () => {
@@ -283,7 +297,6 @@ contract('TokenCapacitor', (accounts) => {
     let gatekeeper;
     let token;
     let capacitor;
-    let snapshotID;
 
     const capacitorSupply = '50000000';
     let epochNumber;
@@ -296,8 +309,6 @@ contract('TokenCapacitor', (accounts) => {
     let loserPermissions;
 
     beforeEach(async () => {
-      snapshotID = await utils.evm.snapshot();
-
       ({ gatekeeper, token, capacitor } = await utils.newPanvala({ from: creator }));
       epochNumber = await gatekeeper.currentEpochNumber();
       const GRANT = await utils.getResource(gatekeeper, 'GRANT');
@@ -316,6 +327,7 @@ contract('TokenCapacitor', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
 
       // create simple ballot with just grants
+      await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
       proposals1 = [
         { to: alice, tokens: '1000', metadataHash: utils.createMultihash('grant for Alice') },
         { to: alice, tokens: '1000', metadataHash: utils.createMultihash('another grant for Alice') },
@@ -352,7 +364,7 @@ contract('TokenCapacitor', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender2 });
 
       // Commit ballots
-      await increaseTime(timing.VOTING_PERIOD_START);
+      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
       const aliceReveal = await voteSingle(gatekeeper, alice, GRANT, 0, 1, '1000', '1234');
       const bobReveal = await voteSingle(gatekeeper, bob, GRANT, 0, 1, '1000', '5678');
       const carolReveal = await voteSingle(gatekeeper, carol, GRANT, 1, 0, '1000', '9012');
@@ -518,8 +530,6 @@ contract('TokenCapacitor', (accounts) => {
       }
       assert.fail('Allowed withdrawal of more tokens than have been unlocked');
     });
-
-    afterEach(async () => utils.evm.revert(snapshotID));
   });
 
   describe('donate', () => {
@@ -770,17 +780,14 @@ contract('TokenCapacitor', (accounts) => {
       let capacitor;
       let token;
       let scale;
-      let snapshotID;
-
-      before(async () => {
-        ({ token, capacitor } = await utils.newPanvala({ from: creator }));
-        await token.transfer(capacitor.address, supply, { from: creator });
-        await capacitor.updateBalances({ from: creator });
-        scale = await capacitor.scale();
-      });
+      let initialLockedTime;
 
       beforeEach(async () => {
-        snapshotID = await utils.evm.snapshot();
+        ({ token, capacitor } = await utils.newPanvala({ from: creator }));
+        initialLockedTime = await capacitor.lastLockedTime();
+
+        await utils.chargeCapacitor(capacitor, supply, token, { from: creator });
+        scale = await capacitor.SCALE();
       });
 
       const tests = [
@@ -790,11 +797,19 @@ contract('TokenCapacitor', (accounts) => {
         { label: 'a half life', days: halfLife },
       ];
 
+      // Calculate adjusted update time since the contract doesn't necessarily
+      // "consume" all the time available when updating
+      const adjustedLockTime = (time) => {
+        const elapsedTime = (new BN(time)).sub(initialLockedTime);
+        const adjusted = elapsedTime.sub(elapsedTime.mod(timing.ONE_DAY));
+        return initialLockedTime.add(adjusted);
+      };
+
       tests.forEach((test) => {
         it(`should decrease the locked balance and increase the unlocked balance properly for ${
           test.label
         }`, async () => {
-          const initial = new BN(supply);
+          const initial = new BN(toPanBase(supply));
           assert.strictEqual(
             (await capacitor.lastLockedBalance()).toString(),
             initial.toString(),
@@ -813,6 +828,7 @@ contract('TokenCapacitor', (accounts) => {
           const expectedUnlocked = initial.sub(expectedLocked);
           const now = await utils.evm.timestamp();
           const balance = await token.balanceOf(capacitor.address);
+          const expectedLastLocked = adjustedLockTime(now);
 
           const {
             unlockedBalance: emittedUnlocked,
@@ -822,7 +838,7 @@ contract('TokenCapacitor', (accounts) => {
           } = receipt.logs[0].args;
           assert.strictEqual(emittedLocked.toString(), expectedLocked.toString(), 'Emitted wrong locked');
           assert.strictEqual(emittedUnlocked.toString(), expectedUnlocked.toString(), 'Emitted wrong unlocked');
-          assert.strictEqual(emittedTime.toString(), now.toString(), 'Emitted wrong time');
+          assert.strictEqual(emittedTime.toString(), expectedLastLocked.toString(), 'Emitted wrong time');
           assert.strictEqual(totalBalance.toString(), balance.toString(), 'Emitted wrong balance');
 
           const unlockedBalance = await capacitor.unlockedBalance();
@@ -841,14 +857,14 @@ contract('TokenCapacitor', (accounts) => {
           );
           assert.strictEqual(
             lastLockedTime.toString(),
-            now.toString(),
+            expectedLastLocked.toString(),
             'Locked time should have been now',
           );
         });
       });
 
       it('should increase the locked balance if the balance increases outside `donate()`', async () => {
-        const increase = new BN(10000);
+        const increase = new BN(toPanBase(10000));
         await token.transfer(capacitor.address, increase, { from: creator });
 
         const {
@@ -866,39 +882,102 @@ contract('TokenCapacitor', (accounts) => {
         assert.strictEqual(locked.toString(), expectedLocked.toString());
       });
 
-      it('should revert if more than 4096 days have passed since the last update', async () => {
+      it('should still update if more than 4096 days have passed since the last update', async () => {
         const days = 4096;
+
+        const initialLocked = await capacitor.lastLockedBalance();
+        const expectedLocked = initialLocked.mul(getMultiplier(4095)).div(scale)
+          .mul(getMultiplier(1)).div(scale);
+        const balance = await token.balanceOf(capacitor.address);
+        const expectedUnlocked = balance.sub(expectedLocked);
+
         // move forward
         const offset = new BN(timing.ONE_DAY).muln(days);
         await increaseTime(offset);
 
-        try {
-          await capacitor.updateBalances({ from: creator });
-        } catch (error) {
-          expectRevert(error);
-          expectErrorLike(error, 'interval too large');
-          return;
-        }
-        assert.fail(`Called updateBalances() after more than ${days} days`);
+        await capacitor.updateBalances({ from: creator });
+        const { locked, unlocked } = await utils.capacitorBalances(capacitor);
+
+        assert.strictEqual(locked.toString(), expectedLocked.toString(), 'Wrong locked');
+        assert.strictEqual(unlocked.toString(), expectedUnlocked.toString(), 'Wrong unlocked');
       });
 
-      it('should allow calls to updateBalancesUntil() to catch up after more than 4096 days', async () => {
-        const days = 6000;
-        const start = await utils.evm.timestamp();
-
-        // move forward
+      it('should still update when a huge amount of time has passed since the last update', async () => {
+        const days = 365000;
         const offset = new BN(timing.ONE_DAY).muln(days);
         await increaseTime(offset);
 
-        // catch up
-        const intermediateTime = (new BN(start)).add(timing.ONE_DAY.muln(4095));
-        await capacitor.updateBalancesUntil(intermediateTime, { from: creator });
-
-        // Should be able to update again
         await capacitor.updateBalances({ from: creator });
       });
 
-      afterEach(async () => utils.evm.revert(snapshotID));
+      it('should not unlock tokens if fewer than 24 hours have passed', async () => {
+        const { unlocked: initialUnlocked } = await utils.capacitorBalances(capacitor);
+
+        const targetTime = initialLockedTime.add(timing.ONE_HOUR.muln(23));
+        await utils.evm.goTo(targetTime);
+
+        await capacitor.updateBalances();
+
+        const { unlocked } = await utils.capacitorBalances(capacitor);
+        assert.strictEqual(unlocked.toString(), initialUnlocked.toString(), 'Tokens were unlocked');
+      });
+
+      it('should unlock tokens after 24 hours of hourly donations', async () => {
+        const donor = creator;
+        const payer = creator;
+
+        const numDonations = new BN(24);
+        const numTokens = toPanBase('100');
+
+        // Allocate tokens
+        const totalDonation = numDonations.mul(new BN(numTokens));
+        await token.approve(capacitor.address, totalDonation, { from: payer });
+
+        // Do initial update
+        const metadataHash = utils.createMultihash('My hourly donation');
+        const { unlocked } = await utils.capacitorBalances(capacitor);
+
+        // go forward on hour and donate
+        const moveAndDonate = async (i) => {
+          const hour = i + 1;
+          const targetTime = initialLockedTime.add(timing.ONE_HOUR.muln(hour));
+          await utils.evm.goTo(targetTime);
+
+          // console.log('donation', i);
+          await capacitor.donate(donor, numTokens, utils.asBytes(metadataHash), {
+            from: payer,
+          });
+          const { unlocked: currentUnlocked } = await utils.capacitorBalances(capacitor);
+          assert.strictEqual(
+            currentUnlocked.toString(),
+            unlocked.toString(),
+            `Hour ${hour}: Should not unlock tokens`,
+          );
+        };
+
+        // do 23 hourly donations - unlocked balance should not have changed
+        const donationActions = utils
+          .range(numDonations.subn(1).toNumber())
+          .map(i => () => moveAndDonate(i));
+
+        const hourlyDonations = utils.chain(donationActions);
+        await hourlyDonations;
+
+        const { unlocked: intermediateUnlocked } = await utils.capacitorBalances(capacitor);
+        assert.strictEqual(
+          intermediateUnlocked.toString(),
+          unlocked.toString(),
+          'Should not have unlocked any tokens',
+        );
+
+        // do a 24th one
+        await increaseTime(timing.ONE_HOUR);
+        await capacitor.donate(donor, numTokens, utils.asBytes(metadataHash), { from: payer });
+
+        // Make sure some tokens have been unlocked
+        const { unlocked: finalUnlocked } = await utils.capacitorBalances(capacitor);
+        assert(finalUnlocked.gt(unlocked), 'Tokens should have been unlocked');
+      });
     });
 
     describe('projectedLockedBalance', () => {
@@ -912,7 +991,7 @@ contract('TokenCapacitor', (accounts) => {
         ({ token, capacitor } = await utils.newPanvala({ from: creator }));
         await token.transfer(capacitor.address, supply, { from: creator });
         await capacitor.updateBalances({ from: creator });
-        scale = await capacitor.scale();
+        scale = await capacitor.SCALE();
       });
 
       const tests = [
@@ -935,8 +1014,8 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should revert if time is before lastLockedTime', async () => {
-        const now = await utils.evm.timestamp();
-        const time = (new BN(now)).sub(timing.ONE_SECOND);
+        const lastLockedTime = await capacitor.lastLockedTime();
+        const time = lastLockedTime.sub(timing.ONE_SECOND);
 
         try {
           await capacitor.projectedLockedBalance(time);
@@ -992,7 +1071,7 @@ contract('TokenCapacitor', (accounts) => {
         await token.transfer(capacitor.address, supply, { from: creator });
         await capacitor.updateBalances();
 
-        scale = await capacitor.scale();
+        scale = await capacitor.SCALE();
       });
 
       const tests = [
@@ -1016,8 +1095,8 @@ contract('TokenCapacitor', (accounts) => {
       });
 
       it('should revert if time is before lastLockedTime', async () => {
-        const now = await utils.evm.timestamp();
-        const time = (new BN(now)).sub(timing.ONE_SECOND);
+        const lastLockedTime = await capacitor.lastLockedTime();
+        const time = lastLockedTime.sub(timing.ONE_SECOND);
 
         try {
           await capacitor.projectedUnlockedBalance(time);
