@@ -43,7 +43,7 @@ async function revealSingle(gatekeeper, ballot) {
       VoteChoices.map(choice => choice.resource),
       VoteChoices.map(choice => choice.firstChoice),
       VoteChoices.map(choice => choice.secondChoice),
-      salt,
+      salt
     );
     console.log(tx);
     const receipt = await tx.wait();

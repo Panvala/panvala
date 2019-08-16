@@ -55,4 +55,5 @@ export interface ISaveSlate {
   slateID: string;
   metadataHash: string;
   email?: string;
+  proposalInfo: any;
 }

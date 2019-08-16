@@ -172,6 +172,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
         slateID: slate.slateID,
         metadataHash: slateMetadataHash,
         email: values.email,
+        proposalInfo,
       };
 
       errorMessage = 'problem saving slate info.';

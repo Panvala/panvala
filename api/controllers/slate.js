@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator/check');
-
+const ipfs = require('../utils/ipfs');
 const { getAllSlates } = require('../utils/slates');
-const { Slate } = require('../models');
+const { IpfsMetadata, Slate } = require('../models');
 
 module.exports = {
   /**
@@ -35,9 +35,50 @@ module.exports = {
       });
     }
 
-    const data = req.body;
+    const { slateID, metadataHash: multihash, email, proposalInfo } = req.body;
 
-    Slate.create(data)
+    if (proposalInfo.multihashes.length !== proposalInfo.metadata.length) {
+      // prettier-ignore
+      res.status(400).send('Proposal multihashes did not have the same length as proposal metadata');
+    }
+
+    // write proposal metadatas to db, but don't duplicate
+    await Promise.all(
+      proposalInfo.metadata.map(async (proposalMetadata, index) => {
+        await IpfsMetadata.findOrCreate({
+          where: {
+            multihash: proposalInfo.multihashes[index],
+          },
+          defaults: {
+            multihash: proposalInfo.multihashes[index],
+            data: proposalMetadata,
+          },
+        });
+      })
+    );
+
+    if (process.env.NODE_ENV !== 'test') {
+      // this could be problematic
+      // maybe we should move all `ipfs.add` logic to the api (for adding slate metadata, that would be here)
+      const slateMetadata = await ipfs.get(multihash, { json: true });
+
+      // write slate metadata to db, but don't duplicate
+      await IpfsMetadata.findOrCreate({
+        where: {
+          multihash,
+        },
+        defaults: {
+          multihash,
+          data: slateMetadata,
+        },
+      });
+    }
+
+    Slate.create({
+      slateID,
+      metadataHash: multihash,
+      email,
+    })
       .then(s => {
         res.send(s);
       })

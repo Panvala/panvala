@@ -328,6 +328,7 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, router }) => {
             slateID: slate.slateID,
             metadataHash: slateMetadataHash,
             email: values.email,
+            proposalInfo,
           };
 
           // api should handle updating, not just adding

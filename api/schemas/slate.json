@@ -20,6 +20,10 @@
             "description": "The slate recommender's email",
             "type": "string",
             "format": "email"
+        },
+        "proposalInfo": {
+            "description": "The slate's proposal metadatas",
+            "type": "object"
         }
     },
     "required": ["slateID", "metadataHash"]
