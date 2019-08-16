@@ -7,7 +7,7 @@ const ParameterStore = artifacts.require('ParameterStore');
 const launchLptc = require('../scripts/launch_partners_token_capacitor');
 const utils = require('./utils');
 
-const { toPanBase } = utils;
+const { toPanBase, BN } = utils;
 
 contract('TokenCapacitor (Launch Partners)', (accounts) => {
   const [creator] = accounts;
@@ -30,6 +30,7 @@ contract('TokenCapacitor (Launch Partners)', (accounts) => {
     // deploy a new launch partners token capacitor
     const launchedLptc = await launchLptc();
     const lptc = await TokenCapacitor.at(launchedLptc.address);
+    const initialLockedTime = await lptc.lastLockedTime();
 
     // charge the newly deployed lptc
     console.log(`Charging lptc with ${baseInitialBalance} tokens`);
@@ -59,7 +60,8 @@ contract('TokenCapacitor (Launch Partners)', (accounts) => {
 
     const now = await utils.evm.timestamp();
     const lastLockedTime = await lptc.lastLockedTime();
-    assert.strictEqual(lastLockedTime.toString(), now.toString(), 'Wrong last locked');
+    const expectedLockedTime = utils.adjustedLockTime(initialLockedTime, new BN(now));
+    assert.strictEqual(lastLockedTime.toString(), expectedLockedTime.toString(), 'Wrong last locked');
 
     const releasedTokens = await lptc.lifetimeReleasedTokens();
     assert.strictEqual(releasedTokens.toString(), '0', 'Wrong released');

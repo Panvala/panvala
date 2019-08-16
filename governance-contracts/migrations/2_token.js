@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */
-/* globals artifacts assert */
+/* globals artifacts */
 const fs = require('fs');
+const assert = require('assert');
 
 const BasicToken = artifacts.require('BasicToken');
 
