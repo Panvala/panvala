@@ -1169,6 +1169,84 @@ contract('integration', (accounts) => {
       );
     });
 
+    it.skip('OUTPUT ONLY - deployment - calculate unlocked tokens', async () => {
+      const initialTokens = 49906303;
+      const initialBalance = new BN(toPanBase(initialTokens));
+      const scale = new BN(1e12);
+
+      // calculate the decay
+      const decay = (startingBalance, days) => lockedTokens(
+        multipliers, scale, startingBalance, days.toString(),
+      );
+
+      // calculate the number of days between two dates
+      const daysBetween = (start, end) => {
+        const diff = (end - start) / timing.ONE_DAY.toNumber();
+        return Math.floor(diff);
+      };
+
+      // eslint-disable-next-line no-unused-vars
+      const printTokens = (base, msg) => {
+        console.log(msg || '', base.toString());
+      };
+
+      // calculate the decay from system start to launch to determine the unlocked
+      // tokens to start with
+      const systemStart = utils.dateToTimestamp('2019-08-02 17:00:00Z');
+      const launchDate = '2019-08-23 17:00:00Z';
+      const launchDay = utils.dateToTimestamp(launchDate);
+      console.log('LAUNCH', launchDate);
+
+      const daysElapsed = daysBetween(systemStart, launchDay);
+      const lockedAtLaunch = decay(initialBalance, daysElapsed);
+      const initialUnlockedBalance = initialBalance.sub(lockedAtLaunch);
+      printTokens(initialUnlockedBalance, 'initial unlocked');
+
+      // Go to launch day and deploy capacitor with initial unlocked balance
+      await utils.evm.goTo(new BN(launchDay));
+      const {
+        gatekeeper, token, capacitor,
+      } = await utils.newPanvala({ startTime: systemStart, initialUnlockedBalance, from: creator });
+      // eslint-disable-next-line no-unused-vars
+      // const printBalances = balancePrinter(capacitor);
+
+      await utils.chargeCapacitor(capacitor, initialTokens, token, { from: creator });
+      // await printBalances('after launch');
+
+      const unlockedAtLaunch = await capacitor.unlockedBalance();
+      assert.strictEqual(
+        unlockedAtLaunch.toString(),
+        initialUnlockedBalance.toString(),
+        'Wrong unlocked',
+      );
+
+      const actualLockedAtLaunch = await capacitor.lastLockedBalance();
+      assert.strictEqual(
+        actualLockedAtLaunch.toString(),
+        lockedAtLaunch.toString(),
+        'Wrong initial locked',
+      );
+
+      const epochNumber = await gatekeeper.currentEpochNumber();
+
+      // withdraw the right amount after epoch end
+      // initial unlocked + decay from lockedAtLaunch
+      const nextEpochStart = await gatekeeper.epochStart(epochNumber.addn(1));
+      const projectedUnlocked = await capacitor.projectedUnlockedBalance(nextEpochStart);
+      printTokens(projectedUnlocked, 'projected unlocked');
+
+      // check that our calculation matches the projection
+      const lastLockedTime = await capacitor.lastLockedTime();
+      const days = daysBetween(lastLockedTime, nextEpochStart);
+      const lockedAtNextEpoch = decay(lockedAtLaunch, days);
+      const releasedAfterLaunch = lockedAtLaunch.sub(lockedAtNextEpoch);
+      const unlocked = initialUnlockedBalance.add(releasedAfterLaunch);
+      printTokens(lockedAtLaunch, 'locked at launch');
+      printTokens(lockedAtNextEpoch, 'locked at next epoch');
+      printTokens(releasedAfterLaunch, 'released after launch');
+      printTokens(unlocked, 'calculated unlocked');
+    });
+
     it('launch partner - should allow withdrawal of all tokens if they are all initially unlocked', async () => {
       const tokens = 10000000;
       const capacitorBalance = toPanBase(tokens);
