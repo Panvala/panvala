@@ -1,14 +1,26 @@
 import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 
+import Slates from '../../pages/slates';
 import Slate from '../../pages/slates/slate';
 import SlateHeader from '../SlateHeader';
 import SlateSidebar from '../SlateSidebar';
 import { ISlate } from '../../interfaces';
-import { currentBallot, unstakedSlate } from './data';
+import {
+  currentBallot,
+  unstakedSlate,
+  makeSlate,
+  makeBallot,
+  makeSlates,
+  rejectedGrantSlate,
+  acceptedGrantSlate,
+  rejectedGovSlate,
+  acceptedGovSlate,
+  proposals,
+} from './data';
 import { SlateStatus } from '../../utils/status';
 import { convertedToBaseUnits } from '../../utils/format';
-import { StoryWrapper } from './utils.stories';
+import { StoryWrapper, Wrapper } from './utils.stories';
 
 const unstakedIncumbent: ISlate = {
   ...unstakedSlate,
@@ -60,7 +72,7 @@ storiesOf('SlateSidebar', module)
     <SlateSidebar slate={stakedSlate} requiredStake={requiredStake} currentBallot={currentBallot} />
   ));
 
-storiesOf('Slate with contexts', module)
+storiesOf('Slate', module)
   .add('unstaked', () => (
     <StoryWrapper slates={[unstakedSlate]}>
       <Slate query={{ id: '0' }} />
@@ -90,4 +102,104 @@ storiesOf('Slate with contexts', module)
     <StoryWrapper slates={[rejectedSlate]}>
       <Slate query={{ id: '0' }} />
     </StoryWrapper>
-  ));
+  ))
+  .add('multiple proposals with small summaries', () => {
+    const proposal = proposals[0];
+    const p1 = {
+      ...proposal,
+      summary: 'A tiny summary',
+    };
+    const p2 = {
+      ...proposal,
+      summary: 'A small summary',
+    };
+    const newSlate = {
+      ...acceptedSlate,
+      proposals: [p1, p2],
+    };
+    return (
+      <StoryWrapper slates={[newSlate]} proposals={[p1, p2]}>
+        <Slate query={{ id: '0' }} />
+      </StoryWrapper>
+    );
+  });
+
+const ballot = makeBallot();
+
+storiesOf('Slates', module)
+  .add('only grants', () => {
+    const rejectedGrantSlates = makeSlates(4, rejectedGrantSlate);
+    return (
+      <Wrapper slates={[acceptedGrantSlate, ...rejectedGrantSlates]} ballot={ballot}>
+        <Slates />
+      </Wrapper>
+    );
+  })
+  .add('only governance', () => {
+    const rejectedGovSlates = makeSlates(2, rejectedGovSlate);
+    return (
+      <Wrapper slates={[acceptedGovSlate, ...rejectedGovSlates]} ballot={ballot}>
+        <Slates />
+      </Wrapper>
+    );
+  })
+  .add('multiple categories', () => {
+    const rejectedGrantSlates = makeSlates(4, rejectedGrantSlate);
+    const rejectedGovSlates = makeSlates(2, rejectedGovSlate);
+    return (
+      <Wrapper
+        slates={[
+          acceptedGrantSlate,
+          ...rejectedGrantSlates,
+          acceptedGovSlate,
+          ...rejectedGovSlates,
+        ]}
+        ballot={ballot}
+      >
+        <Slates />
+      </Wrapper>
+    );
+  })
+  .add('only old epochs', () => {
+    const newEpochBallot = makeBallot({ epochNumber: 420 });
+    const rejectedGrantSlates = makeSlates(4, rejectedGrantSlate);
+    const rejectedGovSlates = makeSlates(2, rejectedGovSlate);
+    return (
+      <Wrapper
+        slates={[
+          acceptedGrantSlate,
+          ...rejectedGrantSlates,
+          acceptedGovSlate,
+          ...rejectedGovSlates,
+        ]}
+        ballot={newEpochBallot}
+      >
+        <Slates />
+      </Wrapper>
+    );
+  })
+  .add('multiple epochs', () => {
+    const newEpochBallot = makeBallot({ epochNumber: 420 });
+    const newAcceptedSlate = makeSlate(
+      { epochNumber: 420, organization: 'New Slate Organization' },
+      acceptedGrantSlate
+    );
+    const newRejectedSlate = makeSlate({ status: 2 }, newAcceptedSlate);
+    const rejectedGrantSlates = makeSlates(4, rejectedGrantSlate);
+    const rejectedGovSlates = makeSlates(2, rejectedGovSlate);
+    return (
+      <Wrapper
+        slates={[
+          acceptedGrantSlate,
+          ...rejectedGrantSlates,
+          acceptedGovSlate,
+          ...rejectedGovSlates,
+          newAcceptedSlate,
+          newRejectedSlate,
+        ]}
+        ballot={newEpochBallot}
+      >
+        <Slates />
+      </Wrapper>
+    );
+  });

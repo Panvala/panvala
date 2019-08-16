@@ -30,6 +30,8 @@ spec:
           env:
             - name: NODE_ENV
               value: {{ .Values.node_env }}
+            - name: PANVALA_ENV
+              value: {{ .Values.panvala_env }}
             # Database values (from config map)
             - name: PRODUCTION_HOST
               valueFrom:
@@ -80,10 +82,14 @@ spec:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /ready
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

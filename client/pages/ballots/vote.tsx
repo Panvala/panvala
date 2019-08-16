@@ -29,6 +29,9 @@ import Actions from '../../components/Actions';
 import { loadState, LINKED_WALLETS } from '../../utils/localStorage';
 import { SLATE } from '../../utils/constants';
 import RouterLink from '../../components/RouterLink';
+import PendingTransaction from '../../components/PendingTransaction';
+import Box from '../../components/system/Box';
+import Flex from '../../components/system/Flex';
 
 const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
@@ -55,10 +58,10 @@ const BallotSection: React.FunctionComponent<ISectionProps> = ({
   };
 
   return (
-    <div className="pa4">
+    <Box p={4}>
       <SectionLabel>{title}</SectionLabel>
       <Label required>{'Select your first and second choice slate'}</Label>
-      <div className="flex flex-wrap mt3">
+      <Flex wrap="true" mt={3}>
         {slates.length > 0
           ? slates
               .filter(s => s.status === SlateStatus.Staked)
@@ -79,12 +82,12 @@ const BallotSection: React.FunctionComponent<ISectionProps> = ({
                   incumbent={slate.incumbent}
                   recommender={slate.organization}
                   verifiedRecommender={slate.verifiedRecommender}
-                  width={['100%', '100%', '50%', '50%', '33.33%']}
+                  width={['98%', '98%', '98%', '46%']}
                 />
               ))
           : null}
-      </div>
-    </div>
+      </Flex>
+    </Box>
   );
 };
 
@@ -108,6 +111,7 @@ const Vote: React.FC = () => {
   const [salt]: [string, any] = React.useState(randomSalt().toString());
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
+  const [txPending, setTxPending] = React.useState(false);
 
   // (GRANT | GOVERNANCE) => [slates]
   const availableSlates = {};
@@ -184,6 +188,8 @@ const Vote: React.FC = () => {
       }
     });
 
+    setTxPending(true);
+
     // Put choices in the format to submit
     const submitChoices = {};
     Object.keys(choices).forEach(category => {
@@ -255,6 +261,7 @@ const Vote: React.FC = () => {
             };
             await gatekeeper.functions.commitBallot(tokenHolder, commitHash, numTokens, txOptions);
 
+            setTxPending(false);
             setOpenModal(true);
             toast.success('Successfully submitted a ballot');
           }
@@ -273,11 +280,11 @@ const Vote: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
         <Image src="/static/check.svg" alt="vote submitted" width="80px" />
         <ModalTitle>{'Vote submitted.'}</ModalTitle>
-        <ModalDescription className="flex flex-wrap">
+        <ModalDescription>
           Your vote has been recorded. It won't be revealed publicly until the vote concludes.
         </ModalDescription>
         <RouterLink href="/ballots" as="/ballots">
@@ -285,9 +292,9 @@ const Vote: React.FC = () => {
         </RouterLink>
       </Modal>
 
-      <div className="flex justify-end">
+      <Flex justifyEnd>
         <Deadline ballot={currentBallot} route="ballots" />
-      </div>
+      </Flex>
       <CenteredTitle title="Submit Vote" />
       <CenteredWrapper>
         {grantSlates.length > 0 ? (
@@ -309,13 +316,11 @@ const Vote: React.FC = () => {
         ) : null}
 
         <Separator />
-        <Actions
-          handleClick={handleSubmitVote}
-          handleBack={null}
-          actionText={'Confirm and Submit'}
-        />
+        <Actions handleClick={handleSubmitVote} actionText={'Confirm and Submit'} />
       </CenteredWrapper>
-    </div>
+
+      <PendingTransaction isOpen={txPending} setOpen={setTxPending} />
+    </>
   );
 };
 

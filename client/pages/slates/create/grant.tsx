@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import { Formik, Form, FormikContext } from 'formik';
 import { TransactionResponse, TransactionReceipt } from 'ethers/providers';
 import { utils } from 'ethers';
+import { MaxUint256 } from 'ethers/constants';
+import { ContractReceipt } from 'ethers/contract';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
-import { CircularProgress, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import isEmpty from 'lodash/isEmpty';
+import { withRouter, SingletonRouter } from 'next/router';
 
 import { COLORS } from '../../../styles';
 import CenteredTitle from '../../../components/CenteredTitle';
@@ -29,6 +32,7 @@ import {
   ISlateMetadata,
   ISaveSlate,
   StatelessPage,
+  ISlate,
 } from '../../../interfaces';
 import { TokenCapacitor } from '../../../types';
 import {
@@ -36,9 +40,21 @@ import {
   sendStakeTokensTransaction,
 } from '../../../utils/transaction';
 import { ipfsAddObject } from '../../../utils/ipfs';
-import { convertedToBaseUnits, formatPanvalaUnits } from '../../../utils/format';
+import {
+  convertedToBaseUnits,
+  formatPanvalaUnits,
+  baseToConvertedUnits,
+} from '../../../utils/format';
 import { postSlate } from '../../../utils/api';
 import { PROPOSAL } from '../../../utils/constants';
+import Flex from '../../../components/system/Flex';
+import BackButton from '../../../components/BackButton';
+import Box from '../../../components/system/Box';
+import Text from '../../../components/system/Text';
+import { isSlateSubmittable } from '../../../utils/status';
+import { projectedAvailableTokens } from '../../../utils/tokens';
+import Loader from '../../../components/Loader';
+import PendingTransaction from '../../../components/PendingTransaction';
 
 const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
@@ -78,25 +94,68 @@ interface IFormValues {
 }
 interface IProps {
   query: any;
-  classes: any;
+  router?: SingletonRouter;
 }
 
-const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
+const CreateGrantSlate: StatelessPage<IProps> = ({ query, router }) => {
   // get proposals and eth context
-  const { proposals, onRefreshSlates, onRefreshCurrentBallot }: IMainContext = React.useContext(
-    MainContext
-  );
+  const {
+    slates,
+    slatesByID,
+    proposals,
+    currentBallot,
+    onRefreshSlates,
+    onRefreshCurrentBallot,
+  }: IMainContext = React.useContext(MainContext);
   const {
     account,
     contracts,
     onRefreshBalances,
     slateStakeAmount,
+    gkAllowance,
   }: IEthereumContext = React.useContext(EthereumContext);
+
+  React.useEffect(() => {
+    if (!isSlateSubmittable(currentBallot, 'GRANT')) {
+      toast.error('Grant slate submission deadline has passed');
+      router.push('/slates');
+    }
+  }, [currentBallot.slateSubmissionDeadline]);
 
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
   // pending tx loader
   const [txPending, setTxPending] = React.useState(false);
+  const [availableTokens, setAvailableTokens] = React.useState('0');
+
+  React.useEffect(() => {
+    async function getProjectedAvailableTokens() {
+      let winningSlate: ISlate | undefined;
+      const lastEpoch = currentBallot.epochNumber - 1;
+      try {
+        const winningSlateID = await contracts.gatekeeper.functions.getWinningSlate(
+          lastEpoch,
+          contracts.tokenCapacitor.address
+        );
+        winningSlate = slatesByID[winningSlateID.toString()];
+      } catch {} // if the query reverts, epoch hasn't been finalized yet
+
+      const tokens = await projectedAvailableTokens(
+        contracts.tokenCapacitor,
+        contracts.gatekeeper,
+        currentBallot.epochNumber,
+        winningSlate
+      );
+      setAvailableTokens(tokens.toString());
+    }
+    if (
+      !isEmpty(contracts.tokenCapacitor) &&
+      !isEmpty(contracts.gatekeeper) &&
+      contracts.tokenCapacitor.functions.hasOwnProperty('projectedUnlockedBalance')
+    ) {
+      getProjectedAvailableTokens();
+    }
+  }, [contracts, currentBallot.epochNumber, slates]);
 
   //  Submit proposals to the token capacitor and get corresponding request IDs
   async function getRequestIDs(proposalInfo: IProposalInfo, tokenCapacitor: TokenCapacitor) {
@@ -109,13 +168,13 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
 
     try {
       // send tx (pending)
+      setTxPending(true);
       const response: TransactionResponse = await sendCreateManyProposalsTransaction(
         tokenCapacitor,
         beneficiaries,
         tokenAmounts,
         proposalMultihashes
       );
-      setTxPending(true);
 
       // wait for tx to get mined
       const receipt: TransactionReceipt = await response.wait();
@@ -147,18 +206,18 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
         gasLimit: estimate.add('100000').toHexString(),
         gasPrice: utils.parseUnits('9.0', 'gwei'),
       };
+      setTxPending(true);
       const response = await (contracts.gatekeeper as any).functions.recommendSlate(
         contracts.tokenCapacitor.address,
         requestIDs,
         Buffer.from(metadataHash),
         txOptions
       );
-      setTxPending(true);
 
-      const receipt = await response.wait();
+      const receipt: ContractReceipt = await response.wait();
       setTxPending(false);
 
-      if ('events' in receipt) {
+      if (typeof receipt.events !== 'undefined') {
         // Get the SlateCreated logs from the receipt
         // Extract the slateID
         const slateID = receipt.events
@@ -189,6 +248,7 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
       toast.error(msg);
       return;
     }
+    setTxPending(true);
 
     // save proposal metadata to IPFS to be included in the slate metadata
     console.log('preparing proposals...');
@@ -279,8 +339,11 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
 
             // stake immediately after creating slate
             if (values.stake === 'yes') {
-              const res = await sendStakeTokensTransaction(contracts.gatekeeper, slate.slateID);
               setTxPending(true);
+              if (gkAllowance.lt(slateStakeAmount)) {
+                await contracts.token.approve(contracts.gatekeeper.address, MaxUint256);
+              }
+              const res = await sendStakeTokensTransaction(contracts.gatekeeper, slate.slateID);
 
               await res.wait();
               setTxPending(false);
@@ -309,8 +372,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
       console.error(errorMessage);
       toast.error(errorMessage);
     }
-
-    // TODO: Should take us to all slates view after successful submission
   }
 
   const initialValues =
@@ -340,31 +401,19 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
 
   return (
     <div>
-      <Modal handleClick={() => setOpenModal(false)} isOpen={txPending || isOpen}>
-        {txPending ? (
-          <>
-            <Image src="/static/metamask-fox.svg" alt="metamask logo" width="80px" />
-            <ModalTitle>{'Transaction Processing'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
-              Please wait a few moments while MetaMask processes your transaction. This will only
-              take a few moments.
-            </ModalDescription>
-            <CircularProgress className={classes.progress} />
-          </>
-        ) : (
-          <>
-            <Image src="/static/check.svg" alt="slate submitted" width="80px" />
-            <ModalTitle>{'Slate submitted.'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
-              Now that your slate has been created you and others have the ability to stake tokens
-              on it to propose it to token holders. Once there are tokens staked on the slate it
-              will be eligible for a vote.
-            </ModalDescription>
-            <RouterLink href="/slates" as="/slates">
-              <Button type="default">{'Done'}</Button>
-            </RouterLink>
-          </>
-        )}
+      <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
+        <>
+          <Image src="/static/check.svg" alt="slate submitted" width="80px" />
+          <ModalTitle>{'Slate submitted.'}</ModalTitle>
+          <ModalDescription className="flex flex-wrap">
+            Now that your slate has been created you and others have the ability to stake tokens on
+            it to propose it to token holders. Once there are tokens staked on the slate it will be
+            eligible for a vote.
+          </ModalDescription>
+          <RouterLink href="/slates" as="/slates">
+            <Button type="default">{'Done'}</Button>
+          </RouterLink>
+        </>
       </Modal>
 
       <CenteredTitle title="Create a Grant Slate" />
@@ -392,8 +441,26 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
                   selectedProposalIDs.includes(p.id.toString())
                 );
 
-                // submit the associated proposals along with the slate form values
-                await handleSubmitSlate(values, selectedProposals);
+                const totalTokens = selectedProposals.reduce((acc, val) => {
+                  return utils
+                    .bigNumberify(acc)
+                    .add(convertedToBaseUnits(val.tokensRequested))
+                    .toString();
+                }, '0');
+                if (
+                  contracts.tokenCapacitor.functions.hasOwnProperty('projectedUnlockedBalance') &&
+                  utils.bigNumberify(totalTokens).gt(availableTokens)
+                ) {
+                  setFieldError(
+                    'proposals',
+                    `token amount exceeds the projected available tokens (${baseToConvertedUnits(
+                      availableTokens
+                    )})`
+                  );
+                } else {
+                  // submit the associated proposals along with the slate form values
+                  await handleSubmitSlate(values, selectedProposals);
+                }
               }
             }
 
@@ -401,115 +468,140 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, classes }) => {
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting, setFieldValue, values }: FormikContext<IFormValues>) => (
-            <Form>
-              <PaddedDiv>
-                <SectionLabel>{'ABOUT'}</SectionLabel>
+          {({ isSubmitting, setFieldValue, values, handleSubmit }: FormikContext<IFormValues>) => (
+            <Box>
+              <Form>
+                <PaddedDiv>
+                  <SectionLabel>{'ABOUT'}</SectionLabel>
 
-                <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
+                  <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
 
-                <FieldText
-                  required
-                  label={'First Name'}
-                  name="firstName"
-                  placeholder="Enter your first name"
-                />
-                <FieldText label={'Last Name'} name="lastName" placeholder="Enter your last name" />
-                <FieldText
-                  label={'Organization Name'}
-                  name="organization"
-                  placeholder="Enter your organization's name"
-                />
+                  <FieldText
+                    required
+                    label={'First Name'}
+                    name="firstName"
+                    placeholder="Enter your first name"
+                  />
+                  <FieldText
+                    label={'Last Name'}
+                    name="lastName"
+                    placeholder="Enter your last name"
+                  />
+                  <FieldText
+                    label={'Organization Name'}
+                    name="organization"
+                    placeholder="Enter your organization's name"
+                  />
 
-                <FieldTextarea
-                  required
-                  label={'Description'}
-                  name="description"
-                  placeholder="Enter a description for your slate"
-                />
-              </PaddedDiv>
-              <Separator />
-              <PaddedDiv>
-                <SectionLabel>{'RECOMMENDATION'}</SectionLabel>
-                <Label htmlFor="recommendation" required>
-                  {'What type of recommendation would you like to make?'}
-                </Label>
-                <ErrorMessage name="recommendation" component="span" />
-                <div>
-                  <Checkbox name="recommendation" value="grant" label="Recommend grant proposals" />
-                  <Checkbox name="recommendation" value="noAction" label="Recommend no action" />
-                </div>
-                <RadioSubText>
-                  By recommending no action you are opposing any current or future slates for this
-                  batch.
-                </RadioSubText>
-              </PaddedDiv>
-              {values.recommendation === 'grant' && (
-                <>
-                  <Separator />
-                  <PaddedDiv>
-                    <SectionLabel>{'GRANTS'}</SectionLabel>
-                    <div className="mv3 f7 black-50">
-                      {'Select the grants that you would like to add to your slate'}
-                    </div>
-                    <FlexContainer>
-                      {proposals &&
-                        proposals.map((proposal: IProposal) => (
-                          <Card
-                            key={proposal.id}
-                            category={`${proposal.category} PROPOSAL`}
-                            title={proposal.title}
-                            subtitle={proposal.tokensRequested.toString()}
-                            description={proposal.summary}
-                            onClick={() => {
-                              if (values.proposals.hasOwnProperty(proposal.id)) {
-                                setFieldValue(
-                                  `proposals.${proposal.id}`,
-                                  !values.proposals[proposal.id]
-                                );
-                              } else {
-                                setFieldValue(`proposals.${proposal.id}`, true);
-                              }
-                            }}
-                            isActive={values.proposals[proposal.id]}
-                            type={PROPOSAL}
-                            width={['100%', '100%', '50%', '50%']}
-                          />
-                        ))}
-                    </FlexContainer>
-                  </PaddedDiv>
-                </>
-              )}
-              <Separator />
-              <PaddedDiv>
-                <SectionLabel>STAKE</SectionLabel>
-                <Label htmlFor="stake" required>
-                  {`Would you like to stake ${formatPanvalaUnits(
-                    slateStakeAmount
-                  )} tokens for this slate? This makes your slate eligible for the current batch.`}
-                </Label>
-                <ErrorMessage name="stake" component="span" />
-                <div>
-                  <Checkbox name="stake" value="yes" label="Yes" />
+                  <FieldTextarea
+                    required
+                    label={'Description'}
+                    name="description"
+                    placeholder="Enter a description for your slate"
+                  />
+                </PaddedDiv>
+                <Separator />
+                <PaddedDiv>
+                  <SectionLabel>{'RECOMMENDATION'}</SectionLabel>
+                  <Label htmlFor="recommendation" required>
+                    {'What type of recommendation would you like to make?'}
+                  </Label>
+                  <ErrorMessage name="recommendation" component="span" />
+                  <div>
+                    <Checkbox
+                      name="recommendation"
+                      value="grant"
+                      label="Recommend grant proposals"
+                    />
+                    <Checkbox name="recommendation" value="noAction" label="Recommend no action" />
+                  </div>
                   <RadioSubText>
-                    By selecting yes, you will stake tokens for your own slate and not have to rely
-                    on others to stake tokens for you.
+                    By recommending no action you are opposing any current or future slates for this
+                    batch.
                   </RadioSubText>
-                  <Checkbox name="stake" value="no" label="No" />
-                  <RadioSubText>
-                    By selecting no, you will have to wait for others to stake tokens for your slate
-                    or you can stake tokens after you have created the slate.
-                  </RadioSubText>
-                </div>
-              </PaddedDiv>
-              <Separator />
-              <FormActions>
-                <Button large>{'Back'}</Button>
-                <Button type="submit" large primary disabled={isSubmitting}>
+                </PaddedDiv>
+                {values.recommendation === 'grant' && (
+                  <>
+                    <Separator />
+                    <PaddedDiv>
+                      <SectionLabel>{'GRANTS'}</SectionLabel>
+                      <Label htmlFor="proposals" required>
+                        {'Select the grants that you would like to add to your slate'}
+                      </Label>
+                      <ErrorMessage name="proposals" component="span" />
+
+                      {contracts.tokenCapacitor.functions.hasOwnProperty(
+                        'projectedUnlockedBalance'
+                      ) && (
+                        <Text fontSize="0.75rem" color="grey">
+                          {`(There are currently `}
+                          <strong>{`${baseToConvertedUnits(
+                            availableTokens
+                          )} PAN tokens available`}</strong>
+                          {` for grant proposals at this time.)`}
+                        </Text>
+                      )}
+
+                      <FlexContainer>
+                        {proposals &&
+                          proposals.map((proposal: IProposal) => (
+                            <Card
+                              key={proposal.id}
+                              category={`${proposal.category} PROPOSAL`}
+                              title={proposal.title}
+                              subtitle={proposal.tokensRequested.toString()}
+                              description={proposal.summary}
+                              onClick={() => {
+                                if (values.proposals.hasOwnProperty(proposal.id)) {
+                                  setFieldValue(
+                                    `proposals.${proposal.id}`,
+                                    !values.proposals[proposal.id]
+                                  );
+                                } else {
+                                  setFieldValue(`proposals.${proposal.id}`, true);
+                                }
+                              }}
+                              isActive={values.proposals[proposal.id]}
+                              type={PROPOSAL}
+                              width={['98%', '47%']}
+                            />
+                          ))}
+                      </FlexContainer>
+                    </PaddedDiv>
+                  </>
+                )}
+                <Separator />
+                <PaddedDiv>
+                  <SectionLabel>STAKE</SectionLabel>
+                  <Label htmlFor="stake" required>
+                    {`Would you like to stake ${formatPanvalaUnits(
+                      slateStakeAmount
+                    )} tokens for this slate? This makes your slate eligible for the current batch.`}
+                  </Label>
+                  <ErrorMessage name="stake" component="span" />
+                  <div>
+                    <Checkbox name="stake" value="yes" label="Yes" />
+                    <RadioSubText>
+                      By selecting yes, you will stake tokens for your own slate and not have to
+                      rely on others to stake tokens for you.
+                    </RadioSubText>
+                    <Checkbox name="stake" value="no" label="No" />
+                    <RadioSubText>
+                      By selecting no, you will have to wait for others to stake tokens for your
+                      slate or you can stake tokens after you have created the slate.
+                    </RadioSubText>
+                  </div>
+                </PaddedDiv>
+                <Separator />
+              </Form>
+              <Flex p={4} justifyEnd>
+                <BackButton />
+                <Button type="submit" large primary disabled={isSubmitting} onClick={handleSubmit}>
                   {'Create Slate'}
                 </Button>
-              </FormActions>
-            </Form>
+              </Flex>
+              <PendingTransaction isOpen={txPending} setOpen={setTxPending} />
+            </Box>
           )}
         </Formik>
       </CenteredWrapper>
@@ -532,12 +624,6 @@ const PaddedDiv = styled.div`
   padding: 2rem;
 `;
 
-const FormActions = styled.div`
-  display: flex;
-  padding: 2rem;
-  justify-content: flex-end;
-`;
-
 CreateGrantSlate.getInitialProps = async ({ query, classes }) => {
   return { query, classes };
 };
@@ -549,4 +635,4 @@ const styles = (theme: any) => ({
   },
 });
 
-export default withStyles(styles)(CreateGrantSlate);
+export default withStyles(styles)(withRouter(CreateGrantSlate));

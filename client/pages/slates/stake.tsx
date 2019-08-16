@@ -86,12 +86,12 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
 
     if (contracts) {
       // send tx (pending)
+      setTxPending(true);
       const response: TransactionResponse = await sendApproveTransaction(
         contracts.token,
         contracts.gatekeeper.address,
         ethers.constants.MaxUint256
       );
-      setTxPending(true);
 
       // wait for tx to get mined
       await response.wait();
@@ -116,8 +116,8 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
     if (contracts && contracts.hasOwnProperty('gatekeeper')) {
       const slateID = parseInt(query.id);
       // send tx (pending)
-      const response = await sendStakeTokensTransaction(contracts.gatekeeper, slateID);
       setTxPending(true);
+      const response = await sendStakeTokensTransaction(contracts.gatekeeper, slateID);
 
       // wait for tx to get mined
       await response.wait();
@@ -169,9 +169,9 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
       <Modal handleClick={() => setOpenModal(false)} isOpen={txPending || modalIsOpen}>
         {txPending ? (
           <>
-            <Image src="/static/metamask-fox.svg" alt="metamask logo" width="80px" />
+            <Image src="/static/metamask-fox.png" alt="metamask logo" width="80px" />
             <ModalTitle>{'Transaction Processing'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
+            <ModalDescription>
               Please wait a few moments while MetaMask processes your transaction. This will only
               take a few moments.
             </ModalDescription>
@@ -181,7 +181,7 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
           <>
             <Image src="/static/check.svg" alt="tokens staked" width="80px" />
             <ModalTitle>{'Tokens staked.'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
+            <ModalDescription>
               Now that you have staked tokens on this slate the Panvala token holding community will
               have the ability to vote for or against the slate when the voting period begins.
             </ModalDescription>
@@ -216,7 +216,6 @@ const Stake: StatelessPage<any> = ({ query, classes }) => {
           <Separator />
           <Actions
             handleClick={() => toggleOpenStepper(true)}
-            handleBack={null}
             actionText={'Confirm and Deposit PAN'}
           />
         </CenteredWrapper>

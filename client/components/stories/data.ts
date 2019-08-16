@@ -1,4 +1,6 @@
 import Router from 'next/router';
+import range from 'lodash/range';
+import uuid from 'uuid/v4';
 import { utils } from 'ethers';
 import { ballotDates } from '../../utils/voting';
 import { ISlate, IProposal } from '../../interfaces';
@@ -9,8 +11,17 @@ import '../../globalStyles.css';
   push: () => {},
 };
 
-export const epochStartDate = 1549040401;
+export const epochStartDate = 1541178000; // Nov 2, 2018 17:00:00 GMT
 export const currentBallot = ballotDates(epochStartDate);
+export const baseBallot = {
+  epochNumber: 0,
+  startDate: 1541178000,
+  initialSlateSubmissionDeadline: 1544504400,
+  votingOpenDate: 1547830800,
+  votingCloseDate: 1548435600,
+  finalityDate: 1549040400,
+  slateSubmissionDeadline: { GRANT: 0, GOVERNANCE: 0 },
+};
 
 export const proposals: IProposal[] = [
   {
@@ -44,3 +55,53 @@ export const unstakedSlate: ISlate = {
   staker: '0x0000000000000000000000000000000000000000',
   epochNumber: 1,
 };
+
+export function makeBallot(options?: any, prototype?: any) {
+  return {
+    ...baseBallot,
+    ...prototype,
+    ...options,
+  };
+}
+
+export function makeSlate(options: any, prototype?: ISlate) {
+  return {
+    ...unstakedSlate,
+    ...prototype,
+    ...options,
+    id: uuid(),
+  };
+}
+
+export function makeSlates(num: number, prototype: ISlate) {
+  return range(1, num).map(() => makeSlate({}, prototype));
+}
+
+export const acceptedGrantSlate = makeSlate({
+  verifiedRecommender: true,
+  status: 3,
+  epochNumber: 0,
+});
+
+export const rejectedGrantSlate = makeSlate(
+  {
+    status: 2,
+  },
+  acceptedGrantSlate
+);
+
+export const acceptedGovSlate = makeSlate(
+  {
+    category: 'GOVERNANCE',
+    verifiedRecommender: true,
+    status: 3,
+  },
+  acceptedGrantSlate
+);
+
+export const rejectedGovSlate = makeSlate(
+  {
+    status: 2,
+  },
+  acceptedGovSlate
+);

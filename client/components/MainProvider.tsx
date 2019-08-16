@@ -84,6 +84,12 @@ const MainProvider: React.FC<any> = (props: any) => {
       votingOpenDate: 0,
       votingCloseDate: 0,
       finalityDate: 0,
+      epochNumber: 0,
+      initialSlateSubmissionDeadline: 0,
+      slateSubmissionDeadline: {
+        GRANT: 0,
+        GOVERNANCE: 0,
+      },
     },
   });
   const {
@@ -142,7 +148,13 @@ const MainProvider: React.FC<any> = (props: any) => {
   }
 
   async function refreshSlates() {
-    const slates: ISlate[] = await handleGetAllSlates();
+    const slatesData: ISlate[] = await handleGetAllSlates();
+    const slates = slatesData.map(slate => {
+      if (!slate.hasOwnProperty('proposals') || typeof slate.proposals === 'undefined') {
+        slate.proposals = [];
+      }
+      return slate;
+    });
     const slatesByID = keyBy(slates, 'id');
 
     console.log('slates:', slates);

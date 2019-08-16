@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { AxiosResponse } from 'axios';
-import { SingletonRouter, withRouter } from 'next/router';
 import { toast } from 'react-toastify';
 
 import Button from '../../components/Button';
@@ -13,22 +12,22 @@ import ProposalForm from '../../components/ProposalForm';
 import { postProposal } from '../../utils/api';
 import { IProposal } from '../../interfaces';
 import RouterLink from '../../components/RouterLink';
+import Loader from '../../components/Loader';
 
-type IProps = {
-  router: SingletonRouter;
-};
-
-const CreateProposal: React.FunctionComponent<IProps> = ({ router }) => {
+const CreateProposal: React.FC = () => {
   const { onRefreshProposals }: IMainContext = React.useContext(MainContext);
 
   const [isOpen, setOpenModal] = React.useState(false);
+  const [txPending, setTxPending] = React.useState(false);
 
   async function handleSubmit(formValues: IProposal) {
     console.log('proposal-form-values:', formValues);
 
     try {
+      setTxPending(true);
       const response: AxiosResponse = await postProposal(formValues);
       if (response.status === 200) {
+        setTxPending(false);
         setOpenModal(true);
         await onRefreshProposals();
       }
@@ -38,11 +37,11 @@ const CreateProposal: React.FunctionComponent<IProps> = ({ router }) => {
   }
 
   return (
-    <div>
+    <>
       <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
         <Image src="/static/check.svg" alt="grant proposal created" width="80px" />
         <ModalTitle>{'Grant proposal created.'}</ModalTitle>
-        <ModalDescription className="flex flex-wrap">
+        <ModalDescription>
           You have successfully created a Panvala Grant Proposal. Now groups that are creating
           slates can attach your grant to their slate.
         </ModalDescription>
@@ -55,8 +54,10 @@ const CreateProposal: React.FunctionComponent<IProps> = ({ router }) => {
       <CenteredWrapper>
         <ProposalForm onHandleSubmit={handleSubmit} />
       </CenteredWrapper>
-    </div>
+
+      <Loader isOpen={txPending} setOpen={setTxPending} />
+    </>
   );
 };
 
-export default withRouter(CreateProposal);
+export default CreateProposal;

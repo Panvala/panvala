@@ -30,6 +30,10 @@ spec:
           env:
             - name: API_HOST
               value: {{ .Values.apiHost }}
+            - name: NODE_ENV
+              value: {{ .Values.node_env }}
+            - name: PANVALA_ENV
+              value: {{ .Values.panvala_env }}
             # Contract info
             - name: GATEKEEPER_ADDRESS
               valueFrom:
@@ -43,12 +47,16 @@ spec:
                   key: tokenCapacitor
           livenessProbe:
             httpGet:
-              path: /
+              path: /liveness
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 10
+            periodSeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

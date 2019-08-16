@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "declaration": true,
     "lib": ["es2017"],
     "outDir": "dist",
     "module": "commonjs",
@@ -12,9 +12,10 @@
     "pretty": true,
     "removeComments": false,
     "skipLibCheck": true,
-    "sourceMap": false,
+    "sourceMap": true,
     "strict": true,
     "target": "es6"
   },
-  "include": ["./**/*.ts"]
+  "include": ["src/index.ts"],
+  "exclude": ["dist", "node_modules"]
 }

@@ -4,6 +4,7 @@ import { Formik, Form, FormikContext } from 'formik';
 import { CircularProgress, withStyles } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import clone from 'lodash/clone';
+import { withRouter } from 'next/router';
 
 import { COLORS } from '../../../styles';
 import Box from '../../../components/system/Box';
@@ -39,11 +40,15 @@ import {
 } from '../../../utils/transaction';
 import { GovernanceSlateFormSchema } from '../../../utils/schemas';
 import RouterLink from '../../../components/RouterLink';
+import BackButton from '../../../components/BackButton';
+import { isSlateSubmittable } from '../../../utils/status';
 
-const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
+const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
-  const { onRefreshSlates, onRefreshCurrentBallot }: IMainContext = React.useContext(MainContext);
+  const { onRefreshSlates, onRefreshCurrentBallot, currentBallot }: IMainContext = React.useContext(
+    MainContext
+  );
   // get eth context
   const {
     account,
@@ -51,6 +56,14 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
     onRefreshBalances,
     slateStakeAmount,
   }: IEthereumContext = React.useContext(EthereumContext);
+
+  React.useEffect(() => {
+    if (!isSlateSubmittable(currentBallot, 'GOVERNANCE')) {
+      toast.error('Governance slate submission deadline has passed');
+      router.push('/slates');
+    }
+  }, [currentBallot.slateSubmissionDeadline]);
+
   // pending tx loader
   const [txPending, setTxPending] = React.useState(false);
 
@@ -62,6 +75,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
       toast.error(msg);
       return;
     }
+    setTxPending(true);
 
     // filter for only changes in parameters
     const parameterChanges: IParameterChangesObject = Object.keys(values.parameters).reduce(
@@ -167,8 +181,8 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
         console.log('Saved slate info');
         toast.success('Saved slate');
         if (values.stake === 'yes') {
-          const res = await contracts.gatekeeper.functions.stakeTokens(slate.slateID);
           setTxPending(true);
+          const res = await contracts.gatekeeper.functions.stakeTokens(slate.slateID);
 
           await res.wait();
           setTxPending(false);
@@ -253,100 +267,112 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
             setSubmitting(false);
           }}
         >
-          {({ isSubmitting, values, setFieldValue }: FormikContext<IGovernanceSlateFormValues>) => (
-            <Form>
-              <Box p={4}>
-                <SectionLabel>{'ABOUT'}</SectionLabel>
+          {({
+            isSubmitting,
+            values,
+            setFieldValue,
+            handleSubmit,
+          }: FormikContext<IGovernanceSlateFormValues>) => (
+            <Box>
+              <Form>
+                <Box p={4}>
+                  <SectionLabel>{'ABOUT'}</SectionLabel>
 
-                <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
+                  <FieldText required label={'Email'} name="email" placeholder="Enter your email" />
 
-                <FieldText
-                  required
-                  label={'First Name'}
-                  name="firstName"
-                  placeholder="Enter your first name"
-                />
-                <FieldText label={'Last Name'} name="lastName" placeholder="Enter your last name" />
-                <FieldText
-                  label={'Organization Name'}
-                  name="organization"
-                  placeholder="Enter your organization's name"
-                />
-
-                <FieldTextarea
-                  required
-                  label={'Description'}
-                  name="summary"
-                  placeholder="Enter a summary for your slate"
-                />
-              </Box>
-
-              <Separator />
-              <Box p={4}>
-                <SectionLabel>{'RECOMMENDATION'}</SectionLabel>
-                <Label htmlFor="recommendation" required>
-                  {'What type of recommendation would you like to make?'}
-                </Label>
-                <ErrorMessage name="recommendation" component="span" />
-                <div>
-                  <Checkbox
-                    name="recommendation"
-                    value="governance"
-                    label="Recommend governance proposals"
+                  <FieldText
+                    required
+                    label={'First Name'}
+                    name="firstName"
+                    placeholder="Enter your first name"
                   />
-                  <Checkbox name="recommendation" value="noAction" label="Recommend no action" />
-                </div>
-                <div>
-                  By recommending no action you are opposing any current or future slates for this
-                  batch.
-                </div>
-              </Box>
+                  <FieldText
+                    label={'Last Name'}
+                    name="lastName"
+                    placeholder="Enter your last name"
+                  />
+                  <FieldText
+                    label={'Organization Name'}
+                    name="organization"
+                    placeholder="Enter your organization's name"
+                  />
 
-              <Separator />
-              <Box p={4}>
-                <SectionLabel>{'PARAMETERS'}</SectionLabel>
-                <ParametersForm
-                  onChange={setFieldValue}
-                  slateStakeAmount={formatPanvalaUnits(slateStakeAmount)}
-                  newSlateStakeAmount={values.parameters.slateStakeAmount.newValue}
-                  newGatekeeperAddress={values.parameters.gatekeeperAddress.newValue}
-                  gatekeeperAddress={
-                    contracts && contracts.gatekeeper && contracts.gatekeeper.address
-                  }
-                />
+                  <FieldTextarea
+                    required
+                    label={'Description'}
+                    name="summary"
+                    placeholder="Enter a summary for your slate"
+                  />
+                </Box>
 
                 <Separator />
                 <Box p={4}>
-                  <SectionLabel>STAKE</SectionLabel>
-                  <Label htmlFor="stake" required>
-                    {`Would you like to stake ${formatPanvalaUnits(
-                      slateStakeAmount
-                    )} tokens for this slate? This makes your slate eligible for the current batch.`}
+                  <SectionLabel>{'RECOMMENDATION'}</SectionLabel>
+                  <Label htmlFor="recommendation" required>
+                    {'What type of recommendation would you like to make?'}
                   </Label>
-                  <ErrorMessage name="stake" component="span" />
+                  <ErrorMessage name="recommendation" component="span" />
                   <div>
-                    <Checkbox name="stake" value="yes" label="Yes" />
-                    <RadioSubText>
-                      By selecting yes, you will stake tokens for your own slate and not have to
-                      rely on others to stake tokens for you.
-                    </RadioSubText>
-                    <Checkbox name="stake" value="no" label="No" />
-                    <RadioSubText>
-                      By selecting no, you will have to wait for others to stake tokens for your
-                      slate or you can stake tokens after you have created the slate.
-                    </RadioSubText>
+                    <Checkbox
+                      name="recommendation"
+                      value="governance"
+                      label="Recommend governance proposals"
+                    />
+                    <Checkbox name="recommendation" value="noAction" label="Recommend no action" />
+                  </div>
+                  <div>
+                    By recommending no action you are opposing any current or future slates for this
+                    batch.
                   </div>
                 </Box>
-              </Box>
 
-              <Separator />
+                <Separator />
+                <Box p={4}>
+                  <SectionLabel>{'PARAMETERS'}</SectionLabel>
+                  <ParametersForm
+                    onChange={setFieldValue}
+                    slateStakeAmount={formatPanvalaUnits(slateStakeAmount)}
+                    newSlateStakeAmount={values.parameters.slateStakeAmount.newValue}
+                    newGatekeeperAddress={values.parameters.gatekeeperAddress.newValue}
+                    gatekeeperAddress={
+                      contracts && contracts.gatekeeper && contracts.gatekeeper.address
+                    }
+                  />
+
+                  <Separator />
+                  <Box p={4}>
+                    <SectionLabel>STAKE</SectionLabel>
+                    <Label htmlFor="stake" required>
+                      {`Would you like to stake ${formatPanvalaUnits(
+                        slateStakeAmount
+                      )} tokens for this slate? This makes your slate eligible for the current batch.`}
+                    </Label>
+                    <ErrorMessage name="stake" component="span" />
+                    <div>
+                      <Checkbox name="stake" value="yes" label="Yes" />
+                      <RadioSubText>
+                        By selecting yes, you will stake tokens for your own slate and not have to
+                        rely on others to stake tokens for you.
+                      </RadioSubText>
+                      <Checkbox name="stake" value="no" label="No" />
+                      <RadioSubText>
+                        By selecting no, you will have to wait for others to stake tokens for your
+                        slate or you can stake tokens after you have created the slate.
+                      </RadioSubText>
+                    </div>
+                  </Box>
+                </Box>
+
+                <Separator />
+              </Form>
+
               <Flex p={4} justifyEnd>
-                <Button large>{'Back'}</Button>
-                <Button type="submit" large primary disabled={isSubmitting}>
+                <BackButton />
+                <Button type="submit" large primary disabled={isSubmitting} onClick={handleSubmit}>
                   {'Create Slate'}
                 </Button>
               </Flex>
-            </Form>
+            </Box>
           )}
         </Formik>
       </CenteredWrapper>
@@ -354,9 +380,9 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
       <Modal handleClick={() => setOpenModal(false)} isOpen={txPending || isOpen}>
         {txPending ? (
           <>
-            <Image src="/static/metamask-fox.svg" alt="metamask logo" width="80px" />
+            <Image src="/static/metamask-fox.png" alt="metamask logo" width="80px" />
             <ModalTitle>{'Transaction Processing'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
+            <ModalDescription>
               Please wait a few moments while MetaMask processes your transaction. This will only
               take a few moments.
             </ModalDescription>
@@ -366,7 +392,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes }) => {
           <>
             <Image src="/static/check.svg" alt="slate submitted" width="80px" />
             <ModalTitle>{'Slate submitted.'}</ModalTitle>
-            <ModalDescription className="flex flex-wrap">
+            <ModalDescription>
               Now that your slate has been created you and others have the ability to stake tokens
               on it to propose it to token holders. Once there are tokens staked on the slate it
               will be eligible for a vote.
@@ -397,4 +423,4 @@ const styles = (theme: any) => ({
   },
 });
 
-export default withStyles(styles)(CreateGovernanceSlate);
+export default withStyles(styles)(withRouter(CreateGovernanceSlate));
