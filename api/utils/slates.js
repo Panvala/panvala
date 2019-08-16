@@ -52,7 +52,10 @@ async function getAllSlates() {
   // TEMPORARY HACK
   let slateIDsToQuery = slateIDs;
   const network = await provider.getNetwork();
-  if (network.chainId === 4) {
+  if (
+    network.chainId === 4 &&
+    gatekeeper.address === '0xe944C83D35B404610a82166c23B17F33d6399343'
+  ) {
     const garbage = [0, 1, 2, 3, 5];
     const filtered = slateIDs.filter(id => !garbage.includes(id));
     slateIDsToQuery = filtered;
