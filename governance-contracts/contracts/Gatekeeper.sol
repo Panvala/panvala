@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.11;
 pragma experimental ABIEncoderV2;
 
 import "./ParameterStore.sol";
@@ -235,10 +235,11 @@ contract Gatekeeper {
     )
         public returns(uint)
     {
-        uint256 epochNumber = currentEpochNumber();
-
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
         require(slateSubmissionPeriodActive(resource), "Submission period not active");
         require(metadataHash.length > 0, "metadataHash cannot be empty");
+
+        uint256 epochNumber = currentEpochNumber();
 
         // create slate
         Slate memory s = Slate({

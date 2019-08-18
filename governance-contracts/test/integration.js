@@ -628,7 +628,8 @@ contract('integration', (accounts) => {
         assert.fail('Allowed initialization before gatekeeper was accepted');
       });
 
-      it('should not allow staking in the old gatekeeper after the switch', async () => {
+      // old gatekeeper after switch
+      it('should not allow staking in the old gatekeeper after the switch (stakeTokens)', async () => {
         await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
 
         // create slate in the old gatekeeper
@@ -658,7 +659,7 @@ contract('integration', (accounts) => {
         assert.fail('Allowed staking in old gatekeeper after switch');
       });
 
-      it('should not allow slates in the old gatekeeper to be accepted after the switch', async () => {
+      it('should not allow slates in the old gatekeeper to be accepted after the switch (finalizeContest)', async () => {
         const currentEpochNumber = await gatekeeper.currentEpochNumber();
         await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
 
@@ -872,7 +873,8 @@ contract('integration', (accounts) => {
           await newGatekeeper.depositVoteTokens(toPanBase('1000'), { from: recommender });
         });
 
-        it('should not allow users to deposit vote tokens before the new gatekeeper has been initialized', async () => {
+        // new gatekeeper before init
+        it('should not allow users to deposit vote tokens before the new gatekeeper has been initialized (depositVoteTokens)', async () => {
           try {
             await newGatekeeper.depositVoteTokens('1000', { from: recommender });
           } catch (error) {
@@ -883,7 +885,7 @@ contract('integration', (accounts) => {
           assert.fail('Allowed vote tokens to be deposited before initialization');
         });
 
-        it('should not allow users to stake tokens before the new gatekeeper has been initialized', async () => {
+        it('should not allow users to stake tokens before the new gatekeeper has been initialized (stakeTokens)', async () => {
           const slateID = await newGatekeeper.slateCount();
 
           // recommend slate
@@ -912,7 +914,8 @@ contract('integration', (accounts) => {
           assert.fail('Allowed a slate to be staked before initialization');
         });
 
-        it('should not allow permission requests to the old gatekeeper after the switch', async () => {
+        // old gatekeeper after switch
+        it('should not allow permission requests to the old gatekeeper after the switch (requestPermission)', async () => {
           await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
           const isCurrent = await gatekeeper.isCurrentGatekeeper();
           assert(!isCurrent, 'Should not be current');
@@ -926,6 +929,48 @@ contract('integration', (accounts) => {
             return;
           }
           assert.fail('Allowed permission requests in the old gatekeeper after the switch');
+        });
+
+        it('should not allow creation of slates in the old gatekeeper after the switch (recommendSlate)', async () => {
+          await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
+          const isCurrent = await gatekeeper.isCurrentGatekeeper();
+          assert(!isCurrent, 'Should not be current');
+
+          // create slate in the old gatekeeper
+          const grantProposals = [{
+            to: recommender, tokens: '1000', metadataHash: utils.createMultihash('grant'),
+          }];
+
+          try {
+            await utils.grantSlateFromProposals({
+              gatekeeper,
+              proposals: grantProposals,
+              capacitor,
+              recommender,
+              metadata: utils.createMultihash('Important grant'),
+            });
+          } catch (error) {
+            expectRevert(error);
+            expectErrorLike(error, 'Not current gatekeeper');
+            return;
+          }
+
+          assert.fail('Created slate in old gatekeeper after the switch');
+        });
+
+        it('should not allow depositing vote tokens in the old gatekeeper after the switch (depositVoteTokens', async () => {
+          const isCurrent = await gatekeeper.isCurrentGatekeeper();
+          assert(!isCurrent, 'Should not be current');
+
+          const numTokens = toPanBase('10000');
+          try {
+            await gatekeeper.depositVoteTokens(numTokens);
+          } catch (error) {
+            expectRevert(error);
+            expectErrorLike(error, 'Not current gatekeeper');
+            return;
+          }
+          assert.fail('Deposited tokens in the old gatekeeper after the switch');
         });
       });
     });

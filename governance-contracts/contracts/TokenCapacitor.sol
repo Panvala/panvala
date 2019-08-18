@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.11;
 pragma experimental ABIEncoderV2;
 
 import "./Gatekeeper.sol";
@@ -67,14 +67,14 @@ contract TokenCapacitor is IDonationReceiver {
     uint256 public lifetimeReleasedTokens;
 
     // IMPLEMENTATION
-    constructor(ParameterStore _parameters, IERC20 _token, uint256 initialUnlockedBalance) public {
+    constructor(ParameterStore _parameters, IERC20 _token, Gatekeeper _currentGatekeeper, uint256 initialUnlockedBalance) public {
         require(address(_parameters) != address(0), "Parameter store address cannot be zero");
         parameters = _parameters;
 
         require(address(_token) != address(0), "Token address cannot be zero");
         token = _token;
 
-        require(address(_gatekeeper()) != address(0), "Gatekeeper address cannot be zero");
+        require(address(_currentGatekeeper) != address(0), "Gatekeeper address cannot be zero");
 
         // initialize multipliers
         decayMultipliers[0] = 999524050675;
@@ -93,7 +93,7 @@ contract TokenCapacitor is IDonationReceiver {
         unlockedBalance = initialUnlockedBalance;
 
         // initialize update time at an even number of days relative to gatekeeper start
-        lastLockedTime = _gatekeeper().startTime();
+        lastLockedTime = _currentGatekeeper.startTime();
         lastLockedTime = lastLockedTime.add(_adjustedElapsedTime(now));
     }
 
@@ -102,6 +102,8 @@ contract TokenCapacitor is IDonationReceiver {
     }
 
     function _createProposal(Gatekeeper gatekeeper, address to, uint tokens, bytes memory metadataHash) internal returns(uint256) {
+        require(metadataHash.length > 0, "metadataHash cannot be empty");
+
         Proposal memory p = Proposal({
             gatekeeper: address(gatekeeper),
             requestID: 0,
@@ -130,8 +132,6 @@ contract TokenCapacitor is IDonationReceiver {
      @param metadataHash A reference to metadata describing the proposal
     */
     function createProposal(address to, uint tokens, bytes calldata metadataHash) external returns(uint) {
-        require(metadataHash.length > 0, "metadataHash cannot be empty");
-
         Gatekeeper gatekeeper = _gatekeeper();
         return _createProposal(gatekeeper, to, tokens, metadataHash);
     }

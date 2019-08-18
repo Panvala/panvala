@@ -1,4 +1,4 @@
-pragma solidity 0.5.10;
+pragma solidity 0.5.11;
 pragma experimental ABIEncoderV2;
 
 import "./Gatekeeper.sol";
@@ -74,7 +74,7 @@ contract ParameterStore {
      @param _name The name of the parameter to get the value for
     */
     function get(string memory _name) public view returns (bytes32 value) {
-        // TODO: what if the value doesn't exist?
+        require(initialized, "Contract has not yet been initialized");
         return params[keccak256(abi.encodePacked(_name))];
     }
 
@@ -121,6 +121,8 @@ contract ParameterStore {
     }
 
     function _createProposal(Gatekeeper gatekeeper, string memory key, bytes32 value, bytes memory metadataHash) internal returns(uint256) {
+        require(metadataHash.length > 0, "metadataHash cannot be empty");
+
         Proposal memory p = Proposal({
             gatekeeper: address(gatekeeper),
             requestID: 0,
@@ -149,7 +151,6 @@ contract ParameterStore {
      @param metadataHash A reference to metadata describing the proposal
      */
     function createProposal(string calldata key, bytes32 value, bytes calldata metadataHash) external returns(uint256) {
-        require(metadataHash.length > 0, "metadataHash cannot be empty");
         require(initialized, "Contract has not yet been initialized");
 
         Gatekeeper gatekeeper = _gatekeeper();
@@ -167,6 +168,7 @@ contract ParameterStore {
         bytes32[] calldata values,
         bytes[] calldata metadataHashes
     ) external {
+        require(initialized, "Contract has not yet been initialized");
         require(
             keys.length == values.length && values.length == metadataHashes.length,
             "All inputs must have the same length"

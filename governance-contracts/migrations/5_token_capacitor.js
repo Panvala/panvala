@@ -10,7 +10,7 @@ const { abiEncode, BN } = require('../utils');
 module.exports = async function(deployer, _, accounts) {
   const parameters = await ParameterStore.deployed();
 
-  const { capacitor: config, token: tokenInfo } = global.panvalaConfig;
+  const { capacitor: config, token: tokenInfo, deployedContracts } = global.panvalaConfig;
 
   const token = tokenInfo.deploy
     ? await BasicToken.deployed()
@@ -18,11 +18,13 @@ module.exports = async function(deployer, _, accounts) {
 
   console.log(`Deploying TokenCapacitor with ParameterStore ${parameters.address} and token ${token.address}`);
   const { charge, initialBalance, initialUnlockedBalanceBase } = config;
+  const { gatekeeperAddress } = deployedContracts;
 
   const capacitor = await deployer.deploy(
     TokenCapacitor,
     parameters.address,
     token.address,
+    gatekeeperAddress,
     initialUnlockedBalanceBase,
   );
 
