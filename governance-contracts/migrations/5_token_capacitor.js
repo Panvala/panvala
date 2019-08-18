@@ -11,17 +11,19 @@ module.exports = async function(deployer, _, accounts) {
   const parameters = await ParameterStore.deployed();
   console.log(`Deploying TokenCapacitor with ParameterStore ${parameters.address}`);
 
-  const { capacitor: config, token: tokenInfo } = global.panvalaConfig;
+  const { capacitor: config, token: tokenInfo, deployedContracts } = global.panvalaConfig;
 
   const token = tokenInfo.deploy
     ? await BasicToken.deployed()
     : await BasicToken.at(tokenInfo.address);
 
   const { charge, initialBalance, initialUnlockedBalance } = config;
+  const { gatekeeperAddress } = deployedContracts;
   const capacitor = await deployer.deploy(
     TokenCapacitor,
     parameters.address,
     token.address,
+    gatekeeperAddress,
     initialUnlockedBalance,
   );
 

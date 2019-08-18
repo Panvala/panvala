@@ -74,7 +74,7 @@ contract ParameterStore {
      @param _name The name of the parameter to get the value for
     */
     function get(string memory _name) public view returns (bytes32 value) {
-        // TODO: what if the value doesn't exist?
+        require(initialized, "Contract has not yet been initialized");
         return params[keccak256(abi.encodePacked(_name))];
     }
 

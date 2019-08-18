@@ -166,7 +166,6 @@ contract('Gatekeeper', (accounts) => {
       assert.strictEqual(epochLength.toString(), timing.EPOCH_LENGTH.toString());
 
       // token
-      // TODO: remove
       const actualToken = await gatekeeper.token();
       assert.strictEqual(actualToken, expectedToken.address, 'Token not stored');
     });

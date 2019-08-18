@@ -13,6 +13,14 @@ const ParameterStore = artifacts.require('ParameterStore');
 
 
 contract('ParameterStore', (accounts) => {
+  let snapshotID;
+
+  beforeEach(async () => {
+    snapshotID = await utils.evm.snapshot();
+  });
+
+  afterEach(async () => utils.evm.revert(snapshotID));
+
   describe('constructor', () => {
     const [creator] = accounts;
     const data = {
@@ -32,6 +40,7 @@ contract('ParameterStore', (accounts) => {
         names, values,
         { from: creator },
       );
+      await parameters.init({ from: creator });
 
       // get values
       const apples = await parameters.get('apples');
@@ -114,6 +123,7 @@ contract('ParameterStore', (accounts) => {
       const receipt = await parameters.setInitialValue('test', value, { from: creator });
       expectEvents(receipt, ['ParameterSet']);
 
+      await parameters.init({ from: creator });
       const test = await parameters.get('test');
       assert.strictEqual(test.toString(), value);
     });
@@ -152,14 +162,98 @@ contract('ParameterStore', (accounts) => {
   describe('get', () => {
     const [creator] = accounts;
 
-    describe('asAddress', () => {
-      it('should retrieve an address value', async () => {
-        const key = 'someAddress';
-        const value = abiCoder.encode(['address'], [creator]);
-        const parameters = await ParameterStore.new([key], [value]);
+    describe('regular - bytes32', () => {
+      let parameters;
+      let key;
+      let value;
 
+      beforeEach(async () => {
+        key = 'someBytes32';
+        value = abiCoder.encode(['uint256'], ['1000']);
+        parameters = await ParameterStore.new([key], [value]);
+      });
+
+      it('should retrieve a bytes32 value', async () => {
+        await parameters.init({ from: creator });
+        const retrievedValue = await parameters.get(key);
+        assert.strictEqual(retrievedValue, value);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.get(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved bytes32 value before initialization');
+      });
+    });
+
+    describe('asAddress', () => {
+      let parameters;
+      let key;
+
+      beforeEach(async () => {
+        key = 'someAddress';
+        const value = abiCoder.encode(['address'], [creator]);
+        parameters = await ParameterStore.new([key], [value]);
+      });
+
+      it('should retrieve an address value', async () => {
+        await parameters.init({ from: creator });
         const retrievedValue = await parameters.getAsAddress(key);
         assert.strictEqual(retrievedValue, creator);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.getAsAddress(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved address value before initialization');
+      });
+    });
+
+    describe('asUint', () => {
+      let parameters;
+      let key;
+      const stored = '1000';
+
+      beforeEach(async () => {
+        key = 'someUint';
+        const value = abiCoder.encode(['uint256'], [stored]);
+        parameters = await ParameterStore.new([key], [value]);
+      });
+
+      it('should retrieve a uint value', async () => {
+        await parameters.init({ from: creator });
+        const retrievedValue = await parameters.getAsUint(key);
+        assert.strictEqual(retrievedValue.toString(), stored);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.getAsUint(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved uint value before initialization');
       });
     });
   });
@@ -392,7 +486,6 @@ contract('ParameterStore', (accounts) => {
   describe('setValue', () => {
     const [creator, recommender1, recommender2, alice, bob, carol] = accounts;
 
-    let snapshotID;
     let gatekeeper;
     let parameters;
     let token;
@@ -406,8 +499,6 @@ contract('ParameterStore', (accounts) => {
     let losingSlate;
 
     beforeEach(async () => {
-      snapshotID = await utils.evm.snapshot();
-
       ({ gatekeeper, token, parameters } = await utils.newPanvala({
         from: creator, init: true,
       }));
@@ -575,7 +666,5 @@ contract('ParameterStore', (accounts) => {
       }
       assert.fail('Allowed execution for an invalid proposalID');
     });
-
-    afterEach(async () => utils.evm.revert(snapshotID));
   });
 });

@@ -18,19 +18,20 @@ const {
 const { increaseTime } = utils.evm;
 const { ONE_WEEK } = timing;
 
-contract('TimeTravelGatekeeper', (accounts) => {
+contract('TimeTravelingGatekeeper', (accounts) => {
   const [creator] = accounts;
   let token;
-  let parameters;
   let gatekeeper;
   let GRANT;
   let snapshotID;
 
   beforeEach(async () => {
+    snapshotID = await utils.evm.snapshot();
+
     const { slateStakeAmount: stakeAmount } = utils.pan.defaultParams;
     token = await BasicToken.deployed();
 
-    parameters = await ParameterStore.new(
+    const parameters = await ParameterStore.new(
       ['slateStakeAmount'],
       [abiCoder.encode(['uint256'], [stakeAmount])],
       { from: creator },
@@ -46,8 +47,6 @@ contract('TimeTravelGatekeeper', (accounts) => {
       { from: creator },
     );
 
-    GRANT = await getResource(gatekeeper, 'GRANT');
-
     // Set as current gatekeeper
     await parameters.setInitialValue(
       'gatekeeperAddress',
@@ -56,7 +55,8 @@ contract('TimeTravelGatekeeper', (accounts) => {
     );
 
     await parameters.init({ from: creator });
-    snapshotID = await utils.evm.snapshot();
+
+    GRANT = await getResource(gatekeeper, 'GRANT');
   });
 
   afterEach(async () => utils.evm.revert(snapshotID));

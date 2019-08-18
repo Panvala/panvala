@@ -55,6 +55,7 @@ contract('TokenCapacitor', (accounts) => {
       const capacitor = await TokenCapacitor.new(
         parameters.address,
         token.address,
+        gatekeeper.address,
         initialUnlockedBalance,
         {
           from: creator,
@@ -93,9 +94,13 @@ contract('TokenCapacitor', (accounts) => {
       const badParameters = utils.zeroAddress();
 
       try {
-        await TokenCapacitor.new(badParameters, token.address, initialUnlockedBalance, {
-          from: creator,
-        });
+        await TokenCapacitor.new(
+          badParameters,
+          token.address,
+          gatekeeper.address,
+          initialUnlockedBalance,
+          { from: creator },
+        );
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'parameter store address');
@@ -108,9 +113,13 @@ contract('TokenCapacitor', (accounts) => {
       const badToken = utils.zeroAddress();
 
       try {
-        await TokenCapacitor.new(parameters.address, badToken, initialUnlockedBalance, {
-          from: creator,
-        });
+        await TokenCapacitor.new(
+          parameters.address,
+          badToken,
+          gatekeeper.address,
+          initialUnlockedBalance,
+          { from: creator },
+        );
       } catch (error) {
         expectRevert(error);
         expectErrorLike(error, 'Token address');
@@ -120,12 +129,13 @@ contract('TokenCapacitor', (accounts) => {
     });
 
     it('should fail if the Gatekeeper address is zero', async () => {
-      const badParameters = await ParameterStore.new([], [], { from: creator });
+      const badGatekeeper = utils.zeroAddress();
 
       try {
         await TokenCapacitor.new(
-          badParameters.address,
+          parameters.address,
           token.address,
+          badGatekeeper,
           initialUnlockedBalance,
           { from: creator },
         );

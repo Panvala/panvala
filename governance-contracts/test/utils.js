@@ -361,6 +361,7 @@ async function newPanvala(options) {
   const capacitor = await TokenCapacitor.new(
     parameters.address,
     token.address,
+    gatekeeper.address,
     initialUnlockedBalance,
     { from: creator },
   );

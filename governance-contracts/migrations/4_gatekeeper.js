@@ -40,4 +40,11 @@ module.exports = async function (deployer, networks) {
     'gatekeeperAddress',
     abiEncode('address', gatekeeper.address),
   );
+
+  // save addresses in global config
+  global.panvalaConfig.deployedContracts = {
+    gatekeeperAddress: gatekeeper.address,
+    tokenAddress: token.address,
+    parameterStoreAddress: parameters.address,
+  };
 };
