@@ -24,9 +24,10 @@ contract('TimeTravelGatekeeper', (accounts) => {
   let parameters;
   let gatekeeper;
   let GRANT;
+  let snapshotID;
 
-  before(async () => {
-    const stakeAmount = '5000';
+  beforeEach(async () => {
+    const { slateStakeAmount: stakeAmount } = utils.pan.defaultParams;
     token = await BasicToken.deployed();
 
     parameters = await ParameterStore.new(
@@ -34,10 +35,7 @@ contract('TimeTravelGatekeeper', (accounts) => {
       [abiCoder.encode(['uint256'], [stakeAmount])],
       { from: creator },
     );
-    await parameters.init({ from: creator });
-  });
 
-  beforeEach(async () => {
     const firstEpochTime = new Date();
     const startTime = Math.floor(firstEpochTime / 1000);
 
@@ -49,16 +47,23 @@ contract('TimeTravelGatekeeper', (accounts) => {
     );
 
     GRANT = await getResource(gatekeeper, 'GRANT');
+
+    // Set as current gatekeeper
+    await parameters.setInitialValue(
+      'gatekeeperAddress',
+      utils.abiEncode('address', gatekeeper.address),
+      { from: creator },
+    );
+
+    await parameters.init({ from: creator });
+    snapshotID = await utils.evm.snapshot();
   });
+
+  afterEach(async () => utils.evm.revert(snapshotID));
 
   describe('timeTravel', () => {
     const [, alice] = accounts;
-    let snapshotID;
     const getTime = () => Math.floor((new Date()).getTime() / 1000);
-
-    beforeEach(async () => {
-      snapshotID = await utils.evm.snapshot();
-    });
 
     it('should go forward in time', async () => {
       const now = getTime();
@@ -138,10 +143,6 @@ contract('TimeTravelGatekeeper', (accounts) => {
       await gatekeeper.recommendSlate(resource, [], utils.asBytes(metadataHash), {
         from: alice,
       });
-    });
-
-    afterEach(async () => {
-      await utils.evm.revert(snapshotID);
     });
   });
 });
