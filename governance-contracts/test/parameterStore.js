@@ -331,6 +331,61 @@ contract('ParameterStore', (accounts) => {
           );
         }
       });
+
+      // rejection criteria
+      it('should revert if any proposal has an empty metadataHash', async () => {
+        await parameters.init({ from: creator });
+
+        const keys = ['number1', 'number2', 'address'];
+        const values = [
+          abiEncode('uint256', 5),
+          abiEncode('uint256', 10),
+          abiEncode('address', proposer),
+        ];
+        const emptyHash = '';
+
+        const metadataHashes = ['request1', 'request2'].map(utils.createMultihash);
+        metadataHashes.push(emptyHash);
+
+        try {
+          await parameters.createManyProposals(
+            keys,
+            values,
+            metadataHashes.map(utils.asBytes),
+            { from: proposer },
+          );
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'cannot be empty');
+          return;
+        }
+        assert.fail('succeeded with a proposal with an empty metadataHash');
+      });
+
+      it('should revert if called before initialization', async () => {
+        const keys = ['number1', 'number2', 'address'];
+        const values = [
+          abiEncode('uint256', 5),
+          abiEncode('uint256', 10),
+          abiEncode('address', proposer),
+        ];
+
+        const metadataHashes = ['request1', 'request2', 'request3'].map(utils.createMultihash);
+
+        try {
+          await parameters.createManyProposals(
+            keys,
+            values,
+            metadataHashes.map(utils.asBytes),
+            { from: proposer },
+          );
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'not yet been initialized');
+          return;
+        }
+        assert.fail('allowed creation of multiple proposals before initialization');
+      });
     });
   });
 

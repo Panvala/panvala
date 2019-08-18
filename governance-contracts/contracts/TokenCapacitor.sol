@@ -102,6 +102,8 @@ contract TokenCapacitor is IDonationReceiver {
     }
 
     function _createProposal(Gatekeeper gatekeeper, address to, uint tokens, bytes memory metadataHash) internal returns(uint256) {
+        require(metadataHash.length > 0, "metadataHash cannot be empty");
+
         Proposal memory p = Proposal({
             gatekeeper: address(gatekeeper),
             requestID: 0,
@@ -130,8 +132,6 @@ contract TokenCapacitor is IDonationReceiver {
      @param metadataHash A reference to metadata describing the proposal
     */
     function createProposal(address to, uint tokens, bytes calldata metadataHash) external returns(uint) {
-        require(metadataHash.length > 0, "metadataHash cannot be empty");
-
         Gatekeeper gatekeeper = _gatekeeper();
         return _createProposal(gatekeeper, to, tokens, metadataHash);
     }

@@ -289,6 +289,29 @@ contract('TokenCapacitor', (accounts) => {
         );
       }
     });
+
+    it('should revert if any proposal has an empty metadataHash', async () => {
+      const emptyHash = '';
+
+      const beneficiaries = [beneficiary1, beneficiary2];
+      const tokenAmounts = ['1000', '2000'].map(toPanBase);
+      const metadataHashes = ['request1'].map(r => utils.createMultihash(r));
+      metadataHashes.push(emptyHash);
+
+      try {
+        await capacitor.createManyProposals(
+          beneficiaries,
+          tokenAmounts,
+          metadataHashes.map(utils.asBytes),
+          { from: proposer },
+        );
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'cannot be empty');
+        return;
+      }
+      assert.fail('succeeded with a proposal with an empty metadataHash');
+    });
   });
 
   describe('withdrawTokens', () => {
