@@ -2,6 +2,7 @@
   "initialBalance": "10000000",
   "initialUnlockedBalance": "10000000",
   "networks": {
-    "4": "0x1af697660F9c8f545982b08CA63ae376838d2c52",
+    "1": "0xb98841c3EbC281d95C35120BA27885bB07adbfA4",
+    "4": "0x1af697660F9c8f545982b08CA63ae376838d2c52"
   }
 }
