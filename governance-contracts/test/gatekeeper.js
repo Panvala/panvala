@@ -111,24 +111,6 @@ contract('Gatekeeper', (accounts) => {
   let parameters;
   let snapshotID;
 
-  before(async () => {
-    const { slateStakeAmount } = defaultParams;
-    const [creator] = accounts;
-    const token = await BasicToken.deployed();
-
-    parameters = await ParameterStore.new(
-      ['slateStakeAmount'],
-      [abiCoder.encode(['uint256'], [slateStakeAmount])],
-      { from: creator },
-    );
-    await parameters.setInitialValue(
-      'tokenAddress',
-      abiCoder.encode(['address'], [token.address]),
-      { from: creator },
-    );
-    await parameters.init({ from: creator });
-  });
-
   beforeEach(async () => {
     snapshotID = await utils.evm.snapshot();
   });
@@ -141,7 +123,14 @@ contract('Gatekeeper', (accounts) => {
     let token;
 
     beforeEach(async () => {
+      const { slateStakeAmount } = defaultParams;
       token = await BasicToken.deployed();
+
+      parameters = await ParameterStore.new(
+        ['slateStakeAmount'],
+        [abiCoder.encode(['uint256'], [slateStakeAmount])],
+        { from: creator },
+      );
     });
 
     it('should correctly initialize the gatekeeper', async () => {
@@ -341,7 +330,9 @@ contract('Gatekeeper', (accounts) => {
     let GRANT;
 
     beforeEach(async () => {
-      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
+      ({
+        gatekeeper, capacitor, token, parameters,
+      } = await utils.newPanvala({ from: creator }));
       epochNumber = await gatekeeper.currentEpochNumber();
 
       GRANT = await getResource(gatekeeper, 'GRANT');
@@ -667,11 +658,13 @@ contract('Gatekeeper', (accounts) => {
     let stakeAmount;
 
     beforeEach(async () => {
-      ({ gatekeeper, capacitor, token } = await utils.newPanvala({ from: creator }));
+      ({
+        gatekeeper, capacitor, token, parameters,
+      } = await utils.newPanvala({ from: creator }));
+
       GRANT = await getResource(gatekeeper, 'GRANT');
 
       epochNumber = await gatekeeper.currentEpochNumber();
-
 
       stakeAmount = await parameters.getAsUint('slateStakeAmount');
 

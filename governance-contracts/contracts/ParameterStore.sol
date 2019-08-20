@@ -64,6 +64,11 @@ contract ParameterStore {
         require(initialized == false, "Contract has already been initialized");
 
         initialized = true;
+
+        // Do not allow initialization unless the gatekeeperAddress is set
+        // Check after setting initialized so we can use the getter
+        require(getAsAddress("gatekeeperAddress") != address(0), "Missing gatekeeper");
+
         emit Initialized();
     }
 

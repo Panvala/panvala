@@ -21,6 +21,11 @@ contract('ParameterStore', (accounts) => {
 
   afterEach(async () => utils.evm.revert(snapshotID));
 
+  const addPlaceholderGatekeeper = async (params) => {
+    const gkAddress = accounts[2];
+    await params.setInitialValue('gatekeeperAddress', abiEncode('address', gkAddress));
+  };
+
   describe('constructor', () => {
     const [creator] = accounts;
     const data = {
@@ -40,6 +45,9 @@ contract('ParameterStore', (accounts) => {
         names, values,
         { from: creator },
       );
+      // set a placeholder gatekeeper address
+      await addPlaceholderGatekeeper(parameters);
+
       await parameters.init({ from: creator });
 
       // get values
@@ -77,6 +85,9 @@ contract('ParameterStore', (accounts) => {
     beforeEach(async () => {
       // deploy
       parameters = await ParameterStore.new([], [], { from: creator });
+
+      // set a placeholder gatekeeper address
+      await addPlaceholderGatekeeper(parameters);
     });
 
     it('should allow the creator to initialize', async () => {
@@ -107,6 +118,20 @@ contract('ParameterStore', (accounts) => {
       }
       assert.fail('Allowed someone other than the creator to initialize');
     });
+
+    it('should revert if initialized without a gatekeeperAddress', async () => {
+      const zero = utils.zeroAddress();
+      await parameters.setInitialValue('gatekeeperAddress', abiEncode('address', zero));
+
+      try {
+        await parameters.init({ from: creator });
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'missing gatekeeper');
+        return;
+      }
+      assert.fail('Allowed initialization with a zero gatekeeperAddress');
+    });
   });
 
   describe('setInitialValue', () => {
@@ -116,6 +141,8 @@ contract('ParameterStore', (accounts) => {
     beforeEach(async () => {
       // deploy
       parameters = await ParameterStore.new([], [], { from: creator });
+
+      await addPlaceholderGatekeeper(parameters);
     });
 
     it('should allow the creator to set initial values', async () => {
@@ -171,6 +198,8 @@ contract('ParameterStore', (accounts) => {
         key = 'someBytes32';
         value = abiCoder.encode(['uint256'], ['1000']);
         parameters = await ParameterStore.new([key], [value]);
+
+        await addPlaceholderGatekeeper(parameters);
       });
 
       it('should retrieve a bytes32 value', async () => {
@@ -202,6 +231,7 @@ contract('ParameterStore', (accounts) => {
         key = 'someAddress';
         const value = abiCoder.encode(['address'], [creator]);
         parameters = await ParameterStore.new([key], [value]);
+        await addPlaceholderGatekeeper(parameters);
       });
 
       it('should retrieve an address value', async () => {
@@ -234,6 +264,7 @@ contract('ParameterStore', (accounts) => {
         key = 'someUint';
         const value = abiCoder.encode(['uint256'], [stored]);
         parameters = await ParameterStore.new([key], [value]);
+        await addPlaceholderGatekeeper(parameters);
       });
 
       it('should retrieve a uint value', async () => {
