@@ -1,9 +1,9 @@
 {
   "token": {
     "deploy": true,
-    "address": "0x4912d6aBc68e4F02d1FdD6B79ed045C0A0BAf772",
-    "name": "Panvala pan (test)",
-    "symbol": "PANT",
+    "address": "0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44",
+    "name": "Panvala pan",
+    "symbol": "PAN",
     "decimals": 18,
     "supply": "100000000"
   },
@@ -14,7 +14,7 @@
   "capacitor": {
     "charge": true,
     "initialBalance": "50000000",
-    "initialUnlockedBalanceBase": "449376573796818873000000"
+    "initialUnlockedBalanceBase": "425826374312990033000000"
   },
   "parameterStore": {
       "parameters": {
