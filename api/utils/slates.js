@@ -6,15 +6,14 @@ const { Promise } = require('bluebird');
 const { IpfsMetadata, Slate } = require('../models');
 
 const {
-  contractABIs: { Gatekeeper, ParameterStore },
+  contractABIs: { ParameterStore },
 } = require('../../packages/panvala-utils');
 
 const { toUtf8String } = ethers.utils;
 
+const { getContracts } = require('./eth');
 const config = require('./config');
-const { rpcEndpoint } = config;
-const { gatekeeperAddress, tokenCapacitorAddress } = config.contracts;
-
+const { tokenCapacitorAddress } = config.contracts;
 const { nonEmptyString } = require('./validation');
 
 const BN = small => ethers.utils.bigNumberify(small);
@@ -25,8 +24,7 @@ const getAddress = hexAddress => ethers.utils.getAddress(hexAddress);
  */
 async function getAllSlates() {
   // Get an interface to the Gatekeeper contract
-  const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
-  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, provider);
+  const { provider, gatekeeper } = getContracts();
 
   // Get an interface to the ParameterStore contract
   const parameterStoreAddress = await gatekeeper.functions.parameters();
@@ -61,12 +59,13 @@ async function getAllSlates() {
     slateIDsToQuery = filtered;
   }
 
-  return Promise.map(
+  const slates = await Promise.map(
     slateIDsToQuery,
     async (slateID, index) => {
       if (index !== 0) await Promise.delay(1000);
       // console.log('slateID:', slateID);
       const slate = await gatekeeper.slates(slateID);
+      // const dbSlate = await Request.findOrCreate({ where: {} });
       // decode hash
       const decoded = toUtf8String(slate.metadataHash);
       // console.log('decoded hash', decoded);
@@ -85,11 +84,12 @@ async function getAllSlates() {
         slate.status = 2;
       }
 
-      console.log('slate:', slate);
       return getSlateWithMetadata(slateID, slate, decoded, incumbent, requiredStake);
     },
     { concurrency: 5 }
   );
+
+  return slates;
 }
 
 /**
@@ -147,8 +147,8 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
       organization,
       proposalMultihashes,
     } = slateMetadata;
-    console.log('proposalMultihashes:', proposalMultihashes);
-    console.log('');
+    // console.log('proposalMultihashes:', proposalMultihashes);
+    // console.log('');
 
     // TODO: rehydrate proposals
 
