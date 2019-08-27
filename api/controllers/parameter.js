@@ -2,6 +2,7 @@ const { getContracts } = require('../utils/eth');
 const {
   contracts: { genesisBlockNumber },
 } = require('../utils/config');
+const { getParametersSet } = require('../utils/events');
 
 module.exports = {
   async getAll(req, res) {
