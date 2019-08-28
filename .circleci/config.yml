@@ -99,7 +99,6 @@ jobs:
            . venv/bin/activate
            sh ./scripts/publish-api.sh
 
-  # NOTE: namespace still needs to be "development"
   prod-deploy-api:
     <<: *defaults
     docker:
@@ -130,7 +129,7 @@ jobs:
           name: Deploy API
           command: |
             . venv/bin/activate
-            sh ./scripts/deploy-api.sh development
+            sh ./scripts/deploy-api.sh production
 
   staging-deploy-api:
     <<: *defaults
@@ -252,7 +251,6 @@ jobs:
            . venv/bin/activate
            sh ./scripts/publish-frontend.sh
 
-  # NOTE: namespace still needs to be "development"
   prod-deploy-frontend:
     <<: *defaults
     docker:
@@ -283,7 +281,7 @@ jobs:
           name: Deploy frontend
           command: |
             . venv/bin/activate
-            sh ./scripts/deploy-frontend.sh development
+            sh ./scripts/deploy-frontend.sh production
 
   staging-deploy-frontend:
     <<: *defaults
@@ -441,7 +439,7 @@ workflows:
 
   # build, publish, and deploy on commit to develop or master
   # develop --> staging
-  # master --> live
+  # master --> production
   build-and-deploy:
     jobs:
       - build-api-image:
