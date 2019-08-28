@@ -27,16 +27,14 @@ const genBlocks = {
 
 async function getContracts() {
   const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
-  const signer = provider.getSigner();
   const network = await provider.getNetwork();
-  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, signer);
+  const gatekeeper = new ethers.Contract(gatekeeperAddress, Gatekeeper.abi, provider);
   const parameterStoreAddress = await gatekeeper.parameters();
-  const parameterStore = new ethers.Contract(parameterStoreAddress, ParameterStore.abi, signer);
-  const tokenCapacitor = new ethers.Contract(tokenCapacitorAddress, TokenCapacitor.abi, signer);
+  const parameterStore = new ethers.Contract(parameterStoreAddress, ParameterStore.abi, provider);
+  const tokenCapacitor = new ethers.Contract(tokenCapacitorAddress, TokenCapacitor.abi, provider);
   const genesisBlockNumber = genBlocks[network.chainId] || genBlocks.unknown;
 
   return {
-    signer,
     provider,
     network,
     rpcEndpoint,
