@@ -1,9 +1,9 @@
 {
   "token": {
     "deploy": true,
-    "address": "0x5Cb4b57510Feb5438C90d6e17B39c2c910051859",
-    "name": "Basic Token",
-    "symbol": "BSC",
+    "address": "0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44",
+    "name": "Panvala pan",
+    "symbol": "PAN",
     "decimals": 18,
     "supply": "100000000"
   },
@@ -14,7 +14,7 @@
   "capacitor": {
     "charge": true,
     "initialBalance": "50000000",
-    "initialUnlockedBalance": "1000000"
+    "initialUnlockedBalanceBase": "425826374312990033000000"
   },
   "parameterStore": {
       "parameters": {
