@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/util.css" />
   <link rel="stylesheet" href="css/colors.css" />
   <link rel="stylesheet" href="css/clip-path.css" />
+  <script type="text/javascript" src="donate.js"></script>
+  <script type="text/javascript">(function(o){var b="https://zippyfrog.co/anywhere/",t="039b072363604f71afb26a55f1899413c20b8d86bb9749878f06b280fe2c8fa4",a=window.AutopilotAnywhere={_runQueue:[],run:function(){this._runQueue.push(arguments);}},c=encodeURIComponent,s="SCRIPT",d=document,l=d.getElementsByTagName(s)[0],p="t="+c(d.title||"")+"&u="+c(d.location.href||"")+"&r="+c(d.referrer||""),j="text/javascript",z,y;if(!window.Autopilot) window.Autopilot=a;if(o.app) p="devmode=true&"+p;z=function(src,asy){var e=d.createElement(s);e.src=src;e.type=j;e.async=asy;l.parentNode.insertBefore(e,l);};y=function(){z(b+t+'?'+p,true);};if(window.attachEvent){window.attachEvent("onload",y);}else{window.addEventListener("load",y,false);}})({});</script>
 </head>
 
 <body class="overflow-x-hidden">
@@ -57,7 +59,7 @@
       <p class="white-60 f5 fw4 lh-copy ma0 mb4 w-50-l w-100 center">
         Countless projects and people depend upon the Ethereum blockchain for their success. Contributing to Panvala rewards the teams who solve those problems.
       </p>
-      <a href="donate.html#donate-form">
+      <a href="donate.html#donate-section">
         <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer">
           Donate Now
         </button>
@@ -464,8 +466,9 @@
     </div>
   </section>
 
+  <div class="relative">
   <!-- Donation Inputs -->
-  <section id="donate-form"
+  <section id="donate-section"
     class="bg-gray top-clip-up pv6 mt6">
     <div class="w-50-l w-70-m w-90 center tc">
       <h2 class="f2-5 ma0 mv3 lh-copy">
@@ -474,7 +477,7 @@
       <p class="ma0 f6 lh-text mb3">
         We only need your contact information in order for you to make a pledge at this time. We'll reach out to you in the future to help you fulfill your pledge.
       </p>
-      <form class="w-70-l w-90-m w-100 center">
+      <form class="w-70-l w-90-m w-100 center" name="donation-pledge">
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Full Name
@@ -482,12 +485,13 @@
               *
             </b>
           </label>
-          <input type="text"
-            required
-            placeholder="Enter your full name"
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
-          </input>
         </div>
+        <input type="text"
+          name="full-name"
+          required
+          placeholder="Enter your full name"
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+        />
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Email
@@ -495,12 +499,13 @@
               *
             </b>
           </label>
-          <input type="email"
-            required
-            placeholder="Enter your email address"
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
-          </input>
         </div>
+        <input type="email"
+          name="email"
+          required
+          placeholder="Enter your email address"
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+        />
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Pledge Tier
@@ -508,33 +513,34 @@
               *
             </b>
           </label>
-          <select
-            required
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50">
-            <option disabled=""
-              selected="selected">
-              Select your pledge tier
-            </option>
-            <option value="Student">
-              Student — $5/month
-            </option>
-            <option value="Gold">
-              Gold — $15/month
-            </option>
-            <option value="Platinum">
-              Platinum — $50/month
-            </option>
-            <option value="Platinum">
-              Diamond — $150/month
-            </option>
-            <option value="Ether Advisor">
-              Ether Advisor — $500/month
-            </option>
-            <option value="Elite Advisor">
-              Elite Advisor — $1500/month
-            </option>
-          </select>
         </div>
+        <select
+          name="pledge-tier-selection"
+          required
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50">
+          <option disabled=""
+            selected="selected">
+            Select your pledge tier
+          </option>
+          <option value="Student">
+            Student — $5/month
+          </option>
+          <option value="Gold">
+            Gold — $15/month
+          </option>
+          <option value="Platinum">
+            Platinum — $50/month
+          </option>
+          <option value="Platinum">
+            Diamond — $150/month
+          </option>
+          <option value="Ether Advisor">
+            Ether Advisor — $500/month
+          </option>
+          <option value="Elite Advisor">
+            Elite Advisor — $1500/month
+          </option>
+        </select>
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             How many months would you like to pledge for?
@@ -542,33 +548,62 @@
               *
             </b>
           </label>
-          <select
-            required
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50">
-            <option disabled=""
-              selected="selected">
-              Select the amount of months you would like to pledge for
-            </option>
-            <option value="Student">
-              1 month
-            </option>
-            <option value="Student">
-              3 months
-            </option>
-            <option value="Gold">
-              6 months
-            </option>
-            <option value="Platinum">
-              12 months
-            </option>
-          </select>
         </div>
-        <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4">
-          Donate Now
-        </button>
+        <select
+          name="pledge-duration-selection"
+          required
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50">
+          <option disabled=""
+            selected="selected">
+            Select the amount of months you would like to pledge for
+          </option>
+          <option value="Student">
+            1 month
+          </option>
+          <option value="Student">
+            3 months
+          </option>
+          <option value="Gold">
+            6 months
+          </option>
+          <option value="Platinum">
+            12 months
+          </option>
+        </select>
+        <input
+          id="donation-pledge-button"
+          type="submit"
+          name="submit"
+          class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+          value="Donate Now"
+        />
       </form>
     </div>
   </section>
+
+    <!-- Modal -->
+    <article
+      class="vh-100 dn w-100 bg-black-80 absolute--fill absolute z-999"
+      id="donation-pledge-modal"
+    >
+      <section class="w-30-l w-50-m w-90 pa5-l pa4 bg-white br3 center mt6-l mt5-m mt4 tc">
+        <h2 class="f2-5 ma0 mb3 lh-copy">
+          Form Submitted
+        </h2>
+        <p class="ma0 f6 lh-text mb4">
+          Thank you. We'll be in touch!
+        </p>
+        <a href="">
+          <button
+            class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer"
+            id="donation-pledge-modal-close"
+          >
+            Continue
+          </button>
+        </a>
+      </section>
+    </article>
+  </div>
 
   <!-- Footer -->
   <section class="bg-gradient">
