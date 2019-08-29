@@ -1,6 +1,6 @@
 npm-debug.log
 .DS_Store
 node_modules
-config
+/config
 screenshot
 report.json
