@@ -43,6 +43,7 @@ import RouterLink from '../../../components/RouterLink';
 import BackButton from '../../../components/BackButton';
 import { isSlateSubmittable } from '../../../utils/status';
 import Loader from '../../../components/Loader';
+import { MaxUint256 } from 'ethers/constants';
 
 const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
   // modal opener
@@ -58,6 +59,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
     slateStakeAmount,
     gkAllowance,
   }: IEthereumContext = React.useContext(EthereumContext);
+  const [pendingText, setPendingText] = React.useState('');
 
   React.useEffect(() => {
     if (!isSlateSubmittable(currentBallot, 'GOVERNANCE')) {
@@ -69,7 +71,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
   // pending tx loader
   const [txsPending, setTxsPending] = React.useState(0);
 
-  async function calculateNumTxs(values) {
+  function calculateNumTxs(values) {
     let numTxs: number = 1; // gk.recommendSlate
 
     if (values.recommendation === 'governance') {
@@ -94,8 +96,9 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
       toast.error(msg);
       return;
     }
-    const numTxs = await calculateNumTxs(values);
+    const numTxs = calculateNumTxs(values);
     setTxsPending(numTxs);
+    setPendingText('Adding proposals to IPFS...');
 
     // filter for only changes in parameters
     const parameterChanges: IParameterChangesObject = Object.keys(values.parameters).reduce(
@@ -150,6 +153,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
     let errorMessage = '';
 
     try {
+      setPendingText('Including proposals in slate (check MetaMask)...');
       // 1. create proposal and get request ID
       const emptySlate = values.recommendation === 'noAction';
       const getRequests = emptySlate
@@ -160,6 +164,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
       // console.log('creating proposals...');
       const requestIDs = await getRequests;
 
+      setPendingText('Adding slate to IPFS...');
       // TODO: change the metadata format to include resource (but maybe include a human-readable resourceType)
       const slateMetadata: any = {
         firstName: values.firstName,
@@ -176,6 +181,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
       console.log('saving slate metadata...');
       const slateMetadataHash: string = await ipfsAddObject(slateMetadata);
 
+      setPendingText('Creating governance slate (check MetaMask)...');
       // Submit the slate info to the contract
       errorMessage = 'error submitting slate.';
       const slate: any = await sendRecommendGovernanceSlateTx(
@@ -186,6 +192,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
       );
       console.log('Submitted slate', slate);
 
+      setPendingText('Saving slate...');
       // Add slate to db
       const slateToSave: ISaveSlate = {
         slateID: slate.slateID,
@@ -200,12 +207,17 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
         console.log('Saved slate info');
         toast.success('Saved slate');
         if (values.stake === 'yes') {
+          if (gkAllowance.lt(slateStakeAmount)) {
+            setPendingText('Approving the Gatekeeper to stake on slate (check MetaMask)...');
+            await contracts.token.approve(contracts.gatekeeper.address, MaxUint256);
+          }
+          setPendingText('Staking on slate (check MetaMask)...');
           const res = await contracts.gatekeeper.functions.stakeTokens(slate.slateID);
-
           await res.wait();
         }
 
         setTxsPending(0);
+        setPendingText('');
         setOpenModal(true);
         onRefreshSlates();
         onRefreshCurrentBallot();
@@ -395,7 +407,12 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
         </Formik>
       </CenteredWrapper>
 
-      <Loader isOpen={txsPending > 0} setOpen={() => setTxsPending(0)} numTxs={txsPending} />
+      <Loader
+        isOpen={txsPending > 0}
+        setOpen={() => setTxsPending(0)}
+        numTxs={txsPending}
+        pendingText={pendingText}
+      />
 
       <Modal handleClick={() => setOpenModal(false)} isOpen={isOpen}>
         <>
@@ -426,7 +443,7 @@ CreateGovernanceSlate.getInitialProps = async ({ query, classes }) => {
 };
 const styles = (theme: any) => ({
   progress: {
-    margin: theme.spacing.unit * 2,
+    margin: theme.spacing(2),
     color: COLORS.primary,
   },
 });

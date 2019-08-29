@@ -2,15 +2,8 @@ const ethers = require('ethers');
 const ipfs = require('./ipfs');
 const range = require('lodash/range');
 const { Promise } = require('bluebird');
-
 const { IpfsMetadata, Slate } = require('../models');
-
-const {
-  contractABIs: { ParameterStore },
-} = require('../../packages/panvala-utils');
-
 const { toUtf8String } = ethers.utils;
-
 const { getContracts } = require('./eth');
 const config = require('./config');
 const { tokenCapacitorAddress } = config.contracts;
@@ -23,12 +16,9 @@ const getAddress = hexAddress => ethers.utils.getAddress(hexAddress);
  * Read slate info from the blockchain, IPFS, and the local DB
  */
 async function getAllSlates() {
-  // Get an interface to the Gatekeeper contract
-  const { provider, gatekeeper } = getContracts();
+  // Get an interface to the Gatekeeper, ParameterStore contracts
+  const { provider, gatekeeper, parameterStore } = await getContracts();
 
-  // Get an interface to the ParameterStore contract
-  const parameterStoreAddress = await gatekeeper.functions.parameters();
-  const parameterStore = new ethers.Contract(parameterStoreAddress, ParameterStore.abi, provider);
   // Get the slate staking requirement
   const requiredStake = await parameterStore.functions.get('slateStakeAmount');
 
@@ -40,7 +30,7 @@ async function getAllSlates() {
   let grantsIncumbent, governanceIncumbent;
   if (gatekeeper.functions.hasOwnProperty('incumbent')) {
     grantsIncumbent = await gatekeeper.functions.incumbent(tokenCapacitorAddress);
-    governanceIncumbent = await gatekeeper.functions.incumbent(parameterStoreAddress);
+    governanceIncumbent = await gatekeeper.functions.incumbent(parameterStore.address);
   }
 
   // 0..slateCount
@@ -50,7 +40,10 @@ async function getAllSlates() {
   // TEMPORARY HACK
   let slateIDsToQuery = slateIDs;
   const network = await provider.getNetwork();
-  if (network.chainId === 4) {
+  if (
+    network.chainId === 4 &&
+    gatekeeper.address === '0xe944C83D35B404610a82166c23B17F33d6399343'
+  ) {
     const garbage = [0, 1, 2, 3, 5];
     const filtered = slateIDs.filter(id => !garbage.includes(id));
     slateIDsToQuery = filtered;
@@ -71,14 +64,27 @@ async function getAllSlates() {
         incumbent = true;
       } else if (
         slate.recommender === governanceIncumbent &&
-        slate.resource === parameterStoreAddress
+        slate.resource === parameterStore.address
       ) {
         incumbent = true;
       }
 
-      // manually reject slates that are old and not accepted
-      if (BN(slate.epochNumber).lt(currentEpoch) && slate.status !== 3) {
-        slate.status = 2;
+      // Manual slate rejection criteria:
+      // (1) from previous epoch, (2) not-accepted, (3) no-contest || contest finalized
+      if (BN(slate.epochNumber).lt(currentEpoch)) {
+        // Unstaked
+        if (slate.status === 0) {
+          slate.status = 3;
+        }
+        // Staked
+        if (slate.status === 1) {
+          const contest = await gatekeeper.contestStatus(slate.epochNumber, slate.resource);
+          const contestSlates = await gatekeeper.contestSlates(slate.epochNumber, slate.resource);
+          // No contest || contest finalized
+          if (contest.status !== 2 && contestSlates.length > 1) {
+            slate.status = 3;
+          }
+        }
       }
 
       return getSlateWithMetadata(slateID, slate, decoded, incumbent, requiredStake);

@@ -3,6 +3,9 @@
 const TokenCapacitor = artifacts.require('TokenCapacitor');
 const ParameterStore = artifacts.require('ParameterStore');
 const BasicToken = artifacts.require('BasicToken');
+const Gatekeeper = artifacts.require('Gatekeeper');
+const TimeTravelingGatekeeper = artifacts.require('TimeTravelingGatekeeper');
+
 const { utils } = require('ethers');
 const fs = require('fs');
 const path = require('path');
@@ -13,6 +16,14 @@ const config = JSON.parse(fs.readFileSync(configFile, 'utf-8'));
 const lptcConfig = JSON.parse(fs.readFileSync(lptcConfigFile, 'utf-8'));
 
 const { prettify } = require('./utils');
+
+async function getGatekeeper(networkID, timeTravel) {
+  const isPublicNetwork = networkID === 1 || networkID === 4;
+
+  const enableTimeTravel = timeTravel || !isPublicNetwork;
+  const GatekeeperArtifact = enableTimeTravel ? TimeTravelingGatekeeper : Gatekeeper;
+  return GatekeeperArtifact.deployed();
+}
 
 // eslint-disable-next-line
 async function run(networkID) {
@@ -31,15 +42,19 @@ async function run(networkID) {
 
   const { decimals, deploy, address: tokenInfoAddress } = config.token;
   const { initialUnlockedBalance } = lptcConfig;
+  const { enableTimeTravel } = config.gatekeeper;
 
   const token = deploy ? await BasicToken.deployed() : await BasicToken.at(tokenInfoAddress);
 
   console.log('Using Token:', token.address);
 
+  const gatekeeper = await getGatekeeper(networkID, enableTimeTravel);
+
   const baseInitialUnlocked = utils.parseUnits(initialUnlockedBalance, decimals);
   const capacitor = await TokenCapacitor.new(
     parameters.address,
     token.address,
+    gatekeeper.address,
     baseInitialUnlocked,
     { from: creator },
   );

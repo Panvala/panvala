@@ -66,7 +66,7 @@ contract('migrations', (accounts) => {
 
     // capacitor's unlocked balance should be at least the initial unlocked balance
     const { locked, unlocked } = await utils.capacitorBalances(capacitor);
-    const expectedUnlocked = asBN(toPanBase(capacitorConfig.initialUnlockedBalance));
+    const expectedUnlocked = asBN(capacitorConfig.initialUnlockedBalanceBase);
     assert.strictEqual(
       unlocked.toString(),
       expectedUnlocked.toString(),

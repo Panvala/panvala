@@ -12,5 +12,5 @@ login=$(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
 ${login}
 
 # push
-echo "Pushing api image $IMAGE"
+echo "Pushing image $IMAGE for repository $REPOSITORY_NAME"
 docker push "$IMAGE"

@@ -1,15 +1,20 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.11;
 pragma experimental ABIEncoderV2;
 
 import "./ParameterStore.sol";
-import "./TokenCapacitor.sol";
+import "./IDonationReceiver.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 
 
 contract Gatekeeper {
     // EVENTS
-    event PermissionRequested(address resource, uint requestID, bytes metadataHash);
+    event PermissionRequested(
+        uint256 indexed epochNumber,
+        address indexed resource,
+        uint requestID,
+        bytes metadataHash
+    );
     event SlateCreated(uint slateID, address indexed recommender, uint[] requestIDs, bytes metadataHash);
     event SlateStaked(uint slateID, address indexed staker, uint numTokens);
     event VotingTokensDeposited(address indexed voter, uint numTokens);
@@ -63,6 +68,7 @@ contract Gatekeeper {
     // The timestamp of the start of the first epoch
     uint public startTime;
     uint public constant EPOCH_LENGTH = ONE_WEEK * 13;
+    uint public constant SLATE_SUBMISSION_PERIOD_START = ONE_WEEK;
     uint public constant COMMIT_PERIOD_START = ONE_WEEK * 11;
     uint public constant REVEAL_PERIOD_START = ONE_WEEK * 12;
 
@@ -79,19 +85,16 @@ contract Gatekeeper {
         address resource;
         bool approved;
         uint expirationTime;
+        uint epochNumber;
     }
 
-    // The requests made to the Gatekeeper. Maps requestID -> Request.
-    mapping(uint => Request) public requests;
-
-    // The total number of requests created
-    uint public requestCount;
+    // The requests made to the Gatekeeper.
+    Request[] public requests;
 
     // Voting
     enum SlateStatus {
         Unstaked,
         Staked,
-        Rejected,
         Accepted
     }
 
@@ -108,11 +111,9 @@ contract Gatekeeper {
         uint256 epochNumber;
         address resource;
     }
-    // The slates created by the Gatekeeper. Maps slateID -> Slate.
-    mapping(uint => Slate) public slates;
 
-    // The total number of slates created
-    uint public slateCount;
+    // The slates created by the Gatekeeper.
+    Slate[] public slates;
 
     // The number of tokens each account has available for voting
     mapping(address => uint) public voteTokenBalance;
@@ -133,13 +134,13 @@ contract Gatekeeper {
         uint firstChoiceVotes;
         // slateID -> count
         mapping(uint => uint) secondChoiceVotes;
+        uint totalSecondChoiceVotes;
     }
 
     enum ContestStatus {
         Empty,
         NoContest,
         Active,
-        RunoffPending,
         Finalized
     }
 
@@ -153,10 +154,14 @@ contract Gatekeeper {
 
         // slateID -> tally
         mapping(uint => SlateVotes) votes;
+        uint256 stakesDonated;
 
         // Intermediate results
-        uint voteWinner;
+        uint voteLeader;
         uint voteRunnerUp;
+        uint256 leaderVotes;
+        uint256 runnerUpVotes;
+        uint256 totalVotes;
 
         // Final results
         uint winner;
@@ -230,10 +235,11 @@ contract Gatekeeper {
     )
         public returns(uint)
     {
-        uint256 epochNumber = currentEpochNumber();
-
-        require(now < slateSubmissionDeadline(epochNumber, resource), "Submission deadline passed");
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
+        require(slateSubmissionPeriodActive(resource), "Submission period not active");
         require(metadataHash.length > 0, "metadataHash cannot be empty");
+
+        uint256 epochNumber = currentEpochNumber();
 
         // create slate
         Slate memory s = Slate({
@@ -248,18 +254,22 @@ contract Gatekeeper {
         });
 
         // Record slate and return its ID
-        uint slateID = slateCount;
-        slates[slateID] = s;
-        slateCount = slateCount.add(1);
+        uint slateID = slateCount();
+        slates.push(s);
 
         // Set up the requests
         for (uint i = 0; i < requestIDs.length; i++) {
             uint requestID = requestIDs[i];
-            require(requestID < requestCount, "Invalid requestID");
+            require(requestID < requestCount(), "Invalid requestID");
 
+            Request memory r = requests[requestID];
             // Every request's resource must match the one passed in
-            require(requests[requestID].resource == resource, "Resource does not match");
+            require(r.resource == resource, "Resource does not match");
 
+            // Requests must be current
+            require(r.epochNumber == epochNumber, "Invalid epoch");
+
+            // Requests cannot be duplicated
             require(slates[slateID].requestIncluded[requestID] == false, "Duplicate requests are not allowed");
             slates[slateID].requestIncluded[requestID] = true;
         }
@@ -285,7 +295,8 @@ contract Gatekeeper {
     @param slateID The slate to stake on
      */
     function stakeTokens(uint slateID) public returns(bool) {
-        require(slateID < slateCount, "No slate exists with that slateID");
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
+        require(slateID < slateCount(), "No slate exists with that slateID");
         require(slates[slateID].status == SlateStatus.Unstaked, "Slate has already been staked");
 
         address staker = msg.sender;
@@ -297,7 +308,7 @@ contract Gatekeeper {
         Slate storage slate = slates[slateID];
 
         // Submission period must be active
-        require(now < slateSubmissionDeadline(slate.epochNumber, slate.resource), "deadline passed");
+        require(slateSubmissionPeriodActive(slate.resource), "Submission period not active");
         uint256 epochNumber = currentEpochNumber();
         assert(slate.epochNumber == epochNumber);
 
@@ -332,7 +343,7 @@ contract Gatekeeper {
     @param slateID The slate to withdraw the stake from
      */
     function withdrawStake(uint slateID) public returns(bool) {
-        require(slateID < slateCount, "No slate exists with that slateID");
+        require(slateID < slateCount(), "No slate exists with that slateID");
 
         // get slate
         Slate memory slate = slates[slateID];
@@ -355,6 +366,7 @@ contract Gatekeeper {
      @param numTokens The number of tokens to devote to voting
      */
     function depositVoteTokens(uint numTokens) public returns(bool) {
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
         address voter = msg.sender;
 
         // Voter must have enough tokens
@@ -531,11 +543,40 @@ contract Gatekeeper {
 
             // Increment totals for first and second choice slates
             uint firstChoice = firstChoices[i];
-            SlateVotes storage slateVotes = contest.votes[firstChoice];
-            slateVotes.firstChoiceVotes = slateVotes.firstChoiceVotes.add(v.numTokens);
-
             uint secondChoice = secondChoices[i];
-            slateVotes.secondChoiceVotes[secondChoice] = slateVotes.secondChoiceVotes[secondChoice].add(v.numTokens);
+
+            // Update first choice standings
+            if (slates[firstChoice].status == SlateStatus.Staked) {
+                SlateVotes storage firstChoiceSlate = contest.votes[firstChoice];
+                contest.totalVotes = contest.totalVotes.add(v.numTokens);
+                uint256 newCount = firstChoiceSlate.firstChoiceVotes.add(v.numTokens);
+
+                // Update first choice standings
+                if (firstChoice == contest.voteLeader) {
+                    // Leader is still the leader
+                    contest.leaderVotes = newCount;
+                } else if (newCount > contest.leaderVotes) {
+                    // This slate is now the leader, and the previous leader is now the runner-up
+                    contest.voteRunnerUp = contest.voteLeader;
+                    contest.runnerUpVotes = contest.leaderVotes;
+
+                    contest.voteLeader = firstChoice;
+                    contest.leaderVotes = newCount;
+                } else if (newCount > contest.runnerUpVotes) {
+                    // This slate overtook the previous runner-up
+                    contest.voteRunnerUp = firstChoice;
+                    contest.runnerUpVotes = newCount;
+                }
+
+                firstChoiceSlate.firstChoiceVotes = newCount;
+
+                // Update second choice standings
+                if (slates[secondChoice].status == SlateStatus.Staked) {
+                    SlateVotes storage secondChoiceSlate = contest.votes[secondChoice];
+                    secondChoiceSlate.totalSecondChoiceVotes = secondChoiceSlate.totalSecondChoiceVotes.add(v.numTokens);
+                    firstChoiceSlate.secondChoiceVotes[secondChoice] = firstChoiceSlate.secondChoiceVotes[secondChoice].add(v.numTokens);
+                }
+            }
         }
 
         // update state
@@ -554,6 +595,10 @@ contract Gatekeeper {
         uint[] memory _salts
     ) public {
         uint numBallots = _voters.length;
+        require(
+            _salts.length == _voters.length && _ballots.length == _voters.length,
+            "Inputs must have the same length"
+        );
 
         for (uint i = 0; i < numBallots; i++) {
             // extract resources, firstChoices, secondChoices from the ballot
@@ -622,16 +667,18 @@ contract Gatekeeper {
      @param resource The resource to finalize for
      */
     function finalizeContest(uint epochNumber, address resource) public {
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
+
+        // Finalization must be after the vote period (i.e when the given epoch is over)
+        require(currentEpochNumber() > epochNumber, "Contest epoch still active");
+
         // Make sure the ballot has a contest for this resource
         Contest storage contest = ballots[epochNumber].contests[resource];
         require(contest.status == ContestStatus.Active || contest.status == ContestStatus.NoContest,
             "Either no contest is in progress for this resource, or it has been finalized");
 
-        // Handle the case of a single staked slate in the contest -- it should automatically win
-        // Finalization should be possible as soon as the slate submission period is over
+        // A single staked slate in the contest automatically wins
         if (contest.status == ContestStatus.NoContest) {
-            require(now > slateSubmissionDeadline(epochNumber, resource), "Slate submission still active");
-
             uint256 winningSlate = contest.stakedSlates[0];
             assert(slates[winningSlate].status == SlateStatus.Staked);
 
@@ -643,80 +690,27 @@ contract Gatekeeper {
             return;
         }
 
-        // Non-automatic finalization must be after the vote period (i.e when the given epoch
-        // is over)
-        require(currentEpochNumber() > epochNumber, "Reveal period still active");
+        // no votes
+        if (contest.totalVotes > 0) {
+            uint256 winnerVotes = contest.leaderVotes;
 
-        // Iterate through the slates and get the one with the most votes
-        uint winner = 0;
-        uint winnerVotes = 0;
-        uint runnerUp = 0;
-        uint runnerUpVotes = 0;
+            // If the winner has more than 50%, we are done
+            // Otherwise, trigger a runoff
+            if (winnerVotes.mul(2) > contest.totalVotes) {
+                contest.winner = contest.voteLeader;
+                acceptSlate(contest.winner);
 
-        uint total = 0;
-        bool noVotes = true;
-
-        for (uint i = 0; i < contest.stakedSlates.length; i++) {
-            uint slateID = contest.stakedSlates[i];
-            assert(slates[slateID].status == SlateStatus.Staked);
-
-            SlateVotes storage currentSlate = contest.votes[slateID];
-
-            uint votes = currentSlate.firstChoiceVotes;
-            if (noVotes && votes > 0) {
-                noVotes = false;
+                contest.status = ContestStatus.Finalized;
+                emit VoteFinalized(epochNumber, resource, contest.winner, winnerVotes, contest.totalVotes);
+            } else {
+                emit VoteFailed(epochNumber, resource, contest.voteLeader, winnerVotes, contest.voteRunnerUp, contest.runnerUpVotes, contest.totalVotes);
+                _finalizeRunoff(epochNumber, resource);
             }
-            total = total.add(votes);
-
-            if (votes > winnerVotes) {
-                // Previous winner is now the runner-up
-                runnerUp = winner;
-                runnerUpVotes = winnerVotes;
-
-                winner = slateID;
-                winnerVotes = votes;
-            } else if (votes > runnerUpVotes) {
-                // This slate overtook the previous runner-up
-                runnerUp = slateID;
-                runnerUpVotes = votes;
-            }
-        }
-
-        // If no one voted, reject all participating slates
-        if (noVotes) {
-            // No more active slates
-            uint256[] memory activeSlates = new uint256[](0);
-
-            rejectSlates(contest.stakedSlates, activeSlates);
+        } else {
+            // no one voted
             contest.status = ContestStatus.Finalized;
             emit ContestFinalizedWithoutWinner(epochNumber, resource);
             return;
-        }
-
-        // Update state
-        contest.voteWinner = winner;
-        contest.voteRunnerUp = runnerUp;
-
-        // If the winner has more than 50%, we are done
-        // Otherwise, trigger a runoff
-        if (winnerVotes.mul(2) > total) {
-            contest.winner = winner;
-            acceptSlate(winner);
-
-            uint256[] memory activeSlates = new uint256[](1);
-            activeSlates[0] = contest.winner;
-            rejectSlates(contest.stakedSlates, activeSlates);
-
-            contest.status = ContestStatus.Finalized;
-            emit VoteFinalized(epochNumber, resource, winner, winnerVotes, total);
-        } else {
-            uint256[] memory activeSlates = new uint256[](2);
-            activeSlates[0] = contest.voteWinner;
-            activeSlates[1] = contest.voteRunnerUp;
-            rejectSlates(contest.stakedSlates, activeSlates);
-
-            contest.status = ContestStatus.RunoffPending;
-            emit VoteFailed(epochNumber, resource, winner, winnerVotes, runnerUp, runnerUpVotes, total);
         }
     }
 
@@ -754,7 +748,7 @@ contract Gatekeeper {
         allSlates = c.slates;
         stakedSlates = c.stakedSlates;
         lastStaked = c.lastStaked;
-        voteWinner = c.voteWinner;
+        voteWinner = c.voteLeader;
         voteRunnerUp = c.voteRunnerUp;
         winner = c.winner;
     }
@@ -770,34 +764,28 @@ contract Gatekeeper {
      @param epochNumber The epoch
      @param resource The resource to count votes for
      */
-    function finalizeRunoff(uint epochNumber, address resource) public {
-        Contest memory contest = ballots[epochNumber].contests[resource];
-        require(contest.status == ContestStatus.RunoffPending, "Runoff is not pending");
+    function _finalizeRunoff(uint epochNumber, address resource) internal {
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
 
-        uint voteWinner = contest.voteWinner;
+        Contest storage contest = ballots[epochNumber].contests[resource];
+
+        uint voteLeader = contest.voteLeader;
         uint voteRunnerUp = contest.voteRunnerUp;
 
-        // Get the number of first-choice votes for the top choices
-        uint leaderTotal = getFirstChoiceVotes(epochNumber, resource, voteWinner);
-        uint runnerUpTotal = getFirstChoiceVotes(epochNumber, resource, voteRunnerUp);
+        // Get the number of second-choice votes for the top two choices, subtracting
+        // any second choice votes where the first choice was for one of the top two
+        SlateVotes storage leader = contest.votes[voteLeader];
+        SlateVotes storage runnerUp = contest.votes[voteRunnerUp];
 
-        // For slates other than the winner and leader,
-        // count second-choice votes for the top two slates
-        for (uint i = 0; i < contest.stakedSlates.length; i++) {
-            uint slateID = contest.stakedSlates[i];
-            if (slateID != voteWinner && slateID != voteRunnerUp) {
-                // count second-choice votes for the top two slates
-                SlateVotes storage currentSlate = ballots[epochNumber].contests[resource].votes[slateID];
+        uint256 secondChoiceVotesForLeader = leader.totalSecondChoiceVotes
+            .sub(runnerUp.secondChoiceVotes[voteLeader]).sub(leader.secondChoiceVotes[voteLeader]);
 
-                // Second-choice votes for the winning slate
-                uint votesForWinner = currentSlate.secondChoiceVotes[voteWinner];
-                leaderTotal = leaderTotal.add(votesForWinner);
+        uint256 secondChoiceVotesForRunnerUp = runnerUp.totalSecondChoiceVotes
+            .sub(leader.secondChoiceVotes[voteRunnerUp]).sub(runnerUp.secondChoiceVotes[voteRunnerUp]);
 
-                // Second-choice votes for the runner-up slate
-                uint votesForRunnerUp = currentSlate.secondChoiceVotes[voteRunnerUp];
-                runnerUpTotal = runnerUpTotal.add(votesForRunnerUp);
-            }
-        }
+        uint256 leaderTotal = contest.leaderVotes.add(secondChoiceVotesForLeader);
+        uint256 runnerUpTotal = contest.runnerUpVotes.add(secondChoiceVotesForRunnerUp);
+
 
         // Tally for the runoff
         uint runoffWinner = 0;
@@ -808,27 +796,23 @@ contract Gatekeeper {
         // Original winner has more votes, or it's tied and the original winner has a smaller ID
         if ((leaderTotal > runnerUpTotal) ||
            ((leaderTotal == runnerUpTotal) &&
-            (voteWinner < voteRunnerUp)
+            (voteLeader < voteRunnerUp)
             )) {
-            runoffWinner = voteWinner;
+            runoffWinner = voteLeader;
             runoffWinnerVotes = leaderTotal;
             runoffLoser = voteRunnerUp;
             runoffLoserVotes = runnerUpTotal;
         } else {
             runoffWinner = voteRunnerUp;
             runoffWinnerVotes = runnerUpTotal;
-            runoffLoser = voteWinner;
+            runoffLoser = voteLeader;
             runoffLoserVotes = leaderTotal;
         }
 
         // Update state
-        Contest storage updatedContest = ballots[epochNumber].contests[resource];
-        updatedContest.winner = runoffWinner;
-        updatedContest.status = ContestStatus.Finalized;
+        contest.winner = runoffWinner;
+        contest.status = ContestStatus.Finalized;
         acceptSlate(runoffWinner);
-
-        // Reject the losing slate
-        slates[runoffLoser].status = SlateStatus.Rejected;
 
         emit RunoffFinalized(epochNumber, resource, runoffWinner, runoffWinnerVotes, runoffLoser, runoffLoserVotes);
     }
@@ -839,56 +823,43 @@ contract Gatekeeper {
      @param epochNumber The epoch
      @param resource The resource
      */
-    function donateChallengerStakes(uint256 epochNumber, address resource) public {
-        Contest memory contest = ballots[epochNumber].contests[resource];
+    function donateChallengerStakes(uint256 epochNumber, address resource, uint256 startIndex, uint256 count) public {
+        Contest storage contest = ballots[epochNumber].contests[resource];
         require(contest.status == ContestStatus.Finalized, "Contest is not finalized");
 
-        address tokenCapacitorAddress = parameters.getAsAddress("tokenCapacitorAddress");
-        TokenCapacitor capacitor = TokenCapacitor(tokenCapacitorAddress);
+        uint256 numSlates = contest.stakedSlates.length;
+        require(contest.stakesDonated != numSlates, "All stakes donated");
+
+        // If there are still stakes to be donated, continue
+        require(startIndex == contest.stakesDonated, "Invalid start index");
+
+        uint256 endIndex = startIndex.add(count);
+        require(endIndex <= numSlates, "Invalid end index");
+
+        address stakeDonationAddress = parameters.getAsAddress("stakeDonationAddress");
+        IDonationReceiver donationReceiver = IDonationReceiver(stakeDonationAddress);
         bytes memory stakeDonationHash = "Qmepxeh4KVkyHYgt3vTjmodB5RKZgUEmdohBZ37oKXCUCm";
 
-        uint256 numSlates = contest.stakedSlates.length;
-        for (uint256 i = 0; i < numSlates; i++) {
+        for (uint256 i = startIndex; i < endIndex; i++) {
             uint256 slateID = contest.stakedSlates[i];
             Slate storage slate = slates[slateID];
-            if (slate.status == SlateStatus.Rejected) {
+            if (slate.status != SlateStatus.Accepted) {
                 uint256 donationAmount = slate.stake;
                 slate.stake = 0;
 
                 // Only donate for non-zero amounts
                 if (donationAmount > 0) {
                     require(
-                        token.approve(address(capacitor), donationAmount),
+                        token.approve(address(donationReceiver), donationAmount),
                         "Failed to approve Gatekeeper to spend tokens"
                     );
-                    capacitor.donate(address(this), donationAmount, stakeDonationHash);
+                    donationReceiver.donate(address(this), donationAmount, stakeDonationHash);
                 }
             }
         }
-    }
 
-    /**
-    @dev Mark slates as rejected, except for those in _exclude
-     */
-    function rejectSlates(uint256[] memory _slates, uint256[] memory _exclude) private {
-        uint256 numSlates = _slates.length;
-        uint256 excludeCount = _exclude.length;
-
-        for (uint i = 0; i < numSlates; i++) {
-            uint slateID = _slates[i];
-
-            bool isExcluded = false;
-            for (uint j = 0; j < excludeCount; j++) {
-                if (_exclude[j] == slateID) {
-                    isExcluded = true;
-                    break;
-                }
-            }
-
-            if (!isExcluded) {
-                slates[slateID].status = SlateStatus.Rejected;
-            }
-        }
+        // Update state
+        contest.stakesDonated = endIndex;
     }
 
     /**
@@ -911,26 +882,30 @@ contract Gatekeeper {
     @param metadataHash A reference to metadata about the action
     */
     function requestPermission(bytes memory metadataHash) public returns(uint) {
+        require(isCurrentGatekeeper(), "Not current gatekeeper");
         require(metadataHash.length > 0, "metadataHash cannot be empty");
         address resource = msg.sender;
+        uint256 epochNumber = currentEpochNumber();
+
+        require(slateSubmissionPeriodActive(resource), "Submission period not active");
 
         // If the request is created in epoch n, expire at the start of epoch n + 2
-        uint256 expirationTime = epochStart(currentEpochNumber().add(2));
+        uint256 expirationTime = epochStart(epochNumber.add(2));
 
         // Create new request
         Request memory r = Request({
             metadataHash: metadataHash,
             resource: resource,
             approved: false,
-            expirationTime: expirationTime
+            expirationTime: expirationTime,
+            epochNumber: epochNumber
         });
 
         // Record request and return its ID
-        uint requestID = requestCount;
-        requests[requestID] = r;
-        requestCount = requestCount.add(1);
+        uint requestID = requestCount();
+        requests.push(r);
 
-        emit PermissionRequested(resource, requestID, metadataHash);
+        emit PermissionRequested(epochNumber, resource, requestID, metadataHash);
         return requestID;
     }
 
@@ -966,6 +941,14 @@ contract Gatekeeper {
 
 
     // MISCELLANEOUS GETTERS
+    function slateCount() public view returns(uint256) {
+        return slates.length;
+    }
+
+    function requestCount() public view returns (uint256) {
+        return requests.length;
+    }
+
     /**
     @dev Return the slate submission deadline for the given resource
     @param epochNumber The epoch
@@ -979,10 +962,29 @@ contract Gatekeeper {
     }
 
     /**
+    @dev Return true if the slate submission period is active for the given resource and the
+     current epoch.
+     */
+    function slateSubmissionPeriodActive(address resource) public view returns(bool) {
+        uint256 epochNumber = currentEpochNumber();
+        uint256 start = epochStart(epochNumber).add(SLATE_SUBMISSION_PERIOD_START);
+        uint256 end = slateSubmissionDeadline(epochNumber, resource);
+
+        return (start <= now) && (now < end);
+    }
+
+    /**
     @dev Return true if the commit period is active for the current epoch
      */
     function commitPeriodActive() private view returns(bool) {
         uint256 epochTime = now.sub(epochStart(currentEpochNumber()));
         return (COMMIT_PERIOD_START <= epochTime) && (epochTime < REVEAL_PERIOD_START);
+    }
+
+    /**
+    @dev Return true if this is the Gatekeeper currently pointed to by the ParameterStore
+     */
+    function isCurrentGatekeeper() public view returns(bool) {
+        return parameters.getAsAddress("gatekeeperAddress") == address(this);
     }
 }

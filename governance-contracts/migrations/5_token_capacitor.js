@@ -9,26 +9,27 @@ const { abiEncode, BN } = require('../utils');
 // eslint-disable-next-line
 module.exports = async function(deployer, _, accounts) {
   const parameters = await ParameterStore.deployed();
-  console.log(`Deploying TokenCapacitor with ParameterStore ${parameters.address}`);
 
-  const { capacitor: config, token: tokenInfo } = global.panvalaConfig;
+  const { capacitor: config, token: tokenInfo, deployedContracts } = global.panvalaConfig;
 
   const token = tokenInfo.deploy
     ? await BasicToken.deployed()
     : await BasicToken.at(tokenInfo.address);
 
-  const { charge, initialBalance, initialUnlockedBalance } = config;
+  console.log(`Deploying TokenCapacitor with ParameterStore ${parameters.address} and token ${token.address}`);
+  const { charge, initialBalance, initialUnlockedBalanceBase } = config;
+  const { gatekeeperAddress } = deployedContracts;
 
-  const baseInitialUnlocked = utils.parseUnits(initialUnlockedBalance, tokenInfo.decimals);
   const capacitor = await deployer.deploy(
     TokenCapacitor,
     parameters.address,
     token.address,
-    baseInitialUnlocked,
+    gatekeeperAddress,
+    initialUnlockedBalanceBase,
   );
 
   await parameters.setInitialValue(
-    'tokenCapacitorAddress',
+    'stakeDonationAddress',
     abiEncode('address', capacitor.address) // eslint-disable-line comma-dangle
   );
 

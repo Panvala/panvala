@@ -4,15 +4,28 @@ const utils = require('./utils');
 
 const {
   abiCoder, abiEncode, expectErrorLike, expectRevert, governanceSlateFromProposals,
-  voteSingle, timing, revealVote, BN, getResource, toPanBase, expectEvents,
+  voteSingle, timing, revealVote, BN, getResource, toPanBase, expectEvents, epochPeriods,
 } = utils;
 
-const { increaseTime } = utils.evm;
+const { increaseTime, goToPeriod } = utils.evm;
 
 const ParameterStore = artifacts.require('ParameterStore');
 
 
 contract('ParameterStore', (accounts) => {
+  let snapshotID;
+
+  beforeEach(async () => {
+    snapshotID = await utils.evm.snapshot();
+  });
+
+  afterEach(async () => utils.evm.revert(snapshotID));
+
+  const addPlaceholderGatekeeper = async (params) => {
+    const gkAddress = accounts[2];
+    await params.setInitialValue('gatekeeperAddress', abiEncode('address', gkAddress));
+  };
+
   describe('constructor', () => {
     const [creator] = accounts;
     const data = {
@@ -32,6 +45,10 @@ contract('ParameterStore', (accounts) => {
         names, values,
         { from: creator },
       );
+      // set a placeholder gatekeeper address
+      await addPlaceholderGatekeeper(parameters);
+
+      await parameters.init({ from: creator });
 
       // get values
       const apples = await parameters.get('apples');
@@ -44,6 +61,21 @@ contract('ParameterStore', (accounts) => {
     it('should be okay with no initial values', async () => {
       await ParameterStore.new([], []);
     });
+
+    it('should revert if the length of keys and values is not equal', async () => {
+      try {
+        await ParameterStore.new(
+          names.slice(0, 1),
+          values,
+          { from: creator },
+        );
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'same length');
+        return;
+      }
+      assert.fail('Allowed construction with uneven key/value lengths');
+    });
   });
 
   describe('init', () => {
@@ -53,6 +85,9 @@ contract('ParameterStore', (accounts) => {
     beforeEach(async () => {
       // deploy
       parameters = await ParameterStore.new([], [], { from: creator });
+
+      // set a placeholder gatekeeper address
+      await addPlaceholderGatekeeper(parameters);
     });
 
     it('should allow the creator to initialize', async () => {
@@ -83,6 +118,20 @@ contract('ParameterStore', (accounts) => {
       }
       assert.fail('Allowed someone other than the creator to initialize');
     });
+
+    it('should revert if initialized without a gatekeeperAddress', async () => {
+      const zero = utils.zeroAddress();
+      await parameters.setInitialValue('gatekeeperAddress', abiEncode('address', zero));
+
+      try {
+        await parameters.init({ from: creator });
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'missing gatekeeper');
+        return;
+      }
+      assert.fail('Allowed initialization with a zero gatekeeperAddress');
+    });
   });
 
   describe('setInitialValue', () => {
@@ -92,6 +141,8 @@ contract('ParameterStore', (accounts) => {
     beforeEach(async () => {
       // deploy
       parameters = await ParameterStore.new([], [], { from: creator });
+
+      await addPlaceholderGatekeeper(parameters);
     });
 
     it('should allow the creator to set initial values', async () => {
@@ -99,6 +150,7 @@ contract('ParameterStore', (accounts) => {
       const receipt = await parameters.setInitialValue('test', value, { from: creator });
       expectEvents(receipt, ['ParameterSet']);
 
+      await parameters.init({ from: creator });
       const test = await parameters.get('test');
       assert.strictEqual(test.toString(), value);
     });
@@ -137,14 +189,102 @@ contract('ParameterStore', (accounts) => {
   describe('get', () => {
     const [creator] = accounts;
 
-    describe('asAddress', () => {
-      it('should retrieve an address value', async () => {
-        const key = 'someAddress';
-        const value = abiCoder.encode(['address'], [creator]);
-        const parameters = await ParameterStore.new([key], [value]);
+    describe('regular - bytes32', () => {
+      let parameters;
+      let key;
+      let value;
 
+      beforeEach(async () => {
+        key = 'someBytes32';
+        value = abiCoder.encode(['uint256'], ['1000']);
+        parameters = await ParameterStore.new([key], [value]);
+
+        await addPlaceholderGatekeeper(parameters);
+      });
+
+      it('should retrieve a bytes32 value', async () => {
+        await parameters.init({ from: creator });
+        const retrievedValue = await parameters.get(key);
+        assert.strictEqual(retrievedValue, value);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.get(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved bytes32 value before initialization');
+      });
+    });
+
+    describe('asAddress', () => {
+      let parameters;
+      let key;
+
+      beforeEach(async () => {
+        key = 'someAddress';
+        const value = abiCoder.encode(['address'], [creator]);
+        parameters = await ParameterStore.new([key], [value]);
+        await addPlaceholderGatekeeper(parameters);
+      });
+
+      it('should retrieve an address value', async () => {
+        await parameters.init({ from: creator });
         const retrievedValue = await parameters.getAsAddress(key);
         assert.strictEqual(retrievedValue, creator);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.getAsAddress(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved address value before initialization');
+      });
+    });
+
+    describe('asUint', () => {
+      let parameters;
+      let key;
+      const stored = '1000';
+
+      beforeEach(async () => {
+        key = 'someUint';
+        const value = abiCoder.encode(['uint256'], [stored]);
+        parameters = await ParameterStore.new([key], [value]);
+        await addPlaceholderGatekeeper(parameters);
+      });
+
+      it('should retrieve a uint value', async () => {
+        await parameters.init({ from: creator });
+        const retrievedValue = await parameters.getAsUint(key);
+        assert.strictEqual(retrievedValue.toString(), stored);
+      });
+
+      it('should revert if the parameter store is uninitialized', async () => {
+        const initialized = await parameters.initialized();
+        assert(initialized === false, 'Should not be initialized');
+
+        try {
+          await parameters.getAsUint(key);
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'Contract has not yet been initialized');
+          return;
+        }
+        assert.fail('Retrieved uint value before initialization');
       });
     });
   });
@@ -156,11 +296,14 @@ contract('ParameterStore', (accounts) => {
 
     beforeEach(async () => {
       // deploy
-      ({ parameters, gatekeeper } = await utils.newPanvala({ from: creator }));
+      ({ parameters, gatekeeper } = await utils.newPanvala({ from: creator, init: false }));
+      await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
     });
 
     it('it should create a proposal to change a parameter', async () => {
-      const key = 'someKey';
+      await parameters.init({ from: creator });
+
+      const key = 'somekey';
       const value = 5;
       const encodedValue = abiEncode('uint256', value);
       const metadataHash = utils.createMultihash('my request data');
@@ -216,6 +359,8 @@ contract('ParameterStore', (accounts) => {
 
     // rejection criteria
     it('should not allow creation of a proposal with an empty metadataHash', async () => {
+      await parameters.init({ from: creator });
+
       const key = 'someKey';
       const value = 5;
       const encodedValue = abiEncode('uint256', value);
@@ -236,8 +381,34 @@ contract('ParameterStore', (accounts) => {
       assert.fail('allowed creation of a proposal with an empty metadataHash');
     });
 
+    it('should not allow creation of a proposal before initialization', async () => {
+      const key = 'myKey';
+      const value = 5;
+      const encodedValue = abiEncode('uint256', value);
+      const metadataHash = utils.createMultihash('uninitialized parameter store proposal');
+
+      const initialized = await parameters.initialized();
+      assert(initialized === false, 'Should not be initialized');
+
+      try {
+        await parameters.createProposal(
+          key,
+          encodedValue,
+          utils.asBytes(metadataHash),
+          { from: creator },
+        );
+      } catch (error) {
+        expectRevert(error);
+        expectErrorLike(error, 'Contract has not yet been initialized');
+        return;
+      }
+      assert.fail('allowed creation of a proposal before initialization');
+    });
+
     describe('createManyProposals', () => {
       it('should create proposals and emit an event for each', async () => {
+        await parameters.init({ from: creator });
+
         const keys = ['number1', 'number2', 'address'];
         const values = [
           abiEncode('uint256', 5),
@@ -285,13 +456,67 @@ contract('ParameterStore', (accounts) => {
           );
         }
       });
+
+      // rejection criteria
+      it('should revert if any proposal has an empty metadataHash', async () => {
+        await parameters.init({ from: creator });
+
+        const keys = ['number1', 'number2', 'address'];
+        const values = [
+          abiEncode('uint256', 5),
+          abiEncode('uint256', 10),
+          abiEncode('address', proposer),
+        ];
+        const emptyHash = '';
+
+        const metadataHashes = ['request1', 'request2'].map(utils.createMultihash);
+        metadataHashes.push(emptyHash);
+
+        try {
+          await parameters.createManyProposals(
+            keys,
+            values,
+            metadataHashes.map(utils.asBytes),
+            { from: proposer },
+          );
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'cannot be empty');
+          return;
+        }
+        assert.fail('succeeded with a proposal with an empty metadataHash');
+      });
+
+      it('should revert if called before initialization', async () => {
+        const keys = ['number1', 'number2', 'address'];
+        const values = [
+          abiEncode('uint256', 5),
+          abiEncode('uint256', 10),
+          abiEncode('address', proposer),
+        ];
+
+        const metadataHashes = ['request1', 'request2', 'request3'].map(utils.createMultihash);
+
+        try {
+          await parameters.createManyProposals(
+            keys,
+            values,
+            metadataHashes.map(utils.asBytes),
+            { from: proposer },
+          );
+        } catch (error) {
+          expectRevert(error);
+          expectErrorLike(error, 'not yet been initialized');
+          return;
+        }
+        assert.fail('allowed creation of multiple proposals before initialization');
+      });
     });
   });
 
   describe('setValue', () => {
     const [creator, recommender1, recommender2, alice, bob, carol] = accounts;
 
-    let snapshotID;
     let gatekeeper;
     let parameters;
     let token;
@@ -305,10 +530,8 @@ contract('ParameterStore', (accounts) => {
     let losingSlate;
 
     beforeEach(async () => {
-      snapshotID = await utils.evm.snapshot();
-
       ({ gatekeeper, token, parameters } = await utils.newPanvala({
-        from: creator,
+        from: creator, init: true,
       }));
 
       epochNumber = await gatekeeper.currentEpochNumber();
@@ -325,6 +548,7 @@ contract('ParameterStore', (accounts) => {
       await token.approve(gatekeeper.address, allocatedTokens, { from: carol });
 
       // create simple ballot with just governance proposals
+      await goToPeriod(gatekeeper, epochPeriods.SUBMISSION);
       proposals1 = [
         {
           key: 'param',
@@ -372,7 +596,7 @@ contract('ParameterStore', (accounts) => {
       await gatekeeper.stakeTokens(1, { from: recommender2 });
 
       // Commit ballots
-      await increaseTime(timing.VOTING_PERIOD_START);
+      await goToPeriod(gatekeeper, epochPeriods.COMMIT);
       const aliceReveal = await voteSingle(gatekeeper, alice, GOVERNANCE, 0, 1, '1000', '1234');
       const bobReveal = await voteSingle(gatekeeper, bob, GOVERNANCE, 0, 1, '1000', '5678');
       const carolReveal = await voteSingle(gatekeeper, carol, GOVERNANCE, 1, 0, '1000', '9012');
@@ -473,7 +697,5 @@ contract('ParameterStore', (accounts) => {
       }
       assert.fail('Allowed execution for an invalid proposalID');
     });
-
-    afterEach(async () => utils.evm.revert(snapshotID));
   });
 });
