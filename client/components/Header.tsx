@@ -8,6 +8,8 @@ import NotificationPanel from './NotificationPanel';
 import { NotificationsContext } from './NotificationsProvider';
 import Flex from './system/Flex';
 import TimeTraveler from './TimeTraveler';
+import { loadConfig } from '../utils/config';
+
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -32,6 +34,11 @@ const NavItem = styled(FlexContainer)`
 
 const Header: React.FunctionComponent<any> = ({ router }: any) => {
   const { notifications } = React.useContext(NotificationsContext);
+  const { panvalaEnv } = loadConfig();
+
+  // Do not show in production environment
+  const showTimeTravelWidget = panvalaEnv && panvalaEnv !== "production";
+
   return (
     <StyledHeader>
       <nav>
@@ -57,7 +64,9 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
 
             <NavItem>
               <RouterLink href="/proposals" as="/proposals">
-                <Button active={router && router.asPath && router.asPath.startsWith('/proposals')}>
+                <Button
+                  active={router && router.asPath && router.asPath.startsWith('/proposals')}
+                >
                   {'Proposals'}
                 </Button>
               </RouterLink>
@@ -71,7 +80,9 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
             </NavItem>
             <NavItem>
               <RouterLink href="/parameters" as="/parameters">
-                <Button active={router && router.asPath && router.asPath.startsWith('/parameters')}>
+                <Button
+                  active={router && router.asPath && router.asPath.startsWith('/parameters')}
+                >
                   {'Parameters'}
                 </Button>
               </RouterLink>
@@ -80,7 +91,7 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
           </NavItems>
         </NavWrapper>
       </nav>
-      <TimeTraveler />
+      {showTimeTravelWidget ? <TimeTraveler /> : null}
     </StyledHeader>
   );
 };
