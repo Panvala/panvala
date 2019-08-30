@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/util.css" />
   <link rel="stylesheet" href="css/colors.css" />
   <link rel="stylesheet" href="css/clip-path.css" />
+  <script type="text/javascript" src="index.js"></script>
+  <script type="text/javascript">(function(o){var b="https://zippyfrog.co/anywhere/",t="039b072363604f71afb26a55f1899413c20b8d86bb9749878f06b280fe2c8fa4",a=window.AutopilotAnywhere={_runQueue:[],run:function(){this._runQueue.push(arguments);}},c=encodeURIComponent,s="SCRIPT",d=document,l=d.getElementsByTagName(s)[0],p="t="+c(d.title||"")+"&u="+c(d.location.href||"")+"&r="+c(d.referrer||""),j="text/javascript",z,y;if(!window.Autopilot) window.Autopilot=a;if(o.app) p="devmode=true&"+p;z=function(src,asy){var e=d.createElement(s);e.src=src;e.type=j;e.async=asy;l.parentNode.insertBefore(e,l);};y=function(){z(b+t+'?'+p,true);};if(window.attachEvent){window.attachEvent("onload",y);}else{window.addEventListener("load",y,false);}})({});</script>
 </head>
 
 <body>
@@ -65,7 +67,7 @@
         </p>
         <div class="">
           <div class="dib v-top mr3-ns mr2 mv2">
-            <a href="INDEX.html#home-comparison">
+            <a href="#home-comparison">
               <button class="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
                 Learn More
               </button>
@@ -278,19 +280,47 @@
     </div>
   </section>
 
+  <div class="relative">
   <!-- Newsletter CTA -->
-  <section class="w-70-l w-80-m w-90 center tc mv5 pv5">
+  <form class="w-70-l w-80-m w-90 center tc mv5 pv5" name="email-subscribe">
     <h2 class="f2-5 ma0 mb4">
       Don’t miss out on all the upcoming news
     </h2>
     <input type="email"
+      name="email"
+      id="email-subscribe-input"
       placeholder="Enter your email address"
-      class="f5 dib input-reset border-input bb b--black-20 pa2 mr3 w-50 v-mid dib">
-    </input>
-    <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 dib v-mid">
-      Sign Up
-    </button>
-  </section>
+      class="f5 dib input-reset border-input bb b--black-20 pa2 mr3 w-50 v-mid dib"
+    />
+    <input type="submit"
+      name="submit"
+      value="Sign Up"
+      class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 dib v-mid"
+      id="email-subscribe-button"
+    />
+  </form>
+
+  <!-- Modal -->
+  <article
+    class="vh-100 dn w-100 bg-black-80 absolute--fill absolute z-999"
+    id="email-subscribe-modal"
+  >
+    <section class="w-30-l w-50-m w-90 pa5-l pa4 bg-white br3 center mt6-l mt5-m mt4 tc">
+      <h2 class="f2-5 ma0 mb3 lh-copy">
+        Form Submitted
+      </h2>
+      <p class="ma0 f6 lh-text mb4">
+        Thank you. We'll be in touch!
+      </p>
+      <a href="">
+        <button
+        class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer" id="email-subscribe-modal-close">
+          Continue
+        </button>
+      </a>
+    </section>
+  </article>
+  </div>
 
   <!-- Apply For Grant -->
   <section class="ml5-ns ml0 overflow-x-hidden w-80-ns w-100 z-1 relative">
@@ -305,7 +335,7 @@
           <div class="mt5">
             <div class="dib mr5">
               <h3 class="f3 ma0 mb1 white">
-                16 +
+                20 +
               </h3>
               <p class="white-60 ma0 f6">
                 Projects Funded
@@ -313,7 +343,7 @@
             </div>
             <div class="dib">
               <h3 class="f3 ma0 mb1 white">
-                76
+                95
               </h3>
               <p class="white-60 ma0 f6">
                 Donors
@@ -321,7 +351,7 @@
             </div>
             <div class="mt5">
               <h3 class="f3 ma0 mb1 white">
-                4.5 million
+                6 million
               </h3>
               <p class="white-60 ma0 f6">
                 In Token Grants

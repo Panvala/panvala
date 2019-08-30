@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="css/util.css" />
   <link rel="stylesheet" href="css/colors.css" />
   <link rel="stylesheet" href="css/clip-path.css" />
+  <script type="text/javascript" src="company.js"></script>
+  <script type="text/javascript">(function(o){var b="https://zippyfrog.co/anywhere/",t="039b072363604f71afb26a55f1899413c20b8d86bb9749878f06b280fe2c8fa4",a=window.AutopilotAnywhere={_runQueue:[],run:function(){this._runQueue.push(arguments);}},c=encodeURIComponent,s="SCRIPT",d=document,l=d.getElementsByTagName(s)[0],p="t="+c(d.title||"")+"&u="+c(d.location.href||"")+"&r="+c(d.referrer||""),j="text/javascript",z,y;if(!window.Autopilot) window.Autopilot=a;if(o.app) p="devmode=true&"+p;z=function(src,asy){var e=d.createElement(s);e.src=src;e.type=j;e.async=asy;l.parentNode.insertBefore(e,l);};y=function(){z(b+t+'?'+p,true);};if(window.attachEvent){window.attachEvent("onload",y);}else{window.addEventListener("load",y,false);}})({});</script>
 </head>
 
 <body class="overflow-x-hidden">
@@ -204,6 +206,7 @@
     </a>
   </section>
 
+  <div class="relative">
   <!-- Contact -->
   <section id="company-contact"
     class="bg-gray pv6 top-clip-up">
@@ -214,7 +217,7 @@
       <p class="ma0 f6 lh-text mb3">
         We'd love to hear from you. Send us a message and we'll respond as soon as possible.
       </p>
-      <form class="w-70-l w-90-m w-100 center">
+      <form class="w-70-l w-90-m w-100 center" name="company-contact">
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Full Name
@@ -222,12 +225,13 @@
               *
             </b>
           </label>
-          <input type="text"
-            required
-            placeholder="Enter your full name"
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
-          </input>
         </div>
+        <input type="text"
+          name="full-name"
+          required
+          placeholder="Enter your full name"
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
+        </input>
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Email
@@ -235,12 +239,13 @@
               *
             </b>
           </label>
-          <input type="email"
-            required
-            placeholder="Enter your email address"
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
-          </input>
         </div>
+        <input type="email"
+          name="email"
+          required
+          placeholder=Enter your email address"
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2">
+        </input>
         <div class="tl mt4">
           <label class="ma0 f6 mb3 black-40">
             Message
@@ -248,18 +253,38 @@
               *
             </b>
           </label>
-          <textarea type="text"
-            required
-            placeholder="Let us know what you would like to chat about"
-            class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 h5">
-          </textarea>
         </div>
-        <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4">
-          Get in touch
-        </button>
+        <input type="textarea"
+          name="message"
+          required
+          placeholder="Let us know what you would like to chat about"
+          class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 h5">
+        </input>
+        <input id="company-contact-button" type="submit" name="submit" value="Get in touch" class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4 tj" />
       </form>
     </div>
   </section>
+
+    <!-- Modal -->
+    <article class="vh-100 dn w-100 bg-black-80 absolute--fill absolute z-999"
+      id="company-contact-modal">
+      <section class="w-30-l w-50-m w-90 pa5-l pa4 bg-white br3 center mt6-l mt5-m mt4 tc">
+        <h2 class="f2-5 ma0 mb3 lh-copy">
+          Form Submitted
+        </h2>
+        <p class="ma0 f6 lh-text mb4">
+          Thank you. We'll be in touch!
+        </p>
+        <a href="">
+          <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer"
+      id="company-contact-modal-close">
+            Continue
+          </button>
+        </a>
+      </section>
+    </article>
+  </div>
+
 
   <!-- Footer -->
   <section class="bg-gradient">

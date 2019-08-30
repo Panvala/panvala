@@ -21,10 +21,12 @@ deploy() {
 
     PANVALA_ENV=${ENVIRONMENT}
 
-    # NOTE: current prod environment has namespace development
-    if [ "${ENVIRONMENT}" = "development" ]
+    ETH_HOST=${RPC_ENDPOINT}
+
+    # Use specific variables for staging
+    if [ "${ENVIRONMENT}" = "staging" ]
     then
-        PANVALA_ENV=production
+        ETH_HOST=${STAGING_RPC_ENDPOINT}
     fi
 
     helm upgrade --install \
@@ -34,7 +36,7 @@ deploy() {
         --set image.tag=${TAG} \
         --set image.repository=${REPO} \
         --set service.type=LoadBalancer \
-        --set web3Host=${RPC_ENDPOINT} \
+        --set web3Host="${ETH_HOST}" \
         --set nameOverride="${APP}" \
         --set fullnameOverride="${APP}" \
         "${APP}-${ENVIRONMENT}" \

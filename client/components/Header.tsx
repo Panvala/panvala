@@ -8,6 +8,7 @@ import NotificationPanel from './NotificationPanel';
 import { NotificationsContext } from './NotificationsProvider';
 import Flex from './system/Flex';
 import TimeTraveler from './TimeTraveler';
+import { loadConfig } from '../utils/config';
 
 const StyledHeader = styled.header`
   width: 100%;
@@ -32,6 +33,11 @@ const NavItem = styled(FlexContainer)`
 
 const Header: React.FunctionComponent<any> = ({ router }: any) => {
   const { notifications } = React.useContext(NotificationsContext);
+  const { panvalaEnv } = loadConfig();
+
+  // Do not show in production environment
+  const showTimeTravelWidget = panvalaEnv && panvalaEnv !== 'production';
+
   return (
     <StyledHeader>
       <nav>
@@ -80,7 +86,7 @@ const Header: React.FunctionComponent<any> = ({ router }: any) => {
           </NavItems>
         </NavWrapper>
       </nav>
-      <TimeTraveler />
+      {showTimeTravelWidget ? <TimeTraveler /> : null}
     </StyledHeader>
   );
 };
