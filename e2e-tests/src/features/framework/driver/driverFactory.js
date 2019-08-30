@@ -1,29 +1,25 @@
 import webdriver from'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
-import path from 'path';
-import { METAMASK_CRX } from '../../config/envConfig';
-import 'chromedriver';
 let driver;
 
-const buildChromeDriver = async () => {
+const buildChromeDriver = async (seleniumProfile) => {
   const options = new chrome.Options();
-  const crxStream = require('fs').readFileSync(path.join(__dirname, `../../../../${METAMASK_CRX}`));
-  const crxBuffer = Buffer.from(crxStream).toString('base64');
-  options.addExtensions(crxBuffer);
+  options.addArguments(`user-data-dir=${seleniumProfile.profile}`);
+  options.addArguments(`profile-directory=${seleniumProfile.profileDir}`);
   return await new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
     .build();
 };
 
-export const buildDriver = async (browser) => {
-  console.log(`buildDriver ${browser}`);
-  switch (browser.toLowerCase()) {
+export const buildDriver = async (profile) => {
+  console.log(`buildDriver ${JSON.stringify(profile)}`);
+  switch (profile.browser.toLowerCase()) {
   case 'chrome':
-    driver = await buildChromeDriver();
+    driver = await buildChromeDriver(profile);
     break;
   default:
-    throw new Error(`Please specify a valid browser, unsuported browser '${browser}'`);
+    throw new Error(`Please specify a valid browser, unsuported browser '${profile.browser}'`);
   }
 };
 

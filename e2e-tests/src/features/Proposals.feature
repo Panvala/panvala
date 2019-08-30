@@ -1,9 +1,5 @@
+@MetaMask_Local
 Feature: Proposals
-
-Background: MetaMask Wallet
-  Given I have a MetaMask wallet
-  And I have connected my wallet with Panvala
-  And I have switched network in my MetaMask wallet
 
 Scenario: Create a grant proposal
   When I navigate to the proposals page

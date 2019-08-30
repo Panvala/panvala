@@ -20,6 +20,19 @@ class BasePage {
     await getDriver().navigate().to(url);
   }
 
+  isDisplayed() {
+    let expectedUrl = this.baseUrl;
+    if (typeof this.path !== 'undefined') {
+      expectedUrl = expectedUrl + this.path;
+    }
+    console.log(`expectedUrl: ${expectedUrl}`)
+    return getDriver().getCurrentUrl()
+    .then((url) => {
+      console.log(`url: ${url}`)
+      return url.includes(expectedUrl);
+    });
+  }
+
   async navigateTo(url) {
     console.log(`Navigating to '${url}'`);
     await getDriver().navigate().to(url);
@@ -44,14 +57,7 @@ class BasePage {
     await getDriver().manage().window().maximize();
   }
 
-  async switchToNewWindow(originalHandles, expectedHandlesCount) {
-    if (!originalHandles) {
-      originalHandles = await getDriver().getAllWindowHandles();
-    }
-    if (originalHandles.length === expectedHandlesCount) {
-      console.log(`New Window already open, do nothing`);  
-      return;
-    }
+  async switchToNewWindow(originalHandles) {
     console.log(`Waiting for new window, original window handles ${originalHandles}`);
     const forNewWindow = (originalHandles) => {
       return () => {

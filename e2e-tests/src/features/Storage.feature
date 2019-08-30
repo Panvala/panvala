@@ -1,8 +1,5 @@
+@MetaMask_Mainnet
 Feature: Storage
-
-Background: MetaMask Wallet
-  Given I have a MetaMask wallet
-  And I have connected my wallet with Panvala
 
 Scenario: Mainnet Beta warning modal is shown
   When I navigate to the slates page
