@@ -7,6 +7,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+### Changed
+
+## [1.0.0]
+
+This release includes contract changes in response to audit findings, as well as frontend and API changes for compatibility with these contract changes.
+
+The most significant system change is that the first week of the epoch is now a "quiet period" during which no slates can be created. This allows end-of-epoch business such as finalizing contests and executing proposals to happen at a defined time, and for slate creators to have a clearer sense of the state of the system when creating their slates.
+
+In addition, the system is now live on mainnet, with contracts at the following addresses:
+- Gatekeeper: [0x21C3FAc9b5bF2738909C32ce8e086C2A5e6F5711](https://etherscan.io/address/0x21C3FAc9b5bF2738909C32ce8e086C2A5e6F5711)
+- ParameterStore: [0x6a43334331dc689318Af551b0CFD624a8B11A70B](https://etherscan.io/address/0x6a43334331dc689318Af551b0CFD624a8B11A70B)
+- TokenCapacitor: [0x9a7B675619d3633304134155c6c976E9b4c1cfB3](https://etherscan.io/address/0x9a7B675619d3633304134155c6c976E9b4c1cfB3)
+- Token (PAN): [0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44](https://etherscan.io/address/0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44)
+
+### Added
+- Add support for multiple resources (currently grant and governance)
+  - Display grant and governance slates on the `/slates` view
+  - Add support for voting on multiple resources at once
+    - Store the resource along with vote choices
+    - Fix calculation of signature on API
+  - Add `/slates/create` route with drop-down to choose the type of slate to create
+  - Save the mapping of `Proposal` to `Request` for each resource in the database to make it possible to execute the proposals
+- Cache IPFS data in the database for faster access
+- Enable "Back" buttons throughout the frontend
+- There's a new [panvala.com](https://panvala.com), with its code in the repository
+- A new `TimeTraveler` component makes it easier to adjust the current period and epoch in development
+- There are now several admin scripts for manipulating the system and checking its status
+  - `reveal.js` - reveal ballots stored in the database
+  - `setValue.js` - execute governance proposals
+  - `finalize.js` - finalize all contests in an epoch
+  - `contract-info.js` - print information about the deployed mainnet contracts
+  - `epoch-timing.js` - print epoch schedule for many epochs
+  - `nukedb.js` - delete database tables
+- Add `PANVALA_ENV` environment variable
+- Add `/liveness` route to frontend
+
+### Changed
+- Many styling improvements in the frontend
+- Adjusted liveness and readiness probe parameters to reduce the number of pings
+- Indicators for pending transactions and other operations are much improved. They are displayed in more cases, and the stepper shows the number of transactions that will be sent.
+- When creating a grant slate, the user can see an estimate of the number of tokens available
+- Split slates view into "current" and "past"
+- New and improved utilities for timing and voting
+- Improved `time-travel.js` script
+- Updated token address, name, and symbol. It is now `Panvala pan (PAN)`.
+- Updated initial unlocked balance for token capacitor
+- Split API tests into separate files
+
+Contract changes (they deserve their own section, see [#184](https://github.com/ConsenSys/panvala/pull/184) for details)
+
+- Initialization
+  - Make it harder to do anything before the system is ready
+    - Block getters for an uninitialized `ParameterStore` and add a public `initialized` getter
+    - Pass the `Gatekeeper` address as an argument to the `TokenCapacitor`
+    - Revert in `ParameterStore.init()` if the `gatekeeperAddress` parameter is not set
+  - Do not allow the following actions when the gatekeeper is not current:
+    - `requestPermission()`
+    - `recommendSlate()`
+    - `stakeTokens()`
+    - `depositVoteTokens()`
+    - `finalizeContest()`
+- Slate creation
+  - Disallow creation of requests in the Gatekeeper outside of the slate submission period
+  - Do not allow slates to be created with old requests (from a previous epoch)
+- TokenCapacitor balance unlocking
+  - Fix bug where someone could cause tokens never to be unlocked by repeatedly calling updateBalances() before 24 hours had passed
+  - Set the lastLockedTime in intervals of 24 hours, relative to the system start
+- Finalization
+  - Only allow finalization after the epoch is over
+  - Add a quiet period before slate submission period (for finalization)
+  - Do not explicitly reject slates -- remove `SlateStatus.Rejected`
+  - Keep a running tally of voting results as users reveal, so that finalization can happen in a single step. This removes the public `finalizeRunoff()` and `ContestStatus.RunoffPending`.
+  - Incrementally donate slate stakes
+- Other contract improvements
+  - Rename `tokenCapacitorAddress` parameter to `stakeDonationAddress` and add a generic `IDonationReceiver` interface to define contracts that implement the `donate()` function.
+  - Pin Solidity version
+  - Replace mappings with arrays
+  - Make `TokenCapacitor.scale` constant
+  - Added various checks on user input
+  - Some refactoring for efficiency
+
+
+## [0.5.0] 2019-07-09
+
+### Added
 - Users can assign an address as a delegate to commit ballots on behalf of a token-holding account at `/wallet`
 - Slates cards indicate if they were created by the incumbent
 - Current system parameters are displayed at `/parameters`
@@ -124,7 +209,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2019-04-02
 
-[Unreleased]: https://github.com/ConsenSys/panvala/compare/v0.4.0...develop
+[Unreleased]: https://github.com/ConsenSys/panvala/compare/v1.0.0...develop
+[1.0.0]: https://github.com/ConsenSys/panvala/releases/tag/v1.0.0
+[0.5.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.5.0
 [0.4.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.4.0
 [0.3.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.3.0
 [0.2.0]: https://github.com/ConsenSys/panvala/releases/tag/v0.2.0

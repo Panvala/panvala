@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 const { utils } = require('ethers');
 const ipfs = require('../utils/ipfs');
 const { getAllSlates } = require('../utils/slates');

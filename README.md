@@ -2,10 +2,17 @@
 
 [![CircleCI](https://circleci.com/gh/ConsenSys/panvala/tree/develop.svg?style=shield)](https://circleci.com/gh/ConsenSys/panvala/tree/develop)
 
-Built by ConsenSys, Panvala is a platform that helps fund the work that the whole Ethereum community depends on. This Panvala platform is used by PAN token holders to determine which grant applications should be funded using a process called slate governance.
+Built by ConsenSys, [Panvala](https://panvala.com) is a platform that helps fund the work that the whole Ethereum community depends on. This Panvala platform is used by PAN token holders to determine which grant applications should be funded using a process called slate governance.
 
 ## Documentation
 Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.gitbook.io/docs)
+
+## Mainnet Contracts
+- Gatekeeper: [0x21C3FAc9b5bF2738909C32ce8e086C2A5e6F5711](https://etherscan.io/address/0x21C3FAc9b5bF2738909C32ce8e086C2A5e6F5711)
+- ParameterStore: [0x6a43334331dc689318Af551b0CFD624a8B11A70B](https://etherscan.io/address/0x6a43334331dc689318Af551b0CFD624a8B11A70B)
+- TokenCapacitor: [0x9a7B675619d3633304134155c6c976E9b4c1cfB3](https://etherscan.io/address/0x9a7B675619d3633304134155c6c976E9b4c1cfB3)
+- Token (PAN): [0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44](https://etherscan.io/address/0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44)
+
 
 ## Release Notes
 

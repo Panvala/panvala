@@ -1,5 +1,5 @@
 const { sequelize } = require('./models');
-const { checkSchema } = require('express-validator/check');
+const { checkSchema } = require('express-validator');
 
 // Validation
 const { proposalSchema } = require('./utils/proposals');
