@@ -21,7 +21,7 @@
         "eslint": "5.16.0",
         "eslint-config-airbnb-base": "13.1.0",
         "eslint-plugin-import": "2.14.0",
-        "solhint": "2.1.0",
+        "solhint": "2.2.0",
         "solidity-coverage": "^0.6.0-beta.5",
         "truffle": "^5.0.4"
     },

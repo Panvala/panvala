@@ -27,13 +27,13 @@
     "eth-events": "^0.9.2",
     "ethers": "^4.0.26",
     "express": "^4.16.4",
-    "express-validator": "^5.3.1",
+    "express-validator": "^6.2.0",
     "ipfs-http-client": "32.0.1",
     "lodash": "4.17.14",
     "morgan": "^1.9.1",
     "pg": "^7.8.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "5.8.6",
+    "sequelize": "5.18.1",
     "sequelize-cli": "^5.4.0"
   },
   "devDependencies": {
