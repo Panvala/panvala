@@ -4,7 +4,7 @@
 
 Initiated by ConsenSys, [Panvala](https://panvala.com) is a decentralized foundation that funds the work the Ethereum ecosystem depends on. This app is used by PAN token holders to determine which grant applications should be funded using a process called slate governance.
 
-Version 1 of the application contains four object types: proposals, grant slates, governance slates, and ballots. For those looking to receive a grant, proposals can be added directly into the application to be displayed publicly, or they can be sent directly to a slate creator (the later option affords the grant proposer more privacy in the consideration of their proposal). 
+Version 1 of the application is live on mainnet and contains four object types: proposals, grant slates, governance slates, and ballots. For those looking to receive a grant, proposals can be added directly into the application to be displayed publicly, or they can be sent directly to a slate creator (the later option affords the grant proposer more privacy in the consideration of their proposal). 
 
 After proposals are added to the system, a slate creator selects the proposals they wish to add to their slate. During (or after) the creation of a slate, that slate must be staked to be added to the ballot. An unstaked slate can also be created, but that slate won't appear on the ballot during the voting period.
 
