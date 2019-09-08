@@ -2,7 +2,17 @@
 
 [![CircleCI](https://circleci.com/gh/ConsenSys/panvala/tree/develop.svg?style=shield)](https://circleci.com/gh/ConsenSys/panvala/tree/develop)
 
-Built by ConsenSys, [Panvala](https://panvala.com) is a platform that helps fund the work that the whole Ethereum community depends on. This Panvala platform is used by PAN token holders to determine which grant applications should be funded using a process called slate governance.
+Initiated by ConsenSys, [Panvala](https://panvala.com) is a decentralized foundation that funds the work the Ethereum ecosystem depends on. This app is used by PAN token holders to determine which grant applications should be funded using a process called slate governance.
+
+Version 1 of the application contains four object types: proposals, grant slates, governance slates, and ballots. For those looking to receive a grant, proposals can be added directly into the application to be displayed publicly, or they can be sent directly to a slate creator (the later option affords the grant proposer more privacy in the consideration of their proposal). 
+
+After proposals are added to the system, a slate creator selects the proposals they wish to add to their slate. During (or after) the creation of a slate, that slate must be staked to be added to the ballot. An unstaked slate can also be created, but that slate won't appear on the ballot during the voting period.
+
+Governance slates are added in the same way, but adjust a specific parameter that token holders might want to see adjusted. For example, the required number of tokens to stake a slate is a parameter that can be adjusted via a token holder vote.
+
+The system will progress through four stages: Slate Submission, Intermission, Commit Voting, and Vote Reveal. These stages are repeated across each epoch. At the time of writing, Panvala is in its fourth epoch. During the commit voting stage, the token holders can vote using their tokens for one slate or porposals or another. Only one grant slate and one governance slate will win per quarter. The system also uses a first choice, second choice run-off voting system that enables the token holders to support a favorite slate without wasting their vote.
+
+To learn more, read Panvala's wihtepaper here: https://www.panvala.com/img/docs/Panvala%20Whitepaper%20(June%2026).pdf
 
 ## Documentation
 Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.gitbook.io/docs)
@@ -12,56 +22,6 @@ Documentation is available at [https://panvala.gitbook.io/docs](https://panvala.
 - ParameterStore: [0x6a43334331dc689318Af551b0CFD624a8B11A70B](https://etherscan.io/address/0x6a43334331dc689318Af551b0CFD624a8B11A70B)
 - TokenCapacitor: [0x9a7B675619d3633304134155c6c976E9b4c1cfB3](https://etherscan.io/address/0x9a7B675619d3633304134155c6c976E9b4c1cfB3)
 - Token (PAN): [0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44](https://etherscan.io/address/0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44)
-
-
-## Release Notes
-
-### 0.5.0
-
-The 0.5.0 release is a large release focused on getting our contracts in an auditable state. While there are quite a few additional features, the focus has the system's contracts and their security.
-
-- Governance slates are now available and users can modify the system's parameters
-- Token holders are now able to link hot an cold wallets in order to ensure that voting tokens are kept secure. This is accessible at the /wallet route for now, but will be available elsewhere throughout the user's journey in the near future.
-- New logic has been added to handle various ballot edge cases
-- Staked tokens on losing slates are now donated to the platforms token capacitor to fund teams doing the work that makes Ethereum safer.
-- Incumbants are now tracked in the front-end, to help Panvala token holders identify the parties who are currently responsible for selecting proposals to support
-- The system's solution for contract upgradability via decentralized governance has been implemented  (see whitepaper for more details)
-- The token capacitor's exponential decay has been implemented, including how this decay changes when tokens are donated (again, see whitepaper for more details)
-- Many bug fixes and UI improvements
-- More details in changelog
-
-### 0.4.0
-
-- Grant recipients can now retrieve their tokens from the token capacitor
-- Tokens staked on a slate can now be retrieved if the slate is approved by token holders. For slates that were not approved, the staked tokens are donated to the token capacitor to fund future grants.
-- The staking period for slates is now extended by 50% of the remaining time when a slate is staked. This prevents the equivalent behavior of "ebay sniping" to manipulate the ballot.
-- The ballot will now only display staked slates.
-- If a slate enters the ballot period uncontested by a competing slate, it will now automatically win the ballot.
-- Significant contract work has been added. See changelog for details
-
-### 0.3.0
-
-- *Slate staking* has been added to the application. PAN token holders can now use their PAN tokens to stake on a specific slate to add that slate to Panvala's quarterly ballot. This staking can be be done during the creation of a slate OR afterwards by a seperate third party. For instance, some individuals will want to do the work of recommending a slate, but may not have the requisite tokens to add their slate to the ballot. In that instance, another party can stake their slate.
-- Users will now see a system of modals letting them know that their transaction is still processing.
-- A new in-app notification system has been added to the application
-- Users who have deposited their tokens for voting can now recieve a notification that they need to retrieve these tokens, and are able to retrieve the tokens from the voting contract.
-- A bug labelling grant proposals as "undefined proposal" has been resolved.
-- Core contracts have been updated and refactored. Full full details, see the changelog. 
-
-### 0.2.0
-
-- Users now have a *notification panel* where they can find important information after signing in with MetaMask.
-- *Vote counting* logic and contracts have been implemented.
-- Various UI improvements, dependency updates, and bug fixes (more details in Changelog).
-
-### 0.1.0
-
-- The *token capacitor*, a smart contract holding all available tokens for grant allocation, and releasing them on a quarterly schedule.
-- Grant applicants are able to create a grant proposal. *Grant proposals* created on the platform are public and can be evaluated by the whole of the Panvala community.
-- Grant proposals can be selected by the platform’s token holders who curate lists of grant proposals they recommend to be funded. These lists of grant proposals are called *slates*. 
-- Slates themselves can be viewed by the platform’s token holders and evaluated as a part of the platform’s quarterly *ballot*. 
-- The platform’s ballot includes a ranked choice voting system that empowers the platform’s token holders to *commit votes* they feel confident in.
-- Token holders are able to connect their MetaMask wallet to complete all of the above.
 
 
 ## Quickstart
