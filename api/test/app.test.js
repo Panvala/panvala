@@ -22,21 +22,21 @@ describe('GET /', () => {
   });
 });
 
-// Check that required variables are set
-describe('environment variables', () => {
-  const requiredVariables = [
-    'RPC_ENDPOINT',
-    'AUTOPILOT_API_KEY',
-    // TODO: determine if we should check for these
-    // 'IPFS_HOST',
-    // 'IPFS_PORT',
-    // 'PANVALA_ENV',
-    // 'GATEKEEPER_ADDRESS',
-    // 'TOKEN_CAPACITOR_ADDRESS',
-  ];
+// // Check that required variables are set
+// describe('environment variables', () => {
+//   const requiredVariables = [
+//     'RPC_ENDPOINT',
+//     'AUTOPILOT_API_KEY',
+//     // TODO: determine if we should check for these
+//     // 'IPFS_HOST',
+//     // 'IPFS_PORT',
+//     // 'PANVALA_ENV',
+//     // 'GATEKEEPER_ADDRESS',
+//     // 'TOKEN_CAPACITOR_ADDRESS',
+//   ];
 
-  test.each(requiredVariables)('%s', async variable => {
-    const value = process.env[variable];
-    expect(value).toBeDefined();
-  });
-});
+//   test.each(requiredVariables)('%s', async variable => {
+//     const value = process.env[variable];
+//     expect(value).toBeDefined();
+//   });
+// });
