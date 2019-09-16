@@ -24,7 +24,8 @@ import {
   getMaxVotingRights,
 } from '../../utils/voting';
 import { postBallot } from '../../utils/api';
-import { convertEVMSlateStatus, SlateStatus } from '../../utils/status';
+import { handleGenericError } from '../../utils/errors';
+import { isBallotOpen, convertEVMSlateStatus, SlateStatus } from '../../utils/status';
 import Actions from '../../components/Actions';
 import { loadState, LINKED_WALLETS } from '../../utils/localStorage';
 import { SLATE } from '../../utils/constants';
@@ -32,6 +33,7 @@ import RouterLink from '../../components/RouterLink';
 import PendingTransaction from '../../components/PendingTransaction';
 import Box from '../../components/system/Box';
 import Flex from '../../components/system/Flex';
+import ClosedBallot from '../../components/ClosedBallot';
 
 const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
@@ -242,15 +244,16 @@ const Vote: React.FC = () => {
       console.log('ballot:', ballot);
 
       if (!isEmpty(ethProvider) && numTokens.gt('0')) {
-        const commitHash: string = generateCommitHash(ballot.choices, salt);
-
-        // 'Commit hash, first choice, second choice, salt'
-        const message = generateCommitMessage(commitHash, ballot.choices, salt);
-        // sign mesage with metamask signer
-        const signer: Signer = ethProvider.getSigner();
-        const signature = await signer.signMessage(message);
-
         try {
+          const commitHash: string = generateCommitHash(ballot.choices, salt);
+
+          // 'Commit hash, first choice, second choice, salt'
+          const message = generateCommitMessage(commitHash, ballot.choices, salt);
+
+          // sign message with metamask signer
+          const signer: Signer = ethProvider.getSigner();
+          const signature = await signer.signMessage(message);
+
           // save ballot to api/db
           const res = await postBallot(ballot, commitHash, signature);
 
@@ -275,17 +278,34 @@ const Vote: React.FC = () => {
             toast.success('Successfully submitted a ballot');
           }
         } catch (error) {
-          let toastMessage = error.toastMessage;
-          if (votingRights.gt('0') && panBalance.eq('0')) {
-            toastMessage =
-              'Entire balance is being used as votingRights, and they may currently be locked in a vote.';
-          }
-          toast.error(toastMessage);
-          console.error(toastMessage);
-          throw error;
+          handleSubmissionError(error);
         }
       }
     }
+  }
+
+  function handleSubmissionError(error: Error) {
+    // Reset the view
+    setTxPending(false);
+    setOpenModal(false);
+
+    // interpret the error and display a toast if appropriate
+    const errorType = handleGenericError(error, toast);
+    if (errorType) {
+      toast.error(`Problem submitting vote ${error.message}`);
+    }
+
+    if (votingRights.gt('0') && panBalance.eq('0')) {
+      const info =
+        'Entire balance is being used as votingRights, and they may currently be locked in a vote.';
+      toast.info(info);
+    }
+
+    console.error(error);
+  }
+
+  if (!isBallotOpen(currentBallot)) {
+    return <ClosedBallot currentBallot={currentBallot} />;
   }
 
   return (

@@ -55,6 +55,7 @@ import Text from '../../../components/system/Text';
 import { isSlateSubmittable } from '../../../utils/status';
 import { projectedAvailableTokens } from '../../../utils/tokens';
 import Loader from '../../../components/Loader';
+import { handleGenericError } from '../../../utils/errors';
 
 const Separator = styled.div`
   border: 1px solid ${COLORS.grey5};
@@ -241,6 +242,20 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, router }) => {
     return numTxs;
   }
 
+  function handleSubmissionError(errorMessage, error) {
+    // Reset view
+    setOpenModal(false);
+    setTxsPending(0);
+
+    // Show a message
+    const errorType = handleGenericError(error, toast);
+    if (errorType) {
+      toast.error(`Problem submitting slate: ${errorMessage}`);
+    }
+
+    console.error(error);
+  }
+
   /**
    * Submit slate information to the Gatekeeper, saving metadata in IPFS
    *
@@ -265,11 +280,6 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, router }) => {
 
     // save proposal metadata to IPFS to be included in the slate metadata
     console.log('preparing proposals...');
-
-    // const dataToPost = {
-    //   selectedProposals,
-
-    // }
 
     const proposalMultihashes: Buffer[] = await Promise.all(
       selectedProposals.map(async (metadata: IGrantProposalMetadata) => {
@@ -385,22 +395,20 @@ const CreateGrantSlate: StatelessPage<IProps> = ({ query, router }) => {
             onRefreshBalances();
           } else {
             errorMessage = `problem saving slate info ${response.data}`;
-            toast.error(errorMessage);
+            handleSubmissionError(errorMessage, new Error(`API error ${response.data}`));
           }
           // end add slate
         } catch (error) {
           errorMessage = `error submitting slate ${error.message}`;
-          toast.error(errorMessage);
+          handleSubmissionError(errorMessage, error);
         }
       } catch (error) {
         errorMessage = `error saving slate metadata: ${error.message}`;
-        // console.error(errorMessage);
-        toast.error(errorMessage);
+        handleSubmissionError(errorMessage, error);
       }
     } catch (error) {
       errorMessage = `error preparing proposals : ${error.message}`;
-      console.error(errorMessage);
-      toast.error(errorMessage);
+      handleSubmissionError(errorMessage, error);
     }
   }
 

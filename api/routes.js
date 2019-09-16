@@ -13,6 +13,8 @@ const slate = require('./controllers/slate');
 const ballot = require('./controllers/ballot');
 const notification = require('./controllers/notification');
 const parameter = require('./controllers/parameter');
+const ipfs = require('./controllers/ipfs');
+const website = require('./controllers/website');
 
 // Routes
 module.exports = app => {
@@ -66,6 +68,13 @@ module.exports = app => {
   // NOTIFICATIONS
   app.get('/api/notifications/:address', notification.getByAddress);
 
+  // IPFS
+  app.get('/api/ipfs/:multihash', ipfs.getData);
+  app.post('/api/ipfs', ipfs.saveData);
+
   // PARAMETERS
   app.get('/api/parameters', parameter.getAll);
+
+  // Website
+  app.post('/api/website', website.addContact);
 };

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 ### Changed
 
-## [1.0.0]
+## [1.0.0] 2019-09-03
 
 This release includes contract changes in response to audit findings, as well as frontend and API changes for compatibility with these contract changes.
 
