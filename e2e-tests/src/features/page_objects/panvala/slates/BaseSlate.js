@@ -16,19 +16,23 @@ class BaseSlate extends BasePanvala {
     this.createSlate = () => new HtmlElement('.Flex-sc-1qv9hxw-0.bATvpO div:nth-child(2)');
   }
 
-  enterEmail(email) {
+  async enterEmail(email) {
+    await this.email().clear();
     return this.email().type(email);
   }
 
-  enterFirstName(firstName) {
+  async enterFirstName(firstName) {
+    await this.firstName().clear();
     return this.firstName().type(firstName);
   }
 
-  enterLastName(lastName) {
+  async enterLastName(lastName) {
+    await this.lastName().clear();
     return this.lastName().type(lastName);
   }
 
-  enterOrganizationName(organizationName) {
+  async enterOrganizationName(organizationName) {
+    await this.organizationName().clear();
     return this.organizationName().type(organizationName);
   }
 

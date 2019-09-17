@@ -8,7 +8,7 @@ class CreateSlates extends BasePanvala {
     super('/slates/create');
     this.slateType = () => new Select('select[name="category"]');
     this.back = () => new HtmlElement('.Flex-sc-1qv9hxw-0.bATvpO div:nth-child(1)');
-    this.begin = () => new HtmlElement('.Flex-sc-1qv9hxw-0.bATvpO div:nth-child(2)');
+    this.begin = () => new HtmlElement('.Flex-sc-1qv9hxw-0.bATvpO a');
   }
 
   selectSlateType(slateType) {

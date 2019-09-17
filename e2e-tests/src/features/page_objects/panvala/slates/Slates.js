@@ -23,10 +23,10 @@ class Slates extends BasePanvala {
     let tabElement;
     switch (tab) {
       case 'past':
-        tabElement = await this.pastTab();
+        tabElement = this.pastTab();
         break;
       case 'current':
-        tabElement = await this.currentTab();
+        tabElement = this.currentTab();
         break;
       default:
         throw new Error(`Please specify a valid tab, unknown tab $(tab)`);

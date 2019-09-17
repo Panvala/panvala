@@ -66,7 +66,7 @@ class BasePage {
         });
       };
     }
-    await getDriver().wait(forNewWindow(originalHandles), 5000);
+    await getDriver().wait(forNewWindow(originalHandles), 10000);
     console.log(`Retrieve new window handle`);
     const getNewWindowHandle = (originalHandles) => {
       return getDriver().getAllWindowHandles().then((currentHandles) => {

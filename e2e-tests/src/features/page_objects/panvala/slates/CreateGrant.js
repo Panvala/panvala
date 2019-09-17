@@ -1,17 +1,19 @@
 import { BaseSlate } from './BaseSlate';
 import { HtmlElement } from '../../../framework/controls/HtmlElement';
+import { TextBox } from '../../../framework/controls/TextBox';
 import { Grants } from '../components/Grants';
 
 class CreateGrant extends BaseSlate {
 
   constructor() {
     super('/slates/create/grant');
-    this.description = () => new HtmlElement('textarea[name="description"]');
+    this.description = () => new TextBox('textarea[name="description"]');
     this.recommendGrantProposals = () => new HtmlElement('input[value="grant"]');
     this.recommendNoAction = () => new HtmlElement('input[value="noAction"]');
   }
 
-  enterDescription(description) {
+  async enterDescription(description) {
+    await this.description().clear();
     return this.description().type(description);
   }
 

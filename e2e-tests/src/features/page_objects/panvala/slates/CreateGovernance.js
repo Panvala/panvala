@@ -6,14 +6,15 @@ class CreateGovernance extends BaseSlate {
 
   constructor() {
     super('/slates/create/grant');
-    this.description = () => new HtmlElement('textarea[name="summary"]');
+    this.description = () => new TextBox('textarea[name="summary"]');
     this.recommendGovernanceProposals = () => new HtmlElement('input[value="governance"]');
     this.recommendNoAction = () => new HtmlElement('input[value="noAction"]');
     this.slateStakeAmount= () => new TextBox('input[placeholder="Number"]');
     this.gatekeeperAddress = () => new TextBox('input[placeholder="Address"]');
   }
 
-  enterDescription(description) {
+  async enterDescription(description) {
+    await this.description().clear();
     return this.description().type(description);
   }
 
