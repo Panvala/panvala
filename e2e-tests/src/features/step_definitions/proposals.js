@@ -5,7 +5,7 @@ const proposals = new panvala.Proposals();
 const createProposals = new panvala.CreateProposals();
 
 
-When(/^I navigate to the proposals page$/, async function() {
+When(/^I navigate to the proposals page$/, async () => {
   await proposals.openPage();
 });
 

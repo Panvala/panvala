@@ -12,7 +12,7 @@ class BaseMetaMask extends BasePage {
     console.log(`Do in wallet`);
     await this.resizeWindow(-1180,-160);
     await stuff();
-    await this.maximizeWindow();
+    return this.maximizeWindow();
   }
 
   async doStuffInWalletPopup(openWallet, stuff) {
@@ -22,7 +22,7 @@ class BaseMetaMask extends BasePage {
     await openWallet();
     await this.switchToNewWindow(originalHandles);
     await stuff();
-    await this.switchToWindow(oldHandle);
+    return this.switchToWindow(oldHandle);
   }
 }
 

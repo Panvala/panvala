@@ -1,6 +1,7 @@
-import { When } from 'cucumber';
+import { When, Then } from 'cucumber';
 import panvala from '../page_objects/panvala/index';
 import metamask from '../page_objects/metamask/index';
+import { expect } from 'chai';
 const popup = new metamask.Popup();
 const slates = new panvala.Slates();
 const createSlates = new panvala.CreateSlates();
@@ -20,7 +21,7 @@ When(/^I select the (.*) slate type on the Panvala Create a Slate page$/, async 
     await createSlates.clickBegin();
 });
 
-When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, async () => {
+When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, {timeout: 45 * 1000}, async () => {
     const uniqueId = new Date().valueOf();
     await createGrant.enterEmail(`peter.yinusa+${uniqueId}@gmail.com`);
     await createGrant.enterFirstName(`Peter${uniqueId}`);
@@ -38,7 +39,7 @@ When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, asy
     await popup.doStuffInWalletPopup(openWallet, acceptTransaction);
 });
 
-When(/^I enter the slate details on the Panvala Create a Governance Slate page$/, async () => {
+When(/^I enter the slate details on the Panvala Create a Governance Slate page$/, {timeout: 45 * 1000}, async () => {
     const uniqueId = new Date().valueOf();
     await createGovernance.enterEmail(`peter.yinusa+${uniqueId}@gmail.com`);
     await createGovernance.enterFirstName(`Peter${uniqueId}`);
@@ -54,4 +55,11 @@ When(/^I enter the slate details on the Panvala Create a Governance Slate page$/
         await popup.clickAccept();
     };
     await popup.doStuffInWalletPopup(openWallet, acceptTransaction);
+});
+
+Then(/^The deadline reads "(.*)" on the slates page$/, async (expectedText) => {
+    const deadline = await slates.getDeadline();
+    const end = deadline.length - 25;
+    const actualText = deadline.substring(0, end);
+    expect(actualText).to.equal(expectedText);
 });

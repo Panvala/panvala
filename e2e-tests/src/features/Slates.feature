@@ -1,9 +1,12 @@
 @MetaMask_Local
 Feature: Slates
 
+Background: Background name
+  Given I navigate to the slates page
+  And I Time Travel to the "Slate Submission" stage in Panvala
+
 Scenario: Create a Grant Slate
-  When I navigate to the slates page
-  And I click add slates on the Panvala slates page
+  When I click add slates on the Panvala slates page
   And I select the Grant Slate slate type on the Panvala Create a Slate page
   And I enter the slate details on the Panvala Create a Grant Slate page
   Then The "Slate submitted." modal dialog is displayed reading
@@ -12,8 +15,7 @@ Scenario: Create a Grant Slate
   """
 
 Scenario: Create a Governance Slate
-  When I navigate to the slates page
-  And I click add slates on the Panvala slates page
+  When I click add slates on the Panvala slates page
   And I select the Governance Slate slate type on the Panvala Create a Slate page
   And I enter the slate details on the Panvala Create a Governance Slate page
   Then The "Slate submitted." modal dialog is displayed reading

@@ -33,15 +33,15 @@ class BasePage {
     });
   }
 
-  async navigateTo(url) {
+  navigateTo(url) {
     console.log(`Navigating to '${url}'`);
-    await getDriver().navigate().to(url);
+    return getDriver().navigate().to(url);
   }
 
   async refresh() {
     const currentUrl = await getDriver().getCurrentUrl();
     console.log(`Refreshing the page ${currentUrl}`);
-    await getDriver().navigate().refresh();
+    return getDriver().navigate().refresh();
   }
 
   async resizeWindow(widthX, heightY) {
@@ -49,12 +49,12 @@ class BasePage {
     let {width, height} = await getDriver().manage().window().getRect();
     width += widthX;
     height += heightY;
-    await getDriver().manage().window().setRect({width, height});
+    return getDriver().manage().window().setRect({width, height});
   }
 
-  async maximizeWindow() {
+  maximizeWindow() {
     console.log(`Maximize window`);
-    await getDriver().manage().window().maximize();
+    return getDriver().manage().window().maximize();
   }
 
   async switchToNewWindow(originalHandles) {
@@ -76,29 +76,27 @@ class BasePage {
       });
     }
     const newHandle = await getNewWindowHandle(originalHandles);
-    await this.switchToWindow(newHandle);
+    return this.switchToWindow(newHandle);
   }
 
   async switchToWindow(window) {
     console.log(`Switching to window '${window}'`);
-    await getDriver().switchTo().window(window);
+    return getDriver().switchTo().window(window);
   }
 
   async executeScript(script) {
     console.log(`Executing javascript ${script}`);
-    const value = await getDriver().executeScript(script);
-    return value;
+    return await getDriver().executeScript(script);
   }
 
   async addSessionStorageItem(key) {
     const script = `window.sessionStorage.setItem('${key}','TRUE');`
-    await this.executeScript(script);
+    return await this.executeScript(script);
   }
 
   async getSessionStorageItem(key) {
     const script = `return window.sessionStorage.getItem('${key}');`
-    const item = await this.executeScript(script);
-    return item;
+    return await this.executeScript(script);
   }
 
 }

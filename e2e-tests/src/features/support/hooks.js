@@ -20,29 +20,30 @@ Before({tags: '@MetaMask_Mainnet'}, async () => {
 });
 
 Before({tags: '@MetaMask_Local'}, async () => {
+    await addStorageItems();
     await iHaveConnectedMyMetaMaskWalletWithPanvala();
     const panvalaTestNetwork = 7;
     await iHaveSwitchedNetworkInMyMetaMaskWallet(panvalaTestNetwork);
 });
 
-After(async function(scenario) {
-    if (scenario.result.status === Status.FAILED) {
-    const screenshotPath = 'screenshot';
-    if (!fs.existsSync(screenshotPath)) {
-        fs.mkdirSync(screenshotPath);
-    }
-    const data = await driver.takeScreenshot();
-    const image = Buffer.from(data).toString('base64');
-    await this.attach(image, 'image/jpg');
-    const base64Data = data.replace(/^data:image\/png;base64,/, '');
-    const screenshotFullPath = path.join(screenshotPath, scenario.pickle.name + '.png').replace(/ /g, '_')
-    fs.writeFileSync(screenshotFullPath, base64Data, 'base64');
-    }
-});
-
 After({tags: '@MetaMask_Mainnet or @MetaMask_Local'}, async () => {
     await clearPanvalaStorage();
     await ILogOutOfMyMetaMaskWallet();
+});
+
+After(async function(scenario) {
+    if (scenario.result.status === Status.FAILED) {
+        const screenshotPath = 'screenshot';
+        if (!fs.existsSync(screenshotPath)) {
+            fs.mkdirSync(screenshotPath);
+        }
+        const data = await driver.takeScreenshot();
+        const image = Buffer.from(data).toString('base64');
+        await this.attach(image, 'image/jpg');
+        const base64Data = data.replace(/^data:image\/png;base64,/, '');
+        const screenshotFullPath = path.join(screenshotPath, scenario.pickle.name + '.png').replace(/ /g, '_')
+        fs.writeFileSync(screenshotFullPath, base64Data, 'base64');
+    }
 });
 
 AfterAll(async function() {
@@ -55,6 +56,10 @@ const clearPanvalaStorage = async () => {
     await driver.executeScript('window.sessionStorage.clear();');
     await driver.executeScript('window.localStorage.clear();');
     await driver.manage().deleteAllCookies();
+}
+
+const addStorageItems = async () => {
+    await driver.executeScript(`window.sessionStorage.setItem('CLOSED_MAINNET_MODAL','TRUE');`);
 }
 
 import { METAMASK_PASSWORD } from '../config/envConfig';

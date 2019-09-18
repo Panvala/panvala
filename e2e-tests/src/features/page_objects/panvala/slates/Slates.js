@@ -6,7 +6,7 @@ class Slates extends BasePanvala {
   constructor() {
     super('/slates');
     this.addSlate = () => new HtmlElement('a[href="/slates/create"]');
-    this.slateStakingDeadline = () => new HtmlElement('.Deadline__StyledDeadline-sc-1a3aqlz-0');
+    this.deadline = () => new HtmlElement('.Deadline__StyledDeadline-sc-1a3aqlz-0');
     this.currentTab = () => new HtmlElement('.VisibilityFilter__VisibilityFilterContainer-sc-1b1hgnt-0 div:nth-child(1)');
     this.pastTab = () => new HtmlElement('.VisibilityFilter__VisibilityFilterContainer-sc-1b1hgnt-0 div:nth-child(2)');
   }
@@ -15,8 +15,8 @@ class Slates extends BasePanvala {
     return this.addSlate().click();
   }
 
-  getSlateStakingDeadline() {
-    return this.slateStakingDeadline().getText();
+  getDeadline() {
+    return this.deadline().getText();
   }
 
   async clickTab(tab) {

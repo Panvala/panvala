@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import panvala from '../page_objects/panvala/index';
 const page = new panvala.BasePanvala();
 
-When(/^I have the "(.*)" session storage item$/, async function(key) {
+When(/^I have the "(.*)" session storage item$/, async (key) => {
   await page.addSessionStorageItem(key);
   await page.refresh();
 });
