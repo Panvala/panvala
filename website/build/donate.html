@@ -22,6 +22,10 @@
     <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
 
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script charset="utf-8" src="donate.js" type="text/javascript"></script>
+
     <!-- autopilot -->
     <script
       type="text/javascript">(function (o) { var b = "https://zippyfrog.co/anywhere/", t = "039b072363604f71afb26a55f1899413c20b8d86bb9749878f06b280fe2c8fa4", a = window.AutopilotAnywhere = { _runQueue: [], run: function () { this._runQueue.push(arguments); } }, c = encodeURIComponent, s = "SCRIPT", d = document, l = d.getElementsByTagName(s)[0], p = "t=" + c(d.title || "") + "&u=" + c(d.location.href || "") + "&r=" + c(d.referrer || ""), j = "text/javascript", z, y; if (!window.Autopilot) window.Autopilot = a; if (o.app) p = "devmode=true&" + p; z = function (src, asy) { var e = d.createElement(s); e.src = src; e.type = j; e.async = asy; l.parentNode.insertBefore(e, l); }; y = function () { z(b + t + '?' + p, true); }; if (window.attachEvent) { window.attachEvent("onload", y); } else { window.addEventListener("load", y, false); } })({});</script>
@@ -49,11 +53,11 @@
           </a>
         </div>
         <div class="dtc-ns dn w-25 v-mid tr">
-          <a href="donate.html">
+          <!-- <a href="donate.html">
             <button class="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
               Donate
             </button>
-          </a>
+          </a> -->
         </div>
       </nav>
       <!-- Hero -->
@@ -65,11 +69,9 @@
           Countless projects and people depend upon the Ethereum blockchain for their success. Contributing to Panvala
           rewards the teams who solve those problems.
         </p>
-        <a href="donate.html#donate-section">
-          <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer">
-            Donate Now
-          </button>
-        </a>
+        <button class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 pointer" id="donate-now-route-button">
+          Donate Now
+        </button>
       </div>
     </section>
 
@@ -412,7 +414,7 @@
           </div>
           <div class="dib-ns mr6-ns pr5-ns pv0-ns pv4 relative top-1 tl-ns">
             <h3 class="f2-5 ma0 mb1 white">
-              95
+              190
             </h3>
             <p class="white-60 ma0 f6">
               Donors
@@ -467,27 +469,34 @@
       </div>
     </section>
 
+    <!-- Donation Inputs -->
     <div class="relative">
-      <!-- Donation Inputs -->
-      <section id="donate-section" class="bg-gray top-clip-up pv6 mt6">
+      <section id="donate-section" class="bg-gray top-clip-up pv6 mt6 workaround-clip">
         <div class="w-50-l w-70-m w-90 center tc">
           <h2 class="f2-5 ma0 mv3 lh-copy">
             Become a Panvala Patron today
           </h2>
-          <!-- <p class="ma0 f6 lh-text mb3">
-            We only need your contact information in order for you to make a pledge at this time. We'll reach out to you
-            in the future to help you fulfill your pledge.
-          </p> -->
-          <form class="w-70-l w-90-m w-100 center" name="donation-pledge">
+          <p class="ma0 f6 lh-text mb3">
+            Choose your patron tier to prepay for this month using ETH. When it's time to renew your
+            pledge, we'll send you a reminder email so you can come back and prepay your next donation.
+          </p>
+          <form class="w-80-l w-90-m w-100 center" name="donation-pledge">
             <div class="tl mt4">
               <label class="ma0 f6 mb3 black-40">
-                Full Name
+                First Name
                 <b class="red f7">
                   *
                 </b>
               </label>
             </div>
-            <input type="text" name="full-name" id="pledge-full-name" required placeholder="Enter your full name"
+            <input type="text" name="first-name" id="pledge-first-name" required placeholder="Enter your first name"
+              class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2" />
+            <div class="tl mt4">
+              <label class="ma0 f6 mb3 black-40">
+                Last Name
+              </label>
+            </div>
+            <input type="text" name="last-name" id="pledge-last-name" required placeholder="Enter your last name"
               class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2" />
             <div class="tl mt4">
               <label class="ma0 f6 mb3 black-40">
@@ -532,9 +541,10 @@
                 Elite Advisor — $1500/month
               </option>
             </select>
+            <img src="img/arrow.svg" class="fr mr2 o-50" style="margin-top:-35px">
             <div class="tl mt4">
               <label class="ma0 f6 mb3 black-40">
-                How many months would you like to donate for?
+                How many months of your pledge will you prepay today?
                 <b class="red f7">
                   *
                 </b>
@@ -544,7 +554,7 @@
               class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
               id="pledge-duration-select">
               <option disabled="" selected="selected" value="0">
-                Select the amount of months you would like to pledge for
+                Select the amount of months you would like to prepay for
               </option>
               <option value="1">
                 1 month
@@ -559,6 +569,7 @@
                 12 months
               </option>
             </select>
+            <img src="img/arrow.svg" class="fr mr2 o-50" style="margin-top:-35px">
             <div id="root_container"></div>
           </form>
         </div>
