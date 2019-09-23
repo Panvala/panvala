@@ -29,6 +29,24 @@
     <!-- autopilot -->
     <script
       type="text/javascript">(function (o) { var b = "https://zippyfrog.co/anywhere/", t = "039b072363604f71afb26a55f1899413c20b8d86bb9749878f06b280fe2c8fa4", a = window.AutopilotAnywhere = { _runQueue: [], run: function () { this._runQueue.push(arguments); } }, c = encodeURIComponent, s = "SCRIPT", d = document, l = d.getElementsByTagName(s)[0], p = "t=" + c(d.title || "") + "&u=" + c(d.location.href || "") + "&r=" + c(d.referrer || ""), j = "text/javascript", z, y; if (!window.Autopilot) window.Autopilot = a; if (o.app) p = "devmode=true&" + p; z = function (src, asy) { var e = d.createElement(s); e.src = src; e.type = j; e.async = asy; l.parentNode.insertBefore(e, l); }; y = function () { z(b + t + '?' + p, true); }; if (window.attachEvent) { window.attachEvent("onload", y); } else { window.addEventListener("load", y, false); } })({});</script>
+
+    <!-- twitter -->
+    <script>window.twttr = (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0],
+          t = window.twttr || {};
+        if (d.getElementById(id)) return t;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://platform.twitter.com/widgets.js";
+        fjs.parentNode.insertBefore(js, fjs);
+
+        t._e = [];
+        t.ready = function (f) {
+          t._e.push(f);
+        };
+
+        return t;
+      }(document, "script", "twitter-wjs"));</script>
   </head>
 
   <body class="overflow-x-hidden">
@@ -43,10 +61,13 @@
             Grants
           </a>
           <a href="company.html" class="link dim white-60 f6 fw6 dib mr3">
-            Company
+            Team
           </a>
           <a href="resources.html" class="link dim white-60 f6 fw6 dib mr3">
             Resources
+          </a>
+          <a href="https://forum.panvala.com" target="_blank" class="link dim white-60 f6 fw6 dib mr3">
+            Forum
           </a>
           <a href="donate.html" class="link dim white-60 f6 dn-ns dib fw6">
             Donate
@@ -637,7 +658,7 @@
           </div>
           <div class="dib v-top mr5-l mr3-m mr4 pr2 tl mt0-ns mt4">
             <h3 class="f3-l f5 ma0 white mb3">
-              Company
+              Team
             </h3>
             <a href="company.html#company-about" class="link dim white-60 f5-l f6 db mb3-ns mb2">
               About Us
@@ -657,6 +678,9 @@
             </a>
             <a href="resources.html#resources-blog" class="link dim white-60 f5-l f6 db mb3-ns mb2">
               Blog
+            </a>
+            <a href="https://forum.panvala.com" target="_blank" class="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Forum
             </a>
             <a href="resources.html#resources-faq" class="link dim white-60 f5-l f6 db mb3-ns mb2">
               FAQ
