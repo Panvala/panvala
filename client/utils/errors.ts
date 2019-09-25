@@ -48,8 +48,11 @@ export enum PanvalaError {
   TransactionRejected,
   TransactionFailed, // Revert
   NotLoggedIn,
+  SignatureRejected,
   Unknown,
 }
+
+export const ETHEREUM_NOT_AVAILABLE = 'Ethereum not available';
 
 /**
  * Try to handle the error generically. Return a PanvalaError if the error isn't handled.
@@ -58,10 +61,12 @@ export function handleGenericError(error: Error, toast): PanvalaError | undefine
   const errorType = checkError(error);
   if (errorType === PanvalaError.TransactionRejected) {
     toast.info('You rejected the transaction');
+  } else if (errorType === PanvalaError.SignatureRejected) {
+    toast.info('You declined to sign the message');
   } else if (errorType === PanvalaError.NotLoggedIn) {
     toast.error('Please log into MetaMask');
   } else {
-    toast.error(`Problem staking: ${error.message}`);
+    // Pass the message up to the caller -- toasts and other feedback should be handled there
     return errorType;
   }
 }
@@ -73,14 +78,22 @@ function checkError(error: Error): PanvalaError {
   if (msg.includes('Internal JSON-RPC error')) {
     if (typeof error.stack !== 'undefined') {
       const { stack } = error;
+      // MetaMask errors
       if (stack.includes('User denied transaction signature')) {
         return PanvalaError.TransactionRejected;
+      } else if (stack.includes('User denied message signature')) {
+        return PanvalaError.SignatureRejected;
       } else if (stack.includes('Invalid "from" address')) {
         return PanvalaError.NotLoggedIn;
       }
 
       // revert
     }
+  } else if (msg.includes('Ethereum not available')) {
+    return PanvalaError.NotLoggedIn;
+  } else if (msg.includes('unknown account')) {
+    // from ethers
+    return PanvalaError.NotLoggedIn;
   }
 
   // TODO:

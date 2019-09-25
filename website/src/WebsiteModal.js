@@ -23,7 +23,7 @@ const styles = {
   },
   body: {
     position: 'fixed',
-    top: '200px',
+    top: '10vh',
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
@@ -95,6 +95,7 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '.9rem',
     justifyContent: 'center',
+    cursor: 'pointer',
   },
 };
 
@@ -144,20 +145,17 @@ const ModalBody = ({ handleClick, children }) => (
   </div>
 );
 
-const MetaMaskDialog = ({ handleCancel }) => (
+const MetaMaskDialog = () => (
   <>
     <div style={styles.instructions}>
       MetaMask will open a new window to confirm. If you don’t see it, please click the extension
       icon in your browser.
     </div>
     <Spinner />
-    <div style={styles.cancel} onClick={handleCancel}>
-      Cancel
-    </div>
   </>
 );
 
-const StepOne = ({ message, handleCancel }) => (
+const StepOne = ({ message }) => (
   <>
     <div style={styles.title}>Step 1 of 2</div>
     <div style={styles.title}>Swap ETH for PAN</div>
@@ -167,11 +165,11 @@ const StepOne = ({ message, handleCancel }) => (
       <br />
       {`Under the hood: ${message}`}
     </div>
-    <MetaMaskDialog handleCancel={handleCancel} />
+    <MetaMaskDialog />
   </>
 );
 
-const StepTwo = ({ message, handleCancel }) => (
+const StepTwo = ({ message }) => (
   <>
     <div style={styles.title}>Step 2 of 2</div>
     <div style={styles.title}>Donate PAN</div>
@@ -180,11 +178,21 @@ const StepTwo = ({ message, handleCancel }) => (
       <br />
       {`Under the hood: ${message}`}
     </div>
-    <MetaMaskDialog handleCancel={handleCancel} />
+    <MetaMaskDialog />
   </>
 );
 
-const StepThree = ({ message, handleCancel }) => {
+const Tweet = () => {
+  return (
+    <a
+      class="link twitter-share-button white f7"
+      href="https://twitter.com/intent/tweet?text=I%20just%20made%20a%20donation%20to%20Panvala%20to%20support%20the%20Ethereum%20open%20source%20ecosystem.%20Please%20join%20me%20by%20contributing%20at%20panvala.com&hashtags=panvala,ethereum"
+      data-size="large"
+    >Tweet</a>
+  );
+};
+
+const StepThree = ({ message, handleClose }) => {
   const tier = message.toLowerCase();
   return (
     <>
@@ -197,11 +205,22 @@ const StepThree = ({ message, handleCancel }) => {
       </div>
       <div style={styles.thankYou}>
         Thank you for donating to Panvala. Each and every Panvala patron plays a key role in moving
-        Ethereum forward.
-        {/* You can share your support on Twitter! */}
+        Ethereum forward. You can share your support on Twitter!
       </div>
-      <div style={styles.cancel} onClick={handleCancel}>
-        Close
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          width: '80%',
+        }}
+      >
+        <div style={styles.cancel} onClick={handleClose}>
+          Close
+        </div>
+        <div style={{ ...styles.cancel, backgroundColor: '#1b95e0' }}>
+          <Tweet />
+        </div>
       </div>
     </>
   );
@@ -215,9 +234,9 @@ const WebsiteModal = ({ isOpen, step, message, handleCancel }) => {
   // prettier-ignore
   const steps = [
     <div></div>,
-    <StepOne handleCancel={handleCancel} message={message} />,
-    <StepTwo handleCancel={handleCancel} message={message} />,
-    <StepThree handleCancel={handleCancel} message={message} />,
+    <StepOne message={message} />,
+    <StepTwo message={message} />,
+    <StepThree handleClose={handleCancel} message={message} />,
   ];
 
   return (

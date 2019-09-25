@@ -1,5 +1,11 @@
 'use strict';
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var styles = {
   container: {
     display: 'flex',
@@ -23,7 +29,7 @@ var styles = {
   },
   body: {
     position: 'fixed',
-    top: '200px',
+    top: '10vh',
     margin: '0 auto',
     display: 'flex',
     flexDirection: 'column',
@@ -94,7 +100,8 @@ var styles = {
     color: '#555',
     fontWeight: 'bold',
     fontSize: '.9rem',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    cursor: 'pointer'
   }
 };
 
@@ -151,55 +158,49 @@ var ModalBody = (_ref2) => {
   }, children);
 };
 
-var MetaMaskDialog = (_ref3) => {
-  var {
-    handleCancel
-  } = _ref3;
-  return React.createElement(React.Fragment, null, React.createElement("div", {
-    style: styles.instructions
-  }, "MetaMask will open a new window to confirm. If you don\u2019t see it, please click the extension icon in your browser."), React.createElement(Spinner, null), React.createElement("div", {
-    style: styles.cancel,
-    onClick: handleCancel
-  }, "Cancel"));
-};
+var MetaMaskDialog = () => React.createElement(React.Fragment, null, React.createElement("div", {
+  style: styles.instructions
+}, "MetaMask will open a new window to confirm. If you don\u2019t see it, please click the extension icon in your browser."), React.createElement(Spinner, null));
 
-var StepOne = (_ref4) => {
+var StepOne = (_ref3) => {
   var {
-    message,
-    handleCancel
-  } = _ref4;
+    message
+  } = _ref3;
   return React.createElement(React.Fragment, null, React.createElement("div", {
     style: styles.title
   }, "Step 1 of 2"), React.createElement("div", {
     style: styles.title
   }, "Swap ETH for PAN"), React.createElement("div", {
     style: styles.copy
-  }, "Since all donations are made in PAN tokens we will use Uniswap to purchase PAN tokens with your ETH. Once purchased, you can then donate.", React.createElement("br", null), "Under the hood: ".concat(message)), React.createElement(MetaMaskDialog, {
-    handleCancel: handleCancel
-  }));
+  }, "Since all donations are made in PAN tokens we will use Uniswap to purchase PAN tokens with your ETH. Once purchased, you can then donate.", React.createElement("br", null), "Under the hood: ".concat(message)), React.createElement(MetaMaskDialog, null));
 };
 
-var StepTwo = (_ref5) => {
+var StepTwo = (_ref4) => {
   var {
-    message,
-    handleCancel
-  } = _ref5;
+    message
+  } = _ref4;
   return React.createElement(React.Fragment, null, React.createElement("div", {
     style: styles.title
   }, "Step 2 of 2"), React.createElement("div", {
     style: styles.title
   }, "Donate PAN"), React.createElement("div", {
     style: styles.copy
-  }, "You now have PAN tokens! Confirm the MetaMask transaction to finalize your donation.", React.createElement("br", null), "Under the hood: ".concat(message)), React.createElement(MetaMaskDialog, {
-    handleCancel: handleCancel
-  }));
+  }, "You now have PAN tokens! Confirm the MetaMask transaction to finalize your donation.", React.createElement("br", null), "Under the hood: ".concat(message)), React.createElement(MetaMaskDialog, null));
 };
 
-var StepThree = (_ref6) => {
+var Tweet = () => {
+  return React.createElement("a", {
+    class: "link twitter-share-button white f7",
+    href: "https://twitter.com/intent/tweet?text=I%20just%20made%20a%20donation%20to%20Panvala%20to%20support%20the%20Ethereum%20open%20source%20ecosystem.%20Please%20join%20me%20by%20contributing%20at%20panvala.com&hashtags=panvala,ethereum",
+    "data-size": "large"
+  }, "Tweet");
+};
+
+var StepThree = (_ref5) => {
   var {
     message,
-    handleCancel
-  } = _ref6;
+    handleClose
+  } = _ref5;
   var tier = message.toLowerCase();
   return React.createElement(React.Fragment, null, React.createElement("div", {
     style: styles.title
@@ -211,19 +212,30 @@ var StepThree = (_ref6) => {
     style: styles.patron
   }, "You are now a", tier[0] === 'e' && 'n', " ", React.createElement("strong", null, message, " Patron")), React.createElement("div", {
     style: styles.thankYou
-  }, "Thank you for donating to Panvala. Each and every Panvala patron plays a key role in moving Ethereum forward."), React.createElement("div", {
+  }, "Thank you for donating to Panvala. Each and every Panvala patron plays a key role in moving Ethereum forward. You can share your support on Twitter!"), React.createElement("div", {
+    style: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      width: '80%'
+    }
+  }, React.createElement("div", {
     style: styles.cancel,
-    onClick: handleCancel
-  }, "Close"));
+    onClick: handleClose
+  }, "Close"), React.createElement("div", {
+    style: _objectSpread({}, styles.cancel, {
+      backgroundColor: '#1b95e0'
+    })
+  }, React.createElement(Tweet, null))));
 };
 
-var WebsiteModal = (_ref7) => {
+var WebsiteModal = (_ref6) => {
   var {
     isOpen,
     step,
     message,
     handleCancel
-  } = _ref7;
+  } = _ref6;
 
   if (!isOpen || step == null) {
     return null;
@@ -231,13 +243,11 @@ var WebsiteModal = (_ref7) => {
 
 
   var steps = [React.createElement("div", null), React.createElement(StepOne, {
-    handleCancel: handleCancel,
     message: message
   }), React.createElement(StepTwo, {
-    handleCancel: handleCancel,
     message: message
   }), React.createElement(StepThree, {
-    handleCancel: handleCancel,
+    handleClose: handleCancel,
     message: message
   })];
   return React.createElement("div", {
