@@ -1,6 +1,6 @@
 import { HtmlElement } from '../../../framework/controls/HtmlElement';
 
-class Grants {
+class GrantsCards {
 
   constructor(row) {
     this._root = `.grant__FlexContainer-sc-1wx08qu-2 div.Box-os6zh6-0:nth-child(${row}) `;
@@ -28,4 +28,4 @@ class Grants {
 
 };
 
-export { Grants };
+export { GrantsCards };

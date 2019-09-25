@@ -1,5 +1,6 @@
 import { BasePanvala } from '../BasePanvala';
 import { HtmlElement } from '../../../framework/controls/HtmlElement';
+import { ProposalsCard } from '../components/ProposalsCard';
 
 class Proposals extends BasePanvala {
 
@@ -13,9 +14,18 @@ class Proposals extends BasePanvala {
     return this.addProposal().click();
   }
 
-  getProposalDeadline() {
-    return this.proposalDeadline().getText();
+  async getProposalDeadline() {
+    return await this.proposalDeadline().getText();
   }
+
+  selectProposal(number) {
+    return new ProposalsCard(number).clickCard();
+  }
+
+  async selectLastProposal() {
+    const number = await new ProposalsCard().getCardsCount();
+    return new ProposalsCard(number).clickCard();
+  } 
 
 }
 

@@ -1,7 +1,7 @@
 import { BaseSlate } from './BaseSlate';
 import { HtmlElement } from '../../../framework/controls/HtmlElement';
 import { TextBox } from '../../../framework/controls/TextBox';
-import { Grants } from '../components/Grants';
+import { GrantsCard } from '../components/GrantsCard';
 
 class CreateGrant extends BaseSlate {
 
@@ -26,7 +26,7 @@ class CreateGrant extends BaseSlate {
   }
 
   selectGrant(number) {
-    return new Grants(number).clickCard();
+    return new GrantsCard(number).clickCard();
   }
 
 }
