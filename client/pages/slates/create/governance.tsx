@@ -18,7 +18,8 @@ import Checkbox from '../../../components/Checkbox';
 import CenteredTitle from '../../../components/CenteredTitle';
 import CenteredWrapper from '../../../components/CenteredWrapper';
 import FieldTextarea from '../../../components/FieldTextarea';
-import FieldText, { ErrorMessage } from '../../../components/FieldText';
+import FieldText from '../../../components/FieldText';
+import { ErrorMessage } from '../../../components/FormError';
 import Modal, { ModalTitle, ModalDescription } from '../../../components/Modal';
 import { Separator } from '../../../components/Separator';
 import SectionLabel from '../../../components/SectionLabel';
@@ -45,8 +46,16 @@ import BackButton from '../../../components/BackButton';
 import { isSlateSubmittable } from '../../../utils/status';
 import Loader from '../../../components/Loader';
 import { MaxUint256 } from 'ethers/constants';
+import ClosedSlateSubmission from '../../../components/ClosedSlateSubmission';
 
-const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
+enum PageStatus {
+  Loading,
+  Initialized,
+  SubmissionOpen,
+  SubmissionClosed,
+}
+
+const CreateGovernanceSlate: StatelessPage<any> = () => {
   // modal opener
   const [isOpen, setOpenModal] = React.useState(false);
   const { onRefreshSlates, onRefreshCurrentBallot, currentBallot }: IMainContext = React.useContext(
@@ -61,13 +70,29 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
     gkAllowance,
   }: IEthereumContext = React.useContext(EthereumContext);
   const [pendingText, setPendingText] = React.useState('');
+  const [pageStatus, setPageStatus] = React.useState(PageStatus.Loading);
+  const [deadline, setDeadline] = React.useState(0);
 
+  // Update page status when ballot info changes
   React.useEffect(() => {
-    if (!isSlateSubmittable(currentBallot, 'GOVERNANCE')) {
-      toast.error('Governance slate submission deadline has passed');
-      router.push('/slates');
+    const newDeadline = currentBallot.slateSubmissionDeadline.GOVERNANCE;
+    setDeadline(newDeadline);
+
+    if (pageStatus === PageStatus.Loading) {
+      if (newDeadline === 0) return;
+
+      setPageStatus(PageStatus.Initialized);
+    } else {
+      if (!isSlateSubmittable(currentBallot, 'GOVERNANCE')) {
+        setPageStatus(PageStatus.SubmissionClosed);
+        // if (typeof router !== 'undefined') {
+        //   router.push('/slates');
+        // }
+      } else {
+        setPageStatus(PageStatus.SubmissionOpen);
+      }
     }
-  }, [currentBallot.slateSubmissionDeadline]);
+  }, [currentBallot.slateSubmissionDeadline, pageStatus]);
 
   // pending tx loader
   const [txsPending, setTxsPending] = React.useState(0);
@@ -89,8 +114,35 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
     return numTxs;
   }
 
+  // Condense to the bare parameter changes
+  function filterParameterChanges(
+    formParameters: IParameterChangesObject
+  ): IParameterChangesObject {
+    return Object.keys(formParameters).reduce((acc, paramKey) => {
+      let value = clone(formParameters[paramKey]);
+      if (!!value.newValue && value.newValue !== value.oldValue) {
+        if (paramKey === 'slateStakeAmount') {
+          value.newValue = convertedToBaseUnits(value.newValue, 18);
+        } else if (paramKey === 'gatekeeperAddress') {
+          // Lower-case so that `isAddress()` can handle it
+          value.newValue = value.newValue.toLowerCase();
+        }
+        return {
+          ...acc,
+          [paramKey]: value,
+        };
+      }
+      return acc;
+    }, {});
+  }
+
   // Submit slate information to the Gatekeeper, saving metadata in IPFS
-  async function handleSubmitSlate(values: IGovernanceSlateFormValues) {
+  async function handleSubmitSlate(
+    values: IGovernanceSlateFormValues,
+    parameterChanges: IParameterChangesObject
+  ) {
+    console.log('parameterChanges:', parameterChanges);
+
     let errorMessage = '';
 
     try {
@@ -102,24 +154,6 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
       setTxsPending(numTxs);
       setPendingText('Adding proposals to IPFS...');
 
-      // filter for only changes in parameters
-      const parameterChanges: IParameterChangesObject = Object.keys(values.parameters).reduce(
-        (acc, paramKey) => {
-          let value = clone(values.parameters[paramKey]);
-          if (!!value.newValue && value.newValue !== value.oldValue) {
-            if (paramKey === 'slateStakeAmount') {
-              value.newValue = convertedToBaseUnits(value.newValue, 18);
-            }
-            return {
-              ...acc,
-              [paramKey]: value,
-            };
-          }
-          return acc;
-        },
-        {}
-      );
-      console.log('parameterChanges:', parameterChanges);
       const paramKeys = Object.keys(parameterChanges);
 
       const proposalMetadatas: IGovernanceProposalMetadata[] = paramKeys.map((param: string) => {
@@ -247,7 +281,11 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
     console.error(error);
   }
 
-  return (
+  if (pageStatus === PageStatus.Loading || pageStatus === PageStatus.Initialized) {
+    return <div>Loading...</div>;
+  }
+
+  return pageStatus === PageStatus.SubmissionOpen ? (
     <>
       <CenteredTitle title="Create a Governance Slate" />
 
@@ -303,8 +341,25 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
                 }
           }
           validationSchema={GovernanceSlateFormSchema}
-          onSubmit={async (values: IGovernanceSlateFormValues, { setSubmitting }: any) => {
-            await handleSubmitSlate(values);
+          onSubmit={async (
+            values: IGovernanceSlateFormValues,
+            { setSubmitting, setFieldError }: any
+          ) => {
+            const emptySlate = values.recommendation === 'noAction';
+
+            if (emptySlate) {
+              // Submit with no changes if the user selected noAction
+              const noChanges: IParameterChangesObject = {};
+              await handleSubmitSlate(values, noChanges);
+            } else {
+              const changes: IParameterChangesObject = filterParameterChanges(values.parameters);
+              if (Object.keys(changes).length === 0) {
+                setFieldError('parametersForm', 'You must enter some parameters to change');
+              } else {
+                await handleSubmitSlate(values, changes);
+              }
+            }
+
             // re-enable submit button
             setSubmitting(false);
           }}
@@ -314,6 +369,7 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
             values,
             setFieldValue,
             handleSubmit,
+            errors,
           }: FormikContext<IGovernanceSlateFormValues>) => (
             <Box>
               <Form>
@@ -370,16 +426,17 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
 
                 <Separator />
                 <Box p={4}>
-                  <SectionLabel>{'PARAMETERS'}</SectionLabel>
-                  <ParametersForm
-                    onChange={setFieldValue}
-                    slateStakeAmount={formatPanvalaUnits(slateStakeAmount)}
-                    newSlateStakeAmount={values.parameters.slateStakeAmount.newValue}
-                    newGatekeeperAddress={values.parameters.gatekeeperAddress.newValue}
-                    gatekeeperAddress={
-                      contracts && contracts.gatekeeper && contracts.gatekeeper.address
-                    }
-                  />
+                  {values.recommendation === 'governance' && (
+                    <>
+                      <SectionLabel>{'PARAMETERS'}</SectionLabel>
+                      <ParametersForm
+                        onChange={setFieldValue}
+                        newSlateStakeAmount={values.parameters.slateStakeAmount.newValue}
+                        newGatekeeperAddress={values.parameters.gatekeeperAddress.newValue}
+                        errors={errors}
+                      />
+                    </>
+                  )}
 
                   <Separator />
                   <Box p={4}>
@@ -441,6 +498,8 @@ const CreateGovernanceSlate: StatelessPage<any> = ({ classes, router }) => {
         </>
       </Modal>
     </>
+  ) : (
+    <ClosedSlateSubmission deadline={deadline} category={'governance'} />
   );
 };
 

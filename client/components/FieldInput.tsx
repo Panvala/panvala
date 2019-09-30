@@ -2,29 +2,32 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Field as FormikField } from 'formik';
 import { COLORS } from '../styles';
-import Label from './Label';
+import { space, layout, fontFamily } from 'styled-system';
 import { ErrorMessage } from './FormError';
 
-export const Field = styled(FormikField)`
-  background-color: ${COLORS.grey6};
+const InputField: any = styled(FormikField)`
   border: 1px solid ${COLORS.greyBorder};
   border-radius: 2px;
   width: 100%;
   padding: 0.8em;
   font-size: 0.8em;
   margin: 1em 0;
+
+  color: ${COLORS.grey2};
+  background-color: ${COLORS.grey6};
+
+  ${space};
+  ${layout};
+  ${fontFamily}
 `;
 
-const FieldText = ({ label, name, placeholder, required }: any) => {
+const FieldInput = ({ name, placeholder }: any) => {
   return (
     <>
-      <Label htmlFor={name} required={required}>
-        {label}
-      </Label>
+      <InputField component="input" name={name} placeholder={placeholder} />
       <ErrorMessage name={name} component="span" />
-      <Field type="text" name={name} placeholder={placeholder} />
     </>
   );
 };
 
-export default FieldText;
+export default FieldInput;
