@@ -38,8 +38,7 @@ After(async function(scenario) {
             fs.mkdirSync(screenshotPath);
         }
         const data = await driver.takeScreenshot();
-        const image = Buffer.from(data).toString('base64');
-        await this.attach(image, 'image/jpg');
+        await this.attach(data, 'image/png');
         const base64Data = data.replace(/^data:image\/png;base64,/, '');
         const screenshotFullPath = path.join(screenshotPath, scenario.pickle.name + '.png').replace(/ /g, '_')
         fs.writeFileSync(screenshotFullPath, base64Data, 'base64');

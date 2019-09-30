@@ -8,7 +8,8 @@
   "description": "Tests for Panvala using selenium webdriver and cucumber-js",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/cucumber-js src/features/ --require-module @babel/register --format json:report.json"
+    "test": "node ./node_modules/.bin/cucumber-js src/features/ --require-module @babel/register --format json:report.json",
+    "report": "node ./src/createReport.js"
   },
   "author": "peter-yinusa",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "@babel/core": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
+    "cucumber-html-reporter": "^5.0.2",
     "husky": "^3.0.3",
     "lint-staged": "^9.2.5",
     "prettier": "^1.18.2"
