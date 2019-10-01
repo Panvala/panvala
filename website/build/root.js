@@ -104,6 +104,7 @@ class Root extends React.Component {
 
     return _asyncToGenerator(function* () {
       if (typeof _this3.provider !== 'undefined') {
+        yield _this3.checkNetwork();
         var {
           chainId
         } = yield _this3.provider.getNetwork();
@@ -194,6 +195,11 @@ class Root extends React.Component {
           throw new Error(_errMsg);
         }
       }
+
+      if (!_this4.exchange || !_this4.token || !_this4.tokenCapacitor) {
+        alert('Contracts not setup properly.');
+        throw new Error('Contracts not setup properly.');
+      }
     })();
   }
 
@@ -201,17 +207,25 @@ class Root extends React.Component {
     var _this5 = this;
 
     return _asyncToGenerator(function* () {
-      if (!_this5.state.selectedAccount || !_this5.exchange || !_this5.provider || !_this5.token || !_this5.tokenCapacitor) {
+      var errMsg;
+
+      if (!_this5.state.selectedAccount || !_this5.provider) {
+        alert('Ethereum not setup properly.');
         throw new Error('Ethereum not setup properly.');
       }
 
       var correctChainId = window.location.href.includes('panvala.com/donate') ? 1 : 4;
       var network = yield _this5.provider.getNetwork();
+      var supportedNetworks = {
+        1: 'Main',
+        4: 'Rinkeby'
+      };
 
       if (network.chainId !== correctChainId) {
-        alert('Wrong network or route'); // prevent further action
+        errMsg = "Metamask is connected to an unsupported network. Please connect to the ".concat(supportedNetworks[correctChainId], " network.");
+        alert(errMsg); // prevent further action
 
-        throw new Error('Wrong network or route');
+        throw new Error(errMsg);
       }
     })();
   } // Sell order (exact input) -> calculates amount bought (output)
@@ -285,10 +299,8 @@ class Root extends React.Component {
       } catch (error) {
         console.error(error);
         throw error;
-      } // Make sure the user is connected to the correct network (based on the URL)
+      }
 
-
-      yield _this7.checkNetwork();
       var tier = utils.getTier(pledgeMonthlySelect.value);
 
       _this7.setState({
