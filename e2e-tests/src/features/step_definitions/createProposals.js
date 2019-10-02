@@ -21,34 +21,34 @@ When(/^I enter the proposal details on the Panvala Create Proposals page$/, {tim
   await createProposals.clickSubmit();
 });
 
-When(/^I enter the first name "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(firstname) {
-  this.setProposalInfo({firstname: firstname});
+When(/^I enter the first name "(.*)" on the Panvala Create Proposals page$/, async function(firstname) {
+  this.setProposal({firstname: firstname});
   await createProposals.enterFirstName(firstname);
 });
 
-When(/^I enter the email "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(email) {
-  this.setProposalInfo({email: email});
+When(/^I enter the email "(.*)" on the Panvala Create Proposals page$/, async function(email) {
+  this.setProposal({email: email});
   await createProposals.enterEmail(email);
 });
 
-When(/^I enter the project name "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(projectName) {
+When(/^I enter the project name "(.*)" on the Panvala Create Proposals page$/, async function(projectName) {
   const uniqueProjectName = `${projectName}${this.uniqueId}`;
-  this.setProposalInfo({projectName: uniqueProjectName});
+  this.setProposal({projectName: uniqueProjectName});
   await createProposals.enterProjectName(uniqueProjectName);
 });
 
-When(/^I enter the project summary "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(projectSummary) {
-  this.setProposalInfo({projectSummary: projectSummary});
+When(/^I enter the project summary "(.*)" on the Panvala Create Proposals page$/, async function(projectSummary) {
+  this.setProposal({projectSummary: projectSummary});
   await createProposals.enterProjectSummary(projectSummary);
 });
 
-When(/^I enter the tokens requested "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(tokensRequested) {
-  this.setProposalInfo({tokensRequested: tokensRequested});
+When(/^I enter the tokens requested "(.*)" on the Panvala Create Proposals page$/, async function(tokensRequested) {
+  this.setProposal({tokensRequested: tokensRequested});
   await createProposals.enterTokensRequested(tokensRequested);
 });
 
-When(/^I enter the award address "(.*)" on the Panvala Create Proposals page$/, {timeout: 60 * 1000}, async function(awardAddress) {
-  this.setProposalInfo({awardAddress: awardAddress});
+When(/^I enter the award address "(.*)" on the Panvala Create Proposals page$/, async function(awardAddress) {
+  this.setProposal({awardAddress: awardAddress});
   await createProposals.enterAwardAddress(awardAddress);
 });
 

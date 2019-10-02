@@ -28,7 +28,7 @@ Before({tags: '@MetaMask_Local'}, async () => {
 
 After({tags: '@MetaMask_Mainnet or @MetaMask_Local'}, async () => {
     await clearPanvalaStorage();
-    await ILogOutOfMyMetaMaskWallet();
+    await iLogOutOfMyMetaMaskWallet();
 });
 
 After(async function(scenario) {
@@ -87,7 +87,7 @@ const iHaveSwitchedNetworkInMyMetaMaskWallet = async (network) => {
     await popup.doStuffInWallet(selectNetwork);
 }
 
-const ILogOutOfMyMetaMaskWallet = async () => {
+const iLogOutOfMyMetaMaskWallet = async () => {
     await popup.openPage();
     const logOut = async () => {
         await popup.header().clickLogOut();

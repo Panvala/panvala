@@ -8,7 +8,7 @@
   "description": "Tests for Panvala using selenium webdriver and cucumber-js",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/.bin/cucumber-js src/features/ --require-module @babel/register --format json:report.json",
+    "test": "node ./node_modules/.bin/cucumber-js src/features/ --require-module @babel/register --format json:report.json --tags 'not @Ignore'",
     "report": "node ./src/createReport.js"
   },
   "author": "peter-yinusa",

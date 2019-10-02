@@ -26,12 +26,12 @@ class TimeTravel {
     return this.timeTravel().click();
   }
 
-  getCurrentEpoch() {
-    return this.currentEpoch().getText();
+  async getCurrentEpoch() {
+    return await this.currentEpoch().getText();
   }
 
-  getCurrentStage() {
-    return this.currentStage().getText();
+  async getCurrentStage() {
+    return await this.currentStage().getText();
   }
 
 };

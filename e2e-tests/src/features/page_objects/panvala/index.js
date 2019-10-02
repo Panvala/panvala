@@ -7,6 +7,7 @@ import { Proposals } from './proposals/Proposals';
 import { CreateGovernance } from './slates/CreateGovernance';
 import { CreateGrant } from './slates/CreateGrant';
 import { CreateSlates } from './slates/CreateSlates';
+import { Slate } from './slates/Slate';
 import { Slates } from './slates/Slates';
 import { Wallet } from './wallet/Wallet';
 
@@ -20,6 +21,7 @@ export default {
     CreateGovernance: CreateGovernance,
     CreateGrant: CreateGrant,
     CreateSlates: CreateSlates,
+    Slate: Slate,
     Slates: Slates,
     Wallet: Wallet
 };

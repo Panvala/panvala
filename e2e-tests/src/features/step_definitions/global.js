@@ -9,6 +9,7 @@ const proposals = new panvala.Proposals();
 const createGovernance = new panvala.CreateGovernance();
 const createGrant = new panvala.CreateGrant();
 const createSlates = new panvala.CreateSlates();
+const slate = new panvala.Slate();
 const slates = new panvala.Slates();
 const wallet = new panvala.Wallet();
 
@@ -22,6 +23,7 @@ Then(/^The Panvala "(.*)" page is displayed$/, {timeout: 15 * 1000}, async (page
     CreateGovernance: createGovernance,
     CreateGrant: createGrant,
     CreateSlates: createSlates,
+    Slate: slate,
     Slates: slates,
     Wallet: wallet
   };

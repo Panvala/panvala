@@ -7,9 +7,10 @@ class CustomWorld {
         this.parameters = parameters
         this.uniqueId = new Date().valueOf();
         this.proposal = {};
+        this.slate = {};
     }
-  
-    setProposalInfo(proposalObject) {
+
+    setProposal(proposalObject) {
         const proposal = this.proposal;
         console.log(`Setting the proposal: \n ${JSON.stringify(proposalObject)}`);
         if (typeof proposalObject.firstname !== 'undefined') {
@@ -33,12 +34,32 @@ class CustomWorld {
         this.proposal = proposal;
     }
 
-    getProposalInfo() {
+    getProposal() {
         const proposal = this.proposal;
         console.log('Getting the proposal: \n' + JSON.stringify(proposal));
         return proposal;
     }
 
+    setSlate(slateObject) {
+        const slate = this.slate;
+        console.log(`Setting the slate: \n ${JSON.stringify(slateObject)}`);
+        if (typeof slateObject.email !== 'undefined') {
+            slate.email = slateObject.email;
+        }
+        if (typeof slateObject.firstname !== 'undefined') {
+            slate.firstname = slateObject.firstname;
+        }
+        if (typeof slateObject.description !== 'undefined') {
+            slate.description = slateObject.description;
+        }
+        this.slate = slate;
+    }
+
+    getSlate() {
+        const slate = this.slate;
+        console.log('Getting the slate: \n' + JSON.stringify(slate));
+        return slate;
+    }
 };
 
 setWorldConstructor(CustomWorld);

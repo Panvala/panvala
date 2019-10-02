@@ -1,5 +1,7 @@
 import { BasePanvala } from '../BasePanvala';
 import { HtmlElement } from '../../../framework/controls/HtmlElement';
+import { GrantCard } from '../components/GrantCard';
+import { GovernanceCard } from '../components/GovernanceCard';
 
 class Slates extends BasePanvala {
 
@@ -32,6 +34,24 @@ class Slates extends BasePanvala {
         throw new Error(`Please specify a valid tab, unknown tab $(tab)`);
     }
     return tabElement.click();
+  }
+
+  selectGrantSlate(number) {
+    return new GrantCard(number).clickCard();
+  }
+
+  async selectLastGrantSlate() {
+    const number = await new GrantCard().getCardsCount();
+    return new GrantCard(number).clickCard();
+  } 
+
+  selectGovernanceSlate(number) {
+    return new GovernanceCard(number).clickCard();
+  }
+
+  async selectLastGovernanceSlate() {
+    const number = await new GovernanceCard().getCardsCount();
+    return new GovernanceCard(number).clickCard();
   }
 
 }
