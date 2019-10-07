@@ -62,16 +62,13 @@ class Donation extends Component {
       let selectedAccount = (await this.provider.listAccounts())[0];
       // user not enabled for this app
       if (!selectedAccount) {
-        window.ethereum
-          .enable()
-          .then(enabled => {
-            selectedAccount = enabled[0];
-          })
-          .catch(error => {
-            if (error.stack.includes('User denied account authorization')) {
-              alert('MetaMask not enabled. In order to donate pan, you must authorize this app.');
-            }
-          });
+        try {
+          selectedAccount = (await window.ethereum.enable())[0];
+        } catch (error) {
+          if (error.stack.includes('User denied account authorization')) {
+            alert('MetaMask not enabled. In order to donate pan, you must authorize this app.');
+          }
+        }
       }
       await this.setState({ selectedAccount });
       return selectedAccount;
@@ -185,8 +182,11 @@ class Donation extends Component {
   async checkNetwork() {
     let errMsg;
     if (!this.state.selectedAccount || !this.provider) {
-      alert('Ethereum not setup properly.');
-      throw new Error('Ethereum not setup properly.');
+      const account = await this.setSelectedAccount();
+      if (!account) {
+        alert('Ethereum not setup properly.');
+        throw new Error('Ethereum not setup properly.');
+      }
     }
 
     let correctChainId = window.location.href.includes('panvala.com/donate') ? 1 : 4;
@@ -248,6 +248,7 @@ class Donation extends Component {
     const pledgeEmail = document.getElementById('pledge-email');
     const pledgeMonthlySelect = document.getElementById('pledge-tier-select');
     const pledgeTermSelect = document.getElementById('pledge-duration-select');
+    const pledgeTeamSelect = document.getElementById('pledge-team-select');
 
     if (pledgeFirstName.value === '') {
       alert('You must enter a first name.');
@@ -263,6 +264,10 @@ class Donation extends Component {
     }
     if (pledgeTermSelect.value === '0') {
       alert('You must select a pledge duration.');
+      return;
+    }
+    if (pledgeTeamSelect.value === '0') {
+      alert('You must select a team or select "No".');
       return;
     }
 
@@ -353,6 +358,7 @@ class Donation extends Component {
           pledgeEmail.value = '';
           pledgeMonthlySelect.value = '0';
           pledgeTermSelect.value = '0';
+          pledgeTeamSelect.value = '0';
         }
       }
     } catch (error) {

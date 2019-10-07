@@ -11,8 +11,9 @@ import arrowSvg from '../img/arrow.svg';
 
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
-import Donation from '../components/Donation';
+import Modal from '../components/Modal';
 import Nav from '../components/Nav';
+import DonateButton from '../components/DonateButton';
 
 const names = [
   'Simon de la Rouviere',
@@ -114,6 +115,7 @@ const names = [
 
 const Donate = () => {
   const donateNowRef = useRef(null);
+  const [isOpen, setModalOpen] = useState(false);
 
   function onDonateNowClick() {
     donateNowRef.current.scrollIntoView({
@@ -121,9 +123,50 @@ const Donate = () => {
     });
   }
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    const fn = document.getElementById('pledge-first-name');
+    const em = document.getElementById('pledge-email');
+    const ti = document.getElementById('pledge-tier-select');
+    const te = document.getElementById('pledge-team-select');
+    if (fn.value === '') {
+      alert('You must enter a first name.');
+      return;
+    }
+    if (em.value === '') {
+      alert('You must enter an email address.');
+      return;
+    }
+    if (ti.value === '0') {
+      alert('You must select a pledge tier.');
+      return;
+    }
+    if (te.value === '0') {
+      alert('You must select a team or select "No".');
+      return;
+    }
+
+    setModalOpen(true);
+  }
+
+  function handleClose(e) {
+    e.preventDefault();
+    setModalOpen(false);
+    const fn = document.getElementById('pledge-first-name');
+    const ln = document.getElementById('pledge-last-name');
+    const em = document.getElementById('pledge-email');
+    const ti = document.getElementById('pledge-tier-select');
+    const te = document.getElementById('pledge-team-select');
+    fn.value = '';
+    ln.value = '';
+    em.value = '';
+    ti.value = '0';
+    te.value = '0';
+  }
+
   return (
     <Layout>
-      <SEO title="Donate" />
+      <SEO title="Pledge" />
 
       <section className="bg-gradient bottom-clip-hero pb6">
         <Nav />
@@ -142,7 +185,7 @@ const Donate = () => {
             id="donate-now-route-button"
             onClick={onDonateNowClick}
           >
-            Donate Now
+            Pledge Now
           </button>
         </div>
       </section>
@@ -251,11 +294,14 @@ const Donate = () => {
           <div ref={donateNowRef} className="w-50-l w-70-m w-90 center tc">
             <h2 className="f2-5 ma0 mv3 lh-copy">Become a Panvala Patron today</h2>
             <p className="ma0 f6 lh-text mb3">
-              Choose your patron tier to prepay for this month using ETH. When it's time to renew
-              your pledge, we'll send you a reminder email so you can come back and prepay your next
-              donation.
+              We only need your contact information in order for you to make a pledge at this time.
+              We'll reach out to you in the future to help you fulfill your pledge.
             </p>
-            <form className="w-80-l w-90-m w-100 center" name="donation-pledge">
+            <form
+              className="w-80-l w-90-m w-100 center"
+              name="donation-pledge"
+              onSubmit={handleSubmit}
+            >
               <div className="tl mt4">
                 <label className="ma0 f6 mb3 black-40">
                   First Name
@@ -318,31 +364,10 @@ const Donate = () => {
                 <option value="1500">Elite Advisor — $1500/month</option>
               </select>
               <img src={arrowSvg} className="fr mr2 o-50" style={{ marginTop: '-35px' }} />
-              <div className="tl mt4">
-                <label className="ma0 f6 mb3 black-40">
-                  How many months of your pledge will you prepay today?
-                  <b className="red f7"> *</b>
-                </label>
-              </div>
-              <select
-                name="pledge-duration-selection"
-                required
-                className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
-                id="pledge-duration-select"
-              >
-                <option disabled="" defaultValue="0" value="0">
-                  Select the amount of months you would like to prepay for
-                </option>
-                <option value="1">1 month</option>
-                <option value="3">3 months</option>
-                <option value="6">6 months</option>
-                <option value="12">12 months</option>
-              </select>
-              <img src={arrowSvg} className="fr mr2 o-50" style={{ marginTop: '-35px' }} />
 
               <div className="tl mt4">
                 <label className="ma0 f6 mb3 black-40">
-                Are you donating on behalf of a team?
+                Are you pledging on behalf of a team?
                   <b className="red f7"> *</b>
                 </label>
               </div>
@@ -353,7 +378,7 @@ const Donate = () => {
                 id="pledge-team-select"
               >
                 <option disabled="" defaultValue="0" value="0">
-                  Select the team you would like to donate on behalf of
+                  Select the team you would like to pledge on behalf of
                 </option>
                 <option value="no-team">No</option>
                 <option value="meta-cartel">Team MetaCartel: Increase Dapp Usage</option>
@@ -362,7 +387,15 @@ const Donate = () => {
               </select>
               <img src={arrowSvg} className="fr mr2 o-50" style={{ marginTop: '-35px' }} />
 
-              <Donation />
+
+              <DonateButton handleClick={handleSubmit} text="Pledge" />
+
+              <Modal
+                isOpen={isOpen}
+                handleClose={handleClose}
+                title="Form Submitted"
+                copy="Thank you. We'll be in touch!"
+              />
             </form>
           </div>
         </section>
