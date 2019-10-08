@@ -3,6 +3,8 @@ const cors = require('cors');
 const setupRoutes = require('./routes');
 const morgan = require('morgan');
 
+const { listenAndSyncContractEvents } = require('./utils/events');
+
 const app = express();
 
 // Configuration and middleware:
@@ -20,6 +22,10 @@ setupRoutes(app);
 
 // Start server:
 if (process.env.NODE_ENV !== 'test') {
+  // Continuously listen for contract events
+  // TODO: enable this when ready
+  // listenAndSyncContractEvents();
+
   app.listen(port, () => console.log(`Starting server on port ${port}...`));
 }
 
