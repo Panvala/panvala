@@ -12,6 +12,7 @@ RUN cd ../packages/panvala-utils && yarn
 
 # install dependencies
 COPY ./client/package.json .
+COPY ./client/yarn.lock .
 RUN yarn
 
 # copy our code to the server
