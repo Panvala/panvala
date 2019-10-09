@@ -4,7 +4,7 @@ import metamask from '../page_objects/metamask/index';
 const popup = new metamask.Popup();
 const createGovernance = new panvala.CreateGovernance();
 
-When(/^I enter the slate details on the Panvala Create a Governance Slate page$/, {timeout: 45 * 1000}, async () => {
+When(/^I enter the slate details on the Panvala Create a Governance Slate page$/, async () => {
     const uniqueId = new Date().valueOf();
     await createGovernance.enterEmail(`peter.yinusa+${uniqueId}@gmail.com`);
     await createGovernance.enterFirstName(`Peter${uniqueId}`);
@@ -13,13 +13,6 @@ When(/^I enter the slate details on the Panvala Create a Governance Slate page$/
     await createGovernance.enterDescription(`Description ${uniqueId}`);
     await createGovernance.clickRecommendNoAction();
     await createGovernance.clickNo();
-    const openWallet = async () => {
-        await createGovernance.clickCreateSlate();
-    };
-    const acceptTransaction = async () => {
-        await popup.clickAccept();
-    };
-    await popup.doStuffInWalletPopup(openWallet, acceptTransaction);
 });
 
 When(/^I enter the email "(.*)" on the Panvala Create Governance Slate page$/, async function(email) {

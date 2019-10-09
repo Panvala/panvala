@@ -5,7 +5,7 @@ import { TextBox } from '../../../framework/controls/TextBox';
 class CreateGovernance extends BaseSlate {
 
   constructor() {
-    super('/slates/create/grant');
+    super('/slates/create/governance');
     this.description = () => new TextBox('textarea[name="summary"]');
     this.recommendGovernanceProposals = () => new HtmlElement('input[value="governance"]');
     this.recommendNoAction = () => new HtmlElement('input[value="noAction"]');

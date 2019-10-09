@@ -1,18 +1,20 @@
 @MetaMask_Local
 Feature: Proposals
 
+Background: Proposals page
+  Given I navigate to the "Proposals" page
+  And The Panvala "Proposals" page is displayed
+
 Scenario: Create a grant proposal
-  When I navigate to the proposals page
-  And I click add a proposal on the Panvala Proposal page
+  When I click add a proposal on the Panvala Proposal page
   And I enter the proposal details on the Panvala Create Proposals page
+  And I click Confirm and Submit button on the Panvala Create Proposals page
   Then The "Grant proposal created." modal dialog is displayed reading
   """
   You have successfully created a Panvala Grant Proposal. Now groups that are creating slates can attach your grant to their slate.
   """
 
 Scenario: View a grant proposal
-  When I navigate to the proposals page
-  Then The Panvala "Proposals" page is displayed
   When I click add a proposal on the Panvala Proposal page
   And I enter the first name "Peter" on the Panvala Create Proposals page
   And I enter the email "peter.yinusa@gmail.com" on the Panvala Create Proposals page
@@ -26,6 +28,7 @@ Scenario: View a grant proposal
   You have successfully created a Panvala Grant Proposal. Now groups that are creating slates can attach your grant to their slate.
   """
   When I accept the modal dialog
+  Then The Panvala "Proposals" page is displayed
   And I click the last proposal card on the Panvala Proposal page
   Then The Panvala "Proposal" page is displayed
   And The first name is displayed on the Panvala Proposal page

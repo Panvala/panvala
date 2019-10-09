@@ -13,6 +13,10 @@ class Modal {
     return new HtmlElement(this.root).isDisplayed();
   }
 
+  waitForTitle(title) {
+    return this.modalTitle().waitForTextToAppear(title);
+  }
+
   getTitle() {
     return this.modalTitle().getText();
   }

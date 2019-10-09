@@ -40,6 +40,30 @@ class HtmlElement {
     .perform();
     return this.driver.sleep(1000);
   }
+
+  async waitForTextToAppear(text) {
+    console.log(`Waiting for the text '${text}' to appear in '${this.cssLocator}'`);
+    return this.driver.wait(async () => {
+      const actualText = await this.driver.findElement({ css: this.cssLocator }).getText();
+      const result = actualText.toLowerCase().includes(text.toLowerCase());
+      if (!result) {
+        await getDriver().sleep(1000);
+      }
+      return result;
+    }, 10000);
+  }
+
+  async waitForTextToDisappear(text) {
+    console.log(`Waiting for the text '${text}' to disappear in '${this.cssLocator}'`);
+    return this.driver.wait(async () => {
+      const actualText = await this.driver.findElement({ css: this.cssLocator }).getText();
+      const result = !actualText.toLowerCase().includes(text.toLowerCase());
+      if (!result) {
+        await getDriver().sleep(1000);
+      }
+      return result;
+    }, 10000);
+  }
 }
 
 export { HtmlElement };

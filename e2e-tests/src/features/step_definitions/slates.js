@@ -21,7 +21,7 @@ When(/^I click the last governance slate card on the Panvala slates page$/, asyn
 
 Then(/^The deadline reads "(.*)" on the slates page$/, async (expectedText) => {
     const deadline = await slates.getDeadline();
-    const end = deadline.length - 25;
+    const end = deadline.length - 24;
     const actualText = deadline.substring(0, end);
     expect(actualText).to.equal(expectedText);
 });

@@ -4,7 +4,7 @@ import metamask from '../page_objects/metamask/index';
 const popup = new metamask.Popup();
 const createGrant = new panvala.CreateGrant();
 
-When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, {timeout: 45 * 1000}, async () => {
+When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, async () => {
     const uniqueId = new Date().valueOf();
     await createGrant.enterEmail(`peter.yinusa+${uniqueId}@gmail.com`);
     await createGrant.enterFirstName(`Peter${uniqueId}`);
@@ -13,13 +13,6 @@ When(/^I enter the slate details on the Panvala Create a Grant Slate page$/, {ti
     await createGrant.enterDescription(`Description ${uniqueId}`);
     await createGrant.clickRecommendNoAction();
     await createGrant.clickNo();
-    const openWallet = async () => {
-        await createGrant.clickCreateSlate();
-    };
-    const acceptTransaction = async () => {
-        await popup.clickAccept();
-    };
-    await popup.doStuffInWalletPopup(openWallet, acceptTransaction);
 });
 
 When(/^I enter the email "(.*)" on the Panvala Create Grant Slate page$/, async function(email) {

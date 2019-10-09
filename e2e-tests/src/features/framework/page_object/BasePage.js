@@ -26,11 +26,13 @@ class BasePage {
       expectedUrl = expectedUrl + this.path;
     }
     console.log(`expectedUrl: ${expectedUrl}`)
-    return getDriver().getCurrentUrl()
-    .then((url) => {
-      console.log(`url: ${url}`)
-      return url.includes(expectedUrl);
-    });
+    return getDriver().wait(() => {
+      return getDriver().getCurrentUrl()
+      .then((url) => {
+        console.log(`url: ${url}`)
+        return url.includes(expectedUrl);
+      });
+    }, 10000);
   }
 
   navigateTo(url) {
@@ -81,7 +83,8 @@ class BasePage {
 
   async switchToWindow(window) {
     console.log(`Switching to window '${window}'`);
-    return getDriver().switchTo().window(window);
+    await getDriver().switchTo().window(window);
+    return getDriver().sleep(1000);
   }
 
   async executeScript(script) {

@@ -13,6 +13,12 @@ class Slates extends BasePanvala {
     this.pastTab = () => new HtmlElement('.VisibilityFilter__VisibilityFilterContainer-sc-1b1hgnt-0 div:nth-child(2)');
   }
 
+  async isDisplayed() {
+    const urlIsDisplayed = await super.isDisplayed();
+    const deadlineIsDisplayed = await this.deadline().waitForTextToDisappear('loading');
+    return urlIsDisplayed && deadlineIsDisplayed;
+  }
+
   clickAddSlate() {
     return this.addSlate().click();
   }

@@ -20,10 +20,10 @@ Before({tags: '@MetaMask_Mainnet'}, async () => {
 });
 
 Before({tags: '@MetaMask_Local'}, async () => {
-    await addStorageItems();
     await iHaveConnectedMyMetaMaskWalletWithPanvala();
     const panvalaTestNetwork = 7;
     await iHaveSwitchedNetworkInMyMetaMaskWallet(panvalaTestNetwork);
+    await addStorageItems();
 });
 
 After({tags: '@MetaMask_Mainnet or @MetaMask_Local'}, async () => {

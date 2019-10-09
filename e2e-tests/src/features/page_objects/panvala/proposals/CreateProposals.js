@@ -23,15 +23,18 @@ class CreateProposals extends BasePanvala {
     this.confirmAndSubmit = () => new HtmlElement('.Flex-sc-1qv9hxw-0.bATvpO div:nth-child(2)');
   }
 
-  enterFirstName(firstName) {
+  async enterFirstName(firstName) {
+    await this.firstName().clear();
     return this.firstName().type(firstName);
   }
 
-  enterLastName(lastName) {
+  async enterLastName(lastName) {
+    await this.lastName().clear();
     return this.lastName().type(lastName);
   }
 
-  enterEmail(email) {
+  async enterEmail(email) {
+    await this.email().clear();
     return this.email().type(email);
   }
 
@@ -39,7 +42,8 @@ class CreateProposals extends BasePanvala {
     return this.github().type(github);
   }
 
-  enterProjectName(projectName) {
+  async enterProjectName(projectName) {
+    await this.projectName().clear();
     return this.projectName().type(projectName);
   }
 
@@ -47,7 +51,8 @@ class CreateProposals extends BasePanvala {
     return this.website().type(website);
   }
 
-  enterProjectSummary(projectSummary) {
+  async enterProjectSummary(projectSummary) {
+    await this.projectSummary().clear();
     return this.projectSummary().type(projectSummary);
   }
 
@@ -63,7 +68,8 @@ class CreateProposals extends BasePanvala {
     return this.totalBudget().type(totalBudget);
   }
 
-  enterTokensRequested(tokensRequested) {
+  async enterTokensRequested(tokensRequested) {
+    await this.tokensRequested().clear();
     return this.tokensRequested().type(tokensRequested);
   }
 
