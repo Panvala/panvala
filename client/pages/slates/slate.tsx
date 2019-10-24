@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { space } from 'styled-system';
 import { colors } from '../../styles';
 import Box from '../../components/system/Box';
 import Card from '../../components/Card';
@@ -7,11 +8,16 @@ import { MainContext, IMainContext } from '../../components/MainProvider';
 import RouterLink from '../../components/RouterLink';
 import RouteTitle from '../../components/RouteTitle';
 import SectionLabel from '../../components/SectionLabel';
-import { StatelessPage, ISlate, IProposal } from '../../interfaces';
+import { StatelessPage, ISlate, IProposal, IGovernanceProposal } from '../../interfaces';
 import { PROPOSAL } from '../../utils/constants';
 import SlateHeader from '../../components/SlateHeader';
 import SlateSidebar from '../../components/SlateSidebar';
-import { splitAddressHumanReadable } from '../../utils/format';
+import Flex, { BreakableFlex } from '../../components/system/Flex';
+import {
+  splitAddressHumanReadable,
+  formatParameter,
+  parameterDisplayName,
+} from '../../utils/format';
 
 const Incumbent = styled.div`
   color: ${colors.blue};
@@ -32,7 +38,7 @@ export const MetaColumn = styled.div`
 `;
 export const MainColumn = styled.div`
   width: 70%;
-  padding: 1.75rem 3rem;
+  ${space};
 `;
 const SlateProposals = styled.div`
   display: flex;
@@ -44,6 +50,107 @@ interface IProps {
     id: string;
   };
 }
+
+const GrantSlateDetail = ({ slate }) => {
+  const hasProposals = slate.proposals && slate.proposals.length > 0;
+  return (
+    <>
+      <SectionLabel>{'GRANTS'}</SectionLabel>
+      {hasProposals ? (
+        <SlateProposals>
+          {slate.proposals.map((proposal: IProposal) => (
+            <Box width={['100%', '100%', '100%', '50%']} m={['0']} key={proposal.id}>
+              <RouterLink
+                href={`/proposals/proposal?id=${proposal.id}`}
+                as={`/proposals/${proposal.id}`}
+              >
+                <Card
+                  title={proposal.title}
+                  subtitle={proposal.tokensRequested + ' Tokens Requested'}
+                  description={proposal.summary}
+                  category={'GRANT PROPOSAL'}
+                  type={PROPOSAL}
+                  width={['100%', '100%', '100%', '50%']}
+                />
+              </RouterLink>
+            </Box>
+          ))}
+        </SlateProposals>
+      ) : (
+        <div>No proposals included.</div>
+      )}
+    </>
+  );
+};
+
+interface IGovProps {
+  slate: ISlate;
+}
+
+interface IChange {
+  oldValue: any;
+  newValue: any;
+  type: any;
+  key: any;
+}
+
+const GovernanceSlateDetail = ({ slate }: IGovProps) => {
+  const hasProposals = slate.proposals && slate.proposals.length > 0;
+
+  // We expect a key `parameterChanges on each proposal
+  // HACK, coerce to governance proposal until we work out an ISlate that encompasses all types of
+  // proposals
+  const proposals = slate.proposals as unknown;
+  const changes: IChange[] = (proposals as IGovernanceProposal[]).map(
+    (p: IGovernanceProposal) => p.parameterChanges
+  );
+
+  return (
+    <>
+      <SectionLabel>{'PARAMETER CHANGES'}</SectionLabel>
+      {hasProposals ? (
+        <Flex column mt={4}>
+          <Flex p={3} justifyBetween alignCenter width="100%" fontWeight="bold" bg="greys.light">
+            <Flex justifyStart width="50%">
+              Parameter Name
+            </Flex>
+            <Flex justifyStart width="50%">
+              Current Value
+            </Flex>
+            <Flex justifyStart width="50%">
+              New Value
+            </Flex>
+          </Flex>
+
+          {changes.map((proposal: IChange) => (
+            <Flex
+              p={3}
+              justifyBetween
+              alignCenter
+              width="100%"
+              bg="white"
+              border={1}
+              borderColor="greys.light"
+              key={proposal.key}
+            >
+              <Flex width="50%" fontSize={1}>
+                {parameterDisplayName(proposal.key)}
+              </Flex>
+              <BreakableFlex width="50%" fontSize={1}>
+                {formatParameter(proposal.oldValue, proposal.type)}
+              </BreakableFlex>
+              <BreakableFlex width="50%" fontSize={1}>
+                {formatParameter(proposal.newValue, proposal.type)}
+              </BreakableFlex>
+            </Flex>
+          ))}
+        </Flex>
+      ) : (
+        <div>No proposals included.</div>
+      )}
+    </>
+  );
+};
 
 const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
   const { slates, currentBallot }: IMainContext = React.useContext(MainContext);
@@ -79,35 +186,17 @@ const Slate: StatelessPage<IProps> = ({ query: { id } }) => {
           />
         </MetaColumn>
 
-        <MainColumn>
+        <MainColumn padding={['1rem', '1rem', '1.5rem', '1.5rem']}>
           <SectionLabel>DESCRIPTION</SectionLabel>
           <Box color="black" mb={5}>
             {slate.description}
           </Box>
 
-          {slate.proposals && slate.proposals.length > 0 ? (
-            <>
-              <SectionLabel>{'GRANTS'}</SectionLabel>
-              <SlateProposals>
-                {slate.proposals.map((proposal: IProposal) => (
-                  <RouterLink
-                    href={`/proposals/proposal?id=${proposal.id}`}
-                    as={`/proposals/${proposal.id}`}
-                    key={proposal.id}
-                  >
-                    <Card
-                      title={proposal.title}
-                      subtitle={proposal.tokensRequested + ' Tokens Requested'}
-                      description={proposal.summary}
-                      category={`${slate.category} PROPOSAL`}
-                      type={PROPOSAL}
-                      width={['100%', '100%', '100%', '50%']}
-                    />
-                  </RouterLink>
-                ))}
-              </SlateProposals>
-            </>
-          ) : null}
+          {slate.category === 'GRANT' ? (
+            <GrantSlateDetail slate={slate} />
+          ) : (
+            <GovernanceSlateDetail slate={slate} />
+          )}
         </MainColumn>
       </DetailContainer>
     </SlateWrapper>

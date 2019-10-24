@@ -3,8 +3,9 @@ import range from 'lodash/range';
 import uuid from 'uuid/v4';
 import { utils } from 'ethers';
 import { ballotDates } from '../../utils/voting';
-import { ISlate, IProposal } from '../../interfaces';
+import { ISlate, IProposal, IGovernanceProposal } from '../../interfaces';
 import '../../globalStyles.css';
+import { SlateStatus } from '../../utils/status';
 
 // https://github.com/zeit/next.js/issues/1827#issuecomment-323314141
 (Router as any).router = {
@@ -56,6 +57,33 @@ export const unstakedSlate: ISlate = {
   epochNumber: 1,
 };
 
+export const governanceProposals: IGovernanceProposal[] = [
+  {
+    parameterChanges: {
+      key: 'slateStakeAmount',
+      oldValue: '50000000000000000000000',
+      newValue: '45000000000000000000000',
+      type: 'uint256',
+    },
+  },
+  {
+    parameterChanges: {
+      key: 'gatekeeperAddress',
+      oldValue: '0xd115bffabbdd893a6f7cea402e7338643ced44a6',
+      newValue: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      type: 'address',
+    },
+  },
+  {
+    parameterChanges: {
+      key: 'stakeDonationAddress',
+      oldValue: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+      newValue: '0xffffffffffffffffffffffffffffffffffffffff',
+      type: 'address',
+    },
+  },
+];
+
 export function makeBallot(options?: any, prototype?: any) {
   return {
     ...baseBallot,
@@ -105,3 +133,10 @@ export const rejectedGovSlate = makeSlate(
   },
   acceptedGovSlate
 );
+
+export const governanceSlate = {
+  ...acceptedGovSlate,
+  id: 0,
+  status: SlateStatus.Staked,
+  proposals: governanceProposals,
+};

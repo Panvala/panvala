@@ -53,8 +53,18 @@ export interface IParameterChangesObject {
   };
 }
 
+// Rendered in the frontend
+export interface IGovernanceProposal {
+  parameterChanges: {
+    oldValue: any;
+    newValue: any;
+    type: any;
+    key: any;
+  };
+}
+
+// Saved to IPFS
 export interface IGovernanceProposalMetadata {
-  id: number;
   firstName: string;
   lastName?: string;
   summary: string;

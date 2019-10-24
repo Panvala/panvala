@@ -27,15 +27,7 @@ module.exports = {
         icon: `src/images/favicon.ico`, // This path is relative to the root of the site.
       },
     },
-    {
-      resolve: `gatsby-plugin-s3`,
-      options: {
-        bucketName: 'panvala-gatsby',
-        protocol: "https",
-        hostname: "panvala-gatsby.s3-website.us-east-2.amazonaws.com",
-        acl: null,
-      },
-    },
+    'gatsby-plugin-netlify',
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

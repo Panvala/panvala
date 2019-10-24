@@ -26,12 +26,15 @@ RUN cd ../packages/panvala-utils && yarn
 
 # Install node dependencies
 COPY ./api/package.json .
+COPY ./api/yarn.lock .
 RUN ls
 RUN yarn
 
 # copy our code to the server
 COPY ./api .
 
+# run the build
+RUN yarn build
 
 EXPOSE 5000
 
