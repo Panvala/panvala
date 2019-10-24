@@ -53,6 +53,7 @@ Create a `e2e-tests/config/Environment.json` file.
 {
   "driver": {
     "browser": "chrome",
+    "extension": "{METAMASK_EXTENSION_PATH}",
     "profile": "{CHROME_PROFILE_PATH}",
     "profileDir": "{PROFILE_DIRECTORY}"
   },
@@ -65,11 +66,20 @@ Create a `e2e-tests/config/Environment.json` file.
     }
   },
   "metamask": {
+    "seed": "{SEED}",
     "password": "{PASSWORD}",
-    "url": "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn"
+    "url": "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn",
+    "network": {
+      "name": "Panvala Test Network",
+      "url": "http://localhost:7545"
+    }
   }
 }
 ```
+
+Fill in the `METAMASK_EXTENSION_PATH` of the MetaMask extension.
+
+Example MetaMask extension path: `/Users/peteryinusa/Desktop/Consensys/panvala/e2e-tests/lib/MetaMask_v7.3.1.crx`
 
 Fill in the `CHROME_PROFILE_PATH` and the `PROFILE_DIRECTORY` of you Chrome profile with the MetaMask extension installed.
 
@@ -77,7 +87,9 @@ Example Chrome profile path: `/Users/{USERNAME}/Library/Application Support/Goog
 
 Example Chrome profile directory: `Profile 1`
 
-Fill in the `PASSWORD` of the metamask wallet you would like to import.
+Fill in the `SEED` of the MetaMask wallet you would like to import.
+
+Fill in the `PASSWORD` to login the MetaMask wallet.
 
 ## Running the tests
 

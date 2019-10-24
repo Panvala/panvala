@@ -5,11 +5,14 @@ import fs from 'fs';
 import path from 'path';
 let driver;
 
-BeforeAll(async () => {
+BeforeAll({timeout: 45 * 1000}, async () => {
     await buildDriver(DRIVER);
     driver = getDriver();
     await driver.manage().setTimeouts({implicit: 10000, pageLoad: 30000, script: 5000});
     await driver.manage().window().maximize();
+    if (DRIVER.browser.toLowerCase() === "chrome") {
+        await initialSetup();
+    }
     await driver.navigate().to(PANVALA_APP_URL);
 });
 
@@ -61,11 +64,39 @@ const addStorageItems = async () => {
     await driver.executeScript(`window.sessionStorage.setItem('CLOSED_MAINNET_MODAL','TRUE');`);
 }
 
-import { METAMASK_PASSWORD } from '../config/envConfig';
+import { METAMASK_SEED, METAMASK_PASSWORD, METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL } from '../config/envConfig';
 import metamask from '../page_objects/metamask/index';
-const welcome = new metamask.Welcome();
+const createPassword = new metamask.CreatePassword();
+const endOfFlow = new metamask.EndOfFlow();
+const metaMetrics = new metamask.MetaMetrics();
 const popup = new metamask.Popup();
+const selectAction = new metamask.SelectAction();
 const unlock = new metamask.Unlock();
+const welcome = new metamask.Welcome();
+
+const initialSetup = async () => {
+    const oldHandles = await driver.getAllWindowHandles();
+    await driver.navigate().to(PANVALA_APP_URL);
+    await welcome.switchToNewWindow(oldHandles);
+    await welcome.isDisplayed();
+    await welcome.clickGetStarted();
+    await selectAction.isDisplayed();
+    await selectAction.clickImportWallet();
+    await metaMetrics.isDisplayed();
+    await metaMetrics.clickNoThanks();
+    await createPassword.isDisplayed();
+    await createPassword.enterWalletSeed(METAMASK_SEED);
+    await createPassword.enterPassword(METAMASK_PASSWORD);
+    await createPassword.enterConfirmPassword(METAMASK_PASSWORD);
+    await createPassword.acceptTerms();
+    await createPassword.clickImport();
+    await endOfFlow.isDisplayed();
+    await endOfFlow.clickAllDone();
+    await popup.header().selectCustomNetwork(METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL);
+    await popup.header().clickLogOut();
+    await driver.close();
+    await welcome.switchToWindow(oldHandles[0]);
+}
 
 const iHaveConnectedMyMetaMaskWalletWithPanvala = async () => {
     const openWallet = async () => {

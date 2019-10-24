@@ -20,7 +20,7 @@ class BasePage {
     await getDriver().navigate().to(url);
   }
 
-  isDisplayed() {
+  async isDisplayed() {
     let expectedUrl = this.baseUrl;
     if (typeof this.path !== 'undefined') {
       expectedUrl = expectedUrl + this.path;
@@ -28,9 +28,13 @@ class BasePage {
     console.log(`expectedUrl: ${expectedUrl}`)
     return getDriver().wait(() => {
       return getDriver().getCurrentUrl()
-      .then((url) => {
+      .then(async (url) => {
         console.log(`url: ${url}`)
-        return url.includes(expectedUrl);
+        const result = url.includes(expectedUrl);
+        if (!result) {
+          await getDriver().sleep(1000);
+        }
+        return result;
       });
     }, 10000);
   }
