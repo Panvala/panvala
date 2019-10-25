@@ -27,7 +27,8 @@ spec:
       containers:
         - name: db-migrate
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          command: ["/bin/sh", "-c", "yarn", "migrate"]
+          command: ["/bin/sh"]
+          args: ["-c", "yarn migrate"]
           env:
             - name: NODE_ENV
               value: {{ .Values.node_env }}
