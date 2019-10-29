@@ -1,22 +1,28 @@
 import webdriver from'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import path from 'path';
 let driver;
 
-const buildLocalChromeDriver = async (seleniumProfile) => {
+const getOptions = (seleniumProfile) => {
   const options = new chrome.Options();
-  options.addArguments(`user-data-dir=${seleniumProfile.profile}`);
-  options.addArguments(`profile-directory=${seleniumProfile.profileDir}`);
-  return await new webdriver.Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
+  if (typeof seleniumProfile.extension !== 'undefined') {
+    console.log('chrome.Options(): adding extension')
+    const crxStream = require('fs').readFileSync(path.join(process.cwd(), 'lib', seleniumProfile.extension));
+    const crxBuffer = Buffer.from(crxStream).toString('base64');
+    options.addExtensions(crxBuffer);
+  }
+  if (seleniumProfile.browser.toLowerCase().includes("remote")) {
+    console.log('chrome.Options(): adding arguments')
+    options.addArguments(`--no-sandbox`);
+    options.addArguments(`--disable-dev-shm-usage`);
+    options.addArguments(`--disable-gpu`);
+    options.addArguments(`--start-maximized`);
+  }
+  return options;
 };
 
 const buildChromeDriver = async (seleniumProfile) => {
-  const options = new chrome.Options();
-  const crxStream = require('fs').readFileSync(seleniumProfile.extension);
-  const crxBuffer = Buffer.from(crxStream).toString('base64');
-  options.addExtensions(crxBuffer);
+  const options = getOptions(seleniumProfile);
   return await new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
@@ -26,10 +32,8 @@ const buildChromeDriver = async (seleniumProfile) => {
 export const buildDriver = async (profile) => {
   console.log(`browser: ${JSON.stringify(profile)}`);
   switch (profile.browser.toLowerCase()) {
-  case 'local-chrome':
-    driver = await buildLocalChromeDriver(profile);
-    break;
   case 'chrome':
+  case 'remote-chrome':
     driver = await buildChromeDriver(profile);
     break;
   default:

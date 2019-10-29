@@ -14,9 +14,10 @@
   "author": "peter-yinusa",
   "license": "ISC",
   "dependencies": {
+    "@babel/register": "^7.6.2",
     "@babel/runtime": "^7.5.5",
     "chai": "^4.2.0",
-    "chromedriver": "^76.0.0",
+    "chromedriver": "^76.0.1",
     "cucumber": "^5.1.0",
     "lodash": "^4.17.15",
     "selenium-webdriver": "^4.0.0-alpha.4"

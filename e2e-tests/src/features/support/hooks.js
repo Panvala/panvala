@@ -5,12 +5,12 @@ import fs from 'fs';
 import path from 'path';
 let driver;
 
-BeforeAll({timeout: 45 * 1000}, async () => {
+BeforeAll({timeout: 65 * 1000}, async () => {
     await buildDriver(DRIVER);
     driver = getDriver();
     await driver.manage().setTimeouts({implicit: 10000, pageLoad: 30000, script: 5000});
-    await driver.manage().window().maximize();
-    if (DRIVER.browser.toLowerCase() === "chrome") {
+    await driver.manage().window().setRect({width: 1280, height: 1000});
+    if (DRIVER.extension !== null) {
         await initialSetup();
     }
     await driver.navigate().to(PANVALA_APP_URL);
@@ -64,7 +64,7 @@ const addStorageItems = async () => {
     await driver.executeScript(`window.sessionStorage.setItem('CLOSED_MAINNET_MODAL','TRUE');`);
 }
 
-import { METAMASK_SEED, METAMASK_PASSWORD, METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL } from '../config/envConfig';
+import { METAMASK_SEED, METAMASK_PASSWORD } from '../config/envConfig';
 import metamask from '../page_objects/metamask/index';
 const createPassword = new metamask.CreatePassword();
 const endOfFlow = new metamask.EndOfFlow();
@@ -92,7 +92,7 @@ const initialSetup = async () => {
     await createPassword.clickImport();
     await endOfFlow.isDisplayed();
     await endOfFlow.clickAllDone();
-    await popup.header().selectCustomNetwork(METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL);
+    await popup.header().selectNetwork(4);
     await popup.header().clickLogOut();
     await driver.close();
     await welcome.switchToWindow(oldHandles[0]);

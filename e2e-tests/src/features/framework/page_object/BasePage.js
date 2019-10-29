@@ -60,7 +60,7 @@ class BasePage {
 
   maximizeWindow() {
     console.log(`Maximize window`);
-    return getDriver().manage().window().maximize();
+    return getDriver().manage().window().setRect({width: 1280, height: 1000});
   }
 
   async switchToNewWindow(originalHandles) {
