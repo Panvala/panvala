@@ -55,7 +55,7 @@ const IndexPage = () => {
       <SEO title="Home" />
 
       <section
-        className="bg-gradient bottom-clip-hero-main relative z-0"
+        className="bg-gradient bottom-clip-hero-main relative z-0 mb4-ns"
         style={{ height: '1000px' }}
       >
         <Nav />
@@ -69,16 +69,16 @@ const IndexPage = () => {
             </p>
             <div className="">
               <div className="dib v-top mr3-ns mr2 mv2">
-                <a href="#home-comparison">
-                  <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
-                    Learn More
+                <a href="https://forum.panvala.com" target="_blank">
+                  <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
+                    Visit the Forum
                   </button>
                 </a>
               </div>
               <div className="dib v-top mv2">
-                <a href="https://forum.panvala.com" target="_blank">
-                  <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
-                    Visit the Forum
+                <a href="/poll">
+                  <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+                    Participate in our first poll
                   </button>
                 </a>
               </div>
@@ -96,7 +96,7 @@ const IndexPage = () => {
       <section
         id="home-comparison"
         className="bg-white w-70-l w-80-m w-90 center br4 shadow relative z-1 top-0-ns top-14 pa5-ns pa4"
-        style={{ marginTop: '-550px' }}
+        style={{ marginTop: '-450px' }}
       >
         <h2 className="f2-5 ma0 tc">Sustainable Funding</h2>
         <div className="dt mt5-ns mt4">

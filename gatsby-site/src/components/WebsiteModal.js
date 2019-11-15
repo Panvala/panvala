@@ -52,6 +52,14 @@ const styles = {
     lineHeight: '1.75rem',
     textAlign: 'center',
   },
+  subtitle: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    color: '#333',
+    lineHeight: '1.75rem',
+    textAlign: 'center',
+    marginTop: '1rem',
+  },
   copy: {
     marginTop: '1rem',
     marginLeft: '.8rem',
@@ -144,9 +152,11 @@ function Spinner() {
   );
 }
 
-const ModalOverlay = ({ handleClick }) => <div style={styles.overlay} onClick={handleClick} />;
+export const ModalOverlay = ({ handleClick }) => (
+  <div style={styles.overlay} onClick={handleClick} />
+);
 
-const ModalBody = ({ handleClick, children }) => (
+export const ModalBody = ({ handleClick, children }) => (
   <div style={styles.body} onClick={handleClick}>
     {children}
   </div>
@@ -264,6 +274,10 @@ const StepThree = ({ message, handleClose }) => {
     </>
   );
 };
+
+export const ModalTitle = ({ children }) => <div style={styles.title}>{children}</div>;
+export const ModalSubTitle = ({ children }) => <div style={styles.subtitle}>{children}</div>;
+export const ModalCopy = ({ children }) => <div style={styles.copy}>{children}</div>;
 
 const WebsiteModal = ({ isOpen, step, message, handleCancel }) => {
   if (!isOpen || step == null) {
