@@ -13,6 +13,7 @@ import pollOne from '../img/poll-1.png';
 import pollTwo from '../img/poll-2.png';
 import { calculateTotalPercentage } from '../utils/poll';
 import { sliceDecimals } from '../utils/format';
+import { getEnvironment, Environment } from '../utils/env';
 import {
   ModalBody,
   ModalOverlay,
@@ -307,12 +308,13 @@ const Poll = () => {
   }, [account, allocations, submitted]);
 
   function getEndpoint(method) {
+    const environment = getEnvironment();
     const apiHost =
-      process.env.GATSBY_PANVALA_ENV === 'development'
-        ? 'http://localhost:5001'
-        : process.env.GATSBY_PANVALA_ENV === 'staging'
+      environment === Environment.production
+        ? 'https://api.panvala.com'
+        : environment === Environment.staging
         ? 'https://staging-api.panvala.com'
-        : 'https://api.panvala.com';
+        : 'http://localhost:5001';
 
     const headers = {
       Accept: 'application/json',
