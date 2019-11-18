@@ -16,9 +16,8 @@ const TopBar = () => {
     <>
       {route === 'POLL' && (
         <Box height={64} bg="white" color="blue" flex justifyContent="center" alignItems="center">
-          <Box>Want to participate in our upcoming poll?</Box>
           <a href="/poll" className="link dim blue">
-            <Box fontWeight="bold">&nbsp;Learn More ></Box>
+            <Box fontWeight="bold">Vote now! The Panvala Poll ends this Friday.</Box>
           </a>
         </Box>
       )}

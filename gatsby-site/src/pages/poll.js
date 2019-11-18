@@ -28,42 +28,42 @@ const categories = [
     title: 'Ethereum 2.0',
     previous: 34,
     description:
-      'These grants fund work that scales the base layer of the Ethereum network by implementing the Ethereum 2.0 roadmap. Past Panvala grant recipients in this category are Prysmatic Labs, Sigma Prime, Nimbus, and Whiteblock. Other teams in our community that do this kind of work are ChainSafe and Harmony.',
+      'These grants fund work that scales the base layer of the Ethereum network by implementing the Ethereum 2.0 roadmap. Past Panvala grant recipients in this category are <strong>Prysmatic Labs</strong>, <strong>Sigma Prime</strong>, <strong>Nimbus</strong>, and <strong>Whiteblock</strong>. Other teams in our community that do this kind of work are <strong>ChainSafe</strong> and <strong>Harmony<strong>.',
   },
   {
     categoryID: 2,
     title: 'Layer 2 Scaling',
     previous: 5,
     description:
-      'These grants fund work that scale Ethereum without modifying the base layer. Past Panvala grant recipients in this category are Connext, Counterfactual, Plasma Group, and Prototypal. Other teams in our community that do this kind of work are LeapDAO, OmiseGo, and Raiden.',
+      'These grants fund work that scale Ethereum without modifying the base layer. Past Panvala grant recipients in this category are <strong>Connext</strong>, <strong>Counterfactual</strong>, <strong>Plasma Group</strong>, and <strong>Prototypal</strong>. Other teams in our community that do this kind of work are <strong>LeapDAO</strong>, <strong>OmiseGo</strong>, and <strong>Raiden</strong>.',
   },
   {
     categoryID: 3,
     title: 'Security',
     previous: 16,
     description:
-      'These grants fund work that make it easier to build and run Ethereum applications that perform their intended functions without bugs or security flaws. Past Panvala grant recipients in this category are Level K, ConsenSys Diligence, Runtime Verification, and Dapphub. Other teams in our community that do this kind of work are Zeppelin, Trail of Bits, and Quantstamp.',
+      'These grants fund work that make it easier to build and run Ethereum applications that perform their intended functions without bugs or security flaws. Past Panvala grant recipients in this category are <strong>Level K</strong>, <strong>ConsenSys Diligence</strong>, <strong>Runtime Verification</strong>, and <strong>Dapphub</strong>. Other teams in our community that do this kind of work are <strong>Zeppelin</strong>, <strong>Trail of Bits</strong>, and <strong>Quantstamp</strong>.',
   },
   {
     categoryID: 4,
     title: 'Developer Tools and Growth',
     previous: 4,
     description:
-      'These grants fund work that increase the productivity of Ethereum developers, and make it easier for new developers to get started so we can reach One Million Developers in 2020. Past Panvala grant recipients in this category are ethers.js, Asseth, and Tenderly. Other teams in our community that do this kind of work are Truffle, Embark, and Cryptoeconomics.study.',
+      'These grants fund work that increase the productivity of Ethereum developers, and make it easier for new developers to get started so we can reach One Million Developers in 2020. Past Panvala grant recipients in this category are <strong>ethers.js</strong>, <strong>Asseth</strong>, and <strong>Tenderly</strong>. Other teams in our community that do this kind of work are <strong>Truffle</strong>, <strong>Embark</strong>, and <strong>Cryptoeconomics.study</strong>.',
   },
   {
     categoryID: 5,
     title: 'Dapps and Usability',
     previous: 4,
     description:
-      'These grants fund work that produces Ethereum-based applications, games, and user experience improvements that bring more users to Ethereum. Past Panvala grant recipients in this category are BrightID, Gnosis, and Bounties Network. Other teams in our community that do this kind of work are MetaCartel DAO, Axie Infinity, Burner Wallet and Universal Login.',
+      'These grants fund work that produces Ethereum-based applications, games, and user experience improvements that bring more users to Ethereum. Past Panvala grant recipients in this category are <strong>BrightID</strong>, <strong>Gnosis</strong>, and <strong>Bounties Network</strong>. Other teams in our community that do this kind of work are <strong>MetaCartel DAO</strong>, <strong>Axie Infinity</strong>, <strong>Burner Wallet</strong> and <strong>Universal Login</strong>.',
   },
   {
     categoryID: 6,
     title: 'Panvala',
     previous: 37,
     description:
-      'These grants fund work that improves Panvala itself and produces recommendations for the network to evaluate. Past Panvala grant recipients in this category are ConsenSys PAN and The Astrotrope.',
+      'These grants fund work that improves Panvala itself and produces recommendations for the network to evaluate. Past Panvala grant recipients in this category are <strong>ConsenSys PAN</strong> and <strong>The Astrotrope</strong>.',
   },
 ];
 
@@ -416,10 +416,10 @@ const Poll = () => {
           <ModalBody>
             <ModalTitle>Welcome to the Panvala Poll</ModalTitle>
             <ModalCopy>
-              This poll is for PAN-holders to signal their preferences for the next batch of grant
+              This poll is for PAN holders to signal their preferences for the next batch of grant
               allocations. If you do not currently have a PAN balance but want to vote, or you would
               like to increase your voting power before the <b>{pollDeadline}</b> deadline, you can
-              do so via uniswap.
+              do so via Uniswap.
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
@@ -557,10 +557,10 @@ const Poll = () => {
               <div className="tc pv4">
                 <h2>Category Ballot</h2>
                 <Box my={1} className="w-80 center tc lh-copy">
-                  This poll is for PAN-holders to signal their preferences for the next batch of
+                  This poll is for PAN holders to signal their preferences for the next batch of
                   grant allocations. If you do not currently have a PAN balance but want to vote, or
                   you would like to increase your voting power before the <b>{pollDeadline}</b>{' '}
-                  deadline, you can do so via uniswap.
+                  deadline, you can do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
                     <a
                       href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
@@ -587,7 +587,7 @@ const Poll = () => {
                       <div key={identifier} className="cf pa3 bb bw-2 b--black-10">
                         <div className="fl w-80 pa2 pr4">
                           <div className="f4 b">{title}</div>
-                          <p>{description}</p>
+                          <p dangerouslySetInnerHTML={{__html: description}}></p>
                         </div>
                         <div className="fl w-20 pa2 f5 tr">
                           <div className="b ttu f6 o-50">previous batch</div>
