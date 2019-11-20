@@ -32,7 +32,7 @@ Create a `e2e-tests/config/Environment.json` file.
 {
   "driver": {
     "browser": "chrome",
-    "extension": "MetaMask_v7.3.1.crx"
+    "extension": "MetaMask_v7.5.3.crx"
   },
   "environment": {
     "web": {
