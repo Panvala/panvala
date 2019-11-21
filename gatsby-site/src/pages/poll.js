@@ -172,6 +172,7 @@ const Poll = () => {
       // (works even with 0 balance)
       getBalance().then(bal => bal && setSelectedAccount());
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [provider]);
 
   async function connectWallet() {
@@ -311,6 +312,7 @@ const Poll = () => {
           }
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, allocations, submitted]);
 
   function getEndpoint(method) {
@@ -431,6 +433,7 @@ const Poll = () => {
               <a
                 href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="link b dim blue"
               >
                 <Button p={3} mr={3} text="Get PAN Tokens" bg="#F5F6F9" color="black" />
@@ -467,7 +470,7 @@ const Poll = () => {
             </div>
           </Box>
           <Box width={[1, 1, 0.5]} p={[4, 2]} display={['none', 'none', 'block']}>
-            <img src={pollOne} className="w-100 center" />
+            <img alt="" src={pollOne} className="w-100 center" />
           </Box>
         </ClipContainer>
       </section>
@@ -476,7 +479,7 @@ const Poll = () => {
       <section className="cf w-100 bottom-clip-down bg-white flex justify-between items-center">
         <Box p={['3rem', '2rem']} mb={['1rem', '0']} flex alignItems="center" justifyContent="space-around">
           <div className="w-100 w-25-ns dn dib-ns">
-            <img src={pollTwo} className="center" />
+            <img alt="" src={pollTwo} className="center" />
           </div>
           <div className="w-100 w-50-ns dib">
             <h2>Fund work that matters</h2>
@@ -539,6 +542,7 @@ const Poll = () => {
               <a
                 href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="link b dim blue"
               >
                 <Button p={3} text="Increase Voting Weight" />
@@ -556,6 +560,7 @@ const Poll = () => {
               <a
                 href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="link b dim blue"
               >
                 <Button p={3} text="Increase Voting Weight" />
@@ -574,6 +579,7 @@ const Poll = () => {
                     <a
                       href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="link b dim blue"
                     >
                       <Button text="Get PAN Tokens" />
