@@ -24,7 +24,8 @@ RUN wget https://www.slimjet.com/chrome/download-chrome.php?file=files%2F$CHROME
 	apt install -y ./*google-chrome*.deb;
 
 COPY ./package.json .
-RUN npm install
+COPY ./yarn.lock .
+RUN yarn
 COPY ./ .
 
 EXPOSE 5900

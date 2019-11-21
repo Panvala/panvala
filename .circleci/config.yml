@@ -540,6 +540,22 @@ jobs:
       # TODO: run coverage
 
 
+  e2e-tests:
+    <<: *defaults
+    docker:
+      - image: circleci/node:10
+
+    steps:
+      - checkout
+
+      - run:
+          name: install dependencies
+          command: cd e2e-tests && yarn install
+
+      - run:
+          name: run tests
+          command: cd e2e-tests && yarn test
+
 workflows:
   version: 2
   # test on every commit
@@ -550,6 +566,7 @@ workflows:
       - frontend
       - restricted-token
       - governance-contracts
+      - e2e-tests
 
   # build, publish, and deploy on commit to develop or master
   # develop --> staging

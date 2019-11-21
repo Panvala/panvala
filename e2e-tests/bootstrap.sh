@@ -1,5 +1,12 @@
 #!/bin/bash
 
+main() {
+    launch_xvfb
+    launch_window_manager
+    run_vnc_server
+    run_test
+}
+
 launch_xvfb() {
     # Set defaults if the user did not specify envs.
     export DISPLAY=${XVFB_DISPLAY:-:1}
@@ -49,10 +56,9 @@ run_vnc_server() {
 }
 
 run_test() {
-    npm test
+    yarn test
 }
 
-launch_xvfb
-launch_window_manager
-run_vnc_server
-run_test
+main
+
+exit
