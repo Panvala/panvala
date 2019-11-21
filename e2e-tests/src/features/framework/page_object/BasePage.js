@@ -52,15 +52,15 @@ class BasePage {
 
   async resizeWindow(widthX, heightY) {
     console.log(`Resize window to ${widthX} x ${heightY}`);
-    let {width, height} = await getDriver().manage().window().getRect();
+    let {width, height} = await getDriver().manage().window().getSize();
     width += widthX;
     height += heightY;
-    return getDriver().manage().window().setRect({width, height});
+    return getDriver().manage().window().setSize(width, height);
   }
 
   maximizeWindow() {
     console.log(`Maximize window`);
-    return getDriver().manage().window().setRect({width: 1280, height: 1000});
+    return getDriver().manage().window().setSize(1280, 1000);
   }
 
   async switchToNewWindow(originalHandles) {

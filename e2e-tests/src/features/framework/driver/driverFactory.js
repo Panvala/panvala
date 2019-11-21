@@ -7,16 +7,15 @@ const getOptions = (seleniumProfile) => {
   const options = new chrome.Options();
   if (typeof seleniumProfile.extension !== 'undefined') {
     console.log('chrome.Options(): adding extension')
-    const crxStream = require('fs').readFileSync(path.join(process.cwd(), 'lib', seleniumProfile.extension));
-    const crxBuffer = Buffer.from(crxStream).toString('base64');
-    options.addExtensions(crxBuffer);
+    const extension = path.join(process.cwd(), 'lib', seleniumProfile.extension);
+    console.log(`extension: ${extension}`);
+    options.addExtensions(extension);
   }
   if (seleniumProfile.browser.toLowerCase().includes("remote")) {
     console.log('chrome.Options(): adding arguments')
     options.addArguments(`--no-sandbox`);
     options.addArguments(`--disable-dev-shm-usage`);
     options.addArguments(`--disable-gpu`);
-    options.addArguments(`--start-maximized`);
   }
   return options;
 };

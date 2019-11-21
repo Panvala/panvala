@@ -36,7 +36,7 @@ class HtmlElement {
   async moveTo() {
     console.log(`Moving to '${this.cssLocator}'`);
     await this.driver.actions()
-    .move({origin: this.webElement})
+    .mouseMove(this.webElement)
     .perform();
     return this.driver.sleep(1000);
   }

@@ -10,12 +10,14 @@ class TextBox extends HtmlElement {
   async clear() {
     console.log(`Clearing text from '${this.cssLocator}'`);
     await this.webElement.clear();
+    await this.driver.sleep(1000);
     const text = await this.webElement.getAttribute('value');
     if (text) {
       await this.webElement.sendKeys('');
       for (let i = 0; i < text.length; i++) {
         await this.webElement.sendKeys(Key.BACK_SPACE);
       }
+      await this.driver.sleep(1000);
     }
   }
 
@@ -29,9 +31,10 @@ class TextBox extends HtmlElement {
     return await this.webElement.getAttribute('value');
   }
 
-  type(text) {
+  async type(text) {
     console.log(`Typing '${text}' into '${this.cssLocator}'`);
-    return this.webElement.sendKeys(text);
+    await this.webElement.sendKeys(text);
+    return await this.driver.sleep(1000);
   }
 }
 

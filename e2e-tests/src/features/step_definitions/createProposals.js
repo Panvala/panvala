@@ -3,7 +3,7 @@ import panvala from '../page_objects/panvala/index';
 import { AWARD_ADDRESS } from '../config/testConfig';
 const createProposals = new panvala.CreateProposals();
 
-When(/^I enter the proposal details on the Panvala Create Proposals page$/, async () => {
+When(/^I enter the proposal details on the Panvala Create Proposals page$/, {timeout: 45 * 1000}, async () => {
   const uniqueId = new Date().valueOf();
   await createProposals.enterFirstName(`Peter${uniqueId}`);
   await createProposals.enterLastName(`Yinusa${uniqueId}`);

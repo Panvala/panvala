@@ -8,6 +8,7 @@
   "description": "Tests for Panvala using selenium webdriver and cucumber-js",
   "main": "index.js",
   "scripts": {
+    "kill": "sh ./chrome.sh",
     "test": "node ./node_modules/.bin/cucumber-js src/features/ --require-module @babel/register --format json:report.json --tags 'not @Ignore'",
     "report": "node ./src/createReport.js"
   },
@@ -17,29 +18,15 @@
     "@babel/register": "^7.6.2",
     "@babel/runtime": "^7.5.5",
     "chai": "^4.2.0",
-    "chromedriver": "^76.0.1",
+    "chromedriver": "78.0.1",
     "cucumber": "^5.1.0",
     "lodash": "^4.17.15",
-    "selenium-webdriver": "^4.0.0-alpha.4"
+    "selenium-webdriver": "3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "cucumber-html-reporter": "^5.0.2",
-    "husky": "^3.0.3",
-    "lint-staged": "^9.2.5",
-    "prettier": "^1.18.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,json,md}": [
-      "prettier --write --config ./.prettierrc",
-      "git add"
-    ]
+    "cucumber-html-reporter": "^5.0.2"
   }
 }
