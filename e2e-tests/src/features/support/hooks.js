@@ -73,7 +73,7 @@ const addStorageItems = async () => {
     await driver.executeScript(`window.sessionStorage.setItem('CLOSED_MAINNET_MODAL','TRUE');`);
 }
 
-import { METAMASK_SEED, METAMASK_PASSWORD } from '../config/envConfig';
+import { METAMASK_SEED, METAMASK_PASSWORD, METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL, PANVALA_ENV } from '../config/envConfig';
 import metamask from '../page_objects/metamask/index';
 const createPassword = new metamask.CreatePassword();
 const endOfFlow = new metamask.EndOfFlow();
@@ -99,6 +99,10 @@ const initialSetup = async () => {
     await createPassword.clickImport();
     await endOfFlow.isDisplayed();
     await endOfFlow.clickAllDone();
+    if (PANVALA_ENV === "local") {
+        await networks.openPage();
+        await networks.selectCustomNetwork(METAMASK_NETWORK_NAME, METAMASK_NETWORK_URL);
+    }
     await popup.header().clickLogOut();
 }
 

@@ -42,7 +42,11 @@ Create a `e2e-tests/config/Environment.json` file.
   "metamask": {
     "seed": "{SEED}",
     "password": "{PASSWORD}",
-    "url": "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn"
+    "url": "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn",
+    "network": {
+      "name": "Panvala Test Network",
+      "url": "http://localhost:7545"
+    }
   }
 }
 ```

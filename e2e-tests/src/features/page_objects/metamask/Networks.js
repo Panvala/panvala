@@ -11,6 +11,9 @@ class Networks extends BaseMetaMask {
     return new Header().selectNetwork(number);
   }
 
+  async selectCustomNetwork(networkName, newRpcUrl) {
+    await new Header().selectCustomNetwork(networkName, newRpcUrl);
+  }
 }
 
 export { Networks };
