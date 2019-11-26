@@ -8,7 +8,7 @@ import TopBar from './TopBar';
 export default function Nav({ account, balance, handleClick }) {
   return (
     <>
-      <TopBar />
+      {/* <TopBar /> */}
       {/* <!-- Navigation --> */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
         <a
