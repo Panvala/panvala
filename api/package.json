@@ -20,6 +20,7 @@
     "create-migration": "sequelize migration:generate --name",
     "seed": "sequelize db:seed:all",
     "poll:create": "ts-node scripts/createPoll.ts",
+    "poll:tally": "ts-node scripts/tally-poll.ts",
     "sync-events": "ts-node scripts/sync-contract-events.ts",
     "test": "jest"
   },
@@ -41,7 +42,8 @@
     "pg": "^7.8.0",
     "pg-hstore": "^2.3.2",
     "sequelize": "5.21.2",
-    "sequelize-cli": "^5.4.0"
+    "sequelize-cli": "^5.4.0",
+    "yargs": "^15.0.2"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.27",
