@@ -1,16 +1,16 @@
 import { After, AfterAll, Before, BeforeAll, Status } from 'cucumber'
 import { getDriver, buildDriver } from '../framework/driver/driverFactory';
-import { PANVALA_APP_URL, DRIVER } from '../config/envConfig';
+import { PANVALA_APP_URL, BROWSER, EXTENSION } from '../config/envConfig';
 import fs from 'fs';
 import path from 'path';
 let driver;
 
 BeforeAll({timeout: 65 * 1000}, async () => {
-    await buildDriver(DRIVER);
+    await buildDriver(BROWSER, EXTENSION);
     driver = getDriver();
     await driver.manage().setTimeouts({implicit: 10000, pageLoad: 30000, script: 5000});
     await driver.manage().window().setSize(1280, 1000);
-    if (DRIVER.extension !== null) {
+    if (EXTENSION !== null) {
         await initialSetup();
     }
 });

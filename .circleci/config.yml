@@ -539,22 +539,22 @@ jobs:
 
       # TODO: run coverage
 
+  # run e2e tests 
+  # e2e-tests:
+  #   <<: *defaults
+  #   docker:
+  #     - image: circleci/node:10
 
-  e2e-tests:
-    <<: *defaults
-    docker:
-      - image: circleci/node:10
+  #   steps:
+  #     - checkout
 
-    steps:
-      - checkout
+  #     - run:
+  #         name: install dependencies
+  #         command: cd e2e-tests && yarn install
 
-      - run:
-          name: install dependencies
-          command: cd e2e-tests && yarn install
-
-      - run:
-          name: run tests
-          command: cd e2e-tests && yarn test
+  #     - run:
+  #         name: run tests
+  #         command: cd e2e-tests && yarn test
 
 workflows:
   version: 2

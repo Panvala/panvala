@@ -26,34 +26,24 @@ Follow the get started wizard. Take note of your seed and password.
 Once your MetaMask setup is complete, you should be redirected to your newly created Ethereum wallet.
 
 ### Configuring the tests
-Create a `e2e-tests/config/Environment.json` file.
-
-```json
-{
-  "driver": {
-    "browser": "chrome",
-    "extension": "MetaMask_v7.5.3.crx"
-  },
-  "environment": {
-    "web": {
-      "url": "https://staging.panvala.com"
-    }
-  },
-  "metamask": {
-    "seed": "{SEED}",
-    "password": "{PASSWORD}",
-    "url": "chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn",
-    "network": {
-      "name": "Panvala Test Network",
-      "url": "http://localhost:7545"
-    }
-  }
-}
-```
+We recommend creating a `.env` file somewhere outside the repository with the required values, and sourcing it to set the environment variables.
 
 Fill in the `SEED` of the MetaMask wallet you would like to import.
 
 Fill in the `PASSWORD` to login the MetaMask wallet.
+
+```shell
+export BROWSER=chrome
+export EXTENSION=MetaMask_v7.5.3.crx
+export PANVALA_APP_URL=http://localhost:3000
+export PANVALA_WEB_URL=http://localhost:8000
+export PANVALA_ENV=local
+export METAMASK_URL=chrome-extension://nkbihfbeogaeaoehlefnkodbefgpgknn
+export METAMASK_PASSWORD={PASSWORD}
+export METAMASK_SEED={SEED}
+export METAMASK_NETWORK_NAME=Panvala Test Network
+export METAMASK_NETWORK_URL=http://localhost:7545
+```
 
 ## Running the tests
 

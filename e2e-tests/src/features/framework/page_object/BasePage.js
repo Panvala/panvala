@@ -39,6 +39,12 @@ class BasePage {
     }, 10000);
   }
 
+  async isTextPresent(text) {
+    console.log(`Checking if text ${text} is present on the page`);
+    const pageBody = await getDriver().findElement({ css: 'body' }).getText();
+    return pageBody.includes(text);
+  }
+
   navigateTo(url) {
     console.log(`Navigating to '${url}'`);
     return getDriver().navigate().to(url);

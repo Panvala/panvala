@@ -16,7 +16,7 @@ class Select extends HtmlElement {
     const options = await dropDown.findElements({ tagName: 'option' });
     for (let option of options) {
       const text = await option.getAttribute('label')
-      if (item === text) {
+      if (text.includes(item)) {
         desiredOption = option;
         break;
       }

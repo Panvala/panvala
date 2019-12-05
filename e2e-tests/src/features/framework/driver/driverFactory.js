@@ -3,15 +3,15 @@ import chrome from 'selenium-webdriver/chrome';
 import path from 'path';
 let driver;
 
-const getOptions = (seleniumProfile) => {
+const getOptions = (browser, extension) => {
   const options = new chrome.Options();
-  if (typeof seleniumProfile.extension !== 'undefined') {
+  if (typeof extension !== 'undefined') {
     console.log('chrome.Options(): adding extension')
-    const extension = path.join(process.cwd(), 'lib', seleniumProfile.extension);
-    console.log(`extension: ${extension}`);
-    options.addExtensions(extension);
+    const extensionPath = path.join(process.cwd(), 'lib', extension);
+    console.log(`extension: ${extensionPath}`);
+    options.addExtensions(extensionPath);
   }
-  if (seleniumProfile.browser.toLowerCase().includes("remote")) {
+  if (browser.toLowerCase().includes("remote")) {
     console.log('chrome.Options(): adding arguments')
     options.addArguments(`--no-sandbox`);
     options.addArguments(`--disable-dev-shm-usage`);
@@ -20,23 +20,23 @@ const getOptions = (seleniumProfile) => {
   return options;
 };
 
-const buildChromeDriver = async (seleniumProfile) => {
-  const options = getOptions(seleniumProfile);
+const buildChromeDriver = async (browser, extension) => {
+  const options = getOptions(browser, extension);
   return await new webdriver.Builder()
     .forBrowser('chrome')
     .setChromeOptions(options)
     .build();
 };
 
-export const buildDriver = async (profile) => {
-  console.log(`browser: ${JSON.stringify(profile)}`);
-  switch (profile.browser.toLowerCase()) {
+export const buildDriver = async (browser, extension) => {
+  console.log(`browser: ${browser}`);
+  switch (browser.toLowerCase()) {
   case 'chrome':
   case 'remote-chrome':
-    driver = await buildChromeDriver(profile);
+    driver = await buildChromeDriver(browser, extension);
     break;
   default:
-    throw new Error(`Please specify a valid browser, unsuported browser '${profile.browser}'`);
+    throw new Error(`Please specify a valid browser, unsuported browser '${browser}'`);
   }
 };
 

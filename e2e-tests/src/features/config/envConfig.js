@@ -1,10 +1,10 @@
-import config from '../../../config/Environment.json';
-
-export const DRIVER = config.driver;
-export const PANVALA_APP_URL = config.environment.web.url;
-export const PANVALA_ENV = config.environment.env;
-export const METAMASK_URL = config.metamask.url;
-export const METAMASK_PASSWORD = config.metamask.password;
-export const METAMASK_SEED = config.metamask.seed;
-export const METAMASK_NETWORK_NAME = config.metamask.network.name;
-export const METAMASK_NETWORK_URL = config.metamask.network.url;
+export const BROWSER = process.env.BROWSER;
+export const EXTENSION = process.env.EXTENSION;
+export const PANVALA_APP_URL = process.env.PANVALA_APP_URL;
+export const PANVALA_WEB_URL = process.env.PANVALA_WEB_URL;
+export const PANVALA_ENV = process.env.PANVALA_ENV;
+export const METAMASK_URL = process.env.METAMASK_URL;
+export const METAMASK_PASSWORD = process.env.METAMASK_PASSWORD;
+export const METAMASK_SEED = process.env.METAMASK_SEED;
+export const METAMASK_NETWORK_NAME = process.env.METAMASK_NETWORK_NAME;
+export const METAMASK_NETWORK_URL = process.env.METAMASK_NETWORK_URL;
