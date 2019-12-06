@@ -1,3 +1,5 @@
+import { Wallet } from 'ethers';
+
 import * as models from '../models';
 const { Proposal } = models;
 
@@ -51,6 +53,13 @@ function initProposals() {
       });
     })
   );
+}
+
+export const someAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+const mnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat';
+export function getWallet() {
+  return Wallet.fromMnemonic(mnemonic);
 }
 
 export { initProposals };

@@ -52,6 +52,14 @@ const styles = {
     lineHeight: '1.75rem',
     textAlign: 'center',
   },
+  subtitle: {
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    color: '#333',
+    lineHeight: '1.75rem',
+    textAlign: 'center',
+    marginTop: '1rem',
+  },
   copy: {
     marginTop: '1rem',
     marginLeft: '.8rem',
@@ -144,9 +152,11 @@ function Spinner() {
   );
 }
 
-const ModalOverlay = ({ handleClick }) => <div style={styles.overlay} onClick={handleClick} />;
+export const ModalOverlay = ({ handleClick }) => (
+  <div style={styles.overlay} onClick={handleClick} />
+);
 
-const ModalBody = ({ handleClick, children }) => (
+export const ModalBody = ({ handleClick, children }) => (
   <div style={styles.body} onClick={handleClick}>
     {children}
   </div>
@@ -189,13 +199,18 @@ const StepTwo = ({ message }) => (
   </>
 );
 
-const Tweet = () => {
+const Tweet = ({ pledgeType }) => {
+  const tweetHref =
+    pledgeType === 'sponsorship'
+      ? 'https://twitter.com/intent/tweet?text=I%20just%20sponsored%20Panvala%20to%20support%20the%20Ethereum%20open%20source%20ecosystem.%20Please%20join%20me%20by%20contributing%20at%20panvala.com&hashtags=panvala,ethereum'
+      : 'https://twitter.com/intent/tweet?text=I%20just%20made%20a%20donation%20to%20Panvala%20to%20support%20the%20Ethereum%20open%20source%20ecosystem.%20Please%20join%20me%20by%20contributing%20at%20panvala.com&hashtags=panvala,ethereum';
   return (
     <a
       className="link twitter-share-button white f7"
-      href="https://twitter.com/intent/tweet?text=I%20just%20made%20a%20donation%20to%20Panvala%20to%20support%20the%20Ethereum%20open%20source%20ecosystem.%20Please%20join%20me%20by%20contributing%20at%20panvala.com&hashtags=panvala,ethereum"
+      href={tweetHref}
       data-size="large"
       target="_blank"
+      rel="noopener noreferrer"
     >
       <div
         className="twitter-share-button"
@@ -207,7 +222,7 @@ const Tweet = () => {
   );
 };
 
-const StepThree = ({ message, handleClose }) => {
+const StepThree = ({ message, handleClose, pledgeType }) => {
   const tier = message.toLowerCase();
   let imgSrc = gold;
 
@@ -230,23 +245,29 @@ const StepThree = ({ message, handleClose }) => {
     case 'ether':
       imgSrc = ether;
       break;
+    case 'sponsor':
+      imgSrc = ether;
+      break;
     default:
       imgSrc = student;
   }
+
+  const patronMessage = pledgeType === 'sponsorship' ? 'Sponsor' : `${message} Patron`;
+  const tyMessage =
+    pledgeType === 'sponsorship'
+      ? 'Thank you for sponsoring Panvala. Panvala Sponsors play a key role in moving Ethereum forward. You can share your support on Twitter!'
+      : 'Thank you for donating to Panvala. Each and every Panvala patron plays a key role in moving Ethereum forward. You can share your support on Twitter!';
 
   return (
     <>
       <div style={styles.title}>Thank you for donating!</div>
       <div style={styles.image}>
-        <img src={imgSrc} />
+        <img alt="" src={imgSrc} />
       </div>
       <div style={styles.patron}>
-        You are now a{tier[0] === 'e' && 'n'} <strong>{message} Patron</strong>
+        You are now a{tier[0] === 'e' && 'n'} <strong>{patronMessage}</strong>
       </div>
-      <div style={styles.thankYou}>
-        Thank you for donating to Panvala. Each and every Panvala patron plays a key role in moving
-        Ethereum forward. You can share your support on Twitter!
-      </div>
+      <div style={styles.thankYou}>{tyMessage}</div>
       <div
         style={{
           display: 'flex',
@@ -259,13 +280,17 @@ const StepThree = ({ message, handleClose }) => {
         <div style={styles.cancel} onClick={handleClose}>
           Close
         </div>
-        <Tweet />
+        <Tweet pledgeType={pledgeType} />
       </div>
     </>
   );
 };
 
-const WebsiteModal = ({ isOpen, step, message, handleCancel }) => {
+export const ModalTitle = ({ children }) => <div style={styles.title}>{children}</div>;
+export const ModalSubTitle = ({ children }) => <div style={styles.subtitle}>{children}</div>;
+export const ModalCopy = ({ children }) => <div style={styles.copy}>{children}</div>;
+
+const WebsiteModal = ({ isOpen, step, message, handleCancel, pledgeType }) => {
   if (!isOpen || step == null) {
     return null;
   }
@@ -275,7 +300,7 @@ const WebsiteModal = ({ isOpen, step, message, handleCancel }) => {
     <div></div>,
     <StepOne message={message} />,
     <StepTwo message={message} />,
-    <StepThree handleClose={handleCancel} message={message} />,
+    <StepThree handleClose={handleCancel} message={message} pledgeType={pledgeType} />,
   ];
 
   return (

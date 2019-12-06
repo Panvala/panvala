@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://panvala.com/schemas/categoryPollResponse.json",
+  "title": "Category poll response",
+  "description": "A ballot POSTed to poll endpoint",
+  "type": "object",
+  "definitions": {
+    "choice": {
+      "type": "string"
+    }
+  },
+  "properties": {
+    "response": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "type": "string",
+          "address": true
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "categoryID": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "points": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              }
+            },
+            "required": ["categoryID", "points"]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": ["account", "allocations"]
+    },
+    "signature": {
+      "type": "string",
+      "signature": true
+    }
+  },
+  "required": ["response", "signature"]
+}

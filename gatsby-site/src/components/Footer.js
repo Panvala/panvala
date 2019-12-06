@@ -4,6 +4,7 @@ import logoWhite from '../img/logo-white.png';
 import logoTwitter from '../img/twitter.png';
 import logoTelegram from '../img/telegram.png';
 import logoGithub from '../img/github.png';
+import privacyPolicy from '../img/docs/panvala-privacy-policy.pdf';
 
 export default () => (
   <>
@@ -12,25 +13,41 @@ export default () => (
         <div className="dtc-ns db flex-ns flex-column-ns justify-between-ns h-100-ns w-100-l w-100-m">
           <div className="w-100">
             <a className="dtc-ns db v-mid link w-100-ns w-60 pb0-ns pb2" href="/" title="Home">
-              <img src={logoWhite} className="dib w-60" />
+              <img alt="" src={logoWhite} className="dib w-60" />
             </a>
             <div className="dt mv3">
-              <a href="https://twitter.com/panvalahq" target="_blank" className="link dim dtc pr4">
-                <img src={logoTwitter} className="w2" />
+              <a
+                href="https://twitter.com/panvalahq"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="link dim dtc pr4"
+              >
+                <img alt="" src={logoTwitter} className="w2" />
               </a>
-              <a href="https://t.me/panvala" target="_blank" className="link dim dtc pr4">
-                <img src={logoTelegram} className="w2" />
+              <a
+                href="https://t.me/panvala"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="link dim dtc pr4"
+              >
+                <img alt="" src={logoTelegram} className="w2" />
               </a>
               <a
                 href="https://github.com/ConsenSys/panvala"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="link dim dtc"
               >
-                <img src={logoGithub} className="w2" />
+                <img alt="" src={logoGithub} className="w2" />
               </a>
             </div>
           </div>
-          <a href="https://forum.panvala.com" target="_blank" className="link dim white f6 fw7">
+          <a
+            href="https://forum.panvala.com"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="link dim white f6 fw7"
+          >
             Join the Panvala community today
           </a>
         </div>
@@ -48,6 +65,7 @@ export default () => (
             </a>
             <a
               href="https://disputes.panvala.com/slates"
+              rel="noopener noreferrer"
               target="_blank"
               className="link dim white-60 f5-l f6 db mb3-ns mb2"
             >
@@ -80,6 +98,7 @@ export default () => (
             <a
               href="https://forum.panvala.com"
               target="_blank"
+              rel="noopener noreferrer"
               className="link dim white-60 f5-l f6 db mb3-ns mb2"
             >
               Forum
@@ -91,7 +110,12 @@ export default () => (
         </div>
       </nav>
       <hr className="hr-white" />
-      <p className="ma0 f7 lh-text tc white-60 pb3">2019 © PANVALA | Privacy Policy</p>
+      <p className="ma0 f7 lh-text tc white-60 pb3">
+        2019 © PANVALA |{' '}
+        <a href={privacyPolicy} target="_blank" className="link dim white-60">
+          Privacy Policy
+        </a>
+      </p>
     </section>
   </>
 );
