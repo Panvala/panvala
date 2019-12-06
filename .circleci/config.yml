@@ -548,7 +548,7 @@ workflows:
       - gatsby-site
       - api
       - frontend
-      - restricted-token
+      # - restricted-token
       - governance-contracts
 
   # build, publish, and deploy on commit to develop or master
