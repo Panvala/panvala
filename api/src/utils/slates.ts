@@ -8,6 +8,7 @@ import { getContracts } from './eth';
 import * as config from './config';
 import { nonEmptyString } from './validation';
 import { getProposalsForRequests } from './requests';
+import { mapProposalsToRequests } from './proposals';
 
 const { IpfsMetadata, Slate } = require('../models');
 const { toUtf8String, bigNumberify: BN, getAddress } = ethers.utils;
@@ -156,6 +157,8 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
     // console.log('proposalMultihashes:', proposalMultihashes);
     // console.log('');
 
+    const proposalsWithIds = await mapProposalsToRequests(proposals, proposalMultihashes);
+
     // --------------------------
     // COMBINE/RETURN SLATE DATA
     // --------------------------
@@ -169,7 +172,7 @@ async function getSlateWithMetadata(slateID, slate, metadataHash, incumbent, req
       organization,
       // either first + last name or just first name
       owner: lastName ? `${firstName} ${lastName}` : firstName,
-      proposals,
+      proposals: proposalsWithIds,
       proposalMultihashes,
       recommender: slate.recommender,
       requiredStake,
