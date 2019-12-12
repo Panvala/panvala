@@ -1,6 +1,6 @@
 import * as Ajv from 'ajv';
 import * as ethers from 'ethers';
-import { ballotSchema, pollResponseSchema } from './schemas';
+import { ballotSchema, pollResponseSchema, donationSchema } from './schemas';
 import { ParamSchema } from 'express-validator';
 
 const { isHexString, hexDataLength, bigNumberify } = ethers.utils;
@@ -53,8 +53,33 @@ ajv.addKeyword('signature', {
   },
 });
 
+ajv.addKeyword('txHash', {
+  type: 'string',
+  validate: function(schema, data: string) {
+    if (!schema) {
+      return true;
+    }
+
+    return isHexString(data, 32);
+  },
+});
+
+ajv.addKeyword('USDCents', {
+  validate: function(schema, data: number | string) {
+    if (!schema) {
+      return true;
+    }
+
+    let num: number = typeof data !== 'number' ? parseInt(data) : data;
+
+    // minimum value is a dollar
+    return num >= 100;
+  },
+});
+
 const validateBallot = ajv.compile(ballotSchema);
 export const validatePollResponseStructure = ajv.compile(pollResponseSchema);
+export const validateDonation = ajv.compile(donationSchema);
 
 /**
  * Throw if the value is not a '0x'-prefixed, 20-byte hex string.

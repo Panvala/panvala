@@ -1,9 +1,10 @@
 import { Wallet } from 'ethers';
 
 import * as models from '../models';
+import { parseUnits } from 'ethers/utils';
 const { Proposal } = models;
 
-function initProposals() {
+export function initProposals() {
   const proposals = [
     {
       title: 'An amazing proposal',
@@ -56,10 +57,21 @@ function initProposals() {
 }
 
 export const someAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+export const someTxHash = `0x${'b'.repeat(64)}`;
+export const someCID = 'Qmbvjad1niHUjhWUrqkYUgXxgyvGbg3rFDGfZBUVx4gyJX';
 
 const mnemonic = 'candy maple cake sugar pudding cream honey rich smooth crumble sweet treat';
 export function getWallet() {
   return Wallet.fromMnemonic(mnemonic);
 }
 
-export { initProposals };
+// Check that all expected fields are there
+export function expectFields(actual: object, expected: object) {
+  Object.keys(expected).forEach(key => {
+    expect(actual[key]).toBe(expected[key]);
+  });
+}
+
+export function toBaseTokens(amount: number, decimals: number = 18): string {
+  return parseUnits(amount.toString(), decimals).toString();
+}

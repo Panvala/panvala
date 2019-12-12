@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://panvala.com/schemas/donation.json",
+  "title": "Donation",
+  "description": "A donation POSTed to donations endpoint",
+  "type": "object",
+  "properties": {
+    "txHash": {
+      "type": "string",
+      "txHash": true
+    },
+    "metadataHash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sender": {
+      "type": "string",
+      "address": true
+    },
+    "donor": {
+      "type": "string",
+      "address": true
+    },
+    "tokens": {
+      "type": "string",
+      "bigNumber": true
+    },
+    "metadataVersion": {
+      "type": "string"
+    },
+    "memo": {
+      "type": "string"
+    },
+    "usdValue": {
+      "type": "string",
+      "USDCents": true
+    },
+    "ethValue": {
+      "type": "string",
+      "bigNumber": true
+    },
+    "pledgeMonthlyUSD": {
+      "type": "integer",
+      "USDCents": true
+    },
+    "pledgeTerm": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "company": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["txHash", "metadataHash", "sender", "donor", "tokens"]
+}

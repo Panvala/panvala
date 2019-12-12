@@ -18,6 +18,7 @@ import * as website from './controllers/website';
 import * as token from './controllers/token';
 import * as poll from './controllers/poll';
 import * as epoch from './controllers/epoch';
+import * as donation from './controllers/donation';
 
 // Routes
 export const setupRoutes = app => {
@@ -90,4 +91,7 @@ export const setupRoutes = app => {
 
   // Epochs
   app.get('/api/epochs/:epochNumber/dates', epoch.getDates);
+
+  // Donations
+  app.post('/api/donations', donation.create);
 };
