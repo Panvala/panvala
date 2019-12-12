@@ -1,4 +1,4 @@
-import { addDonation } from '../utils/donations';
+import { addDonation, getPublicDonations } from '../utils/donations';
 import { validateDonation } from '../utils/validation';
 
 export function create(req, res) {
@@ -19,6 +19,18 @@ export function create(req, res) {
   console.log('Donation:', donation);
 
   return addDonation(donation)
+    .then(result => res.json(result))
+    .catch(error => {
+      console.error(error);
+      return res.status(400).json({
+        msg: error.message,
+        errors: error.errors,
+      });
+    });
+}
+
+export function list(req, res) {
+  return getPublicDonations()
     .then(result => res.json(result))
     .catch(error => {
       console.error(error);

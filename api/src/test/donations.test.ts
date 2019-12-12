@@ -1,10 +1,10 @@
 import * as request from 'supertest';
-import { bigNumberify } from 'ethers/utils';
+import { bigNumberify, hashMessage } from 'ethers/utils';
 
 import app from '..';
 import { migrate } from '../migrate';
 import { sequelize } from '../models';
-import { IDonation, addDonation } from '../utils/donations';
+import { IDonation, addDonation, getPublicDonations, IPublicDonation } from '../utils/donations';
 import { someTxHash, someCID, someAddress, expectFields, toBaseTokens } from './utils';
 
 const { Donation } = require('../models');
@@ -192,6 +192,60 @@ describe('API endpoints', () => {
       // convert null strings to empty string?
     });
   });
+
+  describe('GET /api/donations', () => {
+    let data: IDonation;
+
+    beforeEach(() => {
+      data = {
+        txHash: someTxHash,
+        metadataHash: someCID,
+        sender: someAddress,
+        donor: someAddress,
+        tokens: toBaseTokens(1000),
+        metadataVersion: '1',
+        memo: 'A donation',
+        usdValue: '4500',
+        ethValue: toBaseTokens(1.337),
+        pledgeMonthlyUSD: 1500,
+        pledgeTerm: 3,
+        firstName: 'Jane',
+        lastName: 'Crypto',
+        email: 'jane@example.com',
+        company: 'Example Company',
+      };
+    });
+
+    test('it should retrieve donations', async () => {
+      // Add a couple donations
+      const d2 = {
+        ...data,
+        txHash: hashMessage('d2'),
+        firstName: 'John',
+        lastName: 'Ether',
+        email: 'john@example.com',
+      };
+      await addDonation(data);
+      await addDonation(d2);
+
+      // Retrieve them
+      const result = await request(app)
+        .get(route)
+        .send(data);
+
+      expect(result.ok).toBe(true);
+      expect(result.body).toHaveLength(2);
+    });
+
+    test('it should return an empty list if there are no donations', async () => {
+      const result = await request(app)
+        .get(route)
+        .send(data);
+
+      expect(result.ok).toBe(true);
+      expect(result.body).toHaveLength(0);
+    });
+  });
 });
 
 describe('donation utilities', () => {
@@ -208,6 +262,26 @@ describe('donation utilities', () => {
       expect(donation[key]).toBe(data[key]);
     });
     // console.log(donation);
+  });
+
+  test('it should get public donation information', async () => {
+    const data: IDonation = {
+      txHash: '0x',
+      metadataHash: '',
+      sender: '0x',
+      donor: '0x',
+      tokens: '0x',
+    };
+    await addDonation(data);
+
+    const donations: IPublicDonation[] = await getPublicDonations();
+    expect(donations.length).toBe(1);
+
+    // Skip user fields
+    const userFields = ['firstName', 'lastName', 'email', 'company'];
+    userFields.forEach(field => {
+      expect(data[field]).toBeUndefined();
+    });
   });
 
   describe('missing required fields', () => {
@@ -230,4 +304,9 @@ describe('donation utilities', () => {
       await expect(addDonation(data)).rejects.toThrow();
     });
   });
+
+  // 1. create utilities to add a new donation
+  // 3. create a schema for donation data
+  // 3. add endpoint POST /api/donations
+  // 4. add endpoint GET /api/donations
 });

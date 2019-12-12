@@ -29,3 +29,21 @@ export interface IDonation extends IPublicDonation {
 export function addDonation(donation: IDonation) {
   return Donation.create(donation);
 }
+
+export function getPublicDonations(): Promise<IPublicDonation[]> {
+  return Donation.findAll({
+    attributes: [
+      'txHash',
+      'metadataHash',
+      'sender',
+      'donor',
+      'tokens',
+      'metadataVersion',
+      'memo',
+      'usdValue',
+      'ethValue',
+      'pledgeMonthlyUSD',
+      'pledgeTerm',
+    ],
+  });
+}

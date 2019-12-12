@@ -93,5 +93,6 @@ export const setupRoutes = app => {
   app.get('/api/epochs/:epochNumber/dates', epoch.getDates);
 
   // Donations
+  app.get('/api/donations', donation.list);
   app.post('/api/donations', donation.create);
 };
