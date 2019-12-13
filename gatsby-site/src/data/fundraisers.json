@@ -1,0 +1,14 @@
+[
+  {
+    "firstName": "First",
+    "lastName": "Last",
+    "story": "Fundraiser's story",
+    "teamInfo": "Fundraiser's team information"
+  },
+  {
+    "firstName": "Vivek",
+    "lastName": "Singh",
+    "story": "\"I’m fundraising for Panvala because I think community-driven funding for Ethereum is crucial to fulfill the Web 3 vision.\"",
+    "teamInfo": "Vivek is on the Gitcoin team, which has earned Panvala grants for their work on dapps."
+  }
+]
