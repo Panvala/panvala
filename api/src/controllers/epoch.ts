@@ -2,18 +2,6 @@ import { getContracts } from '../utils/eth';
 import { bigNumberify, BigNumber } from 'ethers/utils';
 import { timing } from 'panvala-utils';
 
-interface EpochDates {
-  epochNumber: number;
-  epochStart: number;
-  proposalSubmissionOpens: number;
-  proposalSubmissionCloses: number;
-  slateCreationOpens: number;
-  slateCreationCloses: number;
-  votingOpens: number;
-  votingCloses: number;
-  votingConcludes: number;
-}
-
 export async function getDates(req, res) {
   let { epochNumber }: { epochNumber: string } = req.params;
 
@@ -35,30 +23,17 @@ export async function getDates(req, res) {
       });
     }
 
-    const epochStart: BigNumber = await gatekeeper.epochStart(epochBN);
-    const timings: any = timing.getTimingsForEpoch(epochStart);
-    // console.log('timings:', timings);
-
-    // prettier-ignore
-    const proposalSubmissionCloses = epochStart.add(timing.durations.ONE_WEEK * 3).toNumber()
-    const slateCreationCloses = await gatekeeper.slateSubmissionDeadline(
-      epochBN,
+    const epochDates = await timing.getEpochDetails(epochBN, gatekeeper, tokenCapacitor.address);
+    const nextEpochDates = await timing.getEpochDetails(
+      epochBN.add(1),
+      gatekeeper,
       tokenCapacitor.address
     );
 
-    const epochDates: EpochDates = {
-      epochNumber: bigNumberify(epochNumber).toNumber(),
-      epochStart: timings.epochStart,
-      proposalSubmissionOpens: timings.slateSubmissionStart,
-      proposalSubmissionCloses,
-      slateCreationOpens: timings.slateSubmissionStart,
-      slateCreationCloses: slateCreationCloses.toNumber(),
-      votingOpens: timings.votingStart,
-      votingCloses: timings.votingEnd,
-      votingConcludes: timings.epochEnd,
-    };
-
-    res.json(epochDates);
+    res.json({
+      epochDates,
+      nextEpochDates,
+    });
   } catch (error) {
     return res.status(400).json({
       msg: 'Error',

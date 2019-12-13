@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { graphql } from 'gatsby';
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';
+import findIndex from 'lodash/findIndex';
 
 import home1 from '../img/home-1.jpg';
 import home1p1 from '../img/home-1.1.png';
@@ -31,13 +32,18 @@ import teamLevelK from '../img/external/team-levelk.png';
 import teamSigma from '../img/external/team-sigma.png';
 import teamTenderly from '../img/external/team-tenderly.png';
 import simon from '../img/simon.png';
+import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
 import Nav from '../components/Nav';
 import Modal from '../components/Modal';
+import Section from '../components/Section';
+import Box from '../components/system/Box';
+import EventCard from '../components/EventCard';
 import { FormError } from '../components/Form/FormError';
 import { getEpochDates } from '../utils/api';
+import { formatDates } from '../utils/format';
 
 const NewsletterFormSchema = yup.object({
   email: yup
@@ -48,7 +54,7 @@ const NewsletterFormSchema = yup.object({
 
 const IndexPage = () => {
   const [isOpen, setModalOpen] = useState(false);
-  const [epochDates, setEpochDates] = useState({});
+  const [epochDates, setEpochDates] = useState([]);
 
   function handleSubmit(values, actions) {
     // console.log('submit', values);
@@ -68,30 +74,29 @@ const IndexPage = () => {
 
   useEffect(() => {
     async function getData() {
-      const epochDates = await getEpochDates();
-      // console.log('epochDates:', epochDates);
+      // Get dates from api
+      const epDates = await getEpochDates();
+      // console.log('epDates:', epDates);
+      let dates = formatDates(epDates.epochDates);
+      let nextDates = formatDates(epDates.nextEpochDates);
+      console.log('dates:', dates);
+      console.log('nextDates:', nextDates);
 
-      // Transform into human readable dates
-      const dates = Object.keys(epochDates).reduce((acc, val) => {
-        const value =
-          val === 'epochNumber'
-            ? epochDates[val] // 4
-            : new Date(epochDates[val] * 1000).toLocaleString(); // 11/1/2019, 1:00:00 PM
-        return {
-          ...acc,
-          [val]: value,
-        };
-      }, {});
-      // console.log('dates:', dates);
+      // Find the next event
+      const indexOfNext = findIndex(dates, date => !date.expired);
+
+      if (indexOfNext !== -1) {
+        dates[indexOfNext].nextEvent = true;
+        // Clip off the expired events, only displaying the latest expired event
+        dates = dates.slice(indexOfNext - 1);
+      }
 
       // Set state
-      setEpochDates(dates);
+      setEpochDates(dates.concat(nextDates).slice(0, 5));
     }
 
     getData();
   }, []);
-
-  console.log('epochDates:', epochDates);
 
   return (
     <Layout>
@@ -101,10 +106,6 @@ const IndexPage = () => {
         className="bg-gradient bottom-clip-hero-main relative z-0 mb4-ns"
         style={{ height: '1000px' }}
       >
-        {/* <TopBar>
-          <div>{epochDates.epochNumber}</div>
-          <div>{epochDates.epochStart}</div>
-        </TopBar> */}
         <Nav />
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
@@ -181,6 +182,35 @@ const IndexPage = () => {
           </a>
         </section>
       </div>
+
+      {epochDates.length > 0 && (
+        <Section>
+          <img src={eventsBg} className="absolute z-0 nt0-m db-ns dn" />
+          <Box flex justifyContent="space-around" flexWrap="wrap">
+            <Box flex column zIndex={40} color="white" my={['4rem', '7rem', '180px']}>
+              <Box fontSize={5} bold>
+                Key dates
+              </Box>
+              <Box width="350px">
+                Keep up to date with what is happening within the system and beyond.
+              </Box>
+            </Box>
+
+            <Box flex column alignItems="flex-start">
+              {epochDates.map(epochDate => (
+                <EventCard
+                  key={`${epochDate.date}${epochDate.eventName}`}
+                  date={epochDate.date}
+                  eventName={epochDate.eventName}
+                  eventDescription={epochDate.eventDescription}
+                  expired={epochDate.expired}
+                  nextEvent={epochDate.nextEvent}
+                />
+              ))}
+            </Box>
+          </Box>
+        </Section>
+      )}
 
       {/* <!-- Our Launch Partners--> */}
       <section className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
