@@ -61,3 +61,11 @@ export function formatDates(epochDates) {
   // Order dates by chronology
   return orderBy(dates, 'date');
 }
+
+export function toUSDCents(dollars) {
+  if (dollars.includes('.')) {
+    throw new Error('Dollar value must be an integer');
+  }
+  const numDollars = parseInt(dollars);
+  return (numDollars * 100).toString();
+}

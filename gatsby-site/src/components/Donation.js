@@ -14,6 +14,8 @@ import {
   getGasPrice,
   postAutopilot,
   quoteEthToPan,
+  postDonation,
+  formatDonation,
 } from '../utils/donate';
 import { loadContracts } from '../utils/env';
 
@@ -270,14 +272,39 @@ class Donation extends Component {
           message: 'Checking allowance...',
         });
         // Donate Panvala pan
-        const txHash = await this.donatePan(multihash);
+        const donationInfo = await this.donatePan(multihash);
+        const { txHash } = donationInfo;
         if (txHash) {
           const txData = {
             ...donation,
             txHash,
             multihash,
           };
-          await postAutopilot(this.state.email, this.state.firstName, this.state.lastName, txData);
+
+          try {
+            const donationData = formatDonation(donationInfo, donation, {
+              firstName: this.state.firstName,
+              lastName: this.state.lastName,
+              email: this.state.email,
+              // company - unused for now for individuals
+            });
+            console.log('donation data', donationData);
+
+            await postDonation(donationData);
+          } catch (error) {
+            console.error(`Problem saving donation: ${error}`);
+          }
+
+          try {
+            await postAutopilot(
+              this.state.email,
+              this.state.firstName,
+              this.state.lastName,
+              txData
+            );
+          } catch (error) {
+            console.error(error);
+          }
 
           actions.resetForm();
         }
@@ -388,7 +415,14 @@ class Donation extends Component {
           message: this.state.tier,
         });
 
-        return donateTx.hash;
+        // Return tx info
+        return {
+          txHash: donateTx.hash,
+          metadataHash: multihash,
+          donor,
+          sender: donor,
+          tokens: this.state.panPurchased,
+        };
       } catch (error) {
         console.error(`ERROR: ${error.message}`);
         alert(`Donate transaction failed: ${error.message}`);
