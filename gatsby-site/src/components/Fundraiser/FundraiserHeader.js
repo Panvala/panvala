@@ -1,8 +1,8 @@
 import React from 'react';
-import Box from '../components/system/Box';
-import Nav from '../components/Nav';
+import Box from '../system/Box';
+import Nav from '../Nav';
 
-export default function FundraiserHeader() {
+export function FundraiserHeader() {
   return (
     <Box className="bg-gradient bottom-clip-up relative z-5" height="300px">
       <Nav />

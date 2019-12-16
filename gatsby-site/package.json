@@ -32,10 +32,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
     "@storybook/react": "^5.2.5",
     "@types/yup": "^0.26.24",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
+    "babel-plugin-remove-graphql-queries": "^2.7.19",
     "babel-preset-gatsby": "^0.2.20",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
@@ -44,14 +48,14 @@
   },
   "scripts": {
     "build": "gatsby build",
-    "build-storybook": "build-storybook",
+    "build-storybook": "NODE_ENV=production build-storybook -s public",
     "deploy:staging": "npx netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --dir=public",
     "deploy:prod": "npx netlify deploy --site $NETLIFY_SITE_ID --auth $NETLIFY_AUTH_TOKEN --prod --dir=public",
     "dev": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
     "start": "gatsby serve",
     "serve": "gatsby serve",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "NODE_ENV=production start-storybook -s public",
     "test": "jest",
     "test:verbose": "jest --verbose"
   }
