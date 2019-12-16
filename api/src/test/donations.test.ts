@@ -174,7 +174,6 @@ describe('API endpoints', () => {
 
           console.log('RESULT', result.body);
           expect(result.status).toBe(400);
-          // expect(result.body.msg).toEqual(expect.stringContaining('integer'));
         }
       );
 
@@ -188,8 +187,6 @@ describe('API endpoints', () => {
 
         expect(result.status).toBe(400);
       });
-
-      // convert null strings to empty string?
     });
   });
 
@@ -304,9 +301,4 @@ describe('donation utilities', () => {
       await expect(addDonation(data)).rejects.toThrow();
     });
   });
-
-  // 1. create utilities to add a new donation
-  // 3. create a schema for donation data
-  // 3. add endpoint POST /api/donations
-  // 4. add endpoint GET /api/donations
 });
