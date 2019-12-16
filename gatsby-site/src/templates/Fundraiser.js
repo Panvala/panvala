@@ -2,7 +2,12 @@ import React from 'react';
 import SEO from '../components/seo';
 import Footer from '../components/Footer';
 import Layout from '../components/Layout';
-import { FundraiserProfile, FundraiserHeader, FundraiserForm } from '../components/Fundraiser';
+import {
+  FundraiserProfile,
+  FundraiserHeader,
+  FundraiserOverview,
+  FundraiserForm,
+} from '../components/Fundraiser';
 
 const Fundraiser = props => {
   console.log('Fundraiser props:', props);
@@ -16,6 +21,8 @@ const Fundraiser = props => {
       <FundraiserHeader />
 
       <FundraiserProfile {...profileInfo} />
+
+      <FundraiserOverview />
 
       <FundraiserForm />
 

@@ -5,6 +5,7 @@ import {
   FundraiserProfile,
   ProfileCopy,
   ProfileLink,
+  FundraiserOverview,
 } from '../components/Fundraiser';
 import Fundraiser from '../templates/Fundraiser';
 
@@ -15,16 +16,19 @@ export default {
 const profileProps = {
   firstName: 'First',
   lastName: 'Last',
-  story: 'Fundraiser story',
-  teamInfo: 'Team information',
+  story:
+    'Fundraiser story Fundraiser story Fundraiser story Fundraiser story Fundraiser story Fundraiser story Fundraiser story Fundraiser story ',
+  teamInfo:
+    'Team information Team information Team information Team information Team information Team information Team information Team information',
 };
 
-export const fundraiserHeader = () => <FundraiserHeader />;
+export const header = () => <FundraiserHeader />;
 
 export const profileCopy = () => <ProfileCopy {...profileProps} />;
 export const profileLink = () => <ProfileLink />;
-export const fundraiserProfile = () => <FundraiserProfile {...profileProps} />;
+export const profile = () => <FundraiserProfile {...profileProps} />;
 
-export const fundraiserForm = () => <FundraiserForm />;
+export const overview = () => <FundraiserOverview />;
+export const form = () => <FundraiserForm />;
 
-export const fundraiserPage = () => <Fundraiser pageContext={profileProps} />;
+export const fullPage = () => <Fundraiser pageContext={profileProps} />;
