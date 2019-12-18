@@ -4,54 +4,57 @@ import matching from '../../img/fundraisers/matching.png';
 import flag from '../../img/fundraisers/flag.png';
 import support from '../../img/fundraisers/support.png';
 
-const Image = ({ src }) => (
-  <Box height="100%">
+const Icon = ({ src }) => (
+  <Box mr={3}>
     <img src={src} alt="" />
+  </Box>
+);
+
+export const ReasonToContribute = ({ iconSrc, title, children }) => (
+  <Box flex mb={5}>
+    <Icon src={iconSrc} />
+    <Box>
+      <Box bold mb={2} fontSize={3}>
+        {title}
+      </Box>
+      <Box maxWidth="250px" lineHeight={2}>
+        {children}
+      </Box>
+    </Box>
   </Box>
 );
 
 export function FundraiserOverview() {
   return (
-    <Box mt="-5vw" className="relative z-2 bottom-clip-down" bg="#F3F4F8" height="700px">
-      <Box p={'10vw'} flex justifyContent="space-between">
-        <Box bold maxWidth="210px" fontSize={4}>
+    <Box
+      mt="-5vw"
+      pt={['5vw', '2vw', ]}
+      className="relative z-2 bottom-clip-down"
+      bg="#F3F4F8"
+      height={['1000px', '1000px', '700px']}
+    >
+      <Box p={'10vw'} flex flexWrap="wrap" justifyContent={['center', 'center', 'space-between']}>
+        <Box bold maxWidth="250px" fontSize={5} mb={4}>
           Why contribute to Panvala:
         </Box>
 
-        <Box flex column maxWidth="220px">
-          <Box mb={5}>
-            <Image src={flag} />
-            <Box bold mb={2}>
-              Prioritized Grants
-            </Box>
-            <Box>
+        <Box flex wrap justifyContent="center">
+          <Box flex column wrap>
+            <ReasonToContribute iconSrc={flag} title="Prioritized Grants">
               When you donate to Vivek Singh’s fundraiser, the Gitcoin team moves up Panvala’s
               leaderboard for grant application priority. View the leaderboard.
-            </Box>
-          </Box>
+            </ReasonToContribute>
 
-          <Box>
-            <Image src={support} />
-            <Box bold mb={2}>
-              Show Your Support
-            </Box>
-            <Box>
+            <ReasonToContribute iconSrc={support} title="Show Your Support">
               Your name will be listed on this page as Vivek Singh's supporter. Our whole community
               values our donors!
-            </Box>
+            </ReasonToContribute>
           </Box>
-        </Box>
-
-        <Box maxWidth="220px">
-          <Image src={matching} />
-          <Box flex bold mb={2}>
-            30.9x Matching
-          </Box>
-          <Box>
+          <ReasonToContribute iconSrc={matching} title="30.9x Matching">
             Panvala’s token supply has been matching donations at 30.9x over the past three months.
             Read more about why voters hold on to PAN, which lets more grantees sell their tokens to
             donors like you.
-          </Box>
+          </ReasonToContribute>
         </Box>
       </Box>
     </Box>
