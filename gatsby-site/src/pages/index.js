@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { graphql } from 'gatsby';
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';
@@ -16,11 +16,7 @@ import home3p2 from '../img/home-3.2.png';
 import home4 from '../img/home-4.jpg';
 import home4p1 from '../img/home-4.1.png';
 import home4p2 from '../img/home-4.2.png';
-
-import sustFund1 from '../img/sustainable-funding-1.png';
-import sustFund2 from '../img/sustainable-funding-2.png';
 import donateShapes from '../img/donate-shapes.svg';
-
 import extLevelK from '../img/external/level-k.png';
 import extPlasmaGroup from '../img/external/plasma-group.png';
 import extPrysmatic from '../img/external/prysmatic-labs.png';
@@ -42,6 +38,9 @@ import Section from '../components/Section';
 import Box from '../components/system/Box';
 import EventCard from '../components/EventCard';
 import { FormError } from '../components/Form/FormError';
+import { BudgetContext } from '../components/BudgetProvider';
+import BudgetBar from '../components/BudgetBar';
+
 import { getEpochDates } from '../utils/api';
 import { formatDates } from '../utils/format';
 
@@ -53,6 +52,7 @@ const NewsletterFormSchema = yup.object({
 });
 
 const IndexPage = () => {
+  const { budgets } = useContext(BudgetContext);
   const [isOpen, setModalOpen] = useState(false);
   const [epochDates, setEpochDates] = useState([]);
 
@@ -103,8 +103,8 @@ const IndexPage = () => {
       <SEO title="Home" />
 
       <section
-        className="bg-gradient bottom-clip-hero-main relative z-0 mb4-ns"
-        style={{ height: '1000px' }}
+        className="bg-gradient bottom-clip-up relative z-0 mb4-ns"
+        style={{ height: '760px' }}
       >
         <Nav />
         {/* <!-- Hero --> */}
@@ -123,13 +123,13 @@ const IndexPage = () => {
                   </button>
                 </a>
               </div>
-              <div className="dib v-top mv2">
+              {/* <div className="dib v-top mv2">
                 <a href="/poll">
                   <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
                     Participate in our first poll
                   </button>
                 </a>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="dtc-l dn w-50 v-mid mt0-ns mt4">
@@ -140,8 +140,16 @@ const IndexPage = () => {
         </div>
       </section>
 
+      {!!budgets.epochNumber && (
+        <BudgetBar
+          budgetText={`Batch ${budgets.epochNumber + 1} grants budget:`}
+          panValue={budgets.epochPAN}
+          usdValue={budgets.epochUSD}
+        />
+      )}
+
       {/* <!-- Comparison Section --> */}
-      <section
+      {/* <section
         id="home-comparison"
         className="bg-white w-70-l w-80-m w-90 center br4 shadow relative z-1 top-0-ns top-14 pa5-ns pa4"
         style={{ marginTop: '-450px' }}
@@ -164,7 +172,7 @@ const IndexPage = () => {
             </p>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* <!-- Donation CTA --> */}
       <div className="mv6-ns mv5 pv6-ns pv4 relative" style={{ top: '100px' }}>
