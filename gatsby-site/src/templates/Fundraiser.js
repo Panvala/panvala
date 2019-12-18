@@ -8,6 +8,7 @@ import {
   FundraiserOverview,
   FundraiserForm,
 } from '../components/Fundraiser';
+import Box from '../components/system/Box';
 
 const Fundraiser = props => {
   console.log('Fundraiser props:', props);
@@ -24,9 +25,11 @@ const Fundraiser = props => {
 
       <FundraiserOverview />
 
-      <FundraiserForm />
-
-      <Footer />
+      <Box mt="-5vw" className="relative z-2" height="1000px">
+        <Box p={'10vw'}>
+          <FundraiserForm />
+        </Box>
+      </Box>
     </Layout>
   );
 };

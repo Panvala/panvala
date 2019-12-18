@@ -10,6 +10,7 @@ import {
 import Fundraiser from '../templates/Fundraiser';
 import { ReasonToContribute } from '../components/Fundraiser/FundraiserOverview';
 import flag from '../img/fundraisers/flag.png';
+import Layout from '../components/Layout';
 
 export default {
   title: 'Fundraisers',
@@ -38,6 +39,10 @@ export const reasonToContribute = () => (
 );
 
 export const overview = () => <FundraiserOverview />;
-export const form = () => <FundraiserForm />;
+export const form = () => (
+  <Layout>
+    <FundraiserForm />
+  </Layout>
+);
 
 export const fullPage = () => <Fundraiser pageContext={profileProps} />;

@@ -5,6 +5,7 @@ export const colors = {
     dark: '#343434',
     border: '#E5ECED',
     light: '#F0F5F6',
+    semiLight: '#F2F3F6',
     veryLight: '#FCFDFE',
     disabled: '#C5D3D9',
   },
@@ -31,6 +32,7 @@ export const colors = {
     light: 'rgba(255, 147, 147, 0.25)',
   },
   teal: '#46B0AA',
+  marine: '#67D0CA',
 };
 
 export const theme = {
