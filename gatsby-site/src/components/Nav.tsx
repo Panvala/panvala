@@ -1,9 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 
 import logoTeal from '../img/logo-teal.png';
 import Identicon from './Identicon';
 import Box from './system/Box';
-import TopBar from './TopBar';
+// import TopBar from './TopBar';
 
 export default function Nav({ account, balance, handleClick }) {
   return (

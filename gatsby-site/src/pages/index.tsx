@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import * as React from 'react';
 import { graphql } from 'gatsby';
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';
@@ -52,9 +52,9 @@ const NewsletterFormSchema = yup.object({
 });
 
 const IndexPage = () => {
-  const { budgets } = useContext(BudgetContext);
-  const [isOpen, setModalOpen] = useState(false);
-  const [epochDates, setEpochDates] = useState([]);
+  const { budgets } = React.useContext(BudgetContext);
+  const [isOpen, setModalOpen] = React.useState(false);
+  const [epochDates, setEpochDates] = React.useState([]);
 
   function handleSubmit(values, actions) {
     // console.log('submit', values);
@@ -72,7 +72,7 @@ const IndexPage = () => {
     em.value = '';
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     async function getData() {
       // Get dates from api
       const epDates = await getEpochDates();
@@ -205,7 +205,7 @@ const IndexPage = () => {
             </Box>
 
             <Box flex column alignItems="flex-start">
-              {epochDates.map(epochDate => (
+              {epochDates.map((epochDate: any) => (
                 <EventCard
                   key={`${epochDate.date}${epochDate.eventName}`}
                   date={epochDate.date}

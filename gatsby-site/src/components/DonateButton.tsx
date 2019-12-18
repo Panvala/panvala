@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 
-function DonateButton({ handleClick, text, disabled }) {
+function DonateButton({ handleClick, text, disabled }: any) {
   return (
     <div>
       <input

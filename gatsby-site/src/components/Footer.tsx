@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import logoWhite from '../img/logo-white.png';
 import logoTwitter from '../img/twitter.png';

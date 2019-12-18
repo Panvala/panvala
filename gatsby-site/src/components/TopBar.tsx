@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import Box from './system/Box';
 
 const TopBar = ({ children }) => {
-  const [route, setRoute] = useState('');
+  const [route, setRoute] = React.useState('');
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (typeof window !== 'undefined') {
       if (!window.location.href.includes('poll')) {
         setRoute('POLL');

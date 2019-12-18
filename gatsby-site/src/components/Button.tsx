@@ -1,3 +1,4 @@
+import * as React from 'react';
 import styled from 'styled-components';
 import {
   space,
@@ -11,11 +12,10 @@ import {
   position,
 } from 'styled-system';
 
-const Box = styled.div`
+const StyledButton = styled.button`
   box-sizing: 'border-box';
   min-width: 0;
   display: ${props => (props.flex ? 'flex' : 'block')};
-  text-align: left;
   ${space};
   ${color};
   ${layout};
@@ -25,22 +25,18 @@ const Box = styled.div`
   ${background}
   ${shadow};
   ${position};
-  ${props => {
-    if (props.flex && props.column) {
-      return 'flex-direction: column;';
-    }
-    return null;
-  }}
-  ${props => {
-    if (props.wrap) return 'flex-wrap: wrap;';
-    return null;
-  }}
-  ${props => {
-    if (props.bold) return 'font-weight: bold;';
-    return null;
-  }}
 `;
 
-Box.displayName = 'Box';
+const Button = props => {
+  return (
+    <StyledButton
+      className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4"
+      onClick={props.handleClick}
+      {...props}
+    >
+      {props.text}
+    </StyledButton>
+  );
+};
 
-export default Box;
+export default Button;

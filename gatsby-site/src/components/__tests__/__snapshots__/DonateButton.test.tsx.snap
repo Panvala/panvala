@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DonateButton should render the component 1`] = `
+<input
+  class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+  name="submit"
+  type="submit"
+  value="Donate now"
+/>
+`;

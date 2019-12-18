@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 
 import student from '../img/student.png';
 import gold from '../img/gold.png';
@@ -7,7 +7,7 @@ import platinum from '../img/platinum.png';
 import ether from '../img/ether.png';
 import elite from '../img/elite.png';
 
-const styles = {
+const styles: any = {
   container: {
     display: 'flex',
     justifyContent: 'center',
@@ -286,11 +286,11 @@ const StepThree = ({ message, handleClose, pledgeType }) => {
   );
 };
 
-export const ModalTitle = ({ children }) => <div style={styles.title}>{children}</div>;
-export const ModalSubTitle = ({ children }) => <div style={styles.subtitle}>{children}</div>;
-export const ModalCopy = ({ children }) => <div style={styles.copy}>{children}</div>;
+export const ModalTitle = ({ children }: any) => <div style={styles.title}>{children}</div>;
+export const ModalSubTitle = ({ children }: any) => <div style={styles.subtitle}>{children}</div>;
+export const ModalCopy = ({ children }: any) => <div style={styles.copy}>{children}</div>;
 
-const WebsiteModal = ({ isOpen, step, message, handleCancel, pledgeType }) => {
+const WebsiteModal = ({ isOpen, step, message, handleCancel, pledgeType }: any) => {
   if (!isOpen || step == null) {
     return null;
   }
@@ -305,8 +305,8 @@ const WebsiteModal = ({ isOpen, step, message, handleCancel, pledgeType }) => {
 
   return (
     <div style={styles.container}>
-      <ModalOverlay />
-      <ModalBody>{steps[step]}</ModalBody>
+      <ModalOverlay handleClick={handleCancel} />
+      <ModalBody handleClick={handleCancel}>{steps[step]}</ModalBody>
     </div>
   );
 };

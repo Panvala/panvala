@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import { providers, constants, utils } from 'ethers';
 
 import WebsiteModal from './WebsiteModal';
-import SponsorshipForm from './SponsorshipForm';
+import DonationForm from './DonationForm';
 
 import {
   BN,
@@ -10,15 +10,40 @@ import {
   fetchEthPrice,
   quoteUsdToEth,
   getEndpointAndHeaders,
+  getTier,
   getGasPrice,
   postAutopilot,
   quoteEthToPan,
 } from '../utils/donate';
 import { loadContracts } from '../utils/env';
+import Box from './system/Box';
 
 const { parseEther, hexlify, getAddress } = utils;
 
-class Sponsorship extends Component {
+export interface DonationState {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  fullName?: string;
+  selectedAccount: string;
+  step: null | string;
+  error: false | string;
+  message: string;
+  tier: string;
+  panPurchased: number;
+}
+
+interface Props {
+  ethPrices: any;
+}
+
+class Donation extends React.Component<Props> {
+  state: DonationState;
+  provider: any;
+  exchange: any;
+  token: any;
+  tokenCapacitor: any;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -191,9 +216,9 @@ class Sponsorship extends Component {
 
   // Click handler for donations
   async handleDonation(values, actions) {
-    console.log('Sponsorship:', 'handleDonation', values);
+    console.log('Donation:', 'handleDonation', values);
 
-    const { company, firstName, lastName, email, pledgeAmount, pledgeDuration } = values;
+    const { firstName, lastName, email, monthlyPledge, pledgeDuration } = values;
 
     // Make sure ethereum is hooked up properly
     try {
@@ -205,7 +230,7 @@ class Sponsorship extends Component {
       return error;
     }
 
-    const tier = 'Sponsor';
+    const tier = getTier(monthlyPledge);
     this.setState({
       tier,
       email,
@@ -216,7 +241,7 @@ class Sponsorship extends Component {
     });
 
     // Calculate pledge total value (monthly * term)
-    const pledgeMonthlyUSD = parseInt(pledgeAmount, 10);
+    const pledgeMonthlyUSD = parseInt(monthlyPledge, 10);
     const pledgeTerm = parseInt(pledgeDuration, 10);
     const pledgeTotal = BN(pledgeMonthlyUSD).mul(pledgeTerm);
 
@@ -237,7 +262,7 @@ class Sponsorship extends Component {
     // Build donation object
     const donation = {
       version: '1',
-      memo: `Sponsorship: ${company}`,
+      memo: '',
       usdValue: BN(pledgeTotal).toString(),
       ethValue: weiAmount.toString(),
       pledgeMonthlyUSD,
@@ -276,13 +301,7 @@ class Sponsorship extends Component {
             txHash,
             multihash,
           };
-          await postAutopilot(
-            this.state.email,
-            this.state.firstName,
-            this.state.lastName,
-            txData,
-            'sponsorship'
-          );
+          await postAutopilot(this.state.email, this.state.firstName, this.state.lastName, txData);
 
           actions.resetForm();
         }
@@ -410,24 +429,23 @@ class Sponsorship extends Component {
       // Approve token capacitor
       await this.token.functions.approve(this.tokenCapacitor.address, constants.MaxUint256);
       // Call donate again
-      return this.donatePan(multihash, this.state.panPurchased);
+      return this.donatePan(multihash);
     }
   }
 
   render() {
     return (
-      <>
-        <SponsorshipForm onSubmit={this.handleDonation} />
+      <Box data-testid="donation-container">
+        <DonationForm onSubmit={this.handleDonation} ethPrices={this.props.ethPrices} />
         <WebsiteModal
           isOpen={true}
           step={this.state.step}
           message={this.state.message}
           handleCancel={this.handleCancel}
-          pledgeType="sponsorship"
         />
-      </>
+      </Box>
     );
   }
 }
 
-export default Sponsorship;
+export default Donation;

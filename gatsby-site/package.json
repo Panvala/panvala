@@ -13,6 +13,7 @@
     "gatsby-plugin-react-helmet": "^3.1.13",
     "gatsby-plugin-sharp": "^2.2.36",
     "gatsby-plugin-styled-components": "^3.1.14",
+    "gatsby-plugin-typescript": "^2.1.23",
     "gatsby-source-filesystem": "^2.1.35",
     "gatsby-transformer-json": "^2.2.22",
     "gatsby-transformer-sharp": "^2.3.2",
@@ -36,6 +37,15 @@
     "@babel/preset-env": "^7.7.6",
     "@babel/preset-react": "^7.7.4",
     "@storybook/react": "^5.2.5",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@types/jest": "^24.0.24",
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.16",
+    "@types/react-dom": "^16.9.4",
+    "@types/styled-components": "^4.4.1",
+    "@types/styled-system": "^5.1.4",
     "@types/yup": "^0.26.24",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
@@ -44,7 +54,8 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
-    "react-test-renderer": "^16.10.2"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.3"
   },
   "scripts": {
     "build": "gatsby build",
@@ -57,6 +68,7 @@
     "serve": "gatsby serve",
     "storybook": "NODE_ENV=production start-storybook -s public",
     "test": "jest",
-    "test:verbose": "jest --verbose"
+    "test:verbose": "jest --verbose",
+    "type-check": "tsc --noEmit"
   }
 }

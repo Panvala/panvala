@@ -1,0 +1,222 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Donation should render the container 1`] = `
+<div
+  class="sc-bwzfXH iruGIz"
+  data-testid="donation-container"
+>
+  <form
+    class="w-80-l w-90-m w-100 center"
+    data-testid="donation-form"
+    name="donation-pledge"
+  >
+    <div
+      class="tl mt4"
+    >
+      <label
+        class="ma0 f6 mb3 black-40"
+        required=""
+      >
+        First Name
+        <b
+          class="red f7"
+        >
+           *
+        </b>
+      </label>
+    </div>
+    <div
+      class="red tl pt2"
+    />
+    <input
+      class="sc-bdVaJa kGEDHa f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+      id="pledge-first-name"
+      label="First Name"
+      name="firstName"
+      placeholder="Enter your first name"
+      required=""
+      type="text"
+      value=""
+    />
+    <div
+      class="tl mt4"
+    >
+      <label
+        class="ma0 f6 mb3 black-40"
+      >
+        Last Name
+      </label>
+    </div>
+    <div
+      class="red tl pt2"
+    />
+    <input
+      class="sc-bdVaJa kGEDHa f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+      id="pledge-last-name"
+      label="Last Name"
+      name="lastName"
+      placeholder="Enter your last name"
+      type="text"
+      value=""
+    />
+    <div
+      class="tl mt4"
+    >
+      <label
+        class="ma0 f6 mb3 black-40"
+        required=""
+      >
+        Email
+        <b
+          class="red f7"
+        >
+           *
+        </b>
+      </label>
+    </div>
+    <div
+      class="red tl pt2"
+    />
+    <input
+      class="sc-bdVaJa kGEDHa f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+      id="pledge-email"
+      label="Email"
+      name="email"
+      placeholder="Enter your email address"
+      required=""
+      type="text"
+      value=""
+    />
+    <div
+      class="tl mt4"
+    >
+      <label
+        class="ma0 f6 mb3 black-40"
+        required=""
+      >
+        Pledge Tier
+        <b
+          class="red f7"
+        >
+           *
+        </b>
+      </label>
+    </div>
+    <div
+      class="red tl pt2"
+    />
+    <select
+      class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
+      id="pledge-tier-select"
+      name="monthlyPledge"
+      required=""
+    >
+      <option
+        value="0"
+      >
+        Select your pledge tier
+      </option>
+      <option
+        value="5"
+      >
+        Student — $5/month (50 ETH)
+      </option>
+      <option
+        value="15"
+      >
+        Gold — $15/month (150 ETH)
+      </option>
+      <option
+        value="50"
+      >
+        Platinum — $50/month (500 ETH)
+      </option>
+      <option
+        value="150"
+      >
+        Diamond — $150/month (1500 ETH)
+      </option>
+      <option
+        value="500"
+      >
+        Ether Advisor — $500/month (5000 ETH)
+      </option>
+      <option
+        value="1500"
+      >
+        Elite Advisor — $1500/month (15000 ETH)
+      </option>
+    </select>
+    <img
+      alt=""
+      class="fr mr2 o-50"
+      src="test-file-stub"
+      style="margin-top: -35px;"
+    />
+    <div
+      class="tl mt4"
+    >
+      <label
+        class="ma0 f6 mb3 black-40"
+        required=""
+      >
+        How many months of your pledge will you prepay today?
+        <b
+          class="red f7"
+        >
+           *
+        </b>
+      </label>
+    </div>
+    <div
+      class="red tl pt2"
+    />
+    <select
+      class="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
+      id="pledge-duration-select"
+      name="pledgeDuration"
+      required=""
+    >
+      <option
+        value="0"
+      >
+        Select the amount of months you would like to prepay for
+      </option>
+      <option
+        value="1"
+      >
+        1 month
+      </option>
+      <option
+        value="3"
+      >
+        3 months
+      </option>
+      <option
+        value="6"
+      >
+        6 months
+      </option>
+      <option
+        value="12"
+      >
+        12 months
+      </option>
+    </select>
+    <img
+      alt=""
+      class="fr mr2 o-50"
+      src="test-file-stub"
+      style="margin-top: -35px;"
+    />
+    <div>
+      <input
+        class="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+        name="submit"
+        type="submit"
+        value="Donate"
+      />
+    </div>
+  </form>
+</div>
+`;
