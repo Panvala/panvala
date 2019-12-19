@@ -52,7 +52,7 @@ const NewsletterFormSchema = yup.object({
 });
 
 const IndexPage = () => {
-  const { budgets } = React.useContext(BudgetContext);
+  const budgets = React.useContext(BudgetContext);
   const [isOpen, setModalOpen] = React.useState(false);
   const [epochDates, setEpochDates] = React.useState([]);
 

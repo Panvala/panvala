@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import DonateButton from '../components/DonateButton';
 
 export default {
@@ -9,4 +9,4 @@ function action(action) {
   console.log('action', action);
 }
 
-export const click = () => <DonateButton handleClick={action} text="Donate" />;
+export const click = () => <DonateButton handleClick={action} text="Donate" disabled={false} />;

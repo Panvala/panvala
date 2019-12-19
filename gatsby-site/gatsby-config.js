@@ -5,7 +5,9 @@ module.exports = {
     author: `ConsenSys`,
   },
   plugins: [
+    `gatsby-plugin-typescript`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-styled-components`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -35,8 +37,6 @@ module.exports = {
         icon: `src/img/favicon.ico`, // This path is relative to the root of the site.
       },
     },
-    `gatsby-plugin-styled-components`,
     'gatsby-plugin-netlify',
-    `gatsby-plugin-typescript`,
   ],
 };

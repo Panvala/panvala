@@ -1,7 +1,7 @@
 import { configure } from '@storybook/react';
 
 // automatically import all files ending in *.stories.js
-configure(require.context('../src/stories', true, /\.stories\.js$/), module);
+configure(require.context('../src/stories', true, /\.stories\.(js|ts)x?$/), module);
 
 // Gatsby's Link overrides:
 // Gatsby defines a global called ___loader to prevent its
@@ -21,4 +21,3 @@ global.__PATH_PREFIX__ = '';
 window.___navigate = pathname => {
   action('NavigateTo:')(pathname);
 };
-

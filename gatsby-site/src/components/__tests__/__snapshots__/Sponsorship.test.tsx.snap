@@ -2,7 +2,7 @@
 
 exports[`Donation should render component 1`] = `
 <div
-  class="sc-bwzfXH iruGIz"
+  class="sc-bwzfXH bkbqwe"
   data-testid="sponsorship-container"
 >
   <form
