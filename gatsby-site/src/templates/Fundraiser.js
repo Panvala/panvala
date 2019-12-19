@@ -7,6 +7,7 @@ import {
   FundraiserHeader,
   FundraiserOverview,
   FundraiserForm,
+  FunderBoard,
 } from '../components/Fundraiser';
 import Box from '../components/system/Box';
 
@@ -21,7 +22,12 @@ const Fundraiser = props => {
 
       <FundraiserHeader />
 
-      <FundraiserProfile {...profileInfo} />
+      <Box mt="-5vw" className="bottom-clip-down relative z-3" bg="white" height="1000px">
+        <Box flex>
+          <FundraiserProfile {...profileInfo} />
+          <FunderBoard />
+        </Box>
+      </Box>
 
       <FundraiserOverview />
 

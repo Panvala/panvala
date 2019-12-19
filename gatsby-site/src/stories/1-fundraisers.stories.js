@@ -6,6 +6,7 @@ import {
   ProfileCopy,
   ProfileLink,
   FundraiserOverview,
+  FunderBoard,
 } from '../components/Fundraiser';
 import Fundraiser from '../templates/Fundraiser';
 import { ReasonToContribute } from '../components/Fundraiser/FundraiserOverview';
@@ -28,8 +29,9 @@ const profileProps = {
 export const header = () => <FundraiserHeader />;
 
 export const profileCopy = () => <ProfileCopy {...profileProps} />;
-export const profileLink = () => <ProfileLink />;
 export const profile = () => <FundraiserProfile {...profileProps} />;
+export const funderBoard = () => <FunderBoard />;
+export const profileLink = () => <ProfileLink />;
 
 export const reasonToContribute = () => (
   <ReasonToContribute iconSrc={flag} title="Prioritized Grants">
