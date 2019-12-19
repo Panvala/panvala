@@ -1,3 +1,4 @@
 User-agent: *
 Disallow: /pledge/
 Disallow: /sponsor/
+Disallow: /fundraisers/
