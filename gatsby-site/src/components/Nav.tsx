@@ -5,29 +5,37 @@ import Identicon from './Identicon';
 import Box from './system/Box';
 // import TopBar from './TopBar';
 
-export default function Nav({ account, balance, handleClick }) {
+interface Props {
+  account?: string;
+  balance?: string;
+  handleClick?(): void;
+}
+
+const NavLink = ({ href, children }) => (
+  <a href={href} className="link dim white-60 f6 fw6 dib mr3">
+    {children}
+  </a>
+);
+
+export default function Nav({ account, balance, handleClick }: Props) {
   return (
     <>
       {/* <TopBar /> */}
-      {/* <!-- Navigation --> */}
+
+      {/* Nav links */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
         <a
-          className="dtc-ns db w-25-ns w-90 tl-ns tc v-mid link center pb0-ns pb3"
           href="/"
           title="Home"
+          className="dtc-ns db w-25-ns w-90 tl-ns tc v-mid link center pb0-ns pb3"
         >
           <img alt="" src={logoTeal} className="dib w-60-l w-100-m w-60" />
         </a>
+
         <div className="dtc-ns db v-mid tc center w-50-ns w-100">
-          <a href="/grants" className="link dim white-60 f6 fw6 dib mr3">
-            Grants
-          </a>
-          <a href="/team" className="link dim white-60 f6 fw6 dib mr3">
-            Team
-          </a>
-          <a href="/resources" className="link dim white-60 f6 fw6 dib mr3">
-            Resources
-          </a>
+          <NavLink href="/grants">Grants</NavLink>
+          <NavLink href="/team">Team</NavLink>
+          <NavLink href="/resources">Resources</NavLink>
           <a
             href="https://forum.panvala.com"
             target="_blank"
@@ -40,6 +48,8 @@ export default function Nav({ account, balance, handleClick }) {
             Donate
           </a>
         </div>
+
+        {/* Balances */}
         <div className="dtc-ns dn w-25 v-mid tr">
           {typeof window !== 'undefined' && window.location.href.includes('poll') ? (
             account ? (
