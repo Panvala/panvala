@@ -60,9 +60,9 @@ describe('API endpoints', () => {
         tokens: toBaseTokens(1000),
         metadataVersion: '1',
         memo: 'A donation',
-        usdValue: '4500',
+        usdValueCents: '4500',
         ethValue: toBaseTokens(1.337),
-        pledgeMonthlyUSD: 1500,
+        pledgeMonthlyUSDCents: 1500,
         pledgeTerm: 3,
       };
 
@@ -119,7 +119,7 @@ describe('API endpoints', () => {
       });
 
       // values that must be non-zero integers
-      const integerFields = ['pledgeMonthlyUSD', 'pledgeTerm'];
+      const integerFields = ['pledgeMonthlyUSDCents', 'pledgeTerm'];
       test.each(integerFields)('it should return 400 if %s is not an integer', async field => {
         data[field] = 10.5;
 
@@ -142,7 +142,7 @@ describe('API endpoints', () => {
       });
 
       // values that must be in dollars
-      const dollarFields = ['usdValue', 'pledgeMonthlyUSD'];
+      const dollarFields = ['usdValueCents', 'pledgeMonthlyUSDCents'];
       test.each(dollarFields)('it should return 400 if %s is less than a dollar', async field => {
         data[field] = 99;
         const result = await request(app)
@@ -202,9 +202,9 @@ describe('API endpoints', () => {
         tokens: toBaseTokens(1000),
         metadataVersion: '1',
         memo: 'A donation',
-        usdValue: '4500',
+        usdValueCents: '4500',
         ethValue: toBaseTokens(1.337),
-        pledgeMonthlyUSD: 1500,
+        pledgeMonthlyUSDCents: 1500,
         pledgeTerm: 3,
         firstName: 'Jane',
         lastName: 'Crypto',

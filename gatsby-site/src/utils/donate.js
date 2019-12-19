@@ -168,12 +168,13 @@ export function formatDonation(txInfo, ipfsMetadata, userInfo) {
   const { tokens } = txInfo;
   const { company } = userInfo;
 
+  // api/src/utils/donations.IDonation
   const donationData = {
     ...txInfo,
     ...ipfsMetadata,
     ...userInfo,
-    usdValue: toUSDCents(ipfsMetadata.usdValue),
-    pledgeMonthlyUSD,
+    usdValueCents: toUSDCents(ipfsMetadata.usdValue),
+    pledgeMonthlyUSDCents: pledgeMonthlyUSD,
     metadataVersion: ipfsMetadata.version,
     tokens: tokens.toString(),
   };

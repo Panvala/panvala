@@ -31,7 +31,7 @@
     "memo": {
       "type": "string"
     },
-    "usdValue": {
+    "usdValueCents": {
       "type": "string",
       "USDCents": true
     },
@@ -39,7 +39,7 @@
       "type": "string",
       "bigNumber": true
     },
-    "pledgeMonthlyUSD": {
+    "pledgeMonthlyUSDCents": {
       "type": "integer",
       "USDCents": true
     },

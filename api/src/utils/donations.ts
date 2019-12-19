@@ -13,9 +13,9 @@ export interface IDonationTx {
 export interface IPublicDonation extends IDonationTx {
   metadataVersion?: string;
   memo?: string;
-  usdValue?: string;
+  usdValueCents?: string;
   ethValue?: string;
-  pledgeMonthlyUSD?: number;
+  pledgeMonthlyUSDCents?: number;
   pledgeTerm?: number;
 }
 
@@ -40,9 +40,9 @@ export function getPublicDonations(): Promise<IPublicDonation[]> {
       'tokens',
       'metadataVersion',
       'memo',
-      'usdValue',
+      'usdValueCents',
       'ethValue',
-      'pledgeMonthlyUSD',
+      'pledgeMonthlyUSDCents',
       'pledgeTerm',
     ],
   });

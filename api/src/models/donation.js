@@ -44,13 +44,13 @@ module.exports = (sequelize, DataTypes) => {
       memo: {
         type: DataTypes.STRING,
       },
-      usdValue: {
+      usdValueCents: {
         type: DataTypes.INTEGER,
       },
       ethValue: {
         type: DataTypes.STRING,
       },
-      pledgeMonthlyUSD: {
+      pledgeMonthlyUSDCents: {
         type: DataTypes.INTEGER,
       },
       pledgeTerm: {
