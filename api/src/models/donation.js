@@ -46,6 +46,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       usdValueCents: {
         type: DataTypes.INTEGER,
+        get() {
+          // output as string, since we expect input as string
+          const value = this.getDataValue('usdValueCents');
+          return value != null ? value.toString() : value;
+        },
       },
       ethValue: {
         type: DataTypes.STRING,

@@ -5,7 +5,14 @@ import app from '..';
 import { migrate } from '../migrate';
 import { sequelize } from '../models';
 import { IDonation, addDonation, getPublicDonations, IPublicDonation } from '../utils/donations';
-import { someTxHash, someCID, someAddress, expectFields, toBaseTokens } from './utils';
+import {
+  someTxHash,
+  someCID,
+  someAddress,
+  expectFields,
+  toBaseTokens,
+  expectFieldsWithTypes,
+} from './utils';
 
 const { Donation } = require('../models');
 
@@ -51,7 +58,7 @@ describe('API endpoints', () => {
       expectFields(created, data);
     });
 
-    test('it should create a donation with extra data', async () => {
+    test('it should create a donation with all the fields', async () => {
       const data: IDonation = {
         txHash: someTxHash,
         metadataHash: someCID,
@@ -72,6 +79,9 @@ describe('API endpoints', () => {
 
       // console.log('RESULT', result.body);
       expect(result.ok).toBe(true);
+
+      const created = result.body;
+      expectFieldsWithTypes(created, data);
     });
 
     describe('Field validation', () => {

@@ -72,6 +72,13 @@ export function expectFields(actual: object, expected: object) {
   });
 }
 
+export function expectFieldsWithTypes(actual: object, expected: object) {
+  Object.keys(expected).forEach(key => {
+    expect(actual[key]).toBe(expected[key]);
+    expect(typeof actual[key]).toBe(typeof expected[key]);
+  });
+}
+
 export function toBaseTokens(amount: number, decimals: number = 18): string {
   return parseUnits(amount.toString(), decimals).toString();
 }
