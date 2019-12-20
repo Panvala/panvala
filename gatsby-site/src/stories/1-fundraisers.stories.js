@@ -40,7 +40,7 @@ export const reasonToContribute = () => (
   </ReasonToContribute>
 );
 
-export const overview = () => <FundraiserOverview />;
+export const overview = () => <FundraiserOverview {...profileProps} />;
 export const form = () => (
   <Layout>
     <FundraiserForm />

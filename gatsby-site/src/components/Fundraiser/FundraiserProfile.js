@@ -1,6 +1,6 @@
 import React from 'react';
 import vivekS from '../../img/fundraisers/vivek.png';
-import { ProfileCopy, ProfileLink } from '.';
+import { ProfileCopy } from '.';
 import Box from '../system/Box';
 
 export function FundraiserProfile(props) {
@@ -12,8 +12,6 @@ export function FundraiserProfile(props) {
         </Box>
         <ProfileCopy {...props} />
       </Box>
-
-      <ProfileLink />
     </Box>
   );
 }

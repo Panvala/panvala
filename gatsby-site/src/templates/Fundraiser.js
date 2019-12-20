@@ -29,7 +29,7 @@ const Fundraiser = props => {
         </Box>
       </Box>
 
-      <FundraiserOverview />
+      <FundraiserOverview {...profileInfo} />
 
       <Box mt="-5vw" className="relative z-2" height="1000px">
         <Box p={'10vw'}>

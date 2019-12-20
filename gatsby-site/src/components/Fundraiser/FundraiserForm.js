@@ -93,6 +93,7 @@ export const FundraiserForm = ({ onSubmit }) => {
             label="First Name"
             placeholder="Enter your first name"
             value={values.firstName}
+            onChange={handleChange}
             required
           />
 

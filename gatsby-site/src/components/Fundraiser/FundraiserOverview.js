@@ -24,11 +24,11 @@ export const ReasonToContribute = ({ iconSrc, title, children }) => (
   </Box>
 );
 
-export function FundraiserOverview() {
+export function FundraiserOverview({ firstName }) {
   return (
     <Box
       mt="-5vw"
-      pt={['5vw', '2vw', ]}
+      pt={['5vw', '2vw']}
       className="relative z-2 bottom-clip-down"
       bg="#F3F4F8"
       height={['1000px', '1000px', '700px']}
@@ -41,12 +41,12 @@ export function FundraiserOverview() {
         <Box flex wrap justifyContent="center">
           <Box flex column wrap>
             <ReasonToContribute iconSrc={flag} title="Prioritized Grants">
-              When you donate to Vivek Singh’s fundraiser, the Gitcoin team moves up Panvala’s
+              When you donate to {firstName}’s fundraiser, the Gitcoin team moves up Panvala’s
               leaderboard for grant application priority. View the leaderboard.
             </ReasonToContribute>
 
             <ReasonToContribute iconSrc={support} title="Show Your Support">
-              Your name will be listed on this page as Vivek Singh's supporter. Our whole community
+              Your name will be listed on this page as {firstName}'s supporter. Our whole community
               values our donors!
             </ReasonToContribute>
           </Box>
