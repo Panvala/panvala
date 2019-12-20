@@ -12,7 +12,7 @@ metadata:
     "helm.sh/hook-weight": "-5"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
-  activeDeadlineSeconds: 60
+  activeDeadlineSeconds: 300
   backoffLimit: 1
   completions: 1
   template:
