@@ -167,22 +167,24 @@ export function formatDonation(txInfo, ipfsMetadata, userInfo) {
   const pledgeMonthlyUSD = parseInt(toUSDCents(ipfsMetadata.pledgeMonthlyUSD.toString()));
   const { tokens } = txInfo;
   const { company } = userInfo;
+  const { version, memo, ethValue, pledgeTerm } = ipfsMetadata;
 
   // api/src/utils/donations.IDonation
   const donationData = {
     ...txInfo,
-    ...ipfsMetadata,
     ...userInfo,
-    usdValueCents: toUSDCents(ipfsMetadata.usdValue),
-    pledgeMonthlyUSDCents: pledgeMonthlyUSD,
-    metadataVersion: ipfsMetadata.version,
     tokens: tokens.toString(),
+    metadataVersion: version,
+    memo,
+    usdValueCents: toUSDCents(ipfsMetadata.usdValue),
+    ethValue,
+    pledgeMonthlyUSDCents: pledgeMonthlyUSD,
+    pledgeTerm,
   };
 
   if (company != null) {
     donationData.company = company;
   }
-  delete donationData.version;
 
   return donationData;
 }
