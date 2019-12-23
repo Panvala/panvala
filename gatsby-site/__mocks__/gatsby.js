@@ -1,6 +1,8 @@
 const React = require('react');
 const gatsby = jest.requireActual('gatsby');
 
+// This mocks the graphql() function,
+// Link component, and StaticQuery component.
 module.exports = {
   ...gatsby,
   graphql: jest.fn(),

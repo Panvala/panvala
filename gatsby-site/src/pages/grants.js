@@ -41,7 +41,7 @@ import BudgetBar from '../components/BudgetBar';
 import FieldText from '../components/FieldText';
 
 const Grants = () => {
-  const { budgets } = useContext(BudgetContext);
+  const budgets = useContext(BudgetContext);
   const applyRef = useRef(null);
   const [isOpen, setModalOpen] = useState(false);
 
