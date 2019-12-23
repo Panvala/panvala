@@ -72,6 +72,16 @@
   -webkit-clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
 }
 
+.top-clip-down {
+  clip-path: polygon(0 0, 100% 5vw, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 0, 100% 5vw, 100% 100%, 0 100%);
+}
+
+.top-clip-up-TEST {
+  clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 5vw, 100% 0, 100% 100%, 0 100%);
+}
+
 /* Bottom only clip paths */
 .bottom-clip-hero-main {
   clip-path: polygon(0 0, 100% 0, 100% 55%, 0 100%);
@@ -84,8 +94,8 @@
 }
 
 .bottom-clip-up {
-  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5vw), 0 100%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% calc(100% - 5vw), 0 100%);
 }
 
 .bottom-clip-up-1 {
@@ -94,8 +104,8 @@
 }
 
 .bottom-clip-down {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
-  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
 }
 
 .workaround-clip {

@@ -32,6 +32,10 @@ const Box = styled.div`
     return null;
   }}
   ${props => {
+    if (props.wrap) return 'flex-wrap: wrap;';
+    return null;
+  }}
+  ${props => {
     if (props.bold) return 'font-weight: bold;';
     return null;
   }}

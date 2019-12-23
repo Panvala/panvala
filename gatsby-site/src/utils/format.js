@@ -3,6 +3,9 @@ import orderBy from 'lodash/orderBy';
 
 export function sliceDecimals(floatingPt, decimalDigits = 3) {
   const point = floatingPt.indexOf('.');
+  if (point === -1) {
+    return floatingPt;
+  }
   const integer = floatingPt.slice(0, point);
   const fractional = floatingPt.slice(point, point + decimalDigits);
   return integer + fractional;
@@ -68,4 +71,12 @@ export function toUSDCents(dollars) {
   }
   const numDollars = parseInt(dollars);
   return (numDollars * 100).toString();
+}
+
+export function prettify(ugly) {
+  // TEMPORARY until typescript refactor
+  if (typeof ugly === 'string') {
+    return utils.commify(sliceDecimals(ugly));
+  }
+  return ugly;
 }
