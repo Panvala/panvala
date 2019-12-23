@@ -65,6 +65,14 @@ export function formatDates(epochDates) {
   return orderBy(dates, 'date');
 }
 
+export function toUSDCents(dollars) {
+  if (dollars.includes('.')) {
+    throw new Error('Dollar value must be an integer');
+  }
+  const numDollars = parseInt(dollars);
+  return (numDollars * 100).toString();
+}
+
 export function prettify(ugly) {
   // TEMPORARY until typescript refactor
   if (typeof ugly === 'string') {
