@@ -1,5 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { providers, Contract, utils } from 'ethers';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { layout, space } from 'styled-system';
 import panUtils from 'panvala-utils';
@@ -14,7 +13,6 @@ import Button from '../components/Button';
 import pollOne from '../img/poll-1.png';
 import pollTwo from '../img/poll-2.png';
 import { calculateTotalPercentage } from '../utils/poll';
-import { sliceDecimals } from '../utils/format';
 import { getEnvironment, Environment } from '../utils/env';
 import {
   ModalBody,
@@ -24,6 +22,7 @@ import {
   ModalSubTitle,
 } from '../components/WebsiteModal';
 import FieldText from '../components/FieldText';
+import { EthereumContext } from '../components/EthereumProvider';
 
 const categories = [
   {
@@ -80,16 +79,22 @@ const ClipContainer = styled.div`
   ${space};
 `;
 
+// Validate the whole form
+const PollFormSchema = yup.object({
+  categories: yup.object(),
+  firstName: yup.string().trim(),
+  lastName: yup.string().trim(),
+  email: yup.string().email('Please enter a valid email address'),
+});
+
 const Poll = () => {
+  const { account, balances, provider, connectWallet } = useContext(EthereumContext);
   const pollFormRef = useRef(null);
-  const [account, setAccount] = useState('');
-  const [balance, setBalance] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [alreadyVoted, setAlreadyVoted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [welcomeModalOpen, setWelcomeModalOpen] = useState(true);
   const [ptsRemaining, setPtsRemaining] = useState(100);
-  const [provider, setProvider] = useState();
   const [allocations, setAllocations] = useState([]);
   const [percentages, setPercentages] = useState({
     1: '',
@@ -100,98 +105,10 @@ const Poll = () => {
     6: '',
   });
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-      // Listen for network changes -> reload page
-      window.ethereum.on('networkChanged', network => {
-        console.log('MetaMask network changed:', network);
-        window.location.reload();
-      });
-    }
-  }, []);
-
   function handleViewPollClick() {
     pollFormRef.current.scrollIntoView({
       behavior: 'smooth',
     });
-  }
-
-  async function setSelectedAccount() {
-    let selectedAccount = (await provider.listAccounts())[0];
-    // user not enabled for this app
-    if (!selectedAccount) {
-      try {
-        selectedAccount = (await window.ethereum.enable())[0];
-      } catch (error) {
-        if (error.stack.includes('User denied account authorization')) {
-          alert(
-            'MetaMask not enabled. In order to respond to the poll, you must authorize this app.'
-          );
-        }
-      }
-    }
-    await setAccount(selectedAccount);
-    return selectedAccount;
-  }
-
-  useEffect(() => {
-    async function getBalance() {
-      const tokenAbi = panUtils.contractABIs.BasicToken;
-      const token = new Contract(
-        '0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44',
-        tokenAbi.abi,
-        provider
-      );
-
-      let acct = (await provider.listAccounts())[0];
-
-      // User has not enabled the app. Trigger metamask pop-up.
-      if (!acct) {
-        acct = await setSelectedAccount();
-      }
-
-      // Do not proceed with callback (setSelectedAccount)
-      if (!acct) {
-        return false;
-      }
-
-      const bal = await token.balanceOf(acct);
-      const balance = utils.formatUnits(bal, 18);
-      setBalance(sliceDecimals(balance.toString()));
-      return balance;
-    }
-
-    if (
-      typeof window !== 'undefined' &&
-      typeof window.ethereum !== 'undefined' &&
-      typeof provider !== 'undefined'
-    ) {
-      // Only set selectedAccount if user is connected to the app
-      // (works even with 0 balance)
-      getBalance().then(bal => bal && setSelectedAccount());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [provider]);
-
-  async function connectWallet() {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-      if (typeof provider === 'undefined') {
-        const p = new providers.Web3Provider(window.ethereum);
-        const network = await p.getNetwork();
-        if (network.chainId !== 1) {
-          alert('Please connect to the Main Ethereum Network to continue.');
-          return;
-        }
-
-        setProvider(p);
-        const acct = (await p.listAccounts())[0];
-        return acct;
-      } else if (!account) {
-        return setSelectedAccount();
-      }
-    } else {
-      alert('MetaMask not found. Please download MetaMask @ metamask.io');
-    }
   }
 
   // Validate individual form field
@@ -202,15 +119,6 @@ const Poll = () => {
     }
     return error;
   }
-
-  // Validate the whole form
-  const PollFormSchema = yup.object({
-    categories: yup.object(),
-    firstName: yup.string().trim(),
-    lastName: yup.string().trim(),
-    email: yup.string().email('Please enter a valid email address'),
-  });
-
   // User changes a poll value - update state
   function updatePercentages(value, categoryID) {
     setPercentages({
@@ -301,16 +209,9 @@ const Poll = () => {
     }
   }
 
+  // Do this every time the account changes
   useEffect(() => {
-    // Do this every time the account changes
     updateVotingStatus();
-
-    if (account !== '') {
-      window.ethereum.on('accountsChanged', network => {
-        console.log('MetaMask account changed:', network);
-        window.location.reload();
-      });
-    }
   }, [account]);
 
   function getEndpoint(method) {
@@ -443,8 +344,6 @@ const Poll = () => {
       )}
 
       <section className="bg-gradient bottom-clip-up-1">
-        <Nav account={account} balance={balance} handleClick={connectWallet} />
-
         {/* <!-- Instructions --> */}
         <ClipContainer p={['1rem 0 4rem', '2rem 3rem 4rem', '2rem 5rem 5rem', '5rem 10rem 8rem']}>
           <Box width={[1, 1, 0.5]} px={['4', '0']}>
@@ -538,7 +437,7 @@ const Poll = () => {
                   ))}
                 </Box>
               </Box>
-              <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
+              <ModalSubTitle>{`Current voting weight: ${balances.pan} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
                 Even though your vote has been submitted, you have until the <b>{pollDeadline}</b>{' '}
                 deadline to increase the weight of your vote through holding more PAN tokens.
@@ -555,7 +454,7 @@ const Poll = () => {
           ) : alreadyVoted ? (
             <Box flex flexDirection="column" justifyContent="center" alignItems="center">
               <ModalTitle>Thank you for voting!</ModalTitle>
-              <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
+              <ModalSubTitle>{`Current voting weight: ${balances.pan} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
                 Thank you for voting in the poll for the current batch. Even though your vote has
                 been submitted you can increase the weight of your vote through holding more PAN
@@ -607,17 +506,19 @@ const Poll = () => {
                     email: '',
                   }}
                   validate={values => {
-                    return PollFormSchema.validate(values).then(() => {
-                      // validate the sum of points
-                      const totalPercentage = calculateTotalPercentage(percentages);
-                      if (totalPercentage < 100) {
-                        return { poll: 'Please allocate all 100 points' };
-                      } else if (totalPercentage > 100) {
-                        return { poll: 'Please allocate no more than 100 points' };
-                      }
-                    }).catch(error => {
-                      return { [error.path]: error.message }
-                    });
+                    return PollFormSchema.validate(values)
+                      .then(() => {
+                        // validate the sum of points
+                        const totalPercentage = calculateTotalPercentage(percentages);
+                        if (totalPercentage < 100) {
+                          return { poll: 'Please allocate all 100 points' };
+                        } else if (totalPercentage > 100) {
+                          return { poll: 'Please allocate no more than 100 points' };
+                        }
+                      })
+                      .catch(error => {
+                        return { [error.path]: error.message };
+                      });
                   }}
                   validateOnBlur={true}
                   validateOnChange={false}

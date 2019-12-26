@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
-import Nav from '../components/Nav';
 
 import resourcesBlog1 from '../img/resources-blog-1.png';
 import resourcesBlog2 from '../img/resources-blog-2.jpg';
@@ -34,7 +33,6 @@ const Resources = () => {
       <SEO title="Resources" />
 
       <section className="bg-gradient bottom-clip-hero pb5">
-        <Nav />
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 center tc pv5">
           <h1 className="white f1-5 b ma0 mb4 w-80-l w-100 center">Resources</h1>

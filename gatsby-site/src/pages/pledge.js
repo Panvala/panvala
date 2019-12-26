@@ -13,7 +13,6 @@ import advisorTiers from '../img/advisor-tiers.png';
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
 import Modal from '../components/Modal';
-import Nav from '../components/Nav';
 import DonateButton from '../components/DonateButton';
 import { FormError } from '../components/Form/FormError';
 import FieldText from '../components/FieldText';
@@ -164,8 +163,6 @@ const Donate = () => {
       <SEO title="Pledge" />
 
       <section className="bg-gradient bottom-clip-hero pb6">
-        <Nav />
-
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 center tc pv5">
           <h1 className="white f1-5 b ma0 mb4 w-80-l w-100 center">

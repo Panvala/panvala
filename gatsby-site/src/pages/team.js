@@ -12,7 +12,6 @@ import teamIsaac from '../img/team/team-isaac.png';
 import teamJoshua from '../img/team/team-joshua.png';
 
 import SEO from '../components/seo';
-import Nav from '../components/Nav';
 import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import FieldText from '../components/FieldText';
@@ -70,7 +69,6 @@ const Team = () => {
       <SEO title="Team" />
 
       <section className="bg-gradient bottom-clip-hero pb5">
-        <Nav />
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 center tc pv5">
           <h1 className="white f1-5 b ma0 mb4 w-80-l w-100 center">Team</h1>

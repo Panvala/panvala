@@ -3,13 +3,7 @@ import * as React from 'react';
 import logoTeal from '../img/logo-teal.png';
 import Identicon from './Identicon';
 import Box from './system/Box';
-// import TopBar from './TopBar';
-
-interface Props {
-  account?: string;
-  balance?: string;
-  handleClick?(): void;
-}
+import { EthereumContext } from './EthereumProvider';
 
 const NavLink = ({ href, children }) => (
   <a href={href} className="link dim white-60 f6 fw6 dib mr3">
@@ -17,9 +11,14 @@ const NavLink = ({ href, children }) => (
   </a>
 );
 
-export default function Nav({ account, balance, handleClick }: Props) {
+export default function Nav() {
+  const ethState = React.useContext(EthereumContext);
+  const { account, balances, connectWallet } = ethState;
+  console.log('account:', account);
+  console.log('balances:', balances);
+
   return (
-    <>
+    <div className="bg-gradient">
       {/* <TopBar /> */}
 
       {/* Nav links */}
@@ -62,7 +61,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
                     className="link"
                   >
                     <Box color="white" fontWeight="bold">
-                      {balance} PAN
+                      {balances.pan} PAN
                     </Box>
                   </a>
                   <a
@@ -88,24 +87,29 @@ export default function Nav({ account, balance, handleClick }: Props) {
             ) : (
               <button
                 className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4"
-                onClick={handleClick}
+                onClick={connectWallet}
               >
                 Connect
               </button>
             )
-          ) : (
-            typeof window !== 'undefined' &&
+          ) : typeof window !== 'undefined' &&
             !window.location.href.includes('sponsor') &&
-            !window.location.href.includes('donate') && (
-              <a href="/donate">
-                <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
-                  Donate
-                </button>
-              </a>
-            )
+            !window.location.href.includes('donate') ? (
+            <a href="/donate">
+              <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+                Donate
+              </button>
+            </a>
+          ) : (
+            <button
+              className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4"
+              onClick={connectWallet}
+            >
+              Connect
+            </button>
           )}
         </div>
       </nav>
-    </>
+    </div>
   );
 }

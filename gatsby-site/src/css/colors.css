@@ -42,6 +42,10 @@
 }
 
 .bg-gradient {
+  background: linear-gradient(90deg, #4D90F2 -13.53%, #1E2DB0 49.88%);
+}
+
+.bg-gradient-88 {
   background: linear-gradient(88.88deg, #4D90F2 -13.53%, #1E2DB0 49.88%);
 }
 

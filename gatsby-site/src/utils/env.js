@@ -48,10 +48,9 @@ export async function loadContracts(provider) {
   const tcCode = await provider.getCode(tcAddress);
   const exchangeCode = await provider.getCode(exchangeAddress);
 
-  // prettier-ignore
   if (!tokenAddress || !tcAddress || !exchangeAddress || !tokenCode || !tcCode || !exchangeCode) {
-        throw new Error('Invalid address or no code at address.')
-      }
+    throw new Error('Invalid address or no code at address.');
+  }
 
   // Init token, token capacitor, uniswap exchange contracts
   const token = new Contract(tokenAddress, tokenAbi, signer);

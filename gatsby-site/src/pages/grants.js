@@ -34,7 +34,6 @@ import teamAsseth from '../img/grant-teams/asseth.png';
 
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
-import Nav from '../components/Nav';
 import Modal from '../components/Modal';
 import { BudgetContext } from '../components/BudgetProvider';
 import BudgetBar from '../components/BudgetBar';
@@ -80,8 +79,6 @@ const Grants = () => {
       <SEO title="Grants" />
 
       <section className="bg-gradient bottom-clip-hero pb6">
-        <Nav />
-
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 center tc pv5">
           <h1 className="white f1-5 b ma0 mb3 w-50-l w-100 center">Make Ethereum sustainable.</h1>

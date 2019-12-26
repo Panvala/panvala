@@ -9,7 +9,6 @@ import donateShapes from '../img/donatepage-shapes.svg';
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
 import Sponsorship from '../components/Sponsorship';
-import Nav from '../components/Nav';
 
 const names = [
   'Simon de la Rouviere',
@@ -131,8 +130,6 @@ const Sponsor = () => {
       <SEO title="Sponsor" />
 
       <section className="bg-gradient bottom-clip-hero pb6">
-        <Nav />
-
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 center tc pv5">
           <h1 className="white f1-5 b ma0 mb4 w-80-l w-100 center">

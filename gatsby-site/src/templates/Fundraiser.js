@@ -16,6 +16,10 @@ const Fundraiser = props => {
 
   const profileInfo = props.pageContext;
 
+  async function handleSubmit(args) {
+    console.log('submitted:', args);
+  }
+
   return (
     <Layout>
       <SEO title="Fundraiser" />
@@ -33,7 +37,7 @@ const Fundraiser = props => {
 
       <Box mt="-5vw" className="relative z-2" height="1000px">
         <Box p={'10vw'}>
-          <FundraiserForm />
+          <FundraiserForm onSubmit={handleSubmit} />
         </Box>
       </Box>
     </Layout>

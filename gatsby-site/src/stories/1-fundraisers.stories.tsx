@@ -17,6 +17,10 @@ export default {
   title: 'Fundraisers',
 };
 
+const submitHandler = args => {
+  console.log('clicked:', args);
+};
+
 const profileProps = {
   firstName: 'First',
   lastName: 'Last',
@@ -43,7 +47,7 @@ export const reasonToContribute = () => (
 export const overview = () => <FundraiserOverview {...profileProps} />;
 export const form = () => (
   <Layout>
-    <FundraiserForm />
+    <FundraiserForm onSubmit={submitHandler} />
   </Layout>
 );
 

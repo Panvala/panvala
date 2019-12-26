@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { graphql } from 'gatsby';
+// import Img from 'gatsby-image';
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import findIndex from 'lodash/findIndex';
@@ -32,7 +33,6 @@ import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
 import SEO from '../components/seo';
-import Nav from '../components/Nav';
 import Modal from '../components/Modal';
 import Section from '../components/Section';
 import Box from '../components/system/Box';
@@ -44,6 +44,22 @@ import BudgetBar from '../components/BudgetBar';
 import { getEpochDates } from '../utils/api';
 import { formatDates } from '../utils/format';
 
+// export const query = graphql`
+//   query {
+//     file(relativePath: { eq: "home-1.jpg" }) {
+//       childImageSharp {
+//         fluid(maxWidth: 400, maxHeight: 250) {
+//           ...GatsbyImageSharpFluid
+//         }
+//       }
+//     }
+//   }
+// `;
+
+// // fixed(width: 125, height: 125) {
+// //   ...GatsbyImageSharpFixed
+// // }
+
 const NewsletterFormSchema = yup.object({
   email: yup
     .string()
@@ -51,7 +67,8 @@ const NewsletterFormSchema = yup.object({
     .required('Please enter your email'),
 });
 
-const IndexPage = () => {
+const IndexPage = props => {
+  console.log('props:', props);
   const budgets = React.useContext(BudgetContext);
   const [isOpen, setModalOpen] = React.useState(false);
   const [epochDates, setEpochDates] = React.useState([]);
@@ -68,7 +85,7 @@ const IndexPage = () => {
   function handleClose(e) {
     e.preventDefault();
     setModalOpen(false);
-    const em = document.getElementById('email-subscribe-input');
+    const em: any = document.getElementById('email-subscribe-input');
     em.value = '';
   }
 
@@ -106,7 +123,6 @@ const IndexPage = () => {
         className="bg-gradient bottom-clip-up relative z-0 mb4-ns"
         style={{ height: '760px' }}
       >
-        <Nav />
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr4-ns">
