@@ -106,6 +106,15 @@ const names = [
   'Mason Fischer',
   'Russell Verbeeten',
   'Muhammad Zaheer',
+  'Dean Pierce',
+  'Dominik Muhs',
+  'Sarah Mills',
+  'Maggie Love',
+  'Freddy Zwanger',
+  'Daniel Onggunhao',
+  'Christian Neuhaus',
+  'pethereum',
+  'Viacheslav Kulish',
 ];
 
 const Sponsor = () => {
@@ -181,7 +190,7 @@ const Sponsor = () => {
       {/* <!-- Our Patrons --> */}
       <img alt="" src={donateShapes} className="absolute z-0 mt6 ml6-l" />
       <section className="bg-white w-70-l w-80-m w-90 center tc br4 pa5 shadow mt6 db-ns dn relative z-1">
-        <h2 className="f2-5 ma0 tc w-50-l center">Our Founding Patrons support Ethereum</h2>
+        <h2 className="f2-5 ma0 tc w-50-l center">Panvala's Patrons support Ethereum</h2>
         <div className="flex flex-wrap center mt4">
           {names.map(name => (
             <p className="ma0 f7 lh-text w-25-l w-50" key={name}>
