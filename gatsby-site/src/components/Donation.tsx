@@ -413,62 +413,66 @@ class Donation extends React.Component<Props> {
       this.state.panPurchased
     );
 
-    if (allowed) {
+    try {
+      // approve if necessary
+      if (!allowed) {
+        this.setState({
+          message: 'Approving tokens...',
+        });
+        // Approve token capacitor
+        const approveTx = await this.token.functions.approve(
+          this.tokenCapacitor.address,
+          constants.MaxUint256
+        );
+        console.log('approval', approveTx.hash);
+      }
+
+      // donate
       this.setState({
         message: 'Donating PAN...',
       });
+
       const gasPrice = await getGasPrice();
-      try {
-        const donor = this.state.selectedAccount;
-        // Donate PAN to token capacitor
-        const donateTx = await this.tokenCapacitor.functions.donate(
-          donor,
-          this.state.panPurchased,
-          Buffer.from(multihash),
-          {
-            gasLimit: hexlify(150000), // 150K
-            gasPrice: gasPrice || hexlify(12e9), // 12 GWei
-          }
-        );
+      const donor = this.state.selectedAccount;
+      // Donate PAN to token capacitor
+      const donateTx = await this.tokenCapacitor.functions.donate(
+        donor,
+        this.state.panPurchased,
+        Buffer.from(multihash),
+        {
+          gasLimit: hexlify(150000), // 150K
+          gasPrice: gasPrice || hexlify(12e9), // 12 GWei
+        }
+      );
+      console.log('donation', donateTx.hash);
 
-        // Wait for tx to be mined
-        await this.provider.waitForTransaction(donateTx.hash);
-
-        this.setState({
-          step: 3,
-          message: this.state.tier,
-        });
-
-        // Return tx info
-        return {
-          txHash: donateTx.hash,
-          metadataHash: multihash,
-          donor,
-          sender: donor,
-          tokens: this.state.panPurchased,
-        };
-      } catch (error) {
-        console.error(`ERROR: ${error.message}`);
-        alert(`Donate transaction failed: ${error.message}`);
-        await this.setState({
-          step: null,
-          message: '',
-        });
-        return false;
-      }
-    } else {
-      this.setState({
-        message: 'Approving tokens...',
-      });
-      // Approve token capacitor
-      const tx = await this.token.functions.approve(this.tokenCapacitor.address, constants.MaxUint256);
+      // Wait for tx to be mined
       this.setState({
         message: 'Waiting for transaction confirmation...',
       });
-      await this.provider.waitForTransaction(tx.hash);
+      await this.provider.waitForTransaction(donateTx.hash);
 
-      // Call donate again
-      return this.donatePan(multihash);
+      this.setState({
+        step: 3,
+        message: this.state.tier,
+      });
+
+      // Return tx info
+      return {
+        txHash: donateTx.hash,
+        metadataHash: multihash,
+        donor,
+        sender: donor,
+        tokens: this.state.panPurchased,
+      };
+    } catch (error) {
+      console.error(`ERROR: ${error.message}`);
+      alert(`Donate transaction failed: ${error.message}`);
+      this.setState({
+        step: null,
+        message: '',
+      });
+      return false;
     }
   }
 
