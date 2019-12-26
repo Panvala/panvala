@@ -3,6 +3,45 @@ import { toUSDCents } from './format';
 
 const { bigNumberify, parseUnits, formatEther, formatUnits } = utils;
 
+// Types
+export interface IMetadata {
+  version?: string;
+  memo?: string;
+  usdValue?: string;
+  ethValue?: string;
+  pledgeMonthlyUSD: number;
+  pledgeTerm?: number;
+}
+
+export interface IAutopilotDonation extends IMetadata {
+  txHash: string;
+  multihash: string;
+}
+
+// TODO: extract types to a separate module
+// Base transaction info -- all required
+export interface IDonationTx {
+  txHash: string;
+  metadataHash: string;
+  sender: string;
+  donor: string;
+  tokens: string;
+}
+
+export interface IAPIDonation extends IDonationTx {
+  metadataVersion?: string;
+  memo?: string;
+  usdValueCents?: string;
+  ethValue?: string;
+  pledgeMonthlyUSDCents?: number;
+  pledgeTerm?: number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  company?: string;
+}
+
+// Functions
 export function BN(small) {
   return bigNumberify(small);
 }
@@ -85,7 +124,13 @@ export async function getGasPrice(speed = 'fast') {
   return gasPrice.toHexString();
 }
 
-export async function postAutopilot(email, firstName, lastName, txData, pledgeType = 'donation') {
+export async function postAutopilot(
+  email: string,
+  firstName: string,
+  lastName: string,
+  txData: IAutopilotDonation,
+  pledgeType = 'donation'
+) {
   const postData = {
     email: email,
     firstName: firstName,
@@ -112,7 +157,7 @@ export async function postAutopilot(email, firstName, lastName, txData, pledgeTy
 }
 
 // Sell order (exact input) -> calculates amount bought (output)
-export async function quoteEthToPan(etherToSpend, provider, { token, exchange }) {
+export async function quoteEthToPan(etherToSpend: utils.BigNumber, provider, { token, exchange }) {
   console.log('');
   // Sell ETH for PAN
   const ethAmount = BN(etherToSpend);
@@ -140,7 +185,7 @@ export async function quoteEthToPan(etherToSpend, provider, { token, exchange })
 }
 
 // Post to donations API
-export async function postDonation(donationData) {
+export async function postDonation(donationData: IAPIDonation) {
   const { endpoint, headers } = getEndpointAndHeaders();
   const url = `${endpoint}/api/donations`;
   const res = await fetch(url, {
@@ -163,7 +208,11 @@ export async function postDonation(donationData) {
 /**
  *  Prepare donation data for API call
  */
-export function formatDonation(txInfo, ipfsMetadata, userInfo) {
+export function formatDonation(
+  txInfo: IDonationTx,
+  ipfsMetadata: IMetadata,
+  userInfo
+): IAPIDonation {
   const pledgeMonthlyUSD = parseInt(toUSDCents(ipfsMetadata.pledgeMonthlyUSD.toString()));
   const { tokens } = txInfo;
   const { company } = userInfo;
