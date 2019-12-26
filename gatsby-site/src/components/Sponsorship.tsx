@@ -450,7 +450,12 @@ class Sponsorship extends React.Component {
         message: 'Approving tokens...',
       });
       // Approve token capacitor
-      await this.token.functions.approve(this.tokenCapacitor.address, constants.MaxUint256);
+      const tx = await this.token.functions.approve(this.tokenCapacitor.address, constants.MaxUint256);
+      this.setState({
+        message: 'Waiting for transaction confirmation...',
+      });
+      await this.provider.waitForTransaction(tx.hash);
+
       // Call donate again
       return this.donatePan(multihash);
     }
