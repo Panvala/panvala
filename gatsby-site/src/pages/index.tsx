@@ -273,11 +273,13 @@ const IndexPage = () => {
             </a>
           </div>
           <div className="dtc-ns dn w-50 v-mid">
-            <img
-              alt=""
-              src={home2p2}
-              className="absolute w-25-l w-40 z-2 nl4 mt6-l mt5 pt5-l pt5"
-            />
+            <a href="/grants">
+              <img
+                alt=""
+                src={home2p2}
+                className="absolute w-25-l w-40 z-2 nl4 mt6-l mt5 pt5-l pt5"
+              />
+            </a>
             <img alt="" src={home2} className="full-clip-up-sm relative z-1" />
           </div>
           <img
