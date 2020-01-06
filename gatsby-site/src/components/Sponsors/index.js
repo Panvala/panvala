@@ -1,0 +1,1 @@
+export { SponsorsHeader } from './SponsorsHeader';
