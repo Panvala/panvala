@@ -10,8 +10,16 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
               id
               firstName
               lastName
+              image {
+                publicURL
+              }
               story
-              teamInfo
+              team {
+                name
+                description
+              }
+              goal
+              slug
             }
           }
         }
@@ -35,8 +43,10 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
         id: node.id,
         firstName: node.firstName,
         lastName: node.lastName,
+        image: node.image,
         story: node.story,
-        teamInfo: node.teamInfo,
+        team: node.team,
+        goal: node.goal,
       },
     });
   });

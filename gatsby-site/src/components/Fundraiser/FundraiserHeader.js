@@ -7,7 +7,7 @@ export function FundraiserHeader() {
     <Box className="bg-gradient bottom-clip-up relative z-5" height="350px">
       <Nav />
       <Box textAlign="center" color="white" bold fontSize={5} mt={3}>
-        Panvala Fundraiser
+        Fundraiser Leagues
       </Box>
       <Box flex justifyContent="center">
         <Box
@@ -19,9 +19,9 @@ export function FundraiserHeader() {
           color="white"
           mt={3}
         >
-          Donating to Panvala sustains the whole Ethereum ecosystem. Supporting a fundraiser with
-          your donation moves their future grant applications to the top of the list for
-          consideration.
+          Donating to Panvala sustains the whole Ethereum ecosystem while
+          increasing the next grant for the team you support. Donations are matched by Panvala's
+          token supply.
         </Box>
       </Box>
     </Box>

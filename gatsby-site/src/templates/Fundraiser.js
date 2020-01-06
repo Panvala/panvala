@@ -25,7 +25,7 @@ const Fundraiser = props => {
       <Box mt="-5vw" className="bottom-clip-down relative z-3" bg="white" height="1000px">
         <Box flex>
           <FundraiserProfile {...profileInfo} />
-          <FunderBoard />
+          <FunderBoard profileLink={props.location.href} {...profileInfo} />
         </Box>
       </Box>
 

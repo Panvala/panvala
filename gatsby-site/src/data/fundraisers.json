@@ -2,13 +2,25 @@
   {
     "firstName": "First",
     "lastName": "Last",
+    "image": "../img/fundraisers/matching.png",
     "story": "Fundraiser's story",
-    "teamInfo": "Fundraiser's team information"
+    "goal": 300,
+    "team": {
+        "name": "Some team",
+        "description": "Team description."
+    },
+    "slug": "first-last"
   },
   {
     "firstName": "Vivek",
     "lastName": "Singh",
-    "story": "\"I’m fundraising for Panvala because I think community-driven funding for Ethereum is crucial to fulfill the Web 3 vision.\"",
-    "teamInfo": "Vivek is on the Gitcoin team, which has earned Panvala grants for their work on dapps."
+    "image": "../img/fundraisers/vivek.png",
+    "story": "I’m fundraising for Panvala because I think community-driven funding for Ethereum is crucial to fulfill the Web 3 vision.",
+    "goal": 500,
+    "team": {
+        "name": "Gitcoin",
+        "description": ""
+    },
+    "slug": "vivek-singh"
   }
 ]

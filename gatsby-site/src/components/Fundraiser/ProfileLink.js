@@ -9,11 +9,10 @@ function copyT() {
   console.log('copyText:', copyText);
 }
 
-export function ProfileLink() {
-  const link = 'https://link.io';
+export function ProfileLink(props) {
   return (
     <>
-      <input readOnly id="input-copy" value={link} />
+      <input readOnly id="input-copy" value={props.href} />
       <img src={copySvg} onClick={copyT} />
     </>
   );

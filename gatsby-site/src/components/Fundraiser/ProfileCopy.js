@@ -1,7 +1,9 @@
 import React from 'react';
 import Box from '../system/Box';
 
-export function ProfileCopy({ firstName, lastName, story, teamInfo }) {
+export function ProfileCopy({ firstName, lastName, story, teamInfo, team }) {
+  const teamDescription = `${firstName} is fundraising for the ${team.name} team. ${team.description}`;
+
   return (
     <>
       <Box flex column maxWidth={'500px'}>
@@ -9,9 +11,9 @@ export function ProfileCopy({ firstName, lastName, story, teamInfo }) {
           {`${firstName} ${lastName}`}
         </Box>
         <Box bold mb={4}>
-          {story}
+          {`"${story}"`}
         </Box>
-        <Box>{teamInfo}</Box>
+        <Box>{teamDescription}</Box>
       </Box>
     </>
   );
