@@ -36,8 +36,11 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
   // Create pages for each json fundraiser
   const fundraiserTemplate = path.resolve(__dirname, 'src/templates/Fundraiser.js');
   result.data.allFundraisersJson.edges.forEach(({ node }) => {
+    const team = node.team.name.toLowerCase().replace(' ', '-');
+    const firstName = node.firstName.toLowerCase();
+
     createPage({
-      path: `/fundraisers/${node.firstName.toLowerCase()}`,
+      path: `/league/${team}/${firstName}`,
       component: fundraiserTemplate,
       context: {
         id: node.id,
