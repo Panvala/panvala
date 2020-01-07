@@ -448,9 +448,9 @@ export const withDonationFlow = WrappedComponent => {
               multihash,
             };
             await postAutopilot(
+              userData.email,
               userData.firstName,
               userData.lastName,
-              userData.email,
               txData,
               pledgeType
             );
