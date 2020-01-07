@@ -24,26 +24,38 @@ export interface IDonation extends IPublicDonation {
   lastName?: string;
   email?: string;
   company?: string;
+  fundraiser?: string;
 }
 
 export function addDonation(donation: IDonation) {
   return Donation.create(donation);
 }
 
+const publicFields = [
+  'txHash',
+  'metadataHash',
+  'sender',
+  'donor',
+  'tokens',
+  'metadataVersion',
+  'memo',
+  'usdValueCents',
+  'ethValue',
+  'pledgeMonthlyUSDCents',
+  'pledgeTerm',
+];
+
 export function getPublicDonations(): Promise<IPublicDonation[]> {
   return Donation.findAll({
-    attributes: [
-      'txHash',
-      'metadataHash',
-      'sender',
-      'donor',
-      'tokens',
-      'metadataVersion',
-      'memo',
-      'usdValueCents',
-      'ethValue',
-      'pledgeMonthlyUSDCents',
-      'pledgeTerm',
-    ],
+    attributes: publicFields,
+  });
+}
+
+export function getDonationsForFundraiser(fundraiser: string): Promise<IPublicDonation[]> {
+  return Donation.findAll({
+    attributes: publicFields,
+    where: {
+      fundraiser,
+    },
   });
 }

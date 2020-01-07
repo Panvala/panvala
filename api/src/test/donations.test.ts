@@ -4,7 +4,7 @@ import { bigNumberify, hashMessage } from 'ethers/utils';
 import app from '..';
 import { migrate } from '../migrate';
 import { sequelize } from '../models';
-import { IDonation, addDonation, getPublicDonations, IPublicDonation } from '../utils/donations';
+import { IDonation, addDonation, getPublicDonations, IPublicDonation, getDonationsForFundraiser } from '../utils/donations';
 import {
   someTxHash,
   someCID,
@@ -71,6 +71,7 @@ describe('API endpoints', () => {
         ethValue: toBaseTokens(1.337),
         pledgeMonthlyUSDCents: 1500,
         pledgeTerm: 3,
+        fundraiser: someAddress,
       };
 
       const result = await request(app)
@@ -289,6 +290,31 @@ describe('donation utilities', () => {
     userFields.forEach(field => {
       expect(data[field]).toBeUndefined();
     });
+  });
+
+  test('it should get donations for a fundraiser', async () => {
+    const fundraiser = someAddress;
+    const fundraiser2 = fundraiser.replace('a', 'b');
+    const data: IDonation = {
+      txHash: '0x',
+      metadataHash: '',
+      sender: '0x',
+      donor: '0x',
+      tokens: '0x',
+      fundraiser,
+    };
+    // add two with a fundraiser
+    await addDonation(data);
+    await addDonation(data);
+    // add another one
+    await addDonation({ ...data, fundraiser: fundraiser2 });
+
+    // Expect only the two
+    const donations: IPublicDonation[] = await getDonationsForFundraiser(fundraiser);
+    expect(donations).toHaveLength(2);
+
+    const donations2: IPublicDonation[] = await getDonationsForFundraiser(fundraiser2);
+    expect(donations2).toHaveLength(1);
   });
 
   describe('missing required fields', () => {

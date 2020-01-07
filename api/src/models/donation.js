@@ -74,6 +74,10 @@ module.exports = (sequelize, DataTypes) => {
       company: {
         type: DataTypes.STRING,
       },
+      // extra data
+      fundraiser: {
+        type: DataTypes.STRING,
+      }
     },
     {}
   );
