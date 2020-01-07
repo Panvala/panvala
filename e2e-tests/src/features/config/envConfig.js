@@ -8,3 +8,4 @@ export const METAMASK_PASSWORD = process.env.METAMASK_PASSWORD;
 export const METAMASK_SEED = process.env.METAMASK_SEED;
 export const METAMASK_NETWORK_NAME = process.env.METAMASK_NETWORK_NAME;
 export const METAMASK_NETWORK_URL = process.env.METAMASK_NETWORK_URL;
+export const AUTOPILOT_API_URL = process.env.AUTOPILOT_API_URL;

@@ -20,7 +20,8 @@ When(/^I enter the last name "(.*)" on the Panvala Sponsor webpage$/, async (las
   await sponsor.enterLastName(lastname);
 });
 
-When(/^I enter the email "(.*)" on the Panvala Sponsor webpage$/, async (email) => {
+When(/^I enter the email "(.*)" on the Panvala Sponsor webpage$/, async function(email) {
+  this.setAutoPilotContact({email: email});
   await sponsor.enterEmail(email);
 });
 

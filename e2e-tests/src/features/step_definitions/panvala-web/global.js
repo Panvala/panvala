@@ -1,13 +1,13 @@
 import { When, Then } from 'cucumber';
 import panvala from '../../page_objects/panvala-web/index';
 import { expect } from 'chai';
-const donate = new panvala.Donate();
-const poll = new panvala.Poll();
-const sponsor = new panvala.Sponsor();
 const pagesMap = {
-  Donate: donate,
-  Poll: poll,
-  Sponsor: sponsor
+  Donate: new panvala.Donate(),
+  Grants: new panvala.Grants(),
+  Pledge: new panvala.Pledge(),
+  Poll: new panvala.Poll(),
+  Sponsor: new panvala.Sponsor(),
+  Team: new panvala.Team()
 };
 
 When(/^I navigate to the "(.*)" webpage$/, async (pageName) => {

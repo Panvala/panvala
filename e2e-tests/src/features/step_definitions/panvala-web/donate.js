@@ -16,7 +16,8 @@ When(/^I enter the last name "(.*)" on the Panvala Donate webpage$/, async (last
   await donate.enterLastName(lastname);
 });
 
-When(/^I enter the email "(.*)" on the Panvala Donate webpage$/, async (email) => {
+When(/^I enter the email "(.*)" on the Panvala Donate webpage$/, async function(email) {
+  this.setAutoPilotContact({email: email});
   await donate.enterEmail(email);
 });
 

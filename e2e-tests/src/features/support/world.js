@@ -8,6 +8,7 @@ class CustomWorld {
         this.uniqueId = new Date().valueOf();
         this.proposal = {};
         this.slate = {};
+        this.autoPilotContact = {};
     }
 
     setProposal(proposalObject) {
@@ -36,7 +37,7 @@ class CustomWorld {
 
     getProposal() {
         const proposal = this.proposal;
-        console.log('Getting the proposal: \n' + JSON.stringify(proposal));
+        console.log(`Getting the proposal: \n ${JSON.stringify(proposal)}`);
         return proposal;
     }
 
@@ -57,8 +58,23 @@ class CustomWorld {
 
     getSlate() {
         const slate = this.slate;
-        console.log('Getting the slate: \n' + JSON.stringify(slate));
+        console.log(`Getting the slate: \n' ${JSON.stringify(slate)}`);
         return slate;
+    }
+
+    setAutoPilotContact(contactObject) {
+        const contact = this.autoPilotContact;
+        console.log(`Setting the contact: \n ${JSON.stringify(contactObject)}`);
+        if (typeof contactObject.email !== 'undefined') {
+            contact.email = contactObject.email;
+        }
+        this.autoPilotContact = contact;
+    }
+
+    getAutoPilotContact() {
+        const contact = this.autoPilotContact;
+        console.log(`Getting the contact: \n ${JSON.stringify(contact)}`);
+        return contact;
     }
 };
 
