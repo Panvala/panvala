@@ -4,7 +4,13 @@ import { bigNumberify, hashMessage } from 'ethers/utils';
 import app from '..';
 import { migrate } from '../migrate';
 import { sequelize } from '../models';
-import { IDonation, addDonation, getPublicDonations, IPublicDonation, getDonationsForFundraiser } from '../utils/donations';
+import {
+  IDonation,
+  addDonation,
+  getPublicDonations,
+  IPublicDonation,
+  getDonationsForFundraiser,
+} from '../utils/donations';
 import {
   someTxHash,
   someCID,
@@ -71,7 +77,7 @@ describe('API endpoints', () => {
         ethValue: toBaseTokens(1.337),
         pledgeMonthlyUSDCents: 1500,
         pledgeTerm: 3,
-        fundraiser: someAddress,
+        fundraiser: 'fundraiser',
       };
 
       const result = await request(app)
@@ -237,18 +243,76 @@ describe('API endpoints', () => {
       await addDonation(d2);
 
       // Retrieve them
-      const result = await request(app)
-        .get(route)
-        .send(data);
+      const result = await request(app).get(route);
 
       expect(result.ok).toBe(true);
       expect(result.body).toHaveLength(2);
     });
 
     test('it should return an empty list if there are no donations', async () => {
-      const result = await request(app)
-        .get(route)
-        .send(data);
+      const result = await request(app).get(route);
+
+      expect(result.ok).toBe(true);
+      expect(result.body).toHaveLength(0);
+    });
+  });
+
+  describe('GET /api/fundraisers/:fundraiser/donations', () => {
+    const fundraiser1 = 'fundraiser-1';
+    const fundraiser2 = 'fundraiser-2';
+
+    const route = '/api/fundraisers';
+    let data: IDonation;
+
+    beforeEach(() => {
+      data = {
+        txHash: someTxHash,
+        metadataHash: someCID,
+        sender: someAddress,
+        donor: someAddress,
+        tokens: toBaseTokens(1000),
+        metadataVersion: '1',
+        memo: 'A donation',
+        usdValueCents: '4500',
+        ethValue: toBaseTokens(1.337),
+        pledgeMonthlyUSDCents: 1500,
+        pledgeTerm: 3,
+        firstName: 'Jane',
+        lastName: 'Crypto',
+        email: 'jane@example.com',
+        company: 'Example Company',
+        fundraiser: fundraiser1,
+      };
+    });
+
+    test('it should return donations for a given fundraiser', async () => {
+      // Add a couple donations
+      const d2: IDonation = {
+        ...data,
+        txHash: hashMessage('d2'),
+        firstName: 'John',
+        lastName: 'Ether',
+        email: 'john@example.com',
+        fundraiser: fundraiser2,
+      };
+      await addDonation(data);
+      await addDonation(d2);
+
+      // Retrieve for fundraiser 1
+      const result = await request(app).get(`${route}/${fundraiser1}/donations`);
+
+      expect(result.ok).toBe(true);
+      expect(result.body).toHaveLength(1);
+
+      // Retrieve for fundraiser 2
+      const result2 = await request(app).get(`${route}/${fundraiser2}/donations`);
+
+      expect(result2.ok).toBe(true);
+      expect(result2.body).toHaveLength(1);
+    });
+
+    test('it should return an empty list if there are no donations', async () => {
+      const result = await request(app).get(`${route}/${fundraiser1}/donations`);
 
       expect(result.ok).toBe(true);
       expect(result.body).toHaveLength(0);
@@ -257,29 +321,26 @@ describe('API endpoints', () => {
 });
 
 describe('donation utilities', () => {
-  test('it should create a new donation', async () => {
-    const data: IDonation = {
-      txHash: '0x',
-      metadataHash: '',
-      sender: '0x',
-      donor: '0x',
+  const txHash = hashMessage('donate');
+  let data: IDonation;
+
+  beforeEach(() => {
+    data = {
+      txHash,
+      metadataHash: someCID,
+      sender: someAddress,
+      donor: someAddress,
       tokens: '0x',
     };
+  });
+
+  test('it should create a new donation', async () => {
     const donation = await addDonation(data);
-    Object.keys(data).forEach(key => {
-      expect(donation[key]).toBe(data[key]);
-    });
+    expectFields(donation, data);
     // console.log(donation);
   });
 
   test('it should get public donation information', async () => {
-    const data: IDonation = {
-      txHash: '0x',
-      metadataHash: '',
-      sender: '0x',
-      donor: '0x',
-      tokens: '0x',
-    };
     await addDonation(data);
 
     const donations: IPublicDonation[] = await getPublicDonations();
@@ -293,16 +354,10 @@ describe('donation utilities', () => {
   });
 
   test('it should get donations for a fundraiser', async () => {
-    const fundraiser = someAddress;
-    const fundraiser2 = fundraiser.replace('a', 'b');
-    const data: IDonation = {
-      txHash: '0x',
-      metadataHash: '',
-      sender: '0x',
-      donor: '0x',
-      tokens: '0x',
-      fundraiser,
-    };
+    const fundraiser = 'fundraiser-1';
+    const fundraiser2 = 'fundraiser-2';
+    data.fundraiser = fundraiser;
+
     // add two with a fundraiser
     await addDonation(data);
     await addDonation(data);
@@ -318,18 +373,6 @@ describe('donation utilities', () => {
   });
 
   describe('missing required fields', () => {
-    let data: IDonation;
-
-    beforeEach(() => {
-      data = {
-        txHash: '0x',
-        metadataHash: '',
-        sender: '0x',
-        donor: '0x',
-        tokens: '0x',
-      };
-    });
-
     const requiredFields = ['txHash', 'metadataHash', 'sender', 'donor', 'tokens'];
     test.each(requiredFields)('it should fail if %s is null', async field => {
       data[field] = null;

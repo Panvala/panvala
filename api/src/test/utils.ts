@@ -57,6 +57,7 @@ export function initProposals() {
 }
 
 export const someAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+export const addressB = someAddress.replace('a', 'b');
 export const someTxHash = `0x${'b'.repeat(64)}`;
 export const someCID = 'Qmbvjad1niHUjhWUrqkYUgXxgyvGbg3rFDGfZBUVx4gyJX';
 
@@ -65,16 +66,27 @@ export function getWallet() {
   return Wallet.fromMnemonic(mnemonic);
 }
 
+// Does case-insensitive comparison for strings, but regular strict
+// equality for other types
+function lenientValueCheck(actual: any, expected: any) {
+    const isString = typeof actual === 'string';
+    if (isString) {
+      expect(actual.toLowerCase()).toBe(expected.toLowerCase())
+    } else {
+      expect(actual).toBe(expected);
+    }
+}
+
 // Check that all expected fields are there
 export function expectFields(actual: object, expected: object) {
   Object.keys(expected).forEach(key => {
-    expect(actual[key]).toBe(expected[key]);
+    lenientValueCheck(actual[key], expected[key]);
   });
 }
 
 export function expectFieldsWithTypes(actual: object, expected: object) {
   Object.keys(expected).forEach(key => {
-    expect(actual[key]).toBe(expected[key]);
+    lenientValueCheck(actual[key], expected[key]);
     expect(typeof actual[key]).toBe(typeof expected[key]);
   });
 }

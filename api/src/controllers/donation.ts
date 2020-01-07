@@ -1,4 +1,4 @@
-import { addDonation, getPublicDonations } from '../utils/donations';
+import { addDonation, getPublicDonations, getDonationsForFundraiser } from '../utils/donations';
 import { validateDonation } from '../utils/validation';
 
 export function create(req, res) {
@@ -38,5 +38,24 @@ export function list(req, res) {
         msg: error.message,
         errors: error.errors,
       });
+    });
+}
+
+export function getByFundraiser(req, res) {
+  const { fundraiser } = req.params;
+
+  // fundraiser must be a non-empty string
+  if (fundraiser == null || typeof fundraiser !== 'string' || fundraiser.length === 0) {
+    return res.status(404);
+  }
+
+  return getDonationsForFundraiser(fundraiser)
+    .then(donations => {
+      return res.json(donations);
+    })
+    .catch(error => {
+      const msg = `Error getting donations: ${error}`;
+      console.error(msg);
+      return res.status(500).send(msg);
     });
 }

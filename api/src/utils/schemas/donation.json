@@ -61,8 +61,7 @@
       "type": "string"
     },
     "fundraiser": {
-      "type": "string",
-      "address": true
+      "type": "string"
     }
   },
   "additionalProperties": false,

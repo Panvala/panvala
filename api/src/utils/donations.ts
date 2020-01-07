@@ -1,3 +1,5 @@
+import { ensureChecksumAddress } from './format';
+
 const { Donation } = require('../models');
 
 // Base transaction info -- all required
@@ -28,7 +30,17 @@ export interface IDonation extends IPublicDonation {
 }
 
 export function addDonation(donation: IDonation) {
-  return Donation.create(donation);
+  const { sender, donor } = donation;
+
+  // Normalize donation data before saving for consistent
+  // retrieval
+  const normalized: IDonation = {
+    ...donation,
+    sender: ensureChecksumAddress(sender),
+    donor: ensureChecksumAddress(donor),
+  };
+
+  return Donation.create(normalized);
 }
 
 const publicFields = [
