@@ -99,4 +99,5 @@ export const setupRoutes = app => {
 
   // Fundraisers
   app.get('/api/fundraisers/:fundraiser/donations', donation.getByFundraiser);
+  app.get('/api/fundraisers/:fundraiser/donations/quarter', donation.getStatsByFundraiser);
 };

@@ -10,6 +10,8 @@ import {
   getPublicDonations,
   IPublicDonation,
   getDonationsForFundraiser,
+  calculateStats,
+  getQuarterlyDonationStats,
 } from '../utils/donations';
 import {
   someTxHash,
@@ -18,6 +20,7 @@ import {
   expectFields,
   toBaseTokens,
   expectFieldsWithTypes,
+  testFundraiserDonations,
 } from './utils';
 
 const { Donation } = require('../models');
@@ -318,6 +321,29 @@ describe('API endpoints', () => {
       expect(result.body).toHaveLength(0);
     });
   });
+
+  describe('GET /api/fundraisers/:fundraiser/donations/quarterly', () => {
+    const fundraiser = 'fundraiser-1';
+
+    beforeEach(async () => {
+      const donations = testFundraiserDonations;
+
+      // add all donations
+      await Promise.all(donations.map(d => addDonation(d)));
+    });
+
+    test('it should retrieve donation stats for a fundraiser', async () => {
+      const route = `/api/fundraisers/${fundraiser}/donations/quarter`;
+
+      const result = await request(app).get(route);
+      expect(result.ok).toBe(true);
+
+      const stats = result.body;
+      console.log(stats);
+      // repeated donors: Anonymous and David West
+      expect(Object.keys(stats.donors)).toHaveLength(5);
+    })
+  });
 });
 
 describe('donation utilities', () => {
@@ -370,6 +396,52 @@ describe('donation utilities', () => {
 
     const donations2: IPublicDonation[] = await getDonationsForFundraiser(fundraiser2);
     expect(donations2).toHaveLength(1);
+  });
+
+  describe('donation stats', () => {
+    const fundraiser = 'fundraiser-1';
+    const donations: IDonation[] = testFundraiserDonations;
+
+    const sumCents = (values: IDonation[]) => {
+      return values.reduce((prev, current) => {
+        return prev + parseInt(current.usdValueCents);
+      }, 0);
+    };
+
+    test('it should calculate stats for donations', async () => {
+      const stats = calculateStats(donations);
+      // console.log(JSON.stringify(stats));
+
+      const expectedTotal: number = sumCents(donations);
+      expect(stats.totalUsdCents).toBe(expectedTotal);
+
+      // repeated entries should be handled
+      expect(stats.donors['Anonymous']).toHaveLength(2);
+      expect(stats.donors['David West']).toHaveLength(2);
+    });
+
+    test('stats should be empty if there are no donations', async () => {
+      const stats = calculateStats([]);
+      const expectedTotal = 0;
+      expect(stats.totalUsdCents).toBe(expectedTotal);
+      expect(Object.keys(stats.donors)).toHaveLength(0);
+    })
+
+    test('it should get donations for a fundraiser for the current quarter', async () => {
+      // donations for our fundraiser
+      await Promise.all(donations.map(d => addDonation(d)));
+
+      // get the data back
+      const stats = await getQuarterlyDonationStats(fundraiser);
+      // console.log('quarterly', JSON.stringify(stats));
+
+      const expectedTotal: number = sumCents(donations);
+      expect(stats.totalUsdCents).toBe(expectedTotal);
+
+      // repeated entries should be handled
+      expect(stats.donors['Anonymous']).toHaveLength(2);
+      expect(stats.donors['David West']).toHaveLength(2);
+    });
   });
 
   describe('missing required fields', () => {

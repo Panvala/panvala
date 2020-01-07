@@ -71,3 +71,56 @@ export function getDonationsForFundraiser(fundraiser: string): Promise<IPublicDo
     },
   });
 }
+
+export function calculateStats(donations: any[]) {
+  const initialState = { totalUsdCents: 0, donors: {} };
+  const stats = donations.reduce((prev, current) => {
+    const { usdValueCents, firstName, lastName, createdAt } = current;
+
+    // ignore null cents values
+    const centsValue: number = usdValueCents != null ? parseInt(usdValueCents) : 0;
+
+    // if there's a first name or a last name, use that as the key
+    // otherwise, add an entry for 'Anonymous'
+    const rawKey = firstName != null || lastName != null ? `${firstName} ${lastName || ''}` : 'Anonymous';
+    const key = rawKey.trim();
+
+    const totalUsdCents: number = prev.totalUsdCents + centsValue;
+
+    // update existing entry
+    if (prev.donors[key] != null) {
+      // console.log('updating entry >', key);
+      const donors = prev.donors[key];
+      donors.push({ usdValueCents: centsValue, timestamp: createdAt });
+
+      return {
+        ...prev,
+        totalUsdCents,
+        donors: {
+          ...prev.donors,
+          [key]: donors,
+        }
+      }
+    } else {
+      // create new entry
+      // console.log('creating new entry >', key);
+      return {
+        ...prev,
+        totalUsdCents,
+        donors: {
+          ...prev.donors,
+          [key]: [{ usdValueCents: centsValue, timestamp: createdAt }],
+        }
+      }
+    }
+
+  }, initialState);
+
+  return stats;
+}
+
+export async function getQuarterlyDonationStats(fundraiser: string) {
+  // TODO: limit to current quarter
+  const donations = await Donation.findAll({ where: { fundraiser }});
+  return calculateStats(donations);
+}
