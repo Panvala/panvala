@@ -134,7 +134,7 @@ const Sponsors = () => {
       </Box> */}
 
       <Box mt="-5vw">
-        <section id="team-contact" className="bg-gray pv6 top-clip-down">
+        <section id="sponsors-contact" className="bg-gray pv6 top-clip-down">
           <div className="w-50-l w-70-m w-90 center tc">
             <h2 className="f2-5 ma0 mb3 mt3 lh-copy">Become a Sponsor</h2>
             <p className="ma0 f6 lh-text mb3">
@@ -149,7 +149,7 @@ const Sponsors = () => {
               {props => (
                 <form
                   className="w-70-l w-90-m w-100 center"
-                  name="team-contact"
+                  name="sponsors-contact"
                   onSubmit={props.handleSubmit}
                 >
                   <FieldText
@@ -184,7 +184,7 @@ const Sponsors = () => {
                   />
 
                   <input
-                    id="team-contact-button"
+                    id="sponsors-contact-button"
                     type="submit"
                     name="submit"
                     className="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4 tj"
