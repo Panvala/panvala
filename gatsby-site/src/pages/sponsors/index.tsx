@@ -11,6 +11,7 @@ import { SponsorsHeader } from '../../components/Sponsors';
 import helium from '../../img/sponsors/helium.png';
 import mythx from '../../img/sponsors/mythx.png';
 import unstoppableDomains from '../../img/sponsors/unstoppable-domains.png';
+import Modal from '../../components/Modal';
 
 const ContactFormSchema = yup.object({
   fullName: yup
@@ -65,9 +66,9 @@ const Sponsors = () => {
               <img src={unstoppableDomains} />
             </Box>
             <Box width={['365px']} lineHeight="1.7">
-              Countless projects and people depend upon the Ethereum blockchain for their success.
-              Contributing to Panvala rewards the teams who solve problems like security and
-              scalability.
+              With Unstoppable Domains, you can replace cryptocurrency addresses with a human
+              readable name or launch uncensorable websites. Use your .crypto domain on any
+              blockchain.
             </Box>
           </Box>
         </Box>
@@ -197,6 +198,14 @@ const Sponsors = () => {
           </div>
         </section>
       </Box>
+
+      {/* <!-- Modal --> */}
+      <Modal
+        isOpen={isOpen}
+        handleClose={handleClose}
+        title="Form Submitted"
+        copy="Thank you. We'll be in touch!"
+      />
     </Layout>
   );
 };
