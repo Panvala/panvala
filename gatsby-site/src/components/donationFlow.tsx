@@ -35,6 +35,27 @@ interface DonationState {
   error: boolean;
 }
 
+interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  company?: string;
+  fundraiser?: string;
+}
+
+interface DonationMetadata {
+  monthlyPledge: any;
+  pledgeDuration: number;
+  memo: string;
+}
+
+export interface IDonationFlowData {
+  userData: UserData;
+  donationMetadata: DonationMetadata;
+  pledgeType: string;
+  donationTier: string;
+}
+
 export const withDonationFlow = WrappedComponent => {
   return class extends React.Component {
     state: DonationState;

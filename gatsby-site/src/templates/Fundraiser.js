@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+
 import SEO from '../components/seo';
-import Footer from '../components/Footer';
 import Layout from '../components/Layout';
 import {
   FundraiserProfile,
   FundraiserHeader,
   FundraiserOverview,
-  FundraiserForm,
   FunderBoard,
 } from '../components/Fundraiser';
 import Box from '../components/system/Box';
+import FundraiserDonation from '../components/Fundraiser/FundraiserDonation';
+
 import { getFundraiserDonations } from '../utils/api';
 
 const Fundraiser = props => {
@@ -19,7 +20,14 @@ const Fundraiser = props => {
   const { fetchDonations } = props;
   const { slug: fundraiser } = profileInfo;
 
-  const [donations, setDonations] = useState({ totalUsdCents: '0', donors: {} })
+  const [donations, setDonations] = useState({ totalUsdCents: '0', donors: {} });
+  const donateRef = useRef(null);
+
+  function onDonateClick() {
+    donateRef.current.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }
 
   useEffect(() => {
     // fetch the donation data from the API
@@ -31,7 +39,7 @@ const Fundraiser = props => {
 
       console.log('fetching data for', fundraiser);
       try {
-        const data = await getFundraiserDonations(fundraiser)
+        const data = await getFundraiserDonations(fundraiser);
         setDonations(data);
       } catch (error) {
         console.error(`Problem fetching donation data: ${error}`);
@@ -45,11 +53,11 @@ const Fundraiser = props => {
       }
     } else {
       // Use the passed in function (for storybook)
-      const data = fetchDonations(fundraiser)
+      const data = fetchDonations(fundraiser);
       console.log('fetched', data);
       setDonations(data);
     }
-  }, []);
+  }, [fetchDonations, fundraiser]);
 
   return (
     <Layout>
@@ -60,15 +68,20 @@ const Fundraiser = props => {
       <Box mt="-5vw" className="bottom-clip-down relative z-3" bg="white" height="1000px">
         <Box flex>
           <FundraiserProfile {...profileInfo} />
-          <FunderBoard profileLink={props.location.href} {...profileInfo} donations={donations} />
+          <FunderBoard
+            profileLink={props.location.href}
+            {...profileInfo}
+            donations={donations}
+            onDonateClick={onDonateClick}
+          />
         </Box>
       </Box>
 
       <FundraiserOverview {...profileInfo} />
 
       <Box mt="-5vw" className="relative z-2" height="1000px">
-        <Box p={'10vw'}>
-          <FundraiserForm />
+        <Box p={'10vw'} ref={donateRef}>
+          <FundraiserDonation fundraiser={fundraiser} />
         </Box>
       </Box>
     </Layout>

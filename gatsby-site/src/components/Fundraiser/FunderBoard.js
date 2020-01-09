@@ -4,9 +4,7 @@ import Box from '../system/Box';
 import DonateButton from '../DonateButton';
 
 export function FunderBoard(props) {
-  const { goal, firstName, profileLink, donations } = props;
-  // TODO: jump to donation form on click
-
+  const { goal, firstName, profileLink, donations, onDonateClick } = props;
   const { donors, totalUsdCents } = donations;
 
   const numEntries = Object.keys(donors).length;
@@ -37,7 +35,7 @@ export function FunderBoard(props) {
             <DonorList donors={donors} />
           </>
         )}
-        <DonateButton disabled={false} text="Donate" handleClick={() => null} />
+        <DonateButton disabled={false} text="Donate" handleClick={onDonateClick} />
 
         <Box>Share {firstName}'s fundraiser link</Box>
         <ProfileLink href={profileLink} />
