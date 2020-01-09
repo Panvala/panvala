@@ -5,10 +5,12 @@ import * as yup from 'yup';
 
 import Layout from '../../components/Layout';
 import SEO from '../../components/seo';
-import Nav from '../../components/Nav';
 import Box from '../../components/system/Box';
 import FieldText from '../../components/FieldText';
 import { SponsorsHeader } from '../../components/Sponsors';
+import helium from '../../img/sponsors/helium.png';
+import mythx from '../../img/sponsors/mythx.png';
+import unstoppableDomains from '../../img/sponsors/unstoppable-domains.png';
 
 const ContactFormSchema = yup.object({
   fullName: yup
@@ -49,26 +51,62 @@ const Sponsors = () => {
 
       <SponsorsHeader />
 
-      <Box mt="-5vw" className="bottom-clip-up relative z-3" bg="white" height="520px">
-        <Box textAlign="center" bold fontSize={5} mt={6}>
+      <Box mt="-5vw" className="bottom-clip-up relative z-3" bg="white" height="420px">
+        <Box textAlign="center" bold fontSize={5} mt={6} mb={5}>
           Meet our Sponsors
+        </Box>
+
+        <Box flex>
+          <Box bold fontSize={4} width="50%" textAlign="center">
+            Silver - $15,000/year
+          </Box>
+          <Box width="50%">
+            <Box mb={4}>
+              <img src={unstoppableDomains} />
+            </Box>
+            <Box width={['365px']} lineHeight="1.7">
+              Countless projects and people depend upon the Ethereum blockchain for their success.
+              Contributing to Panvala rewards the teams who solve problems like security and
+              scalability.
+            </Box>
+          </Box>
         </Box>
       </Box>
 
       <Box
         mt="-5vw"
-        className="bottom-clip-up relative z-2"
+        className="bottom-clip-down relative z-2"
         bg="#F3F4F8"
         height={['1000px', '1000px', '700px']}
       >
-        <Box p={'10vw'} flex flexWrap="wrap" justifyContent={['center', 'center', 'space-between']}>
-          <Box bold maxWidth="250px" fontSize={5} mb={4}>
+        {/* <Box bold maxWidth="250px" fontSize={5} mb={4}>
             MORE STUFF
+          </Box> */}
+        <Box flex pt={6}>
+          <Box bold fontSize={4} width="50%" textAlign="center">
+            Base - $7,500/year
+          </Box>
+          <Box width="50%">
+            <Box mb={4}>
+              <img src={helium} />
+            </Box>
+            <Box width={['365px']} lineHeight="1.7">
+              With a Helium Hotspot, anyone can earn cryptocurrency by building a wireless network
+              in their city and creating a more connected future.
+            </Box>
+            <Box my={4} ml={'-20px'}>
+              <img src={mythx} />
+            </Box>
+            <Box width={['365px']} lineHeight="1.7">
+              MythX is the premier security analysis service for Ethereum smart contracts. Their
+              mission is to ensure development teams avoid costly errors and make Ethereum a more
+              secure and trustworthy platform.
+            </Box>
           </Box>
         </Box>
       </Box>
 
-      <Box mt="-5vw" className="bottom-clip-down relative z-2" bg="white" height="740px">
+      {/* <Box mt="-5vw" className="bottom-clip-down relative z-2" bg="white" height="740px">
         <Box textAlign="center" bold fontSize={5} mt={6}>
           Sponsorship Levels
         </Box>
@@ -93,78 +131,72 @@ const Sponsors = () => {
             </Box>
           </LevelCard>
         </Box>
-      </Box>
-
-      {/* <Box mt="-5vw" className="relative" bg="grey" height="240px">
-        <h2 className="f2-5 ma0 tc w-50-l center">Become a Sponsor</h2>
-        <Box>
-          Want your business to earn support from the Ethereum community? Submit your information
-          and we'll help you become a Panvala sponsor.
-        </Box>
       </Box> */}
 
-      <section id="team-contact" className="bg-gray pv6 top-clip-down">
-        <div className="w-50-l w-70-m w-90 center tc">
-          <h2 className="f2-5 ma0 mb3 mt3 lh-copy">Become a Sponsor</h2>
-          <p className="ma0 f6 lh-text mb3">
-            Want your business to earn support from the Ethereum community? Submit your information
-            and we'll help you become a Panvala sponsor.
-          </p>
-          <Formik
-            initialValues={{ fullName: '', email: '', message: '' }}
-            onSubmit={handleSubmit}
-            validationSchema={ContactFormSchema}
-          >
-            {props => (
-              <form
-                className="w-70-l w-90-m w-100 center"
-                name="team-contact"
-                onSubmit={props.handleSubmit}
-              >
-                <FieldText
-                  type="text"
-                  id="contact-full-name"
-                  name="fullName"
-                  label="Full Name"
-                  placeholder="Enter your full name"
-                  onChange={props.handleChange}
-                  required
-                />
+      <Box mt="-5vw">
+        <section id="team-contact" className="bg-gray pv6 top-clip-down">
+          <div className="w-50-l w-70-m w-90 center tc">
+            <h2 className="f2-5 ma0 mb3 mt3 lh-copy">Become a Sponsor</h2>
+            <p className="ma0 f6 lh-text mb3">
+              Want your business to earn support from the Ethereum community? Submit your
+              information and we'll help you become a Panvala sponsor.
+            </p>
+            <Formik
+              initialValues={{ fullName: '', email: '', message: '' }}
+              onSubmit={handleSubmit}
+              validationSchema={ContactFormSchema}
+            >
+              {props => (
+                <form
+                  className="w-70-l w-90-m w-100 center"
+                  name="team-contact"
+                  onSubmit={props.handleSubmit}
+                >
+                  <FieldText
+                    type="text"
+                    id="contact-full-name"
+                    name="fullName"
+                    label="Full Name"
+                    placeholder="Enter your full name"
+                    onChange={props.handleChange}
+                    required
+                  />
 
-                <FieldText
-                  type="email"
-                  id="contact-email"
-                  name="email"
-                  label="Email"
-                  placeholder="Enter your email address"
-                  onChange={props.handleChange}
-                  required
-                />
+                  <FieldText
+                    type="email"
+                    id="contact-email"
+                    name="email"
+                    label="Email"
+                    placeholder="Enter your email address"
+                    onChange={props.handleChange}
+                    required
+                  />
 
-                <FieldText
-                  component="textarea"
-                  name="message"
-                  id="contact-message"
-                  label="Message"
-                  rows="5"
-                  placeholder="Let us know what you would like to chat about"
-                  onChange={props.handleChange}
-                  required
-                />
+                  <FieldText
+                    component="textarea"
+                    name="message"
+                    id="contact-message"
+                    label="Message"
+                    rows="5"
+                    placeholder="Let us know what you would like to chat about"
+                    onChange={props.handleChange}
+                    required
+                  />
 
-                <input
-                  id="team-contact-button"
-                  type="submit"
-                  name="submit"
-                  className="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4 tj"
-                  value="Get in touch"
-                  disabled={props.isSubmitting}
-                />
-              </form>
-            )}
-          </Formik>
-        </div>
-      </section>
+                  <input
+                    id="team-contact-button"
+                    type="submit"
+                    name="submit"
+                    className="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4 tj"
+                    value="Get in touch"
+                    disabled={props.isSubmitting}
+                  />
+                </form>
+              )}
+            </Formik>
+          </div>
+        </section>
+      </Box>
     </Layout>
   );
 };
