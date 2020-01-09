@@ -6,12 +6,13 @@ import WebsiteModal from '../WebsiteModal';
 
 const FundraiserDonation = props => {
   async function handleDonation(values, actions) {
-    const { firstName, lastName, email, pledgeAmount } = values;
+    const { firstName, lastName, email, pledgeAmount, message } = values;
 
     // Data needed for the donation flow
     const data: IDonationFlowData = {
-      userData: { firstName, lastName, email, fundraiser: props.fundraiser },
-      donationMetadata: { monthlyPledge: pledgeAmount, pledgeDuration: 1, memo: '' },
+      userData: { firstName, lastName, email },
+      donationMetadata: { monthlyPledge: pledgeAmount, pledgeDuration: '1', memo: '' },
+      extraData: { fundraiser: props.fundraiser, message },
       pledgeType: 'donation',
       // modal message: "You are now a Patron"
       donationTier: '',

@@ -40,18 +40,23 @@ interface UserData {
   lastName: string;
   email: string;
   company?: string;
+}
+
+interface ExtraData {
   fundraiser?: string;
+  message?: string;
 }
 
 interface DonationMetadata {
   monthlyPledge: any;
-  pledgeDuration: number;
+  pledgeDuration: string;
   memo: string;
 }
 
 export interface IDonationFlowData {
   userData: UserData;
   donationMetadata: DonationMetadata;
+  extraData?: ExtraData;
   pledgeType: string;
   donationTier: string;
 }
@@ -402,11 +407,12 @@ export const withDonationFlow = WrappedComponent => {
     }
 
     // Execute the donation flow, throwing on error
-    async handleDonation(data, actions) {
+    async handleDonation(data: IDonationFlowData, actions) {
       // console.log('data', data);
       // TODO: validate submitted data
 
-      const { userData, donationMetadata, donationTier, pledgeType } = data;
+      const { userData, donationMetadata, donationTier, pledgeType, extraData: extra } = data;
+      const extraData = extra || {};
 
       try {
         /// 1. Connect, save metadata to IPFS, purchase PAN
@@ -458,7 +464,7 @@ export const withDonationFlow = WrappedComponent => {
           const { txHash } = txInfo;
           if (txHash) {
             // save donation data to API
-            const formattedDonation: IAPIDonation = formatDonation(txInfo, metadata, userData);
+            const formattedDonation: IAPIDonation = formatDonation(txInfo, metadata, userData, extraData);
             console.log('donation data', formattedDonation);
             await postDonation(formattedDonation);
 

@@ -29,7 +29,7 @@ export function FunderBoard(props) {
         ) : (
           <>
             <Box>
-              Raised by {count} people since {periodStart}
+              Raised by {count} {count !== 1 ? 'people' : 'person'} since {periodStart}
             </Box>
 
             <DonorList donors={donors} />
