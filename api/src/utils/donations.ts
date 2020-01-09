@@ -26,7 +26,9 @@ export interface IDonation extends IPublicDonation {
   lastName?: string;
   email?: string;
   company?: string;
+  // extra fields
   fundraiser?: string;
+  message?: string;
 }
 
 export function addDonation(donation: IDonation) {

@@ -77,6 +77,9 @@ module.exports = (sequelize, DataTypes) => {
       // extra data
       fundraiser: {
         type: DataTypes.STRING,
+      },
+      message: {
+        type: DataTypes.STRING,
       }
     },
     {}

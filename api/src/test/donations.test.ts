@@ -81,6 +81,7 @@ describe('API endpoints', () => {
         pledgeMonthlyUSDCents: 1500,
         pledgeTerm: 3,
         fundraiser: 'fundraiser',
+        message: 'Good cause',
       };
 
       const result = await request(app)
