@@ -17,7 +17,7 @@ import {
   IDonationTx,
   IAPIDonation,
 } from '../utils/donate';
-import { loadContracts } from '../utils/env';
+import { loadContracts, getEnvironment, Environment } from '../utils/env';
 
 const { parseEther, hexlify, getAddress, bigNumberify } = utils;
 
@@ -174,10 +174,10 @@ export const withDonationFlow = WrappedComponent => {
         }
       }
 
-      let correctChainId = window.location.href.includes('panvala.com/donate') ? 1 : 4;
-      if (window.location.href.includes('develop.panvala.com/donate')) {
-        correctChainId = 4;
-      }
+      // Use Rinkeby for anything non-production
+      const env = getEnvironment();
+      const correctChainId = env === Environment.production ? 1 : 4;
+
       const network = await this.provider.getNetwork();
       const supportedNetworks = {
         1: 'Main',
