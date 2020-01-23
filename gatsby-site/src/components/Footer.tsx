@@ -60,6 +60,9 @@ export default () => (
             <a href="/grants" className="link dim white-60 f5-l f6 db mb3-ns mb2">
               Grants
             </a>
+            <a href="/sponsors" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Sponsors
+            </a>
             <a href="/donate" className="link dim white-60 f5-l f6 db mb3-ns mb2">
               Donate
             </a>
