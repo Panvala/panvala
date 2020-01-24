@@ -4,26 +4,17 @@ import Nav from '../Nav';
 
 export function SponsorsHeader() {
   return (
-    <Box className="bg-gradient bottom-clip-up relative z-5" height="350px">
+    <section className="bg-gradient bottom-clip-hero pb5">
       <Nav />
-      <Box textAlign="center" color="white" bold fontSize={5} mt={3}>
-        Sponsorships
-      </Box>
-      <Box flex justifyContent="center">
-        <Box
-          textAlign="center"
-          width="50vw"
-          fontSize={2}
-          lineHeight={1.5}
-          opacity="0.6"
-          color="white"
-          mt={3}
-        >
+      {/* <!-- Hero --> */}
+      <div className="w-70-l w-80-m w-90 center tc pv5">
+        <h1 className="white f1-5 b ma0 mb4 w-80-l w-100 center">Sponsors</h1>
+        <p className="white-60 f5 fw4 lh-copy ma0 mb5 w-50-l w-100 center">
           Panvala's sponsors take their marketing budget and spend it on Ethereum infrastructure to
-          earn your support instead of spending it on ads in Times Square. Panvala's token supply is
-          currently matching their donations at 30.9x.
-        </Box>
-      </Box>
-    </Box>
+          earn your support instead of spending it on ads in Times Square. Panvala's token supply
+          matched donations like these at 11.2x in January.
+        </p>
+      </div>
+    </section>
   );
 }
