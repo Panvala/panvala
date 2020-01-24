@@ -44,8 +44,8 @@ export default function Nav({ account, balance, handleClick }: Props) {
           >
             Forum
           </a>
-          <a href="/donate" className="link dim white-60 f6 dn-ns dib fw6">
-            Donate
+          <a href="/join" className="link dim white-60 f6 dn-ns dib fw6">
+            Join
           </a>
         </div>
 
@@ -95,11 +95,10 @@ export default function Nav({ account, balance, handleClick }: Props) {
             )
           ) : (
             typeof window !== 'undefined' &&
-            !window.location.href.includes('sponsor') &&
-            !window.location.href.includes('donate') && (
-              <a href="/donate">
+            !window.location.href.includes('join') && (
+              <a href="/join">
                 <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
-                  Donate
+                  Join Panvala
                 </button>
               </a>
             )

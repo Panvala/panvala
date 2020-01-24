@@ -118,9 +118,9 @@ const IndexPage = () => {
             </p>
             <div className="">
               <div className="dib v-top mr3-ns mr2 mv2">
-                <a href="https://forum.panvala.com" target="_blank" rel="noopener noreferrer">
-                  <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
-                    Visit the Forum
+                <a href="/join">
+                  <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+                    Join Panvala
                   </button>
                 </a>
               </div>
