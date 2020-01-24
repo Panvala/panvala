@@ -52,59 +52,54 @@ const Sponsors = () => {
 
       <SponsorsHeader />
 
-      <Box mt="-5vw" className="bottom-clip-up relative z-3" bg="white" height="420px">
-        <Box textAlign="center" bold fontSize={5} mt={6} mb={5}>
-          Meet our Sponsors
-        </Box>
-
-        <Box flex>
-          <Box bold fontSize={4} width="50%" textAlign="center">
+      <Box className="bottom-clip-up relative z-3 mb6-ns mb4 mt5" bg="white">
+        <section className="flex flex-wrap">
+          <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
             Silver - $15,000/year
           </Box>
-          <Box width="50%">
+          <Box className="w-50-ns w-100 pa3">
             <Box mb={4}>
               <img src={unstoppableDomains} />
             </Box>
-            <Box width={['365px']} lineHeight="1.7">
+            <Box maxWidth="365px" lineHeight="1.7">
               With Unstoppable Domains, you can replace cryptocurrency addresses with a human
               readable name or launch uncensorable websites. Use your .crypto domain on any
               blockchain.
             </Box>
           </Box>
-        </Box>
+        </section>
       </Box>
 
       <Box
         mt="-5vw"
-        className="bottom-clip-down relative z-2"
+        className="bottom-clip-down relative z-2 pv6-ns pv4"
         bg="#F3F4F8"
-        height={['1000px', '1000px', '700px']}
       >
         {/* <Box bold maxWidth="250px" fontSize={5} mb={4}>
             MORE STUFF
           </Box> */}
-        <Box flex pt={6}>
-          <Box bold fontSize={4} width="50%" textAlign="center">
+        <section className="flex flex-wrap">
+          <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
             Base - $7,500/year
           </Box>
-          <Box width="50%">
+          <Box className="w-50-ns w-100 pa3">
             <Box mb={4}>
               <img src={helium} />
             </Box>
-            <Box width={['365px']} lineHeight="1.7">
+            <Box maxWidth="365px" lineHeight="1.7">
               With a Helium Hotspot, anyone can earn cryptocurrency by building a wireless network
               in their city and creating a more connected future.
             </Box>
             <Box my={4} ml={'-20px'}>
               <img src={mythx} />
             </Box>
-            <Box width={['365px']} lineHeight="1.7">
+            <Box maxWidth="365px" lineHeight="1.7">
               MythX is the premier security analysis service for Ethereum smart contracts. Their
               mission is to ensure development teams avoid costly errors and make Ethereum a more
               secure and trustworthy platform.
             </Box>
           </Box>
-        </Box>
+        </section>
       </Box>
 
       {/* <Box mt="-5vw" className="bottom-clip-down relative z-2" bg="white" height="740px">
