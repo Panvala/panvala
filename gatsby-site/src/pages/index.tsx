@@ -109,7 +109,7 @@ const IndexPage = () => {
         <Nav />
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
-          <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr4-ns">
+          <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
             <h1 className="white f1-ns f2 b ma0 mb3">Spend our sponsors' money.</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
               Panvala is a<b className="white fw6"> DAO </b>
