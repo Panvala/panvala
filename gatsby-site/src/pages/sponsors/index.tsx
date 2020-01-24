@@ -52,7 +52,7 @@ const Sponsors = () => {
 
       <SponsorsHeader />
 
-      <Box className="bottom-clip-up relative z-3 mb6-ns mb4 mt5" bg="white">
+      <Box className="bottom-clip-up relative z-3 pv6-ns pv4" bg="white">
         <section className="flex flex-wrap">
           <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
             Silver - $15,000/year
