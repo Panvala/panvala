@@ -29,49 +29,49 @@ const categories = [
   {
     categoryID: 1,
     title: 'Ethereum 2.0',
-    previous: 34,
+    recommendation: 30,
     description:
       'These grants fund work that scales the base layer of the Ethereum network by implementing the Ethereum 2.0 roadmap. Past Panvala grant recipients in this category are <strong>Prysmatic Labs</strong>, <strong>Sigma Prime</strong>, <strong>Nimbus</strong>, and <strong>Whiteblock</strong>. Other teams in our community that do this kind of work are <strong>ChainSafe</strong> and <strong>Harmony</strong>.',
   },
   {
     categoryID: 2,
     title: 'Layer 2 Scaling',
-    previous: 5,
+    recommendation: 10,
     description:
       'These grants fund work that scale Ethereum without modifying the base layer. Past Panvala grant recipients in this category are <strong>Connext</strong>, <strong>Counterfactual</strong>, <strong>Plasma Group</strong>, and <strong>Prototypal</strong>. Other teams in our community that do this kind of work are <strong>LeapDAO</strong>, <strong>OmiseGo</strong>, and <strong>Raiden</strong>.',
   },
   {
     categoryID: 3,
     title: 'Security',
-    previous: 16,
+    recommendation: 5,
     description:
       'These grants fund work that make it easier to build and run Ethereum applications that perform their intended functions without bugs or security flaws. Past Panvala grant recipients in this category are <strong>Level K</strong>, <strong>ConsenSys Diligence</strong>, <strong>Runtime Verification</strong>, and <strong>Dapphub</strong>. Other teams in our community that do this kind of work are <strong>Zeppelin</strong>, <strong>Trail of Bits</strong>, and <strong>Quantstamp</strong>.',
   },
   {
     categoryID: 4,
     title: 'Developer Tools and Growth',
-    previous: 4,
+    recommendation: 10,
     description:
       'These grants fund work that increase the productivity of Ethereum developers, and make it easier for new developers to get started so we can reach One Million Developers in 2020. Past Panvala grant recipients in this category are <strong>ethers.js</strong>, <strong>Asseth</strong>, and <strong>Tenderly</strong>. Other teams in our community that do this kind of work are <strong>Truffle</strong>, <strong>Embark</strong>, and <strong>Cryptoeconomics.study</strong>.',
   },
   {
     categoryID: 5,
     title: 'Dapps and Usability',
-    previous: 4,
+    recommendation: 25,
     description:
       'These grants fund work that produces Ethereum-based applications, games, and user experience improvements that bring more users to Ethereum. Past Panvala grant recipients in this category are <strong>BrightID</strong>, <strong>Gnosis</strong>, and <strong>Bounties Network</strong>. Other teams in our community that do this kind of work are <strong>MetaCartel DAO</strong>, <strong>Axie Infinity</strong>, <strong>Burner Wallet</strong> and <strong>Universal Login</strong>.',
   },
   {
     categoryID: 6,
     title: 'Panvala',
-    previous: 37,
+    recommendation: 20,
     description:
       'These grants fund work that improves Panvala itself and produces recommendations for the network to evaluate. Past Panvala grant recipients in this category are <strong>ConsenSys PAN</strong> and <strong>The Astrotrope</strong>.',
   },
 ];
 
-const pollID = '1';
-const pollDeadline = 'November 22';
+const pollID = '2';
+const pollDeadline = 'February 21';
 
 const ClipContainer = styled.div`
   display: flex;
@@ -454,8 +454,8 @@ const Poll = () => {
                 We're polling PAN holders on their funding priorities in the Ethereum ecosystem.
               </p>
               <p className="white-60 fw4 ma0 w-50-l w-100">
-                The results of the poll will shape Panvala's next quarterly budget of 2,000,000 PAN,
-                which will be released on January 31.
+                The results of the poll will shape Panvala's next quarterly budget of 1,959,944 PAN,
+                which will be released on May 1.
               </p>
             </div>
             <div className="mv3 b">
@@ -626,7 +626,7 @@ const Poll = () => {
                   {props => (
                     <form onSubmit={props.handleSubmit}>
                       {categories.map((category, index) => {
-                        const { description, title, previous, categoryID } = category;
+                        const { description, title, recommendation, categoryID } = category;
                         const identifier = `poll-points-category-${categoryID}`;
 
                         const name = `categories.${categoryID}`;
@@ -638,10 +638,10 @@ const Poll = () => {
                               <p dangerouslySetInnerHTML={{ __html: description }}></p>
                             </div>
                             <div className="fl w-20 pa2 f5 tr">
-                              <div className="b ttu f6 o-50">previous batch</div>
-                              <div className="pb3">{previous}%</div>
+                              <div className="b ttu f6 o-50">Panvala Caucus</div>
+                              <div className="pb3">{recommendation}%</div>
                               <div className="b ttu f6 o-50">
-                                <label className="ma0 mb3">Batch five</label>
+                                <label className="ma0 mb3">You</label>
                               </div>
                               <div>
                                 <FieldText
@@ -692,7 +692,7 @@ const Poll = () => {
                               type="text"
                               id="lastName"
                               name="lastName"
-                              label="Last Name (Optional"
+                              label="Last Name (Optional)"
                               placeholder="Enter your last name"
                               className="w-100 pa2"
                               value={props.values.lastName}

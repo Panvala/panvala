@@ -8,7 +8,7 @@ import Label from './Label';
 const FieldText = props => {
   return (
     <>
-      <Label required={props.required}>{props.label}</Label>
+      {props.label && (<Label required={props.required}>{props.label}</Label>)}
 
       <div className="red tl pt2">
         <ErrorMessage name={props.name} component="span" />
