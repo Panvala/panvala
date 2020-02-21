@@ -59,7 +59,9 @@ const Sponsors = () => {
           </Box>
           <Box className="w-50-ns w-100 pa3">
             <Box mb={4}>
-              <img src={unstoppableDomains} />
+              <a href="https://unstoppabledomains.com/">
+                <img src={unstoppableDomains} />
+              </a>
             </Box>
             <Box maxWidth="365px" lineHeight="1.7">
               With Unstoppable Domains, you can replace cryptocurrency addresses with a human
@@ -84,14 +86,18 @@ const Sponsors = () => {
           </Box>
           <Box className="w-50-ns w-100 pa3">
             <Box mb={4}>
-              <img src={helium} />
+              <a href="https://bit.ly/panvala-helium">
+                <img src={helium} />
+              </a>
             </Box>
             <Box maxWidth="365px" lineHeight="1.7">
               With a Helium Hotspot, anyone can earn cryptocurrency by building a wireless network
               in their city and creating a more connected future.
             </Box>
             <Box my={4} ml={'-20px'}>
-              <img src={mythx} />
+              <a href="https://mythx.io/">
+                <img src={mythx} />
+              </a>
             </Box>
             <Box maxWidth="365px" lineHeight="1.7">
               MythX is the premier security analysis service for Ethereum smart contracts. Their
