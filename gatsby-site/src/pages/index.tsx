@@ -4,24 +4,20 @@ import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import findIndex from 'lodash/findIndex';
 
-import home1 from '../img/home-1.jpg';
 import home1p1 from '../img/home-1.1.png';
 import home1p2 from '../img/home-1.2.png';
-import home2 from '../img/home-2.jpg';
 import home2p1 from '../img/home-2.1.png';
-import home2p2 from '../img/home-2.2.png';
-import home3 from '../img/home-3.jpg';
 import home3p1 from '../img/home-3.1.png';
-import home3p2 from '../img/home-3.2.png';
-import home4 from '../img/home-4.jpg';
-import home4p1 from '../img/home-4.1.png';
-import home4p2 from '../img/home-4.2.png';
+import howItWorks1 from '../img/how-it-works-1.jpeg';
+import howItWorks2 from '../img/how-it-works-2.png';
+import howItWorks3 from '../img/how-it-works-3.png';
 import donateShapes from '../img/donate-shapes.svg';
 import extLevelK from '../img/external/level-k.png';
 import extPlasmaGroup from '../img/external/plasma-group.png';
 import extPrysmatic from '../img/external/prysmatic-labs.png';
 import extConnext from '../img/external/connext.png';
 import extConsensys from '../img/external/consensys.png';
+import philanthropistsAnimation from '../img/philanthropists-animation.gif';
 import teamGnosis from '../img/external/team-gnosis.png';
 import teamStatus from '../img/external/team-status.png';
 import teamLevelK from '../img/external/team-levelk.png';
@@ -142,7 +138,7 @@ const IndexPage = () => {
           </div>
           <div className="dtc-l dn w-50 v-mid mt0-ns mt4">
             <img alt="" src={home1p2} className="absolute db-ns dn o-30 w-30 nl4 mt5" />
-            <img alt="" src={home1} className="full-clip-up-sm relative z-1" />
+            <img alt="" src={philanthropistsAnimation} className="full-clip-up-sm relative z-1" />
           </div>
           <img alt="" src={home1p1} className="absolute db-l dn z-2 nl6 mt4" />
         </div>
@@ -181,21 +177,133 @@ const IndexPage = () => {
           </div>
         </div>
       </section> */}
+      
+      <section className="center tc">
+        <h1 class="tc">How Panvala Works</h1>
+        <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
+          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
+            <h2 className="f2-5 ma0 mv3 lh-copy">BTC and ETH hodlers aren't just investors</h2>
+            <p className="ma0 f6 lh-text mb3">
+              Hodlers dilute their share of the currency supply to subsidize the security of the network. The security
+              of a blockchain is a public good we can all share without degrading security for anyone else.
+              People don't think of hodlers as philanthropists because they've made so much money over the years,
+              but that's the breakthrough! Since Bitcoin was launched in 2009, people have been outlandishly rewarded
+              for subsidizing public goods.
+            </p>
+          </div>
+          <div className="dtc-ns dn w-50 v-mid">
+            <img alt="" src={howItWorks1} className="full-clip-up-sm relative z-1" />
+          </div>
+          <img
+            alt=""
+            src={home2p1}
+            className="absolute nl6 nt5-l nt0-m mt5 w-auto-ns w-10 db-ns dn"
+          />
+        </div>
+        <div className="bg-gray pv6 full-clip-up mv6-ns mv4">
+          <div className="dt w-70-l w-80-m w-90 center">
+            <img alt="" src={home3p1} className="absolute w-auto-ns w-10-ns db nl5-ns mt6-ns" />
+            <div className="dtc-ns w-50-ns v-mid">
+              <img alt="" src={howItWorks2} className="full-clip-up-sm relative z-1" />
+            </div>
+            <div className="dtc-ns w-50-ns v-mid tl pl4-ns pl0 mt0-ns mt4">
+              <h2 className="f2-5 ma0 mv3 lh-copy">Bitcoin matches at 60x</h2>
+              <p className="ma0 f6 lh-text mb3">
+                In Q4 of 2019, Bitcoin users spent 2500 BTC on transaction fees. BTC hodlers diluted their
+                holdings to fund 150,000 BTC of block reward subsidies. They're matching contributions to
+                Bitcoin's security at 60x. In the normal world, people get excited when a rich person offers
+                to match contributions at 2x: if we give a dollar, they'll match with a dollar. But Bitcoin
+                is matching at 60x! They’re the most generous philanthropists in the world.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
+          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
+            <h2 className="f2-5 ma0 mv3 lh-copy">Panvala matches like Bitcoin</h2>
+            <p className="ma0 f6 lh-text mb3">
+              If we can generalize Bitcoin's model to subsidize more broadly useful things than blockchain security,
+              it could have a giant impact on the world. That's what we're doing with Panvala. In the quarter
+              that ended on January 31, Panvala matched donations from our sponsors at 11.2x. For each token
+              that came into the token supply as a donation, 11.2 PAN went out as grants. We believe that like Bitcoin,
+              high levels of matching can be sustained for over a decade, and that Panvala's matching can be shared
+              among as many communities as want to use it.
+            </p>
+          </div>
+          <div className="dtc-ns dn w-50 v-mid">
+            <img alt="" src={howItWorks3} className="full-clip-up-sm relative z-1" />
+          </div>
+          <img
+            alt=""
+            src={home2p1}
+            className="absolute nl6 nt5-l nt0-m mt5 w-auto-ns w-10 db-ns dn"
+          />
+        </div>
+      </section>
 
       {/* <!-- Donation CTA --> */}
       <div className="mv6-ns mv5 pv6-ns pv4 relative" style={{ top: '100px' }}>
-        <img alt="" src={donateShapes} className="absolute z-0 nt5-l nt0-m mt4-m db-ns dn" />
+        <img alt="" src={donateShapes} className="absolute z-0 db-ns dn" />
         <section className="w-70-l w-80-m w-90 center tc relative z-1">
-          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5">Donate to support Ethereum</h2>
+          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5">Our Mission</h2>
           <p className="ma0 f6 lh-text w-50-ns w-100 center mb4">
-            Join the network of individuals and businesses who do their part to support the Ethereum
-            ecosystem.
+            We can create an incredible decade-long window when any community in the world can have their
+            funding for public goods amplified at attractive rates. Think about all
+            the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
+            from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
+            other public goods instead. Firms would pop up all over the world—not to rack up power bills
+            mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund.
           </p>
-          <a href="/donate">
-            <button className="f6 link dim bn br-pill pv3 ph4 white bg-blue fw7 pointer">
-              Donate
-            </button>
-          </a>
+          
+          <div className="relative">
+            {/* <!-- Newsletter CTA --> */}
+            <Formik
+              initialValues={{ email: '' }}
+              onSubmit={handleSubmit}
+              validationSchema={NewsletterFormSchema}
+            >
+              {props => (
+                <form
+                  className="w-70-l w-80-m w-90 center tc mv5 pv5"
+                  name="email-subscribe"
+                  onSubmit={props.handleSubmit}
+                >
+                  <h2 className="f2-5 ma0 mb4">Join our mailing list</h2>
+                  <div className="cf ph5">
+                    <div className="fl w-70 pa2 mr3">
+                      <Field
+                        name="email"
+                        id="email-subscribe-input"
+                        placeholder="Enter your email address"
+                        className="f5 dib input-reset border-input bb b--black-20 pv2 pl2 w-100 v-mid bg-pink-20"
+                        onChange={props.handleChange}
+                        value={props.values.email}
+                      />
+                      <FormError name="email" />
+                    </div>
+
+                    {/* TODO: use the Button component */}
+                    <input
+                      type="submit"
+                      name="submit"
+                      value="Sign Up"
+                      className="fl w-20 f6 link dim bn br-pill pv3 white bg-teal fw7 dib v-mid h-50"
+                      id="email-subscribe-button"
+                      disabled={props.isSubmitting}
+                    />
+                  </div>
+                </form>
+              )}
+            </Formik>
+
+            {/* <!-- Modal --> */}
+            <Modal
+              isOpen={isOpen}
+              handleClose={handleClose}
+              title="Form Submitted"
+              copy="Thank you. We'll be in touch!"
+            />
+          </div>
         </section>
       </div>
 
@@ -260,96 +368,6 @@ const IndexPage = () => {
         </div>
       </section>
 
-      {/* <!-- Why Contribute --> */}
-      <section className="center tc">
-        <h2 className="f2-5 ma0 w-70-l w-80-m w-90 center">Why contribute to Panvala</h2>
-        <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
-          <div className="dn-ns">
-            <img alt="" src={home2p2} className="absolute z-2 ml5 mt5 pt4 w-75" />
-            <img alt="" src={home2p1} className="absolute nt4" />
-            <img alt="" src={home2} className="full-clip-up-sm relative z-1" />
-          </div>
-          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
-            <h2 className="f2-5 ma0 mv3 lh-copy">The Ethereum community succeeds together</h2>
-            <p className="ma0 f6 lh-text mb3">
-              Countless projects and people depend upon the Ethereum blockchain for their success.
-              Contributing to Panvala rewards the teams who solve problems like security and
-              scalability.
-            </p>
-            <a href="/grants" className="link dim blue f6 fw7">
-              Learn about past issued grants
-            </a>
-          </div>
-          <div className="dtc-ns dn w-50 v-mid">
-            <a href="/grants">
-              <img
-                alt=""
-                src={home2p2}
-                className="absolute w-25-l w-40 z-2 nl4 mt6-l mt5 pt5-l pt5"
-              />
-            </a>
-            <img alt="" src={home2} className="full-clip-up-sm relative z-1" />
-          </div>
-          <img
-            alt=""
-            src={home2p1}
-            className="absolute nl6 nt5-l nt0-m mt5 w-auto-ns w-10 db-ns dn"
-          />
-        </div>
-        <div className="bg-gray pv6 full-clip-up mv6-ns mv4">
-          <div className="dt w-70-l w-80-m w-90 center">
-            <img alt="" src={home3p1} className="absolute w-auto-ns w-10-ns db nl5-ns mt6-ns" />
-            <div className="dtc-ns w-50-ns v-mid">
-              <img
-                alt=""
-                src={home3p2}
-                className="absolute w-20-ns w-75 z-2 mt6-ns mt3 pt4-ns ml5-ns ml5 pl5-ns"
-              />
-              <img alt="" src={home3} className="full-clip-up-sm relative z-1" />
-            </div>
-            <div className="dtc-ns w-50-ns v-mid tl pl4-ns pl0 mt0-ns mt4">
-              <h2 className="f2-5 ma0 mv3 lh-copy">Support the most important work</h2>
-              <p className="ma0 f6 lh-text mb3">
-                Panvala’s token holders vote on what work should be funded. They work hard to build
-                donors’ confidence that their donations will benefit from crowd-sourced,
-                incentivized wisdom.
-              </p>
-              <a
-                href="https://medium.com/@Panvala/niran-babalola-making-progress-the-status-quo-1d92af12b352"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="link dim blue f6 fw7"
-              >
-                Learn about slate governance
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="dt mt6-ns mt4 w-70-l w-80-m w-90 center">
-          <div className="dn-ns">
-            <img alt="" src={home4p2} className="absolute w-75 z-2 mt5 ml5" />
-            <img alt="" src={home4p1} className="absolute ml2 nt4 w-75 left-0" />
-            <img alt="" src={home4} className="full-clip-up-sm relative z-1" />
-          </div>
-          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
-            <h2 className="f2-5 ma0 mv3 lh-copy">Respect among blockchain innovators</h2>
-            <p className="ma0 f6 lh-text mb3">
-              Panvala donors receive recognition everywhere the Panvala community gathers. In our
-              community, it’s not the loudest voices that are respected—it’s the people and
-              companies that contribute to Panvala.
-            </p>
-            <a href="/donate" className="link dim blue f6 fw7">
-              Learn about how to donate
-            </a>
-          </div>
-          <img alt="" src={home4p1} className="absolute ml4 mt3 w-auto-l w-40 db-ns dn" />
-          <div className="dtc-ns dn w-50 v-mid">
-            <img alt="" src={home4p2} className="absolute w-20 z-2 mt6 pt5 nl4" />
-            <img alt="" src={home4} className="full-clip-up-sm relative z-1" />
-          </div>
-        </div>
-      </section>
-
       {/* <!-- Quote Section --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
         <div className="dt w-70-l w-80-m w-90 center">
@@ -374,101 +392,13 @@ const IndexPage = () => {
         </div>
       </section>
 
-      <div className="relative">
-        {/* <!-- Newsletter CTA --> */}
-        <Formik
-          initialValues={{ email: '' }}
-          onSubmit={handleSubmit}
-          validationSchema={NewsletterFormSchema}
-        >
-          {props => (
-            <form
-              className="w-70-l w-80-m w-90 center tc mv5 pv5"
-              name="email-subscribe"
-              onSubmit={props.handleSubmit}
-            >
-              <h2 className="f2-5 ma0 mb4">Don’t miss out on all the upcoming news</h2>
-              <div className="cf ph5">
-                <div className="fl w-70 pa2 mr3">
-                  <Field
-                    name="email"
-                    id="email-subscribe-input"
-                    placeholder="Enter your email address"
-                    className="f5 dib input-reset border-input bb b--black-20 pv2 pl2 w-100 v-mid bg-pink-20"
-                    onChange={props.handleChange}
-                    value={props.values.email}
-                  />
-                  <FormError name="email" />
-                </div>
-
-                {/* TODO: use the Button component */}
-                <input
-                  type="submit"
-                  name="submit"
-                  value="Sign Up"
-                  className="fl w-20 f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 dib v-mid h-50"
-                  id="email-subscribe-button"
-                  disabled={props.isSubmitting}
-                />
-              </div>
-            </form>
-          )}
-        </Formik>
-
-        {/* <!-- Modal --> */}
-        <Modal
-          isOpen={isOpen}
-          handleClose={handleClose}
-          title="Form Submitted"
-          copy="Thank you. We'll be in touch!"
-        />
-      </div>
-
-      {/* <!-- Apply For Grant --> */}
-      <section className="ml5-ns ml0 overflow-x-hidden w-80-ns w-100 z-1 relative">
-        <section className="bg-gradient full-clip-up pv5-l pv6-m pv4">
-          <div className="dt w-70-l w-80-m w-90 nl5 center pt5-ns pt6 pb0-ns pb6">
-            <div className="dtc-l db mr5-l mr0 pt4-l v-top w-50-l">
-              <h2 className="f2-5 ma0 mb4 white">
-                Apply for
-                <br />a grant
-              </h2>
-              <div className="mt5">
-                <div className="dib mr5">
-                  <h3 className="f3 ma0 mb1 white">20 +</h3>
-                  <p className="white-60 ma0 f6">Projects Funded</p>
-                </div>
-                <div className="dib">
-                  <h3 className="f3 ma0 mb1 white">190</h3>
-                  <p className="white-60 ma0 f6">Donors</p>
-                </div>
-                <div className="mt5">
-                  <h3 className="f3 ma0 mb1 white">6 million</h3>
-                  <p className="white-60 ma0 f6">In Token Grants</p>
-                </div>
-              </div>
-            </div>
-            <div className="dtc-l db-m dn v-top absolute-l nt5-l w-40-l mt5-m">
-              <div className="dt pv3">
-                <img alt="" src={extLevelK} className="o-30 dib w-33 v-mid pr5" />
-                <img alt="" src={extPlasmaGroup} className="o-30 dib w-33 v-mid" />
-              </div>
-              <div className="dt pv3">
-                <img alt="" src={extPrysmatic} className="o-30 dib w-33 v-mid pr5" />
-                <img alt="" src={extConnext} className="o-30 dib w-33 v-mid" />
-              </div>
-            </div>
-          </div>
-        </section>
-      </section>
-
       {/* <!-- ConsenSys  --> */}
       <div className="dt w-80-ns w-100 center-ns mb5">
         <section className="w-40-ns w-90 dtc-ns relative center">
           <section className="bg-transparent ph5-ns ph0 pv6-ns pt5 pb3">
             <img alt="" src={extConsensys} className="w-60" />
             <p className="ma0 f6 lh-text mb3 mt4">
-              ConsenSys is the home of the Panvala Launch Team. ConsenSys is a global blockchain
+              Panvala was launched by ConsenSys. ConsenSys is a global blockchain
               technology company building the infrastructure, applications, and practices that
               enable a decentralized world.
             </p>
@@ -483,15 +413,15 @@ const IndexPage = () => {
           </section>
         </section>
 
-        {/* <!-- Donation CTA  --> */}
+        {/* <!-- Join CTA  --> */}
         <section className=" w-40-ns w-100 dtc-ns">
           <section className="bg-gray full-clip-up-sm ph5-ns ph5 pv6-ns pv5">
             <h2 className="f2-5 ma0 mb4 lh-copy">
-              Become a donor today and support the projects that need the support
+              Join Panvala today and help communities amplify their contributions
             </h2>
-            <a href="/donate">
+            <a href="/join">
               <button className="f6 link dim bn br-pill pv3 ph4 white bg-blue fw7 pointer">
-                Donate
+                Join Panvala
               </button>
             </a>
           </section>
