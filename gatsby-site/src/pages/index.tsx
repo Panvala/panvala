@@ -100,7 +100,7 @@ const IndexPage = () => {
 
       <section
         className="bg-gradient bottom-clip-up relative z-0 mb4-ns"
-        style={{ height: '760px' }}
+        style={{ minHeight: '760px' }}
       >
         <Nav />
         {/* <!-- Hero --> */}
@@ -178,7 +178,7 @@ const IndexPage = () => {
         </div>
       </section> */}
       
-      <section className="center tc">
+      <section className="mt6-ns mt5 center tc">
         <h1 class="tc">How Panvala Works</h1>
         <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
           <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
