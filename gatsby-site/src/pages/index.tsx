@@ -191,7 +191,7 @@ const IndexPage = () => {
               for subsidizing public goods.
             </p>
           </div>
-          <div className="dtc-ns dn w-50 v-mid">
+          <div className="dtc-ns w-50-ns v-mid">
             <img alt="" src={howItWorks1} className="full-clip-up-sm relative z-1" />
           </div>
           <img
@@ -230,7 +230,7 @@ const IndexPage = () => {
               among as many communities as want to use it.
             </p>
           </div>
-          <div className="dtc-ns dn w-50 v-mid">
+          <div className="dtc-ns w-50-ns v-mid">
             <img alt="" src={howItWorks3} className="full-clip-up-sm relative z-1" />
           </div>
           <img
@@ -287,7 +287,7 @@ const IndexPage = () => {
                       type="submit"
                       name="submit"
                       value="Sign Up"
-                      className="fl w-20 f6 link dim bn br-pill pv3 white bg-teal fw7 dib v-mid h-50"
+                      className="fl w-20-ns f6 link dim bn br-pill pv3 white bg-teal fw7 dib v-mid h-50"
                       id="email-subscribe-button"
                       disabled={props.isSubmitting}
                     />
