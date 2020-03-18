@@ -242,74 +242,77 @@ const IndexPage = () => {
       </section>
 
       {/* <!-- Donation CTA --> */}
-      <div className="mv6-ns mv5 pv6-ns pv4 relative" style={{ top: '100px' }}>
-        <img alt="" src={donateShapes} className="absolute z-0 db-ns dn" />
-        <section className="w-70-l w-80-m w-90 center tc relative z-1">
-          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5">Our Mission</h2>
-          <p className="ma0 f6 lh-text w-50-ns w-100 center mb4">
-            We can create an incredible decade-long window when any community in the world can have their
-            funding for public goods amplified at attractive rates. Think about all
-            the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
+      <section className="full-clip-down-blue pv6 mv6-ns mv5">
+        <div className="w-70-l w-80-m w-90 center tc relative z-1">
+          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white">Our Mission</h2>
+          <p className="ma0 f6 lh-text w-50-ns w-100 center mb4 white">
+            <strong>We can create an incredible decade-long window when any community in the world can have their
+            funding for public goods amplified at attractive rates.</strong>
+          </p>
+          <p className="ma0 f6 lh-text w-50-ns w-100 center mb4 white-60">
+            Think about all the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
             from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
             other public goods instead. Firms would pop up all over the world—not to rack up power bills
             mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund.
           </p>
-          
-          <div className="relative">
-            {/* <!-- Newsletter CTA --> */}
-            <Formik
-              initialValues={{ email: '' }}
-              onSubmit={handleSubmit}
-              validationSchema={NewsletterFormSchema}
-            >
-              {props => (
-                <form
-                  className="w-70-l w-80-m w-90 center tc mv5 pv5"
-                  name="email-subscribe"
-                  onSubmit={props.handleSubmit}
-                >
-                  <h2 className="f2-5 ma0 mb4">Join our mailing list</h2>
-                  <div className="cf ph5">
-                    <div className="fl w-70 pa2 mr3">
-                      <Field
-                        name="email"
-                        id="email-subscribe-input"
-                        placeholder="Enter your email address"
-                        className="f5 dib input-reset border-input bb b--black-20 pv2 pl2 w-100 v-mid bg-pink-20"
-                        onChange={props.handleChange}
-                        value={props.values.email}
-                      />
-                      <FormError name="email" />
-                    </div>
+        </div>
+      </section>
 
-                    {/* TODO: use the Button component */}
-                    <input
-                      type="submit"
-                      name="submit"
-                      value="Sign Up"
-                      className="fl w-20-ns f6 link dim bn br-pill pv3 white bg-teal fw7 dib v-mid h-50"
-                      id="email-subscribe-button"
-                      disabled={props.isSubmitting}
+      <section>
+        <div className="relative">
+          {/* <!-- Newsletter CTA --> */}
+          <Formik
+            initialValues={{ email: '' }}
+            onSubmit={handleSubmit}
+            validationSchema={NewsletterFormSchema}
+          >
+            {props => (
+              <form
+                className="w-70-l w-80-m w-90 center tc mv5 pv5"
+                name="email-subscribe"
+                onSubmit={props.handleSubmit}
+              >
+                <h2 className="f2-5 ma0 mb4">Join our mailing list</h2>
+                <div className="cf ph5">
+                  <div className="fl w-70 pa2 mr3">
+                    <Field
+                      name="email"
+                      id="email-subscribe-input"
+                      placeholder="Enter your email address"
+                      className="f5 dib input-reset border-input bb b--black-20 pv2 pl2 w-100 v-mid bg-pink-20"
+                      onChange={props.handleChange}
+                      value={props.values.email}
                     />
+                    <FormError name="email" />
                   </div>
-                </form>
-              )}
-            </Formik>
 
-            {/* <!-- Modal --> */}
-            <Modal
-              isOpen={isOpen}
-              handleClose={handleClose}
-              title="Form Submitted"
-              copy="Thank you. We'll be in touch!"
-            />
-          </div>
-        </section>
-      </div>
+                  {/* TODO: use the Button component */}
+                  <input
+                    type="submit"
+                    name="submit"
+                    value="Sign Up"
+                    className="fl w-20-ns f6 link dim bn br-pill pv3 white bg-teal fw7 dib v-mid h-50"
+                    id="email-subscribe-button"
+                    disabled={props.isSubmitting}
+                  />
+                </div>
+              </form>
+            )}
+          </Formik>
+
+          {/* <!-- Modal --> */}
+          <Modal
+            isOpen={isOpen}
+            handleClose={handleClose}
+            title="Form Submitted"
+            copy="Thank you. We'll be in touch!"
+          />
+        </div>
+      </section>
 
       {epochDates.length > 0 && (
         <Section>
-          <img src={eventsBg} className="absolute z-0 nt0-m db-ns dn" />
+          <img src={eventsBg} className="absolute z-0 nt0-m db-ns dn"  style={{ left: '50%', transform: 'translateX(-50%)' }} />
           <Box flex justifyContent="space-around" flexWrap="wrap">
             <Box flex column zIndex={40} color="white" my={['4rem', '7rem', '180px']}>
               <Box fontSize={5} bold>
