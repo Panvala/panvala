@@ -243,13 +243,13 @@ const IndexPage = () => {
 
       {/* <!-- Donation CTA --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
-        <div className="w-70-l w-80-m w-90 center tc relative z-1">
-          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white">Our Mission</h2>
-          <p className="ma0 f6 lh-text w-50-ns w-100 center mb4 white">
+        <div className="w-50-l w-70-m w-90 center relative z-1">
+          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white tc">Our Mission</h2>
+          <p className="ma0 f4 lh-text mb4 white">
             <strong>We can create an incredible decade-long window when any community in the world can have their
-            funding for public goods amplified at attractive rates.</strong>
+            contributions to public goods amplified at attractive rates.</strong>
           </p>
-          <p className="ma0 f6 lh-text w-50-ns w-100 center mb4 white-60">
+          <p className="ma0 f4 lh-text mb4 white-60">
             Think about all the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
             from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
             other public goods instead. Firms would pop up all over the world—not to rack up power bills
