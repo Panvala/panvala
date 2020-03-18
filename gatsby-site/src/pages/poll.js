@@ -71,7 +71,7 @@ const categories = [
 ];
 
 const pollID = '2';
-const pollDeadline = 'February 21';
+const pollDeadline = 'May 22';
 
 const ClipContainer = styled.div`
   display: flex;
