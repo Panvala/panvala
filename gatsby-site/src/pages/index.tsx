@@ -108,7 +108,7 @@ const IndexPage = () => {
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
             <h1 className="white f1-ns f2 b ma0 mb3">Hodlers are philanthropists.</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
-              Bitcoin subsidizes its own security by inflating the money supply. Panvala generalizes those
+              Bitcoin subsidizes its own security by creating new bitcoins. Panvala generalizes those
               economics to <b className="white fw6"> subsidize whatever we want</b>.
               Panvala is run by our grantees and people like <b className="white fw6"> you</b>.
             </p>
