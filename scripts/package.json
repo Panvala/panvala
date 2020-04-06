@@ -1,8 +1,10 @@
 {
   "scripts": {
+    "gitcoin-matching": "node pan/gitcoin-matching.js",
     "proposals-csv": "node pan/proposals-csv.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "csv": "^5.1.2",
     "ethers": "^4.0.30",
     "form-data": "^2.5.1",
