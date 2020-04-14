@@ -6,13 +6,22 @@ const csvParse = require('csv-parse');
 const stringify = require('csv-stringify/lib/sync');
 
 const MATCHING_BUDGET = 1500000;
-const ONE_DOLLAR_PAN = 43.957; // 58.9;
+const ONE_DOLLAR_PAN = 44.369; // 58.9;
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
   '0x6F400810b62df8E13fded51bE75fF5393eaa841F', // dFusion
   '0x11111254369792b2Ca5d084aB5eEA397cA8fa48B', // 1inch.exchange
+]);
+const IGNORED_SENDERS = new Set([
   '0xcd2E72aEBe2A203b84f46DEEC948E6465dB51c75', // Alice transfer
+  '0xB320759d1A0ADbE55360a0a28a221013aA2DA4fC', // LevelK transfer
+  '0x7117fb4E85286c159EFa691a7699587Ccd01E26E', // LevelK transfer
+  '0x3eCb4bf3A4C483cA0A4C897396E1FD85b48FB129',
+]);
+const IGNORED_RECIPIENTS = new Set([
+  '0xdC0046B52e2E38AEe2271B6171ebb65cCD337518',
+  '0x700593B9fa994DA790EE8aBB2Ec26880b75fe174',
 ]);
 
 run();
@@ -21,10 +30,21 @@ run();
 
 function grantsToCSV(grants) {
   const rows = Object.entries(grants).map(([address, data]) => {
-    return [data.name, address, data.tokens, data.transactions, data.matches['Unconstrained'], data.matches['$1 Match'], data.matches['Fully Allocated']];
+    return [
+      data.name,
+      address,
+      data.tokens,
+      data.tokens / ONE_DOLLAR_PAN,
+      data.transactions,
+      data.matches['Unconstrained'],
+      data.matches['$1 Match'],
+      data.matches['Fully Allocated'],
+      data.matches['Fully Allocated USD'],
+    ];
   });
 
-  const data = stringify(rows, { header: true, columns: ['Grant', 'Address', 'Donated Tokens', 'Donation Count', 'Quadratic Match', '$1 Match (USD)', '1.5M PAN Allocated'] });
+  const data = stringify(rows, { header: true, columns: [
+    'Grant', 'Address', 'Donated Tokens', 'Donated Value', 'Donation Count', 'Quadratic Match', '$1 Match (USD)', '1.5M PAN Allocated', 'Matching Value'] });
   return data;
 }
 
@@ -34,6 +54,33 @@ function donorsToCSV(donors) {
   });
 
   const data = stringify(rows, { header: true, columns: ['Donor', 'Address', 'Donated Tokens', 'Donation Count'] });
+  return data;
+}
+
+function donationsToCSV(grants, donors) {
+  const donations = Object.entries(grants).reduce((allDonations, [grantAddress, grant]) => {
+    grantDonations = Object.entries(grant.donations).map(([donorAddress, donationAmount]) => {
+      return {
+        grant: {...grant, address: grantAddress},
+        donor: {...donors[donorAddress], address: donorAddress}
+      };
+    });
+    return allDonations.concat(grantDonations);
+  }, []);
+  const rows = donations.map(donation => {
+    return [
+      donation.donor.name,
+      donation.donor.address,
+      donation.grant.name,
+      donation.grant.address,
+      donation.grant.donations[donation.donor.address],
+      donation.grant.donations[donation.donor.address] / ONE_DOLLAR_PAN,
+      donation.donor.projects[donation.grant.address].time,
+    ];
+  });
+
+  const data = stringify(rows, { header: true, columns: [
+    'Donor', 'Donor Address', 'Grant', 'Grant Address', 'Donated Tokens', 'Donated Value', 'Time'] });
   return data;
 }
 
@@ -120,9 +167,10 @@ function calculateMatching(grants) {
     grant.matches = grant.matches || {};
     if (address === GITCOIN_ADDRESS) {
       grant.matches['Fully Allocated'] = gitcoinDonations * (averageMatch - 1);
-      return;
+    } else {
+      grant.matches['Fully Allocated'] = grant.matches['Unconstrained'] / quadraticTotal * tokensToAllocate;
     }
-    grant.matches['Fully Allocated'] = grant.matches['Unconstrained'] / quadraticTotal * tokensToAllocate;
+    grant.matches['Fully Allocated USD'] = grant.matches['Fully Allocated'] / ONE_DOLLAR_PAN;
   });
   
   Object.entries(grants).forEach(([address, grant]) => {
@@ -143,7 +191,12 @@ async function run() {
   transactions.forEach(item => {
     const grantAddress = ethers.utils.getAddress(item['To']);
     const donorAddress = ethers.utils.getAddress(item['From']);
-    if (IGNORED_ADDRESSES.has(grantAddress) || IGNORED_ADDRESSES.has(donorAddress)) {
+    if (
+      IGNORED_ADDRESSES.has(grantAddress) ||
+      IGNORED_ADDRESSES.has(donorAddress) ||
+      IGNORED_SENDERS.has(donorAddress) ||
+      IGNORED_RECIPIENTS.has(grantAddress)
+      ) {
       return;
     }
     
@@ -164,8 +217,11 @@ async function run() {
     donor.name = donorNames[donorAddress] || null;
     donor.transactions = (donor.transactions || 0) + 1;
     donor.tokens = parseFloat(item['Quantity']) + (donor.tokens || 0);
-    donor.projects = donor.projects || [];
-    donor.projects.push([grant.name || grantAddress, item['Quantity'], item['DateTime']]);
+    donor.projects = donor.projects || {};
+    donor.projects[grantAddress] = {
+      name: grant.name || grantAddress,
+      time: item['DateTime'],
+    };
     donors[donorAddress] = donor;
   });
   
@@ -176,4 +232,7 @@ async function run() {
   
   const donorsCsv = donorsToCSV(donors);
   fs.writeFileSync('gitcoin-donors.csv', donorsCsv);
+  
+  const donationsCsv = donationsToCSV(grants, donors);
+  fs.writeFileSync('gitcoin-donations.csv', donationsCsv);
 }
