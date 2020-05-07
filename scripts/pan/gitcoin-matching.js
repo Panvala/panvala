@@ -22,6 +22,8 @@ const IGNORED_SENDERS = new Set([
 const IGNORED_RECIPIENTS = new Set([
   '0xdC0046B52e2E38AEe2271B6171ebb65cCD337518',
   '0x700593B9fa994DA790EE8aBB2Ec26880b75fe174',
+  '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343', // Griff transfer
+  '0x970CC8c95C614a7335c1487EB2E16848983d5FE6', // Unknown Gitcoin maintainer address
 ]);
 
 run();
