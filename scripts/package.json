@@ -1,6 +1,7 @@
 {
   "scripts": {
     "gitcoin-matching": "node pan/gitcoin-matching.js",
+    "gitcoin-matching-distribute": "node pan/gitcoin-matching-distribute.js",
     "proposals-csv": "node pan/proposals-csv.js"
   },
   "dependencies": {
