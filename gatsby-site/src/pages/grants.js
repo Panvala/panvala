@@ -524,7 +524,7 @@ const Grants = () => {
                 </div>
                 <div>
                   <a
-                    href="https://tenderly.dev/"
+                    href="https://tenderly.co/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="link dim blue f7 fw7"
