@@ -1,16 +1,26 @@
-import { getCategories, createPoll } from '../src/utils/polls';
+import * as yargs from 'yargs';
+
+import { getCategoriesByName, createPoll } from '../src/utils/polls';
 import { sequelize } from '../src/models';
 
 sequelize.options.logging = false;
 
-// TODO: allow the user to create polls with just some of the categories
 // TODO: allow the user to add new categories
 
 async function run() {
   // if there are no categories, prompt the user to create them
-  const categories = await getCategories();
-  if (categories.length === 0) {
-    console.log('No funding categories found');
+  // Parse arguments
+  const argv = yargs
+    .scriptName('createPoll')
+    .array('options')
+    .alias('options', 'o')
+    .demandOption('options', 'Please provide a list of FundingCategory names for the poll.')
+    .help().argv;
+
+  const categories = await getCategoriesByName(argv.options as string[]);
+  console.log(categories);
+  if (categories.length !== argv.options.length) {
+    console.log('Some categories were not found');
     console.log('');
     console.log("> Did you remember to run 'yarn seed'?");
     process.exit(0);
@@ -20,6 +30,7 @@ async function run() {
   console.log('creating poll');
   const name = 'A poll';
   const categoryNames = categories.map(c => c.displayName);
+  console.log('Category names: ', categoryNames);
 
   const poll = await createPoll(name, categoryNames);
 

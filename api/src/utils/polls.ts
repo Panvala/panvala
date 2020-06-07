@@ -22,6 +22,10 @@ export async function getCategoryByName(name: string) {
   return FundingCategory.findOne({ where: { displayName: name } });
 }
 
+export async function getCategoriesByName(names: string[]) {
+  return FundingCategory.findAll({ where: { displayName: names } });
+}
+
 // Throw if the category already exists
 export async function createCategory(name: string) {
   const data = {
