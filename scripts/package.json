@@ -2,7 +2,8 @@
   "scripts": {
     "gitcoin-matching": "node pan/gitcoin-matching.js",
     "gitcoin-matching-distribute": "node pan/gitcoin-matching-distribute.js",
-    "proposals-csv": "node pan/proposals-csv.js"
+    "proposals-csv": "node pan/proposals-csv.js",
+    "token-capacitor-daily": "node pan/token-capacitor-daily.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
