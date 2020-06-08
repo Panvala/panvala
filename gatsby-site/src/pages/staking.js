@@ -410,7 +410,7 @@ const Poll = () => {
 
   return (
     <Layout>
-      <SEO title="Poll" />
+      <SEO title="Staking" />
 
       {welcomeModalOpen && !account && (
         <div className="flex justify-center h5 absolute top-0 left-0 right-0">
