@@ -502,7 +502,7 @@ const Poll = () => {
         <div className="w-100 w-60-ns center">
           {modalOpen ? (
             <Box flex flexDirection="column" justifyContent="center" alignItems="center">
-              <ModalTitle>Thank you for voting!</ModalTitle>
+              <ModalTitle>Thank you for staking!</ModalTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
                 Thank you for staking tokens for the current batch. Your staked PAN helps your community match
                 more donations. Here is what you staked for:
@@ -529,7 +529,8 @@ const Poll = () => {
                       p={2}
                     >
                       <Box>{c.title}</Box>
-                      <Box>{`${allocations.length && allocations[c.categoryID - 1].points}%`}</Box>
+                      {/* TODO: Index the allocations structure by categoryID instead of index so we don't have to subtract 7 */}
+                      <Box>{`${allocations.length && allocations[c.categoryID - 7].points}%`}</Box>
                     </Box>
                   ))}
                 </Box>
@@ -550,7 +551,7 @@ const Poll = () => {
             </Box>
           ) : alreadyVoted ? (
             <Box flex flexDirection="column" justifyContent="center" alignItems="center">
-              <ModalTitle>Thank you for voting!</ModalTitle>
+              <ModalTitle>Thank you for staking!</ModalTitle>
               <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
                 Thank you for staking tokens for the current batch. Even though your vote has
