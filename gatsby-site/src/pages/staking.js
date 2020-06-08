@@ -462,6 +462,13 @@ const Poll = () => {
                 View Communities
               </button>
             </div>
+            <div className="dib v-top mr3-ns mr2 mv2">
+              <a href="https://forum.panvala.com/t/stake-pan-for-your-community/186">
+                <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
+                  Learn More
+                </button>
+              </a>
+            </div>
           </Box>
           <Box width={[1, 1, 0.5]} p={[4, 2]} display={['none', 'none', 'block']}>
             <img alt="" src={pollOne} className="w-100 center" />

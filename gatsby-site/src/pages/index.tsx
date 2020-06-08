@@ -121,9 +121,9 @@ const IndexPage = () => {
                 </a>
               </div>
               <div className="dib v-top mr3-ns mr2 mv2">
-                <a href="/sponsors">
+                <a href="/staking">
                   <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
-                    Support our Sponsors
+                    Stake Tokens
                   </button>
                 </a>
               </div>
