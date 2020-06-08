@@ -425,7 +425,7 @@ const Poll = () => {
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
-                href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -540,7 +540,7 @@ const Poll = () => {
                 deadline to increase your stake by holding more PAN tokens.
               </Box>
               <a
-                href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -558,7 +558,7 @@ const Poll = () => {
                 tokens.
               </Box>
               <a
-                href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -577,7 +577,7 @@ const Poll = () => {
                   do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
                     <a
-                      href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                      href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link b dim blue"

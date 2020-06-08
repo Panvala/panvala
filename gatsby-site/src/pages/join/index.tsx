@@ -38,7 +38,7 @@ const Join = () => {
               In order to influence Panvala's grants each quarter, you need to have PAN tokens.
               <Box flex justifyContent="center" className="mv4">
                 <a
-                  href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                  href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link b dim blue"
