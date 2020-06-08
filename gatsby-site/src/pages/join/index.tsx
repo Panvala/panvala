@@ -61,19 +61,20 @@ const Join = () => {
           </Box> */}
         <section className="flex flex-wrap">
           <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
-            Step 2: Vote in the Poll
+            Step 2: Stake Tokens
           </Box>
           <Box className="w-50-ns w-100 pa3">
             <Box maxWidth="365px" lineHeight="1.7">
-              PAN holders are polled regularly to collect stats about which budget categories
-              are the highest priority for funding. Now that you have tokens, you can vote in
-              the latest poll to make your voice heard.
+              Panvala's communities earn a matching budget based on the donations they raise,
+              but their matching is constrained by the community's share of the staked tokens.
+              To increase the amount of donations that your community can match, stake more PAN
+              tokens in your community's staking cluster.
               <Box flex justifyContent="center" className="mv4">
                 <a
-                  href="/poll"
+                  href="/staking"
                   className="link b dim blue"
                 >
-                  <Button p={3} mr={3} text="Vote in the Poll" bg="white" color="black" />
+                  <Button p={3} mr={3} text="Stake Tokens" bg="white" color="black" />
                 </a>
               </Box>
             </Box>

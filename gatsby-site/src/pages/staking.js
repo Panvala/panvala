@@ -27,51 +27,52 @@ import FieldText from '../components/FieldText';
 
 const categories = [
   {
-    categoryID: 1,
-    title: 'Ethereum 2.0',
-    recommendation: 30,
+    categoryID: 7,
+    title: 'Hashing it Out',
+    staked: 75000,
     description:
-      'These grants fund work that scales the base layer of the Ethereum network by implementing the Ethereum 2.0 roadmap. Past Panvala grant recipients in this category are <strong>Prysmatic Labs</strong>, <strong>Sigma Prime</strong>, <strong>Nimbus</strong>, and <strong>Whiteblock</strong>. Other teams in our community that do this kind of work are <strong>ChainSafe</strong> and <strong>Harmony</strong>.',
+      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field, including projects like <strong>Fuel Labs</strong>, <strong>Lodestar</strong>, and <strong>lexDAO</strong>.",
   },
   {
-    categoryID: 2,
-    title: 'Layer 2 Scaling',
-    recommendation: 10,
+    categoryID: 8,
+    title: 'Commons Stack',
+    staked: 75000,
     description:
-      'These grants fund work that scale Ethereum without modifying the base layer. Past Panvala grant recipients in this category are <strong>Connext</strong>, <strong>Counterfactual</strong>, <strong>Plasma Group</strong>, and <strong>Prototypal</strong>. Other teams in our community that do this kind of work are <strong>LeapDAO</strong>, <strong>OmiseGo</strong>, and <strong>Raiden</strong>.',
+      "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
   },
   {
-    categoryID: 3,
-    title: 'Security',
-    recommendation: 5,
+    categoryID: 9,
+    title: 'DAppNode',
+    staked: 75000,
     description:
-      'These grants fund work that make it easier to build and run Ethereum applications that perform their intended functions without bugs or security flaws. Past Panvala grant recipients in this category are <strong>Level K</strong>, <strong>ConsenSys Diligence</strong>, <strong>Runtime Verification</strong>, and <strong>Dapphub</strong>. Other teams in our community that do this kind of work are <strong>Zeppelin</strong>, <strong>Trail of Bits</strong>, and <strong>Quantstamp</strong>.',
+      "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet. They support projects like <strong>DAppNode</strong>, <strong>Prysm</strong>, and <strong>Rotki</strong>.",
   },
   {
-    categoryID: 4,
-    title: 'Developer Tools and Growth',
-    recommendation: 10,
+    categoryID: 10,
+    title: 'MetaCartel',
+    staked: 75000,
     description:
-      'These grants fund work that increase the productivity of Ethereum developers, and make it easier for new developers to get started so we can reach One Million Developers in 2020. Past Panvala grant recipients in this category are <strong>ethers.js</strong>, <strong>Asseth</strong>, and <strong>Tenderly</strong>. Other teams in our community that do this kind of work are <strong>Truffle</strong>, <strong>Embark</strong>, and <strong>Cryptoeconomics.study</strong>.',
+      "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Daohaus</strong>, <strong>1UP World</strong>, and <strong>Abridged</strong>."
   },
   {
-    categoryID: 5,
-    title: 'Dapps and Usability',
-    recommendation: 25,
+    categoryID: 11,
+    title: 'DXdao',
+    staked: 75000,
     description:
-      'These grants fund work that produces Ethereum-based applications, games, and user experience improvements that bring more users to Ethereum. Past Panvala grant recipients in this category are <strong>BrightID</strong>, <strong>Gnosis</strong>, and <strong>Bounties Network</strong>. Other teams in our community that do this kind of work are <strong>MetaCartel DAO</strong>, <strong>Axie Infinity</strong>, <strong>Burner Wallet</strong> and <strong>Universal Login</strong>.',
-  },
-  {
-    categoryID: 6,
-    title: 'Panvala',
-    recommendation: 20,
-    description:
-      'These grants fund work that improves Panvala itself and produces recommendations for the network to evaluate. Past Panvala grant recipients in this category are <strong>ConsenSys PAN</strong> and <strong>The Astrotrope</strong>.',
+      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized. They support projects like <strong>Black Girls Code</strong>, <strong>Tornado.cash</strong>, and <strong>Circles UBI</strong>."
   },
 ];
 
-const pollID = '2';
-const pollDeadline = 'May 22';
+const EMPTY_PERCENTAGES = {
+  7: '',
+  8: '',
+  9: '',
+  10: '',
+  11: '',
+};
+
+const pollID = '3';
+const pollDeadline = 'June 12';
 
 const ClipContainer = styled.div`
   display: flex;
@@ -91,14 +92,7 @@ const Poll = () => {
   const [ptsRemaining, setPtsRemaining] = useState(100);
   const [provider, setProvider] = useState();
   const [allocations, setAllocations] = useState([]);
-  const [percentages, setPercentages] = useState({
-    1: '',
-    2: '',
-    3: '',
-    4: '',
-    5: '',
-    6: '',
-  });
+  const [percentages, setPercentages] = useState(EMPTY_PERCENTAGES);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
@@ -407,10 +401,12 @@ const Poll = () => {
     } else {
       setModalOpen(true);
       setPtsRemaining(100);
-      setPercentages({ 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' });
+      setPercentages(EMPTY_PERCENTAGES);
       setAlreadyVoted(true);
     }
   }
+  
+  const totalStaked = categories.reduce((sum, category) => sum + category.staked, 0);
 
   return (
     <Layout>
@@ -420,11 +416,11 @@ const Poll = () => {
         <div className="flex justify-center h5 absolute top-0 left-0 right-0">
           <ModalOverlay handleClick={() => setWelcomeModalOpen(false)} />
           <ModalBody>
-            <ModalTitle>Welcome to the Panvala Poll</ModalTitle>
+            <ModalTitle>Stake PAN for Your Community</ModalTitle>
             <ModalCopy>
-              This poll is for PAN holders to signal their preferences for the next batch of grant
-              allocations. If you do not currently have a PAN balance but want to vote, or you would
-              like to increase your voting power before the <b>{pollDeadline}</b> deadline, you can
+              PAN holders stake their tokens to earn donation matching capacity for their community. If you do not
+              currently have a PAN balance but want to stake, or you would
+              like to increase your stake before the <b>{pollDeadline}</b> deadline, you can
               do so via Uniswap.
             </ModalCopy>
             <Box flex justifyContent="center">
@@ -448,14 +444,14 @@ const Poll = () => {
         {/* <!-- Instructions --> */}
         <ClipContainer p={['1rem 0 4rem', '2rem 3rem 4rem', '2rem 5rem 5rem', '5rem 10rem 8rem']}>
           <Box width={[1, 1, 0.5]} px={['4', '0']}>
-            <h1 className="white f1-5 b ma0 mb4 w-80-l w-100">The Panvala Poll</h1>
+            <h1 className="white f1-5 b ma0 mb4 w-80-l w-100">Stake PAN for Your Community</h1>
             <div className="f5 lh-copy mb3">
               <p className="w-60 mb0 white b">
-                We're polling PAN holders on their funding priorities in the Ethereum ecosystem.
+                Panvala's communities stake tokens to allocate inflation subsidies that match donations at over 12x.
               </p>
               <p className="white-60 fw4 ma0 w-50-l w-100">
-                The results of the poll will shape Panvala's next quarterly budget of 1,959,944 PAN,
-                which will be released on May 1.
+                The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
+                from June 15 to 29. The total matching budget for all communities is 1,424,551 PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -463,7 +459,7 @@ const Poll = () => {
                 className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4"
                 onClick={handleViewPollClick}
               >
-                View Poll
+                View Communities
               </button>
             </div>
           </Box>
@@ -489,7 +485,7 @@ const Poll = () => {
             <h2>Fund work that matters</h2>
             <p className="lh-copy">
               PAN tokens have been granted to teams that the whole Ethereum community depends on.
-              The more tokens you acquire to vote, the more work those teams can fund with their
+              The more tokens you acquire to stake, the more work those teams can fund with their
               tokens.
             </p>
             <Button
@@ -508,8 +504,8 @@ const Poll = () => {
             <Box flex flexDirection="column" justifyContent="center" alignItems="center">
               <ModalTitle>Thank you for voting!</ModalTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
-                Thank you for voting in the poll for the current batch. Your vote helps decide which
-                types of grants are awarded. Here is what you voted for:
+                Thank you for staking tokens for the current batch. Your staked PAN helps your community match
+                more donations. Here is what you staked for:
               </Box>
               <Box width="75%" mt="3">
                 <Box display="flex" flexDirection="column">
@@ -541,7 +537,7 @@ const Poll = () => {
               <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
                 Even though your vote has been submitted, you have until the <b>{pollDeadline}</b>{' '}
-                deadline to increase the weight of your vote through holding more PAN tokens.
+                deadline to increase your stake by holding more PAN tokens.
               </Box>
               <a
                 href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
@@ -557,8 +553,8 @@ const Poll = () => {
               <ModalTitle>Thank you for voting!</ModalTitle>
               <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
-                Thank you for voting in the poll for the current batch. Even though your vote has
-                been submitted you can increase the weight of your vote through holding more PAN
+                Thank you for staking tokens for the current batch. Even though your vote has
+                been submitted you can increase your stake by holding more PAN
                 tokens.
               </Box>
               <a
@@ -573,12 +569,12 @@ const Poll = () => {
           ) : (
             <>
               <div className="tc pv4">
-                <h2>Category Ballot</h2>
+                <h2>Stake PAN for Your Community</h2>
                 <Box my={1} className="w-80 center tc lh-copy">
-                  This poll is for PAN holders to signal their preferences for the next batch of
-                  grant allocations. If you do not currently have a PAN balance but want to vote, or
-                  you would like to increase your voting power before the <b>{pollDeadline}</b>{' '}
-                  deadline, you can do so via Uniswap.
+                  PAN holders stake their tokens to earn donation matching capacity for their community. If you do not
+                  currently have a PAN balance but want to stake, or you would
+                  like to increase your stake before the <b>{pollDeadline}</b> deadline, you can
+                  do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
                     <a
                       href="https://uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
@@ -593,7 +589,7 @@ const Poll = () => {
               </div>
 
               <Box flex justifyContent="center" my={3} p={3}>
-                Please distribute 100 percentage points between the following categories:
+                Select your community:
               </Box>
 
               <div className="bg-white shadow lh-copy black">
@@ -626,10 +622,12 @@ const Poll = () => {
                   {props => (
                     <form onSubmit={props.handleSubmit}>
                       {categories.map((category, index) => {
-                        const { description, title, recommendation, categoryID } = category;
+                        const { description, title, staked, categoryID } = category;
                         const identifier = `poll-points-category-${categoryID}`;
 
                         const name = `categories.${categoryID}`;
+                        const isSelected = percentages[categoryID] === '100';
+                        const percentageStaked = staked / totalStaked * 100;
 
                         return (
                           <div key={identifier} className="cf pa3 bb bw-2 b--black-10">
@@ -638,31 +636,15 @@ const Poll = () => {
                               <p dangerouslySetInnerHTML={{ __html: description }}></p>
                             </div>
                             <div className="fl w-20 pa2 f5 tr">
-                              <div className="b ttu f6 o-50">Panvala Caucus</div>
-                              <div className="pb3">{recommendation}%</div>
-                              <div className="b ttu f6 o-50">
-                                <label className="ma0 mb3">You</label>
-                              </div>
+                              <div className="b ttu f6 o-50">Staked</div>
+                              <div className="pb3">{staked} PAN ({percentageStaked.toFixed(2)}%)</div>
                               <div>
-                                <FieldText
-                                  type="number"
-                                  name={name}
-                                  id={identifier}
-                                  max="100"
-                                  min="0"
-                                  placeholder="%"
-                                  // validate the individual percentages on blur
-                                  onBlur={() => {
-                                    props.validateField(name);
-                                  }}
-                                  onChange={e => {
-                                    props.handleChange(e);
-                                    updatePercentages(e.target.value, category.categoryID);
-                                  }}
-                                  value={props.values.categories[categoryID]}
-                                  validate={validatePercentage}
-                                  className="f6 input-reset b--black-10 pv3 ph2 db w-100 br3 mt2 tr"
-                                />
+                                <Button type="button" width="100%" p={3} ml={3} bg={isSelected ? "#F5F6F9" : ""} color={isSelected ? "black" : ""} text={isSelected ? "Selected" : "Select"} onClick={e => {
+                                  setPercentages({
+                                    ...EMPTY_PERCENTAGES,
+                                    [categoryID]: isSelected ? '' : '100',
+                                  });
+                                }} />
                               </div>
                             </div>
                           </div>
@@ -671,7 +653,7 @@ const Poll = () => {
 
                       {/* <-- name and email --> */}
                       <div className="pa4 bb bw-2 b--black-10 black-60">
-                        <Box color="black" display="flex" justifyContent="flex-end" mb={4}>
+                        <Box color="black" display="none" justifyContent="flex-end" mb={4}>
                           Points Remaining:&nbsp;<b>{ptsRemaining}</b>
                         </Box>
                         <div className="cf pv2">
@@ -716,13 +698,12 @@ const Poll = () => {
 
                       <div className="cf pa4">
                         <div className="f5 tl pb3 lh-copy">
-                          The final poll results will be calculated using the balance of PAN tokens
+                          The final staking amounts will be calculated using the balance of PAN tokens
                           in your account on {pollDeadline}.
                         </div>
                         <div className="f5 tl pb4 lh-copy">
                           <b>
-                            Reminder: You will not lose any tokens or ETH for participating in this
-                            poll.
+                            Reminder: You will not lose any tokens or ETH by staking for your community.
                           </b>
                         </div>
                         {/* Form-level error messages */}
@@ -737,7 +718,7 @@ const Poll = () => {
                               type="submit"
                               name="submit"
                               className="f6 link dim bn br-pill pv3 ph4 bg-teal white fw7"
-                              value="Submit Vote"
+                              value="Stake Tokens"
                               disabled={props.isSubmitting}
                             />
                           </div>
