@@ -29,7 +29,7 @@ const categories = [
   {
     categoryID: 7,
     title: 'Hashing it Out',
-    staked: 75000,
+    staked: 168595.29,
     description:
       "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field, including projects like <strong>Fuel Labs</strong>, <strong>Lodestar</strong>, and <strong>lexDAO</strong>.",
   },
