@@ -52,14 +52,14 @@ const categories = [
     title: 'MetaCartel',
     staked: 87193.11,
     description:
-      "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Daohaus</strong>, <strong>1UP World</strong>, and <strong>Abridged</strong>."
+      "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Meta Gamma Delta</strong>, <strong>Daohaus</strong>, and <strong>1UP World</strong>."
   },
   {
     categoryID: 11,
     title: 'DXdao',
     staked: 103587.12,
     description:
-      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized. They support projects like <strong>Black Girls Code</strong>, <strong>Tornado.cash</strong>, and <strong>Circles UBI</strong>."
+      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized. They support projects like <strong>Black Girls Code</strong>, <strong>Tornado.cash</strong>, and <strong>Abridged</strong>."
   },
 ];
 
