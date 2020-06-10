@@ -7,6 +7,30 @@ import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
 
+const KNOWN_STAKERS = [
+  // 7: Hashing it Out
+  // 8: Commons Stack
+  {
+    categoryID: 8,
+    address: '0x839395e20bbB182fa440d08F850E6c7A8f6F0780',
+  },
+  {
+    categoryID: 8,
+    address: '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343',
+  },
+  // 9: DAppNode
+  // 10: MetaCartel
+  {
+    categoryID: 10,
+    address: '0xafdD1eB2511cd891AcF2bFf82DABf47E0C914d24',
+  },
+  {
+    categoryID: 10,
+    address: '0xD25185f8c3B9e38C3f014378CE58B362Db568352',
+  },
+  // 11: DXdao
+];
+
 function prettyToken(amount: BigNumber) {
   return commify(formatUnits(amount.toString(), 18));
 }
@@ -49,13 +73,36 @@ async function run() {
   const data = await Promise.all(
     responses.map(async response => {
       const plainResponse = await response.get({ plain: true });
-      // console.log(plainResponse);
+      console.log(plainResponse);
       return token.balanceOf(response.account).then(balance => {
         return { ...plainResponse, balance, prettyBalance: prettyToken(balance) };
       });
     })
   );
   // console.log(data);
+
+  if (pollID === 3) {
+    const submittedStakers = new Set(data.map((x: any) => x.account));
+    await Promise.all(
+      KNOWN_STAKERS.map(async knownStaker => {
+        if (submittedStakers.has(knownStaker.address)) return;
+
+        const balance = await token.balanceOf(knownStaker.address);
+        data.push({
+          pollID: 3,
+          account: knownStaker.address,
+          balance,
+          prettyBalance: prettyToken(balance),
+          allocations: [
+            {
+              categoryID: knownStaker.categoryID,
+              points: 100,
+            },
+          ],
+        });
+      })
+    );
+  }
 
   const initialTotal: Tally = {
     total: bigNumberify(0),
