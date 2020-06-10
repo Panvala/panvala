@@ -9,6 +9,14 @@ const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models'
 
 const KNOWN_STAKERS = [
   // 7: Hashing it Out
+  {
+    categoryID: 7,
+    address: '0xD27d1a5EB9D95228f0b5e2F18A15E801f1E4FdFD',
+  },
+  {
+    categoryID: 7,
+    address: '0xE6A39d977301A57a8a77E7F33a187E259aDc81b3',
+  },
   // 8: Commons Stack
   {
     categoryID: 8,
