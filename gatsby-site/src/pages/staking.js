@@ -36,7 +36,7 @@ const categories = [
   {
     categoryID: 8,
     title: 'Commons Stack',
-    staked: 302448.79,
+    staked: 340546.69,
     description:
       "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
   },
