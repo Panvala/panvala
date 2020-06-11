@@ -27,6 +27,14 @@ const KNOWN_STAKERS = [
     address: '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343',
   },
   // 9: DAppNode
+  {
+    categoryID: 9,
+    address: '0x8C5ceCb20105A90C383f25914933F01fb2e94916',
+  },
+  {
+    categoryID: 9,
+    address: '0x54756dCBe2a9945F35B614031f6B2fA39d53BB90',
+  },
   // 10: MetaCartel
   {
     categoryID: 10,
@@ -37,6 +45,10 @@ const KNOWN_STAKERS = [
     address: '0xD25185f8c3B9e38C3f014378CE58B362Db568352',
   },
   // 11: DXdao
+  {
+    categoryID: 11,
+    address: '0x519b70055af55a007110b4ff99b0ea33071c720a',
+  },
 ];
 
 function prettyToken(amount: BigNumber) {
@@ -127,7 +139,7 @@ async function run() {
     current.allocations.forEach(allocation => {
       const { categoryID, points } = allocation;
 
-      const weightedPoints = balance.mul(points);
+      const weightedPoints = balance.mul(points).div(100);
       // console.log(allocation);
       const currentPoints: BigNumber = updated[categoryID];
       if (currentPoints != null) {
@@ -155,7 +167,7 @@ async function run() {
     ...tally,
     count,
     displayTotal,
-    weightedTotal: tally.total.mul(100),
+    weightedTotal: tally.total,
   };
 
   const categoryKeys = Object.keys(finalTally).filter(key => parseInt(key));
