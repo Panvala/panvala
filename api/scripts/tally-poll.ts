@@ -17,6 +17,10 @@ const KNOWN_STAKERS = [
     categoryID: 7,
     address: '0xE6A39d977301A57a8a77E7F33a187E259aDc81b3',
   },
+  {
+    categoryID: 7,
+    address: '0x197553ddfdb7b9c3c4216e2914456788bfd59c86',
+  },
   // 8: Commons Stack
   {
     categoryID: 8,
