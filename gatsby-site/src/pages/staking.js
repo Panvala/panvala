@@ -72,7 +72,7 @@ const EMPTY_PERCENTAGES = {
 };
 
 const pollID = '3';
-const pollDeadline = 'June 12';
+const pollDeadline = 'July 2';
 
 const ClipContainer = styled.div`
   display: flex;
@@ -451,7 +451,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0 w-50-l w-100">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from June 15 to 29. The total matching budget for all communities is 1,424,551 PAN.
+                from June 15 to July 2. The total matching budget for all communities is 1,424,551 PAN.
               </p>
             </div>
             <div className="mv3 b">
