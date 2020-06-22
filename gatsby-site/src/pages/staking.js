@@ -36,7 +36,7 @@ const categories = [
   {
     categoryID: 8,
     title: 'Commons Stack',
-    staked: 423236.86,
+    staked: 424022.86,
     description:
       "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
   },
@@ -50,7 +50,7 @@ const categories = [
   {
     categoryID: 10,
     title: 'MetaCartel',
-    staked: 74147.68,
+    staked: 74489.68,
     description:
       "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Meta Gamma Delta</strong>, <strong>Daohaus</strong>, and <strong>1UP World</strong>."
   },
