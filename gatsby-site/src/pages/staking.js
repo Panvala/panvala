@@ -29,35 +29,35 @@ const categories = [
   {
     categoryID: 7,
     title: 'Hashing it Out',
-    staked: 368595.29,
+    staked: 569090.29,
     description:
       "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field, including projects like <strong>Fuel Labs</strong>, <strong>Nimbus</strong>, and <strong>lexDAO</strong>.",
   },
   {
     categoryID: 8,
     title: 'Commons Stack',
-    staked: 424022.86,
+    staked: 438170.39,
     description:
       "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
   },
   {
     categoryID: 9,
     title: 'DAppNode',
-    staked: 458803.69,
+    staked: 457802.69,
     description:
       "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet. They support projects like <strong>DAppNode</strong>, <strong>Prysm</strong>, and <strong>Rotki</strong>.",
   },
   {
     categoryID: 10,
     title: 'MetaCartel',
-    staked: 74489.68,
+    staked: 90058.34,
     description:
       "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Meta Gamma Delta</strong>, <strong>Daohaus</strong>, and <strong>1UP World</strong>."
   },
   {
     categoryID: 11,
     title: 'DXdao',
-    staked: 153587.12,
+    staked: 146987.40,
     description:
       "The DXdao community works to develop a DeFi ecosystem that is truly decentralized. They support projects like <strong>Black Girls Code</strong>, <strong>Tornado.cash</strong>, and <strong>Abridged</strong>."
   },
