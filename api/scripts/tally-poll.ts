@@ -34,6 +34,10 @@ const KNOWN_STAKERS = [
     categoryID: 8,
     address: '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343',
   },
+  {
+    categoryID: 8,
+    address: '0x60e18f4971077412af2bd0297999093642f28e15',
+  },
   // 9: DAppNode
   {
     categoryID: 9,

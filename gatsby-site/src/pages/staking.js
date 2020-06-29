@@ -36,14 +36,14 @@ const categories = [
   {
     categoryID: 8,
     title: 'Commons Stack',
-    staked: 461703.68,
+    staked: 709390.65,
     description:
       "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
   },
   {
     categoryID: 9,
     title: 'DAppNode',
-    staked: 458781.19,
+    staked: 463731.19,
     description:
       "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet. They support projects like <strong>DAppNode</strong>, <strong>Prysm</strong>, and <strong>Rotki</strong>.",
   },
