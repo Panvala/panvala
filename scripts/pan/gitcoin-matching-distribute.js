@@ -72,20 +72,23 @@ async function writePreMatchState(grants, token) {
 
 async function run() {
   const { provider, token } = await prepareContracts();
-  
+
   // Before the first run of the script, get the balance from each account before any matching
   // and store it on disk.
-  const grantsToMatch = await getGrants();
-  await writePreMatchState(grantsToMatch, token);
-  return;
-  
+  //const grantsToMatch = await getGrants();
+  //await writePreMatchState(grantsToMatch, token);
+  //return;
+
   // After the first run of this script, pull the pre-match state from disk to avoid matching more
   // than intended.
   const grants = await getPreMatchState();
   const matchingTotal = grants.reduce((total, grant) => total.add(grant['Match']), ethers.utils.bigNumberify(0));
   console.log('matching total:', matchingTotal.toString());
-  console.assert(matchingTotal.eq('1384244327800000227630000'), 'Unexpected matching total');
-  
+  if (!matchingTotal.eq('1069446130367770000000000')) {
+    console.log('Unexpected matching total');
+    return;
+  }
+
   const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
   const wallet = new ethers.Wallet(mnemonicWallet.privateKey, provider);
   const tokenWithSigner = token.connect(wallet);
@@ -129,7 +132,7 @@ async function run() {
     });
     console.log('Sending transaction...');
     // The gasPrice ethers uses by default doesn't always yield quick transactions, so consider hardcoding a gasPrice.
-    const tx = await tokenWithSigner.transfer(grant['Address'], grant['Match'], { gasPrice: ethers.utils.parseUnits('15.2', 'gwei') });
+    const tx = await tokenWithSigner.transfer(grant['Address'], grant['Match']); // { gasPrice: ethers.utils.parseUnits('15.2', 'gwei') });
     console.log(tx.hash);
     await tx.wait();
     
