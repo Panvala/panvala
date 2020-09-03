@@ -17,7 +17,7 @@ import extPlasmaGroup from '../img/external/plasma-group.png';
 import extPrysmatic from '../img/external/prysmatic-labs.png';
 import extConnext from '../img/external/connext.png';
 import extConsensys from '../img/external/consensys.png';
-import philanthropistsAnimation from '../img/philanthropists-animation.gif';
+import communityDonating from '../img/community-donating.png';
 import teamGnosis from '../img/external/team-gnosis.png';
 import teamStatus from '../img/external/team-status.png';
 import teamLevelK from '../img/external/team-levelk.png';
@@ -106,10 +106,10 @@ const IndexPage = () => {
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
-            <h1 className="white f1-ns f2 b ma0 mb3">Hodlers are philanthropists.</h1>
+            <h1 className="white f1-ns f2 b ma0 mb3">The sustainable treasury for communities to share.</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
-              Bitcoin subsidizes its own security by creating new bitcoins. Panvala generalizes those
-              economics to <b className="white fw6"> subsidize our communities</b>.
+              Bitcoin subsidizes its own security by creating new bitcoins. Panvala's PAN token uses that same model
+              to <b className="white fw6"> subsidize our communities</b>, with 4x donation matching last quarter.
               Panvala is run by our grantees and people like <b className="white fw6"> you</b>.
             </p>
             <div className="">
@@ -138,7 +138,7 @@ const IndexPage = () => {
           </div>
           <div className="dtc-l dn w-50 v-mid mt0-ns mt4">
             <img alt="" src={home1p2} className="absolute db-ns dn o-30 w-30 nl4 mt5" />
-            <img alt="" src={philanthropistsAnimation} className="full-clip-up-sm relative z-1" />
+            <img alt="" src={communityDonating} className="full-clip-up-sm relative z-1" />
           </div>
           <img alt="" src={home1p1} className="absolute db-l dn z-2 nl6 mt4" />
         </div>
@@ -151,93 +151,51 @@ const IndexPage = () => {
           usdValue={budgets.epochUSD}
         />
       )}
-
-      {/* <!-- Comparison Section --> */}
-      {/* <section
-        id="home-comparison"
-        className="bg-white w-70-l w-80-m w-90 center br4 shadow relative z-1 top-0-ns top-14 pa5-ns pa4"
-        style={{ marginTop: '-450px' }}
-      >
-        <h2 className="f2-5 ma0 tc">Sustainable Funding</h2>
-        <div className="dt mt5-ns mt4">
-          <div className="dtc-ns db tc w-50-ns w-100 v-top pr4-ns pr0">
-            <img alt="" src={sustFund1} className="center w-75-ns" />
-            <h3 className="f4 ma0 mt5-ns mt3 mb2">The old way</h3>
-            <p className="ma0 f6 lh-text">
-              Raise money with an ICO, then spend it until one day, it all runs out. Oops!
-            </p>
-          </div>
-          <div className="dtc-ns db tc w-50-ns w-100 v-top pl4-ns pl0 mt0-ns mt4">
-            <img alt="" src={sustFund2} className="center w-75-ns" />
-            <h3 className="f4 ma0 mt5-ns mt3 mb2">The new way</h3>
-            <p className="ma0 f6 lh-text">
-              Fund work with grants of PAN, the token of Panvala. Since donations are made in PAN as
-              well, we all have an incentive to recruit more donors!
-            </p>
-          </div>
-        </div>
-      </section> */}
       
-      <section className="mt6-ns mt5 center tc">
-        <h1 class="tc">How Panvala Works</h1>
-        <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
-          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
-            <h2 className="f2-5 ma0 mv3 lh-copy">BTC and ETH hodlers aren't just investors</h2>
-            <p className="ma0 f6 lh-text mb3">
-              Hodlers dilute their share of the currency supply to subsidize the security of the network. The security
-              of a blockchain is a public good we can all share without degrading security for anyone else.
-              People don't think of hodlers as philanthropists because they've made so much money over the years,
-              but that's the breakthrough! Since Bitcoin was launched in 2009, people have been outlandishly rewarded
-              for subsidizing public goods.
-            </p>
-          </div>
-          <div className="dtc-ns w-50-ns v-mid">
-            <img alt="" src={howItWorks1} className="full-clip-up-sm relative z-1" />
-          </div>
-          <img
-            alt=""
-            src={home2p1}
-            className="absolute nl6 nt5-l nt0-m mt5 w-auto-ns w-10 db-ns dn"
-          />
+      {/* <!-- Our Launch Partners--> */}
+      <section className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
+        <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
+        <p className="ma0 f6 lh-text mb3">
+          Ten communities stake PAN tokens to earn donation matching capacity from the new PAN tokens Panvala releases each quarter. Your community can join them!
+        </p>
+        <div className="flex flex-wrap items-center justify-center tc center w-100">  
+          <a href="https://commonsstack.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>Commons Stack</h3>
+          </a>
+          <a href="https://dappnode.io/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>DAppNode</h3>
+          </a>
+          <a href="https://www.metacartel.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>MetaCartel</h3>
+          </a>
+          <a href="https://dxdao.eth.link/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>DXdao</h3>
+          </a>
+          <a href="https://twitter.com/hashingitoutpod" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>Hashing it Out</h3>
+          </a>
+          <a href="https://metagammadelta.com/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>Meta Gamma Delta</h3>
+          </a>
+          <a href="https://gitcoin.co/blog/announcing-kernel/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>KERNEL</h3>
+          </a>
+          <a href="https://twitter.com/afuturemodern" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>future modern</h3>
+          </a>
+          <a href="https://www.shefi.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>SheFi</h3>
+          </a>
+          <a href="https://www.depodao.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+            <h3>DePo DAO</h3>
+          </a>
         </div>
-        <div className="bg-gray pv6 full-clip-up mv6-ns mv4">
-          <div className="dt w-70-l w-80-m w-90 center">
-            <img alt="" src={home3p1} className="absolute w-auto-ns w-10-ns db nl5-ns mt6-ns" />
-            <div className="dtc-ns w-50-ns v-mid">
-              <img alt="" src={howItWorks2} className="full-clip-up-sm relative z-1" />
-            </div>
-            <div className="dtc-ns w-50-ns v-mid tl pl4-ns pl0 mt0-ns mt4">
-              <h2 className="f2-5 ma0 mv3 lh-copy">Bitcoin matches at 60x</h2>
-              <p className="ma0 f6 lh-text mb3">
-                In Q4 of 2019, Bitcoin users spent 2500 BTC on transaction fees. BTC hodlers diluted their
-                holdings to fund 150,000 BTC of block reward subsidies. They're matching contributions to
-                Bitcoin's security at 60x. In the normal world, people get excited when a rich person offers
-                to match contributions at 2x: if we give a dollar, they'll match with a dollar. But Bitcoin
-                is matching at 60x! They’re the most generous philanthropists in the world.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="dt mt6-ns mt5 w-70-l w-80-m w-90 center">
-          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0 mt0-ns mt4">
-            <h2 className="f2-5 ma0 mv3 lh-copy">Panvala matches like Bitcoin</h2>
-            <p className="ma0 f6 lh-text mb3">
-              If we can generalize Bitcoin's model to subsidize more broadly useful things than blockchain security,
-              it could have a giant impact on the world. That's what we're doing with Panvala. In the quarter
-              that ended on January 31, Panvala matched donations from our sponsors at 11.2x. For each token
-              that came into the token supply as a donation, 11.2 PAN went out as grants. We believe that like Bitcoin,
-              high levels of matching can be sustained for over a decade, and that Panvala's matching can be shared
-              among as many communities as want to use it.
-            </p>
-          </div>
-          <div className="dtc-ns w-50-ns v-mid">
-            <img alt="" src={howItWorks3} className="full-clip-up-sm relative z-1" />
-          </div>
-          <img
-            alt=""
-            src={home2p1}
-            className="absolute nl6 nt5-l nt0-m mt5 w-auto-ns w-10 db-ns dn"
-          />
+        <div className="dib v-top mr3-ns mr2 mv2">
+          <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!">
+            <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+              Submit A New Community
+            </button>
+          </a>
         </div>
       </section>
 
@@ -253,7 +211,8 @@ const IndexPage = () => {
             Think about all the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
             from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
             other public goods instead. Firms would pop up all over the world—not to rack up power bills
-            mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund.
+            mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund. If you're
+            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>.
           </p>
         </div>
       </section>
@@ -338,38 +297,6 @@ const IndexPage = () => {
           </Box>
         </Section>
       )}
-
-      {/* <!-- Our Launch Partners--> */}
-      <section className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
-        <h2 className="f2-5 ma0 mb3-ns mb0">Our launch partners</h2>
-        <div className="flex flex-wrap items-center justify-center tc center w-100">
-          <img
-            alt=""
-            src={teamGnosis}
-            className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4"
-          />
-          <img
-            alt=""
-            src={teamStatus}
-            className="w-20-l w-30 dib v-mid grayscale o-20 animate pa4"
-          />
-          <img
-            alt=""
-            src={teamLevelK}
-            className="w-20-l w-30 dib v-mid grayscale o-50 animate pa4"
-          />
-          <img
-            alt=""
-            src={teamSigma}
-            className="w-20-l w-30 dib v-mid grayscale o-20 animate pa4"
-          />
-          <img
-            alt=""
-            src={teamTenderly}
-            className="w-20-l w-30 dib v-mid grayscale o-20 animate pa4"
-          />
-        </div>
-      </section>
 
       {/* <!-- Quote Section --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
