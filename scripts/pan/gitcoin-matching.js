@@ -5,11 +5,12 @@ const path = require('path');
 const csvParse = require('csv-parse');
 const stringify = require('csv-stringify/lib/sync');
 
-const MATCHING_BUDGET = 1500000;
+const MATCHING_BUDGET = 1424551.32;
 const ONE_DOLLAR_PAN = 44.369; // 58.9;
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
+  '0x1b21609d42fa32f371f58df294ed25b2d2e5c8ba', // Uniswap v2
   '0x6F400810b62df8E13fded51bE75fF5393eaa841F', // dFusion
   '0x11111254369792b2Ca5d084aB5eEA397cA8fa48B', // 1inch.exchange
 ]);
@@ -18,13 +19,14 @@ const IGNORED_SENDERS = new Set([
   '0xB320759d1A0ADbE55360a0a28a221013aA2DA4fC', // LevelK transfer
   '0x7117fb4E85286c159EFa691a7699587Ccd01E26E', // LevelK transfer
   '0x3eCb4bf3A4C483cA0A4C897396E1FD85b48FB129',
+  '0x6c645C934B7f5eC7589F3d96192000E5ABAbF90F', // MetaCartel
 ]);
-const IGNORED_RECIPIENTS = new Set([
-  '0xdC0046B52e2E38AEe2271B6171ebb65cCD337518',
-  '0x700593B9fa994DA790EE8aBB2Ec26880b75fe174',
-  '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343', // Griff transfer
-  '0x970CC8c95C614a7335c1487EB2E16848983d5FE6', // Unknown Gitcoin maintainer address
-]);
+
+const ENS_ADDRESSES = {
+  'contraktorapp.eth': '0x1e52C0887bc0F752368dFb80974ec988Ab40AED3',
+  'daiparaprincipiantes.eth': '0x333E08D7C12ABf223789dC00305C4FE3e8B4b956',
+  'specie.eth': '0x32672af4edc13cf1ab5dab6c5cda5df71ad35951',
+};
 
 run();
 
@@ -98,7 +100,7 @@ async function getGrantAddresses() {
     });
     if (response.status === 200) {
       return response.data.reduce((accumulator, item) => {
-        const address = ethers.utils.getAddress(item[1]);
+        const address = ENS_ADDRESSES[item[1]] || ethers.utils.getAddress(item[1]);
         accumulator[address] = item[0];
         return accumulator;
       }, {});
@@ -153,7 +155,7 @@ function calculateMatching(grants) {
   let quadraticTotal = 0;
   let donationsTotal = 0;
   const gitcoinDonations = sumDonations(grants[GITCOIN_ADDRESS].donations)
-  
+
   Object.entries(grants).forEach(([address, grant]) => {
     donationsTotal += sumDonations(grant.donations);
     grant.matches = grant.matches || {};
@@ -162,7 +164,7 @@ function calculateMatching(grants) {
     grant.matches['Unconstrained'] = calculateQuadraticTerm(grant.donations);
     quadraticTotal += grant.matches['Unconstrained'];
   });
-  
+
   const averageMatch = MATCHING_BUDGET / donationsTotal;
   const tokensToAllocate = MATCHING_BUDGET - gitcoinDonations * (averageMatch - 1) - donationsTotal;
   Object.entries(grants).forEach(([address, grant]) => {
@@ -174,7 +176,7 @@ function calculateMatching(grants) {
     }
     grant.matches['Fully Allocated USD'] = grant.matches['Fully Allocated'] / ONE_DOLLAR_PAN;
   });
-  
+
   Object.entries(grants).forEach(([address, grant]) => {
     if (address === GITCOIN_ADDRESS)
       return;
@@ -186,10 +188,10 @@ async function run() {
   const grantNames = await getGrantAddresses();
   const transactions = await getTransactions();
   const donorNames = await getDonorNames();
-  
+
   const donors = {};
   const grants = {};
-  
+
   transactions.forEach(item => {
     const grantAddress = ethers.utils.getAddress(item['To']);
     const donorAddress = ethers.utils.getAddress(item['From']);
@@ -197,11 +199,11 @@ async function run() {
       IGNORED_ADDRESSES.has(grantAddress) ||
       IGNORED_ADDRESSES.has(donorAddress) ||
       IGNORED_SENDERS.has(donorAddress) ||
-      IGNORED_RECIPIENTS.has(grantAddress)
+      !(new Set(Object.keys(grantNames))).has(grantAddress)
       ) {
       return;
     }
-    
+
     const grant = grants[grantAddress] || {
       name: grantNames[grantAddress] || null,
       transactions: 0,
@@ -214,7 +216,7 @@ async function run() {
     grant.donations[donorAddress] = grant.donations[donorAddress] || 0;
     grant.donations[donorAddress] += transactionTokens;
     grants[grantAddress] = grant;
-    
+
     const donor = donors[donorAddress] || {};
     donor.name = donorNames[donorAddress] || null;
     donor.transactions = (donor.transactions || 0) + 1;
@@ -226,15 +228,15 @@ async function run() {
     };
     donors[donorAddress] = donor;
   });
-  
+
   calculateMatching(grants);
-  
+
   const grantsCsv = grantsToCSV(grants);
   fs.writeFileSync('gitcoin-grants.csv', grantsCsv);
-  
+
   const donorsCsv = donorsToCSV(donors);
   fs.writeFileSync('gitcoin-donors.csv', donorsCsv);
-  
+
   const donationsCsv = donationsToCSV(grants, donors);
   fs.writeFileSync('gitcoin-donations.csv', donationsCsv);
 }
