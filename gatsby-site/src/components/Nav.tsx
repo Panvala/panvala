@@ -20,6 +20,7 @@ const NavLink = ({ href, children }) => (
 export default function Nav({ account, balance, handleClick }: Props) {
   return (
     <>
+      {/*
       <TopBar>
         <Box height={64} bg="white" color="blue" flex justifyContent="center" alignItems="center">
           <a href="https://start.panvala.com/double-matching" className="link dim blue">
@@ -27,6 +28,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           </a>
         </Box>
       </TopBar>
+      */}
 
       {/* Nav links */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
@@ -39,9 +41,6 @@ export default function Nav({ account, balance, handleClick }: Props) {
         </a>
 
         <div className="dtc-ns db v-mid tc center w-50-ns w-100">
-          <NavLink href="/grants">Grants</NavLink>
-          <NavLink href="/team">Team</NavLink>
-          <NavLink href="/resources">Resources</NavLink>
           <a
             href="https://forum.panvala.com"
             target="_blank"
@@ -49,6 +48,22 @@ export default function Nav({ account, balance, handleClick }: Props) {
             className="link dim white-60 f6 fw6 dib mr3"
           >
             Forum
+          </a>
+          <a
+            href="https://twitter.com/PanvalaHQ"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link dim white-60 f6 fw6 dib mr3"
+          >
+            Twitter
+          </a>
+          <a
+            href="https://t.me/panvala"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link dim white-60 f6 fw6 dib mr3"
+          >
+            Telegram
           </a>
           <a href="/join" className="link dim white-60 f6 dn-ns dib fw6">
             Join

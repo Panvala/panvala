@@ -298,30 +298,6 @@ const IndexPage = () => {
         </Section>
       )}
 
-      {/* <!-- Quote Section --> */}
-      <section className="full-clip-down-blue pv6 mv6-ns mv5">
-        <div className="dt w-70-l w-80-m w-90 center">
-          <div className="dtc-ns db w-50-ns w-100 v-mid tl pr4-ns pr0">
-            <h2 className="f2-5 ma0 mv3 lh-copy white">
-              Our supporters care about the future of Ethereum
-            </h2>
-            <p className="ma0 f4 white-60 lh-text mb3">
-              “I'm donating to Panvala because new socially driven organisations could be the key to
-              avoiding a tragedy of the commons for maintaining public networks like Ethereum.”
-            </p>
-          </div>
-          <div className="dtc-ns db w-50-ns w-100 v-btm tr-ns tl pb0-ns pb5 pt0-ns pt3">
-            <img
-              alt=""
-              src={simon}
-              className="relative br-top shadow bottom-clip-down w-90-ns w-100"
-            />
-            <h3 className="f4 ma0 mt5-ns mt0 mb2 white">Simon de la Rouviere</h3>
-            <p className="ma0 f6 lh-text white-60">Token Engineering Pioneer</p>
-          </div>
-        </div>
-      </section>
-
       {/* <!-- ConsenSys  --> */}
       <div className="dt w-80-ns w-100 center-ns mb5">
         <section className="w-40-ns w-90 dtc-ns relative center">

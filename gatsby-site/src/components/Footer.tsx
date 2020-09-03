@@ -17,7 +17,7 @@ export default () => (
             </a>
             <div className="dt mv3">
               <a
-                href="https://twitter.com/panvalahq"
+                href="https://twitter.com/PanvalaHQ"
                 rel="noopener noreferrer"
                 target="_blank"
                 className="link dim dtc pr4"
@@ -53,68 +53,41 @@ export default () => (
         </div>
         <div className="dtc-ns db w-70-l w-70-m w-100 v-top tr-ns tl">
           <div className="dib v-top mr5-l mr3-m mr4 pr2 tl mt0-ns mt4">
-            <h3 className="f3-l f5 ma0 white mb3">Product</h3>
-            <a href="/" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Home
-            </a>
-            <a href="/grants" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Grants
-            </a>
-            <a href="/sponsors" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Sponsors
-            </a>
-            <a href="/donate" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Donate
-            </a>
+            <h3 className="f3-l f5 ma0 white mb3">Individuals</h3>
             <a
-              href="https://disputes.panvala.com/slates"
+              href="https://twitter.com/PanvalaHQ"
               rel="noopener noreferrer"
               target="_blank"
               className="link dim white-60 f5-l f6 db mb3-ns mb2"
             >
-              Disputes App
+              Follow @PanvalaHQ on Twitter
+            </a>
+            <a
+              href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="link dim white-60 f5-l f6 db mb3-ns mb2"
+            >
+              Get PAN Tokens
+            </a>
+            <a href="mailto:caucus@panvala.com?subject=I want to join the Panvala Caucus!" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Join the Panvala Caucus
             </a>
           </div>
           <div className="dib v-top mr5-l mr3-m mr4 pr2 tl mt0-ns mt4">
-            <h3 className="f3-l f5 ma0 white mb3">Team</h3>
-            <a href="/team#team-about" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              About Us
+            <h3 className="f3-l f5 ma0 white mb3">Communities</h3>
+            <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Join the Panvala League
             </a>
-            <a href="/team#team-contribute" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Contribute
-            </a>
-            <a href="/team#team-contact" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Contact
-            </a>
-          </div>
-          <div className="dib v-top tl mr0-ns mr4 mt0-ns mt4">
-            <h3 className="f3-l f5 ma0 white mb3">Resources</h3>
-            <a
-              href="/resources#resources-whitepaper"
-              className="link dim white-60 f5-l f6 db mb3-ns mb2"
-            >
-              Whitepaper
-            </a>
-            <a href="/resources#resources-blog" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Blog
-            </a>
-            <a
-              href="https://forum.panvala.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="link dim white-60 f5-l f6 db mb3-ns mb2"
-            >
-              Forum
-            </a>
-            <a href="/resources#resources-faq" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              FAQ
+            <a href="/staking" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Stake PAN for Your Community
             </a>
           </div>
         </div>
       </nav>
       <hr className="hr-white" />
       <p className="ma0 f7 lh-text tc white-60 pb3">
-        2019 © PANVALA |{' '}
+        2020 © PANVALA |{' '}
         <a
           href={privacyPolicy}
           target="_blank"
