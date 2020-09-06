@@ -159,34 +159,34 @@ const IndexPage = () => {
           Ten communities stake PAN tokens to earn donation matching capacity from the new PAN tokens Panvala releases each quarter. Your community can join them!
         </p>
         <div className="flex flex-wrap items-center justify-center tc center w-100">  
-          <a href="https://commonsstack.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://commonsstack.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>Commons Stack</h3>
           </a>
-          <a href="https://dappnode.io/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://dappnode.io/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>DAppNode</h3>
           </a>
-          <a href="https://www.metacartel.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://www.metacartel.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>MetaCartel</h3>
           </a>
-          <a href="https://dxdao.eth.link/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://dxdao.eth.link/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>DXdao</h3>
           </a>
-          <a href="https://twitter.com/hashingitoutpod" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://twitter.com/hashingitoutpod" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>Hashing it Out</h3>
           </a>
-          <a href="https://metagammadelta.com/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://metagammadelta.com/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>Meta Gamma Delta</h3>
           </a>
-          <a href="https://gitcoin.co/blog/announcing-kernel/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://gitcoin.co/blog/announcing-kernel/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>KERNEL</h3>
           </a>
-          <a href="https://twitter.com/afuturemodern" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://twitter.com/afuturemodern" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>future modern</h3>
           </a>
-          <a href="https://www.shefi.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://www.shefi.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>SheFi</h3>
           </a>
-          <a href="https://www.depodao.org/" className="w-20-l w-30 dib v-mid grayscale o-40 animate pa4">
+          <a href="https://www.depodao.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
             <h3>DePo DAO</h3>
           </a>
         </div>
