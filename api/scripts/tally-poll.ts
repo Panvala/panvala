@@ -1,6 +1,9 @@
 import { Contract } from 'ethers';
 import { BigNumber, bigNumberify, formatUnits, commify } from 'ethers/utils';
 import * as yargs from 'yargs';
+//import * as csvParse from 'csv-parse';
+import * as stringify from 'csv-stringify/lib/sync';
+import * as fs from 'fs';
 
 import { responseCount, getPollByID, getCategories } from '../src/utils/polls';
 import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
@@ -65,6 +68,23 @@ const KNOWN_STAKERS = [
 
 function prettyToken(amount: BigNumber) {
   return commify(formatUnits(amount.toString(), 18));
+}
+
+function responsesToCSV(data, categories) {
+  const rows = data.reduce((acc, item) => {
+    const allocations = item.allocations.map(allocation => [
+      item.account,
+      formatUnits(item.balance.toString(), 18),
+      allocation.points,
+      allocation.categoryID,
+      categories[allocation.categoryID].displayName,
+    ]);
+    return acc.concat(allocations);
+  }, []);
+  return stringify(
+    rows.filter(row => row[2] > 0),
+    { header: true, columns: ['Address', 'Balance', 'Points', 'Category ID', 'Category Name'] }
+  );
 }
 
 interface Tally {
@@ -220,6 +240,12 @@ async function run() {
       console.log(`${key}\t${category.displayName}\t${prettyToken(weight)} (${percentage}%)`);
     }
   });
+
+  const responsesCsv = responsesToCSV(data, categories);
+  fs.writeFileSync(
+    `responses-poll-${pollID}-${new Date().toISOString().slice(0, 10)}.csv`,
+    responsesCsv
+  );
 
   process.exit(0);
 }
