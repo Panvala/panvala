@@ -197,7 +197,8 @@ async function run() {
   console.log(`${finalTally.nonZeroResponses} with nonzero balance`);
   console.log(`total weight ${displayTotal} PAN`);
 
-  // Display table
+  // Display table and JSON
+  const categoryJSON = {};
   categoryKeys.forEach(async key => {
     const categoryID = parseInt(key);
 
@@ -206,8 +207,15 @@ async function run() {
       const category = categories[key];
       const percentage = weight.mul(100).div(finalTally.weightedTotal);
       console.log(`${key}\t${category.displayName}\t${prettyToken(weight)} (${percentage}%)`);
+      categoryJSON[categoryID] = {
+        id: categoryID,
+        name: category.displayName,
+        weight: formatUnits(weight, 18),
+      };
     }
   });
+
+  console.log(JSON.stringify(categoryJSON, null, 2));
 
   const responsesCsv = responsesToCSV(data, categories);
   fs.writeFileSync(

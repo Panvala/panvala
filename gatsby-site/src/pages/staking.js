@@ -29,70 +29,60 @@ const categories = [
   {
     categoryID: 7,
     title: 'Hashing it Out',
-    staked: 569470.29,
     description:
       "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field.",
   },
   {
     categoryID: 8,
     title: 'Commons Stack',
-    staked: 710625.65,
     description:
       "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods."
   },
   {
     categoryID: 9,
     title: 'DAppNode',
-    staked: 463731.19,
     description:
       "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet.",
   },
   {
     categoryID: 10,
     title: 'MetaCartel',
-    staked: 88693.34,
     description:
       "MetaCartel is a community that helps launch and grow DAOs."
   },
   {
     categoryID: 11,
     title: 'DXdao',
-    staked: 146987.40,
     description:
       "The DXdao community works to develop a DeFi ecosystem that is truly decentralized."
   },
   {
     categoryID: 12,
     title: 'Meta Gamma Delta',
-    staked: 0,
     description:
       "Meta Gamma Delta is an inclusive and empowering society supporting women-led projects ✨"
   },
   {
     categoryID: 13,
     title: 'KERNEL',
-    staked: 0,
     description:
       "KERNEL is an 8-week, invite-only program for top tech talent looking to build relationships, products, and companies in blockchain and Web 3."
   },
   {
     categoryID: 14,
     title: 'future modern',
-    staked: 0,
     description:
       "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
   },
   {
     categoryID: 15,
     title: 'SheFi',
-    staked: 0,
     description:
       "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
   },
   {
     categoryID: 16,
     title: 'DePo DAO',
-    staked: 0,
     description:
       "DePo DAO funds and encourages open source projects to break down the political barriers that currently restrain us from real progress."
   },
@@ -109,6 +99,34 @@ const EMPTY_PERCENTAGES = {
   14: '',
   15: '',
   16: '',
+};
+
+const stakingResults = {
+  "7": {
+    "id": 7,
+    "name": "Hashing it Out",
+    "weight": "837570.198094446261118931"
+  },
+  "8": {
+    "id": 8,
+    "name": "Commons Stack",
+    "weight": "1685080.112878964258167241"
+  },
+  "9": {
+    "id": 9,
+    "name": "DAppNode",
+    "weight": "1525500.436243333879674026"
+  },
+  "10": {
+    "id": 10,
+    "name": "MetaCartel",
+    "weight": "113197.985669645681359291"
+  },
+  "11": {
+    "id": 11,
+    "name": "DXdao",
+    "weight": "192469.145364741130071882"
+  }
 };
 
 const pollID = '4';
@@ -447,7 +465,7 @@ const Poll = () => {
     }
   }
 
-  const totalStaked = categories.reduce((sum, category) => sum + category.staked, 0);
+  const totalStaked = Object.keys(stakingResults).reduce((sum, categoryID) => sum + parseFloat(stakingResults[categoryID].weight), 0);
 
   return (
     <Layout>
@@ -671,7 +689,8 @@ const Poll = () => {
                   {props => (
                     <form onSubmit={props.handleSubmit}>
                       {categories.map((category, index) => {
-                        const { description, title, staked, categoryID } = category;
+                        const { description, title, categoryID } = category;
+                        const staked = stakingResults[categoryID] !== undefined ? parseFloat(stakingResults[categoryID].weight) : 0;
                         const identifier = `poll-points-category-${categoryID}`;
 
                         const name = `categories.${categoryID}`;
@@ -686,7 +705,7 @@ const Poll = () => {
                             </div>
                             <div className="fl w-20 pa2 f5 tr">
                               <div className="b ttu f6 o-50">Staked</div>
-                              <div>{staked} PAN ({percentageStaked.toFixed(2)}%)</div>
+                              <div>{utils.commify(staked.toFixed(2))} PAN ({percentageStaked.toFixed(2)}%)</div>
                               <div className="i f7 o-40 pb3">last updated {stakingTotalsUpdated}</div>
                               <div>
                                 <Button type="button" width="100%" p={3} ml={3} bg={isSelected ? "#F5F6F9" : ""} color={isSelected ? "black" : ""} text={isSelected ? "Selected" : "Select"} onClick={e => {
