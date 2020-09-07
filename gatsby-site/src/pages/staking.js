@@ -113,6 +113,7 @@ const EMPTY_PERCENTAGES = {
 
 const pollID = '4';
 const pollDeadline = 'October 30';
+const stakingTotalsUpdated = 'September 6';
 
 const ClipContainer = styled.div`
   display: flex;
@@ -685,7 +686,8 @@ const Poll = () => {
                             </div>
                             <div className="fl w-20 pa2 f5 tr">
                               <div className="b ttu f6 o-50">Staked</div>
-                              <div className="pb3">{staked} PAN ({percentageStaked.toFixed(2)}%)</div>
+                              <div>{staked} PAN ({percentageStaked.toFixed(2)}%)</div>
+                              <div className="i f7 o-40 pb3">last updated {stakingTotalsUpdated}</div>
                               <div>
                                 <Button type="button" width="100%" p={3} ml={3} bg={isSelected ? "#F5F6F9" : ""} color={isSelected ? "black" : ""} text={isSelected ? "Selected" : "Select"} onClick={e => {
                                   setPercentages({
