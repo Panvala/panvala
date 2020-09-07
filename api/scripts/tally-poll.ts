@@ -1,70 +1,15 @@
 import { Contract } from 'ethers';
 import { BigNumber, bigNumberify, formatUnits, commify } from 'ethers/utils';
 import * as yargs from 'yargs';
-//import * as csvParse from 'csv-parse';
+import * as csvParse from 'csv-parse';
 import * as stringify from 'csv-stringify/lib/sync';
 import * as fs from 'fs';
+import * as path from 'path';
 
 import { responseCount, getPollByID, getCategories } from '../src/utils/polls';
 import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
-
-const KNOWN_STAKERS = [
-  // 7: Hashing it Out
-  {
-    categoryID: 7,
-    address: '0xD27d1a5EB9D95228f0b5e2F18A15E801f1E4FdFD',
-  },
-  {
-    categoryID: 7,
-    address: '0xE6A39d977301A57a8a77E7F33a187E259aDc81b3',
-  },
-  {
-    categoryID: 7,
-    address: '0x197553ddfdb7b9c3c4216e2914456788bfd59c86',
-  },
-  {
-    categoryID: 7,
-    address: '0xC33F220195BbB4F39495758F35827C602528fc83',
-  },
-  // 8: Commons Stack
-  {
-    categoryID: 8,
-    address: '0x839395e20bbB182fa440d08F850E6c7A8f6F0780',
-  },
-  {
-    categoryID: 8,
-    address: '0xB3e43abf014cb2d8cF8dc3D8C2e62157E6093343',
-  },
-  {
-    categoryID: 8,
-    address: '0x60e18f4971077412af2bd0297999093642f28e15',
-  },
-  // 9: DAppNode
-  {
-    categoryID: 9,
-    address: '0x8C5ceCb20105A90C383f25914933F01fb2e94916',
-  },
-  {
-    categoryID: 9,
-    address: '0x54756dCBe2a9945F35B614031f6B2fA39d53BB90',
-  },
-  // 10: MetaCartel
-  {
-    categoryID: 10,
-    address: '0xafdD1eB2511cd891AcF2bFf82DABf47E0C914d24',
-  },
-  {
-    categoryID: 10,
-    address: '0xD25185f8c3B9e38C3f014378CE58B362Db568352',
-  },
-  // 11: DXdao
-  {
-    categoryID: 11,
-    address: '0x519b70055af55a007110b4ff99b0ea33071c720a',
-  },
-];
 
 function prettyToken(amount: BigNumber) {
   return commify(formatUnits(amount.toString(), 18));
@@ -78,13 +23,26 @@ function responsesToCSV(data, categories) {
       allocation.points,
       allocation.categoryID,
       categories[allocation.categoryID].displayName,
+      allocation.manual ? 'manual' : 'interface',
     ]);
     return acc.concat(allocations);
   }, []);
   return stringify(
     rows.filter(row => row[2] > 0),
-    { header: true, columns: ['Address', 'Balance', 'Points', 'Category ID', 'Category Name'] }
+    { header: true, columns: ['Address', 'Balance', 'Points', 'Category ID', 'Category', 'Source'] }
   );
+}
+
+function getManualResponses(responsesFilename): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const responses = [];
+    fs.createReadStream(path.resolve('./', responsesFilename))
+      .pipe(csvParse({ columns: true }))
+      .on('data', row => {
+        responses.push(row);
+      })
+      .on('end', () => resolve(responses));
+  });
 }
 
 interface Tally {
@@ -97,6 +55,9 @@ async function run() {
   const argv = yargs
     .scriptName('tally-poll')
     .default('pollID', 1)
+    .options('manual-responses', {
+      describe: 'path to a CSV file with defaults responses for each address',
+    })
     .help().argv;
 
   const pollID: number = argv.pollID;
@@ -122,6 +83,18 @@ async function run() {
   });
   // console.log(responses);
 
+  // Get the category details
+  const categories = await getCategories().then(cats => {
+    return cats.reduce((previous, current) => {
+      previous[current.id] = current;
+      return previous;
+    }, {});
+  });
+  const categoriesByName = Object.keys(categories).reduce((acc, categoryID) => {
+    acc[categories[categoryID].displayName] = categories[categoryID];
+    return acc;
+  }, {});
+
   const data = await Promise.all(
     responses.map(async response => {
       const plainResponse = await response.get({ plain: true });
@@ -133,22 +106,25 @@ async function run() {
   );
   // console.log(data);
 
-  if (pollID === 3) {
+  if (argv.manualResponses) {
     const submittedStakers = new Set(data.map((x: any) => x.account));
+    const manualResponses = await getManualResponses(argv.manualResponses);
     await Promise.all(
-      KNOWN_STAKERS.map(async knownStaker => {
-        if (submittedStakers.has(knownStaker.address)) return;
+      manualResponses.map(async response => {
+        if (submittedStakers.has(response['Address'])) return;
+        submittedStakers.add(response['Address']);
 
-        const balance = await token.balanceOf(knownStaker.address);
+        const balance = await token.balanceOf(response['Address']);
         data.push({
-          pollID: 3,
-          account: knownStaker.address,
+          pollID,
+          account: response['Address'],
           balance,
           prettyBalance: prettyToken(balance),
           allocations: [
             {
-              categoryID: knownStaker.categoryID,
-              points: 100,
+              categoryID: categoriesByName[response['Category']].id,
+              points: response['Points'] || 100,
+              manual: true,
             },
           ],
         });
@@ -203,14 +179,6 @@ async function run() {
   };
 
   const categoryKeys = Object.keys(finalTally).filter(key => parseInt(key));
-
-  // Get the category details
-  const categories = await getCategories().then(cats => {
-    return cats.reduce((previous, current) => {
-      previous[current.id] = current;
-      return previous;
-    }, {});
-  });
 
   // Display results
   const poll = await getPollByID(pollID);
