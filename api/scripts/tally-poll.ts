@@ -1,5 +1,5 @@
 import { Contract } from 'ethers';
-import { BigNumber, bigNumberify, formatUnits, commify } from 'ethers/utils';
+import { BigNumber, bigNumberify, formatUnits, commify, getAddress } from 'ethers/utils';
 import * as yargs from 'yargs';
 import * as csvParse from 'csv-parse';
 import * as stringify from 'csv-stringify/lib/sync';
@@ -107,12 +107,12 @@ async function run() {
   // console.log(data);
 
   if (argv.manualResponses) {
-    const submittedStakers = new Set(data.map((x: any) => x.account));
+    const submittedStakers = new Set(data.map((x: any) => getAddress(x.account)));
     const manualResponses = await getManualResponses(argv.manualResponses);
     await Promise.all(
       manualResponses.map(async response => {
-        if (submittedStakers.has(response['Address'])) return;
-        submittedStakers.add(response['Address']);
+        if (submittedStakers.has(getAddress(response['Address']))) return;
+        submittedStakers.add(getAddress(response['Address']));
 
         const balance = await token.balanceOf(response['Address']);
         data.push({
