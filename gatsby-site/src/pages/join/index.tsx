@@ -29,7 +29,7 @@ const Join = () => {
       </section>
       
       <div className="cf">
-        <section className="fl w-50-l w-100">
+        <section className="fl w-50-l w-100 ph4">
             <h1 className="tc">Individuals</h1>
             <section className="flex flex-wrap">
               <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
@@ -103,7 +103,7 @@ const Join = () => {
             </section>
         </section>
         
-        <section className="fl w-50-l w-100">
+        <section className="fl w-50-l w-100 ph4">
             <h1 className="tc">Communities</h1>
             <section className="flex flex-wrap">
               <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
