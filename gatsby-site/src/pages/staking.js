@@ -31,35 +31,70 @@ const categories = [
     title: 'Hashing it Out',
     staked: 569470.29,
     description:
-      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field, including projects like <strong>Fuel Labs</strong>, <strong>Nimbus</strong>, and <strong>lexDAO</strong>.",
+      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field.",
   },
   {
     categoryID: 8,
     title: 'Commons Stack',
     staked: 710625.65,
     description:
-      "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods. They support projects like <strong>Commons Stack</strong>, <strong>Grassroots Economics</strong>, and <strong>BrightID</strong>."
+      "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods."
   },
   {
     categoryID: 9,
     title: 'DAppNode',
     staked: 463731.19,
     description:
-      "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet. They support projects like <strong>DAppNode</strong>, <strong>Prysm</strong>, and <strong>Rotki</strong>.",
+      "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet.",
   },
   {
     categoryID: 10,
     title: 'MetaCartel',
     staked: 88693.34,
     description:
-      "MetaCartel is a community that helps launch and grow DAOs. They support projects like <strong>Meta Gamma Delta</strong>, <strong>Daohaus</strong>, and <strong>1UP World</strong>."
+      "MetaCartel is a community that helps launch and grow DAOs."
   },
   {
     categoryID: 11,
     title: 'DXdao',
     staked: 146987.40,
     description:
-      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized. They support projects like <strong>Black Girls Code</strong>, <strong>Tornado.cash</strong>, and <strong>Abridged</strong>."
+      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized."
+  },
+  {
+    categoryID: 12,
+    title: 'Meta Gamma Delta',
+    staked: 0,
+    description:
+      "Meta Gamma Delta is an inclusive and empowering society supporting women-led projects ✨"
+  },
+  {
+    categoryID: 13,
+    title: 'KERNEL',
+    staked: 0,
+    description:
+      "KERNEL is an 8-week, invite-only program for top tech talent looking to build relationships, products, and companies in blockchain and Web 3."
+  },
+  {
+    categoryID: 14,
+    title: 'future modern',
+    staked: 0,
+    description:
+      "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
+  },
+  {
+    categoryID: 15,
+    title: 'SheFi',
+    staked: 0,
+    description:
+      "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
+  },
+  {
+    categoryID: 16,
+    title: 'DePo DAO',
+    staked: 0,
+    description:
+      "DePo DAO funds and encourages open source projects to break down the political barriers that currently restrain us from real progress."
   },
 ];
 
@@ -69,10 +104,15 @@ const EMPTY_PERCENTAGES = {
   9: '',
   10: '',
   11: '',
+  12: '',
+  13: '',
+  14: '',
+  15: '',
+  16: '',
 };
 
-const pollID = '3';
-const pollDeadline = 'July 2';
+const pollID = '4';
+const pollDeadline = 'October 30';
 
 const ClipContainer = styled.div`
   display: flex;
@@ -405,7 +445,7 @@ const Poll = () => {
       setAlreadyVoted(true);
     }
   }
-  
+
   const totalStaked = categories.reduce((sum, category) => sum + category.staked, 0);
 
   return (
@@ -425,7 +465,7 @@ const Poll = () => {
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
-                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -447,11 +487,11 @@ const Poll = () => {
             <h1 className="white f1-5 b ma0 mb4 w-80-l w-100">Stake PAN for Your Community</h1>
             <div className="f5 lh-copy mb3">
               <p className="w-60 mb0 white b">
-                Panvala's communities stake tokens to allocate inflation subsidies that match donations at over 12x.
+                Panvala's communities stake tokens to earn donation matching capacity from the PAN token's inflation.
               </p>
               <p className="white-60 fw4 ma0 w-50-l w-100">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from June 15 to July 2. The total matching budget for all communities is 1,424,551 PAN.
+                from September 14 to 28. The total matching budget for all communities is 1,369,935 PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -548,7 +588,7 @@ const Poll = () => {
                 deadline to increase your stake by holding more PAN tokens.
               </Box>
               <a
-                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -566,7 +606,7 @@ const Poll = () => {
                 tokens.
               </Box>
               <a
-                href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -585,7 +625,7 @@ const Poll = () => {
                   do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
                     <a
-                      href="https://v1.uniswap.exchange?outputCurrency=0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+                      href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link b dim blue"
