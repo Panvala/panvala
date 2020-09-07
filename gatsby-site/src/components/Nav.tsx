@@ -65,6 +65,14 @@ export default function Nav({ account, balance, handleClick }: Props) {
           >
             Telegram
           </a>
+          <a
+            href="https://www.coingecko.com/en/coins/panvala-pan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link dim white-60 f6 fw6 dib mr3"
+          >
+            Token
+          </a>
           <a href="/join" className="link dim white-60 f6 dn-ns dib fw6">
             Join
           </a>
