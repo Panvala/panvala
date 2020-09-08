@@ -154,6 +154,15 @@ const stakingResults = {
   }
 };
 
+categories.sort((a, b) => {
+  const stakedA = parseFloat(stakingResults[a.categoryID].weight);
+  const stakedB = parseFloat(stakingResults[b.categoryID].weight);
+  if (stakedA === stakedB) return 0;
+  // Sort from greatest to least.
+  if (stakedA < stakedB) return 1;
+  return -1;
+});
+
 const pollID = '4';
 const pollDeadline = 'October 30';
 const stakingTotalsUpdated = 'September 7';
