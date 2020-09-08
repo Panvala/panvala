@@ -150,7 +150,7 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "2961.7606873459977"
+    "weight": "62961.760700735256367771"
   }
 };
 
