@@ -110,7 +110,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1685080.112878964258167241"
+    "weight": "1692594.417733256604948306"
   },
   "9": {
     "id": 9,
@@ -126,12 +126,37 @@ const stakingResults = {
     "id": 11,
     "name": "DXdao",
     "weight": "192469.145364741130071882"
+  },
+  "12": {
+    "id": 12,
+    "name": "Meta Gamma Delta",
+    "weight": "0.0"
+  },
+  "13": {
+    "id": 13,
+    "name": "KERNEL",
+    "weight": "0.0"
+  },
+  "14": {
+    "id": 14,
+    "name": "future modern",
+    "weight": "4942.297094431035931722"
+  },
+  "15": {
+    "id": 15,
+    "name": "SheFi",
+    "weight": "0.0"
+  },
+  "16": {
+    "id": 16,
+    "name": "DePo DAO",
+    "weight": "2961.7606873459977"
   }
 };
 
 const pollID = '4';
 const pollDeadline = 'October 30';
-const stakingTotalsUpdated = 'September 6';
+const stakingTotalsUpdated = 'September 7';
 
 const ClipContainer = styled.div`
   display: flex;
