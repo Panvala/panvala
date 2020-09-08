@@ -219,7 +219,7 @@ const IndexPage = () => {
             from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
             other public goods instead. Firms would pop up all over the world—not to rack up power bills
             mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund. If you're
-            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>.
+            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>. Hodlers are philanthropists.
           </p>
         </div>
       </section>
