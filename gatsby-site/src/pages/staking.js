@@ -130,7 +130,7 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "0.0"
+    "weight": "94823.0527611879817"
   },
   "13": {
     "id": 13,
