@@ -629,8 +629,7 @@ const Poll = () => {
                       p={2}
                     >
                       <Box>{c.title}</Box>
-                      {/* TODO: Index the allocations structure by categoryID instead of index so we don't have to subtract 7 */}
-                      <Box>{`${allocations.length && allocations[c.categoryID - 7].points}%`}</Box>
+                      <Box>{`${allocations.length && allocations[i].points}%`}</Box>
                     </Box>
                   ))}
                 </Box>
