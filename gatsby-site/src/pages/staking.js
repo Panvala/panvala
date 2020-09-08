@@ -120,7 +120,7 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "113197.985669645681359291"
+    "weight": "133278.371358675031359291"
   },
   "11": {
     "id": 11,
