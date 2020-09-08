@@ -197,6 +197,13 @@ const IndexPage = () => {
             </button>
           </a>
         </div>
+        <div className="dib v-top mr3-ns mr2 mv2">
+          <a href="/staking">
+            <button className="f6 link dim ba b--black br-pill bg-transparent fw7 pointer pv3 ph4">
+              Stake Tokens
+            </button>
+          </a>
+        </div>
       </section>
 
       {/* <!-- Donation CTA --> */}
