@@ -146,7 +146,7 @@ const IndexPage = () => {
 
       {!!budgets.epochNumber && (
         <BudgetBar
-          budgetText={`Batch ${budgets.epochNumber + 1} grants budget:`}
+          budgetText={`Batch ${budgets.epochNumber + 1} Inflation:`}
           panValue={budgets.epochPAN}
           usdValue={budgets.epochUSD}
         />
