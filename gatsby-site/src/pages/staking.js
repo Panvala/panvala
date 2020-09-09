@@ -166,6 +166,7 @@ categories.sort((a, b) => {
 const pollID = '4';
 const pollDeadline = 'October 30';
 const stakingTotalsUpdated = 'September 8';
+const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -544,7 +545,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0 w-50-l w-100">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from September 14 to 28. The total matching budget for all communities is 1,369,935 PAN.
+                from September 14 to 28. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -670,9 +671,15 @@ const Poll = () => {
             <>
               <div className="tc pv4">
                 <h2>Stake PAN for Your Community</h2>
+                <Box mt={1} mb={3} className="w-80 center tc lh-copy">
+                  PAN holders stake their tokens to earn donation matching capacity for their community. The Panvala League's
+                  allocation rules make it easy for communities to earn their <strong>funding at capacity</strong>. Communities
+                  that exceed their capacity earn less and less matching as the overflow increases. This encourages communities to
+                  own the same share of Panvala as they benefit from Panvala. Stake more PAN to increase
+                  your community's <strong>funding at capacity</strong>.
+                </Box>
                 <Box my={1} className="w-80 center tc lh-copy">
-                  PAN holders stake their tokens to earn donation matching capacity for their community. If you do not
-                  currently have a PAN balance but want to stake, or you would
+                  If you do not currently have a PAN balance but want to stake, or you would
                   like to increase your stake before the <b>{pollDeadline}</b> deadline, you can
                   do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
@@ -729,16 +736,21 @@ const Poll = () => {
                         const name = `categories.${categoryID}`;
                         const isSelected = percentages[categoryID] === '100';
                         const percentageStaked = staked / totalStaked * 100;
+                        const matchingCapacity = staked / totalStaked * leagueBudget;
 
                         return (
                           <div key={identifier} className="cf pa3 bb bw-2 b--black-10">
-                            <div className="fl w-80 pa2 pr4">
+                            <div className="fl w-70 pa2 pr4">
                               <div className="f4 b">{title}</div>
                               <p dangerouslySetInnerHTML={{ __html: description }}></p>
                             </div>
-                            <div className="fl w-20 pa2 f5 tr">
+                            <div className="fl w-30 pa2 f5 tr">
                               <div className="b ttu f6 o-50">Staked</div>
-                              <div>{utils.commify(staked.toFixed(2))} PAN ({percentageStaked.toFixed(2)}%)</div>
+                              <div>{utils.commify(staked.toFixed(2))} PAN</div>
+                              <div className="b ttu f6 o-50">Capacity</div>
+                              <div>{percentageStaked.toFixed(2)}%</div>
+                              <div className="b ttu f6 o-50">Funding at Capacity</div>
+                              <div>{utils.commify(matchingCapacity.toFixed(2))} PAN</div>
                               <div className="i f7 o-40 pb3">last updated {stakingTotalsUpdated}</div>
                               <div>
                                 <Button type="button" width="100%" p={3} ml={3} bg={isSelected ? "#F5F6F9" : ""} color={isSelected ? "black" : ""} text={isSelected ? "Selected" : "Select"} onClick={e => {
