@@ -105,17 +105,17 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "837570.198094446261118931"
+    "weight": "969064.849795359503128063"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1692594.417733256604948306"
+    "weight": "1717741.101331441434551107"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1525500.436243333879674026"
+    "weight": "1500353.7526451490503405"
   },
   "10": {
     "id": 10,
@@ -145,7 +145,7 @@ const stakingResults = {
   "15": {
     "id": 15,
     "name": "SheFi",
-    "weight": "0.0"
+    "weight": "50000.0"
   },
   "16": {
     "id": 16,
