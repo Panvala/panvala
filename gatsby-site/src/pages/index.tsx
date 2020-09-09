@@ -199,7 +199,7 @@ const IndexPage = () => {
         </div>
         <div className="dib v-top mr3-ns mr2 mv2">
           <a href="/staking">
-            <button className="f6 link dim ba b--black br-pill bg-transparent fw7 pointer pv3 ph4">
+          <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
               Stake Tokens
             </button>
           </a>
@@ -209,7 +209,7 @@ const IndexPage = () => {
       {/* <!-- Donation CTA --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
         <div className="w-50-l w-70-m w-90 center relative z-1">
-          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white tc">Our Mission</h2>
+          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white tc">Hodlers Are Philanthropists</h2>
           <p className="ma0 f4 lh-text mb4 white">
             <strong>We can create an incredible decade-long window when any community in the world can have their
             contributions to public goods amplified at attractive rates.</strong>
@@ -219,7 +219,7 @@ const IndexPage = () => {
             from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
             other public goods instead. Firms would pop up all over the world—not to rack up power bills
             mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund. If you're
-            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>. Hodlers are philanthropists.
+            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>.
           </p>
         </div>
       </section>
