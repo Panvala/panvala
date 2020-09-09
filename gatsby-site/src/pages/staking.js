@@ -125,7 +125,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "192469.145364741130071882"
+    "weight": "199626.089210689795020246"
   },
   "12": {
     "id": 12,
@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 30';
-const stakingTotalsUpdated = 'September 7';
+const stakingTotalsUpdated = 'September 8';
 
 const ClipContainer = styled.div`
   display: flex;
