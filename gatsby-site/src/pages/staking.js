@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 30';
-const stakingTotalsUpdated = 'September 8';
+const stakingTotalsUpdated = 'September 9';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
