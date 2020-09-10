@@ -140,7 +140,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "4942.297094431035931722"
+    "weight": "5307.789574744615163943"
   },
   "15": {
     "id": 15,
