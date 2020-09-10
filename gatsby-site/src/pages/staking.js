@@ -164,7 +164,7 @@ categories.sort((a, b) => {
 });
 
 const pollID = '4';
-const pollDeadline = 'October 30';
+const pollDeadline = 'October 16';
 const stakingTotalsUpdated = 'September 9';
 const leagueBudget = 1369935;
 
