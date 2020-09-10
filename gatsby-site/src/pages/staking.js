@@ -673,10 +673,10 @@ const Poll = () => {
                 <h2>Stake PAN for Your Community</h2>
                 <Box mt={1} mb={3} className="w-80 center tc lh-copy">
                   PAN holders stake their tokens to earn donation matching capacity for their community. The Panvala League's
-                  allocation rules make it easy for communities to earn their <strong>funding at capacity</strong>. Communities
-                  that exceed their capacity earn less and less matching as the overflow increases. This encourages communities to
-                  own the same share of Panvala as they benefit from Panvala. Stake more PAN to increase
-                  your community's <strong>funding at capacity</strong>.
+                  goal is for communities to own the same share of Panvala as the share of the budget they want to receive,
+                  so we reward them for it with a higher matching multiplier. Stake more PAN to increase your
+                  community's <strong>funding at capacity</strong>, the amount of funding you can receive this quarter
+                  with the highest matching multiplier.
                 </Box>
                 <Box my={1} className="w-80 center tc lh-copy">
                   If you do not currently have a PAN balance but want to stake, or you would
