@@ -30,7 +30,7 @@ const categories = [
     categoryID: 7,
     title: 'Hashing it Out',
     description:
-      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to subsidize groundbreaking work in the field.",
+      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to fund infrastructure and technical development advocacy.",
   },
   {
     categoryID: 8,
