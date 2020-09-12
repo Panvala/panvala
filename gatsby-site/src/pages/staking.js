@@ -545,7 +545,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from September 14 to 28. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                from September 15 to October 2. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
