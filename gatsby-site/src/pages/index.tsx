@@ -18,12 +18,16 @@ import extPrysmatic from '../img/external/prysmatic-labs.png';
 import extConnext from '../img/external/connext.png';
 import extConsensys from '../img/external/consensys.png';
 import communityDonating from '../img/community-donating.png';
-import teamGnosis from '../img/external/team-gnosis.png';
-import teamStatus from '../img/external/team-status.png';
-import teamLevelK from '../img/external/team-levelk.png';
-import teamSigma from '../img/external/team-sigma.png';
-import teamTenderly from '../img/external/team-tenderly.png';
-import simon from '../img/simon.png';
+import leagueCommonsStack from '../img/league/commonsstack.png';
+import leagueDAppNode from '../img/league/dappnode.png';
+import leagueDePoDAO from '../img/league/depodao.webp';
+import leagueDXdao from '../img/league/dxdao.png';
+import leagueFutureModern from '../img/league/futuremodern.jpg';
+import leagueHashingItOut from '../img/league/hashingitout.jpg';
+import leagueKERNEL from '../img/league/kernel.png';
+import leagueMetaCartel from '../img/league/metacartel.png';
+import leagueMetaGammaDelta from '../img/league/metagammadelta.jpg';
+import leagueSheFi from '../img/league/shefi.jpg';
 import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
@@ -152,43 +156,159 @@ const IndexPage = () => {
         />
       )}
       
-      {/* <!-- Our Launch Partners--> */}
-      <section className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
+      {/* <!-- Panvala League --> */}
+      <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
           Ten communities stake PAN tokens to earn donation matching capacity from the new PAN tokens Panvala releases each quarter. Your community can join them!
         </p>
-        <div className="flex flex-wrap items-center justify-center tc center w-100">  
-          <a href="https://commonsstack.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>Commons Stack</h3>
-          </a>
-          <a href="https://dappnode.io/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>DAppNode</h3>
-          </a>
-          <a href="https://www.metacartel.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>MetaCartel</h3>
-          </a>
-          <a href="https://dxdao.eth.link/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>DXdao</h3>
-          </a>
-          <a href="https://twitter.com/hashingitoutpod" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>Hashing it Out</h3>
-          </a>
-          <a href="https://metagammadelta.com/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>Meta Gamma Delta</h3>
-          </a>
-          <a href="https://gitcoin.co/blog/announcing-kernel/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>KERNEL</h3>
-          </a>
-          <a href="https://twitter.com/afuturemodern" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>future modern</h3>
-          </a>
-          <a href="https://www.shefi.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>SheFi</h3>
-          </a>
-          <a href="https://www.depodao.org/" className="w-20-l w-30-ns w-50 dib v-mid grayscale o-40 animate pa4">
-            <h3>DePo DAO</h3>
-          </a>
+        <div className="flex flex-wrap items-top justify-center tc center w-100">
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueCommonsStack}
+            />
+            <a class="link dim near-black" href="https://commonsstack.org/">
+              <h3>Commons Stack</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/1128/commons-stack-community-fund-panvala-league-2">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDAppNode}
+            />
+            <a class="link dim near-black" href="https://dappnode.io/">
+              <h3>DAppNode</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/143/dappnode">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMetaCartel}
+            />
+            <a class="link dim near-black" href="https://www.metacartel.org/">
+              <h3>MetaCartel</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/1139/metacartel-builder-awards-panvala-league">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDXdao}
+            />
+            <a class="link dim near-black" href="https://dxdao.eth.link/">
+              <h3>DXdao</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/1118/dxdaos-panvala-league-defi-community-awards-grant">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueHashingItOut}
+            />
+            <a class="link dim near-black" href="https://twitter.com/hashingitoutpod">
+              <h3>Hashing it Out</h3>
+            </a>
+            {/*
+            <a href="#">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+            */}
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMetaGammaDelta}
+            />
+            <a class="link dim near-black" href="https://metagammadelta.com/">
+              <h3>Meta Gamma Delta</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/615/a-buidl-sorority-that-supports-dope-projects-made">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueKERNEL}
+            />
+            <a class="link dim near-black" href="https://gitcoin.co/blog/announcing-kernel/">
+              <h3>KERNEL</h3>
+            </a>
+            {/*
+            <a href="#">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+            */}
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueFutureModern}
+            />
+            <a class="link dim near-black" href="https://twitter.com/afuturemodern">
+              <h3>future modern</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/982/future-modern-x-panvala-league-grant">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueSheFi}
+            />
+            <a class="link dim near-black" href="https://www.shefi.org/">
+              <h3>SheFi</h3>
+            </a>
+            {/*
+            <a href="#">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+            */}
+          </div>
+          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDePoDAO}
+            />
+            <a class="link dim near-black" href="https://www.depodao.org/">
+              <h3>DePo DAO</h3>
+            </a>
+            <a href="https://gitcoin.co/grants/484/depo-dao-decentralized-politics-dao">
+              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
+                Donate PAN
+              </button>
+            </a>
+          </div>
         </div>
         <div className="dib v-top mr3-ns mr2 mv2">
           <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!">
