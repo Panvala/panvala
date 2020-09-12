@@ -537,13 +537,13 @@ const Poll = () => {
 
         {/* <!-- Instructions --> */}
         <ClipContainer p={['1rem 0 4rem', '2rem 3rem 4rem', '2rem 5rem 5rem', '5rem 10rem 8rem']}>
-          <Box width={[1, 1, 0.5]} px={['4', '0']}>
+          <Box width={[1, 1, 0.5]} px={['4', '4']}>
             <h1 className="white f1-5 b ma0 mb4 w-80-l w-100">Stake PAN for Your Community</h1>
             <div className="f5 lh-copy mb3">
-              <p className="w-60 mb0 white b">
+              <p className="mb0 white b">
                 Panvala's communities stake tokens to earn donation matching capacity from the PAN token's inflation.
               </p>
-              <p className="white-60 fw4 ma0 w-50-l w-100">
+              <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
                 from September 14 to 28. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
