@@ -105,7 +105,7 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1100658.709189892734990061"
+    "weight": "1093397.032917051200104332"
   },
   "8": {
     "id": 8,
