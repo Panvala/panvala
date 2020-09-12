@@ -20,7 +20,7 @@ import extConsensys from '../img/external/consensys.png';
 import communityDonating from '../img/community-donating.png';
 import leagueCommonsStack from '../img/league/commonsstack.png';
 import leagueDAppNode from '../img/league/dappnode.png';
-import leagueDePoDAO from '../img/league/depodao.webp';
+import leagueDePoDAO from '../img/league/depodao.jpg';
 import leagueDXdao from '../img/league/dxdao.png';
 import leagueFutureModern from '../img/league/futuremodern.jpg';
 import leagueHashingItOut from '../img/league/hashingitout.jpg';
