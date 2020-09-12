@@ -171,11 +171,6 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://commonsstack.org/">
               <h3>Commons Stack</h3>
             </a>
-            <a href="https://gitcoin.co/grants/1128/commons-stack-community-fund-panvala-league-2">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
             <img
@@ -184,11 +179,6 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://dappnode.io/">
               <h3>DAppNode</h3>
-            </a>
-            <a href="https://gitcoin.co/grants/143/dappnode">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
@@ -199,11 +189,6 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://www.metacartel.org/">
               <h3>MetaCartel</h3>
             </a>
-            <a href="https://gitcoin.co/grants/1139/metacartel-builder-awards-panvala-league">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
             <img
@@ -212,11 +197,6 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://dxdao.eth.link/">
               <h3>DXdao</h3>
-            </a>
-            <a href="https://gitcoin.co/grants/1118/dxdaos-panvala-league-defi-community-awards-grant">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
@@ -227,13 +207,6 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://twitter.com/hashingitoutpod">
               <h3>Hashing it Out</h3>
             </a>
-            {/*
-            <a href="#">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
-            */}
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
             <img
@@ -242,11 +215,6 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://metagammadelta.com/">
               <h3>Meta Gamma Delta</h3>
-            </a>
-            <a href="https://gitcoin.co/grants/615/a-buidl-sorority-that-supports-dope-projects-made">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
@@ -257,13 +225,6 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://gitcoin.co/blog/announcing-kernel/">
               <h3>KERNEL</h3>
             </a>
-            {/*
-            <a href="#">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
-            */}
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
             <img
@@ -272,11 +233,6 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://twitter.com/afuturemodern">
               <h3>future modern</h3>
-            </a>
-            <a href="https://gitcoin.co/grants/982/future-modern-x-panvala-league-grant">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
@@ -287,13 +243,6 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://www.shefi.org/">
               <h3>SheFi</h3>
             </a>
-            {/*
-            <a href="#">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
-            */}
           </div>
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
             <img
@@ -303,24 +252,27 @@ const IndexPage = () => {
             <a class="link dim near-black" href="https://www.depodao.org/">
               <h3>DePo DAO</h3>
             </a>
-            <a href="https://gitcoin.co/grants/484/depo-dao-decentralized-politics-dao">
-              <button className="mv2 f7 link dim bn br-pill white bg-teal fw7 pointer pv2 ph3">
-                Donate PAN
-              </button>
-            </a>
           </div>
+        </div>
+        
+        <div className="dib v-top mr3-ns mr2 mv2">
+          <a href="/staking">
+          <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+              Stake PAN
+            </button>
+          </a>
+        </div>
+        <div className="dib v-top mr3-ns mr2 mv2">
+          <a href="https://gitcoin.co/grants/?keyword=panvala+league">
+          <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
+              Donate PAN
+            </button>
+          </a>
         </div>
         <div className="dib v-top mr3-ns mr2 mv2">
           <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!">
             <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
               Submit A New Community
-            </button>
-          </a>
-        </div>
-        <div className="dib v-top mr3-ns mr2 mv2">
-          <a href="/staking">
-          <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
-              Stake Tokens
             </button>
           </a>
         </div>
