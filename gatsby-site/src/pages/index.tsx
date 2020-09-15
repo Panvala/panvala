@@ -160,7 +160,7 @@ const IndexPage = () => {
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
-          Ten communities stake PAN tokens to earn donation matching capacity from the new PAN tokens Panvala releases each quarter. Your community can join them!
+          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have ten communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
           <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
