@@ -110,7 +110,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1037796.251331441434551107"
+    "weight": "1037796.660283046368116518"
   },
   "9": {
     "id": 9,
@@ -140,7 +140,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "6329.619555419475565221"
+    "weight": "6954.619555419475565221"
   },
   "15": {
     "id": 15,
