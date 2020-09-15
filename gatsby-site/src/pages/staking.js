@@ -135,7 +135,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "0.0"
+    "weight": "13680.987205910951336226"
   },
   "14": {
     "id": 14,
@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'September 13';
+const stakingTotalsUpdated = 'September 14';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
