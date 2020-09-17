@@ -281,17 +281,17 @@ const IndexPage = () => {
       {/* <!-- Donation CTA --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
         <div className="w-50-l w-70-m w-90 center relative z-1">
-          <h2 className="f2-5 ma0 mb3 mt0-ns mt6 pt6-ns pt5 white tc">Hodlers Are Philanthropists</h2>
-          <p className="ma0 f4 lh-text mb4 white">
-            <strong>We can create an incredible decade-long window when any community in the world can have their
-            contributions to public goods amplified at attractive rates.</strong>
+          <h2 className="f2-5 ma0 mb4 mt0-ns mt6 pt6-ns pt5 white tc">Hodlers Are Philanthropists</h2>
+          <p className="ma0 f4 lh-text mb4 white-60">
+            Bitcoin subsidizes its own security by creating new bitcoins. What if Satoshi had decided to subsidize other
+            public goods instead? With Panvala, we use that same model to subsidize our communities.  Panvala is the
+            sustainable treasury for communities to share.  Donations made with the PAN token are matched at incredible
+            rates—4x last quarter, 12x prior to that—allowing us to subsidize the public goods that we’ve all wanted but
+            couldn’t coordinate to fund.
           </p>
           <p className="ma0 f4 lh-text mb4 white-60">
-            Think about all the Bitcoin mining operations that have sprung up out of nowhere since 2009 to earn rewards
-            from Satoshi’s decision to subsidize security, and imagine that Satoshi had decided to subsidize
-            other public goods instead. Firms would pop up all over the world—not to rack up power bills
-            mining blocks, but to provide public goods that we’ve all wanted but couldn’t coordinate to fund. If you're
-            familiar with yield farming, <strong class="white">welcome to philantropy farming</strong>.
+            Today's society systematically rewards the people who make prosperity scarce.  Together, let's be the light that
+            produces abundance for our communities instead.
           </p>
         </div>
       </section>
