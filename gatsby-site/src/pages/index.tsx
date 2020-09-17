@@ -290,8 +290,8 @@ const IndexPage = () => {
             couldn’t coordinate to fund.
           </p>
           <p className="ma0 f4 lh-text mb4 white-60">
-            Today's society systematically rewards the people who make prosperity scarce.  Together, let's be the light that
-            produces abundance for our communities instead.
+            <strong class="white">Today's society systematically rewards the people who make prosperity scarce. Together, let's be the light that
+            produces abundance for our communities instead.</strong>
           </p>
         </div>
       </section>
