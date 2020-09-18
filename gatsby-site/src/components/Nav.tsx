@@ -20,15 +20,13 @@ const NavLink = ({ href, children }) => (
 export default function Nav({ account, balance, handleClick }: Props) {
   return (
     <>
-      {/*
       <TopBar>
         <Box height={64} bg="white" color="blue" flex justifyContent="center" alignItems="center">
-          <a href="https://start.panvala.com/double-matching" className="link dim blue">
-            <Box fontWeight="bold">Donate with PAN on Gitcoin Grants to earn double matching! Click here to learn more.</Box>
+          <a href="https://gitcoin.co/grants/?keyword=panvala+league" className="link dim blue">
+            <Box fontWeight="bold">Donate with PAN on Gitcoin Grants to earn extra matching for the Panvala League's grants! Click here to donate.</Box>
           </a>
         </Box>
       </TopBar>
-      */}
 
       {/* Nav links */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
