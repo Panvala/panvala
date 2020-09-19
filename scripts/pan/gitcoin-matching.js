@@ -5,8 +5,8 @@ const path = require('path');
 const csvParse = require('csv-parse');
 const stringify = require('csv-stringify/lib/sync');
 
-const MATCHING_BUDGET = 1424551.32;
-const ONE_DOLLAR_PAN = 44.369; // 58.9;
+const MATCHING_BUDGET = 1369935.62;
+const ONE_DOLLAR_PAN = 11.31;
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
@@ -21,11 +21,22 @@ const IGNORED_SENDERS = new Set([
   '0x3eCb4bf3A4C483cA0A4C897396E1FD85b48FB129',
   '0x6c645C934B7f5eC7589F3d96192000E5ABAbF90F', // MetaCartel
 ]);
+const IGNORED_TXHASHES = new Set([
+  '0x873dcaaaf4625e2aefcae5ae30a144fe00caff3076d44eff1579d9a643b9efca',
+  '0x652733b11f9b2716b34774e5f10aac39aa5e4b4c2bc77fe1335841ae75f707d9',
+  '0x3a08cee8abb05d31bcdfe78329cc161f9e715ced06020d23eed0daf14e02c918',
+]);
 
 const ENS_ADDRESSES = {
   'contraktorapp.eth': '0x1e52C0887bc0F752368dFb80974ec988Ab40AED3',
   'daiparaprincipiantes.eth': '0x333E08D7C12ABf223789dC00305C4FE3e8B4b956',
   'specie.eth': '0x32672af4edc13cf1ab5dab6c5cda5df71ad35951',
+  'nazariy.eth': '0xE73E7eEfDacc89069DE5B7757830FcF1D7DdAcD2',
+  '1HNa1bzkViHVkCnhYzHyB8r1eurbbCsTAS': '0x0',
+  'eth:0x03add42d442ae2ab4a763c28e5ae1bc016840a12': '0x03add42d442ae2ab4a763c28e5ae1bc016840a12',
+  'etherchest.eth': '0x007e60C669cf96dC32655d1Eb1c1eBcf96459975',
+  'tomotouch.eth': '0xA211e2FCbae4f3D5d0f74e7156cdbA795fEc2EE7',
+  '@enzosumo': '0x0',
 };
 
 run();
@@ -147,20 +158,19 @@ function calculateQuadraticTerm(donations) {
   return Math.pow(sumOfSquares, 2);
 }
 
-function sumDonations(donations) {
-  return Object.values(donations).reduce((sum, donation) => sum + donation, 0);
-}
-
 function calculateMatching(grants) {
   let quadraticTotal = 0;
   let donationsTotal = 0;
-  const gitcoinDonations = sumDonations(grants[GITCOIN_ADDRESS].donations)
+  const gitcoinDonations = grants[GITCOIN_ADDRESS].tokens;
 
   Object.entries(grants).forEach(([address, grant]) => {
-    donationsTotal += sumDonations(grant.donations);
+    donationsTotal += grant.tokens;
     grant.matches = grant.matches || {};
     if (address === GITCOIN_ADDRESS)
       return;
+    // Pure quadratic funding subtracts the donated amount to calculate the subsidy. (The yellow area of
+    // the square matching diagram here: https://vitalik.ca/general/2019/12/07/quadratic.html#quadratic-funding).
+    // This matching calculation matches the donated amount as well, which produces better results with few donations.
     grant.matches['Unconstrained'] = calculateQuadraticTerm(grant.donations);
     quadraticTotal += grant.matches['Unconstrained'];
   });
@@ -196,6 +206,7 @@ async function run() {
     const grantAddress = ethers.utils.getAddress(item['To']);
     const donorAddress = ethers.utils.getAddress(item['From']);
     if (
+      IGNORED_TXHASHES.has(item['Txhash']) ||
       IGNORED_ADDRESSES.has(grantAddress) ||
       IGNORED_ADDRESSES.has(donorAddress) ||
       IGNORED_SENDERS.has(donorAddress) ||
@@ -228,7 +239,17 @@ async function run() {
     };
     donors[donorAddress] = donor;
   });
-
+  
+  /* Uncomment to list all Gitcoin Grants in the spreadsheet.
+  Object.keys(grantNames).forEach(address => {
+    grants[address] = grants[address] || {
+      name: grantNames[address] || null,
+      transactions: 0,
+      tokens: 0,
+      donations: {},
+    };
+  });
+*/
   calculateMatching(grants);
 
   const grantsCsv = grantsToCSV(grants);
