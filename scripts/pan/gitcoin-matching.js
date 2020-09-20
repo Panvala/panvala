@@ -8,6 +8,7 @@ const stringify = require('csv-stringify/lib/sync');
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+const ZKSYNC_ADDRESS = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF';
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
   '0x1b21609d42fa32f371f58df294ed25b2d2e5c8ba', // Uniswap v2
@@ -138,6 +139,43 @@ function getTransactions() {
   });
 }
 
+async function getZksyncTransactions(addresses) {
+  const transactions = await addresses.reduce((accumulatorPromise, address) => {
+    return accumulatorPromise.then(accumulator => {
+      return axios({
+        method: 'get',
+        url: `https://api.zksync.io/api/v0.1/account/${address}/history/older_than`,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (response.status === 200) {
+          if (response.data.length >= 100) {
+            console.log(`WARNING: Account ${address} seems to have more than 100 zksync transactions, but pagination hasn't been implemented to fetch them.`);
+          }
+          return accumulator.concat(response.data);
+        }
+        // TODO: handle response status
+        throw new Error('unhandled response status');
+      }).catch(error => {
+        console.log('error:', error);
+        throw error;
+      });
+    });
+  }, Promise.resolve([]));
+  const panTransactions = transactions.filter(x => x.token === 'PAN');
+  return panTransactions.map(transaction => {
+    return {
+      'Txhash': transaction['hash'],
+      'To': transaction['to'],
+      'From': transaction['from'],
+      'Quantity': ethers.utils.formatWei(transaction['amount']),
+      'DateTime': transaction['created_at'],
+    };
+  });
+}
+
 function getDonorNames() {
   return new Promise((resolve, reject) => {
     const donors = {};
@@ -196,7 +234,16 @@ function calculateMatching(grants) {
 
 async function run() {
   const grantNames = await getGrantAddresses();
-  const transactions = await getTransactions();
+  const mainnetTransactions = await getTransactions();
+  const zksyncAddresses = mainnetTransactions.reduce((acc, tx) => {
+    if (ethers.utils.getAddress(tx['To']) === ZKSYNC_ADDRESS) {
+      acc.add(ethers.utils.getAddress(tx['From']));
+    }
+    return acc;
+  }, new Set());
+  console.log('zkSync users', zksyncAddresses);
+  const zksyncTransactions = await getZksyncTransactions(Array.from(zksyncAddresses.values()));
+  const transactions = mainnetTransactions.concat(zksyncTransactions);
   const donorNames = await getDonorNames();
 
   const donors = {};
