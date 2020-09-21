@@ -110,7 +110,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "844480.627483262653586553"
+    "weight": "858176.440462730582864595"
   },
   "9": {
     "id": 9,
@@ -120,12 +120,12 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "134893.371358675031359291"
+    "weight": "135130.871358675031359291"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "206502.820502677519790292"
+    "weight": "196050.269210689795020246"
   },
   "12": {
     "id": 12,
@@ -135,12 +135,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "630941.019026991731306726"
+    "weight": "631143.519026991731306726"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "6954.619555419475565221"
+    "weight": "6791.198762079064109826"
   },
   "15": {
     "id": 15,
@@ -150,7 +150,7 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "78165.647476323914736008"
+    "weight": "92947.819859846665296587"
   }
 };
 
@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'September 19';
+const stakingTotalsUpdated = 'September 20';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
