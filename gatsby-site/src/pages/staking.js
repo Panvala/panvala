@@ -110,7 +110,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "858176.440462730582864595"
+    "weight": "856650.790462730582864595"
   },
   "9": {
     "id": 9,
@@ -135,7 +135,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "631143.519026991731306726"
+    "weight": "632478.519026991731306726"
   },
   "14": {
     "id": 14,
@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'September 20';
+const stakingTotalsUpdated = 'September 21';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
