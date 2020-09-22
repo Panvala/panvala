@@ -164,13 +164,13 @@ async function getZksyncTransactions(addresses) {
       });
     });
   }, Promise.resolve([]));
-  const panTransactions = transactions.filter(x => x.token === 'PAN');
+  const panTransactions = transactions.filter(x => x.tx.token === 'PAN');
   return panTransactions.map(transaction => {
     return {
       'Txhash': transaction['hash'],
-      'To': transaction['to'],
-      'From': transaction['from'],
-      'Quantity': ethers.utils.formatWei(transaction['amount']),
+      'To': ethers.utils.getAddress(transaction.tx['to']),
+      'From': ethers.utils.getAddress(transaction.tx['from']),
+      'Quantity': ethers.utils.formatEther(transaction.tx['amount']),
       'DateTime': transaction['created_at'],
     };
   });
