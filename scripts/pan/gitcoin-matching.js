@@ -40,6 +40,18 @@ const ENS_ADDRESSES = {
   '@enzosumo': '0x0',
 };
 
+const LEAGUE_ADDRESSES = {
+  "Hashing it Out": "0x05dF81Bf098Ae29AfAd54250Cd224379eDCae850",
+  "Commons Stack": "0x1251A94b6d800979d2d933b8Bd5914b892772Ac6",
+  "DAppNode": "0x00CF36853AA4024fb5BF5cc377dfd85844B411a0",
+  "MetaCartel": "0xD91ec22114897E5E68997F77a6182dE3Cb09ba9B",
+  "DXdao": "0x466621C1771590c4ECc5314eB3055adAFd980d52",
+  "Meta Gamma Delta": "0x694c7CA85584d550B36c044E10D3A7b30d85E7F7",
+  "KERNEL": "0xC728DEa8B2972E6e07493BE8DC2F0314F7dC3E98",
+  "future modern": "0x5ab45FB874701d910140e58EA62518566709c408",
+  "DePo DAO": "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
+}
+
 run();
 
 
@@ -140,6 +152,7 @@ function getTransactions() {
 }
 
 async function getZksyncTransactions(addresses) {
+  const seenTxhashes = new Set();
   const transactions = await addresses.reduce((accumulatorPromise, address) => {
     return accumulatorPromise.then(accumulator => {
       return axios({
@@ -154,7 +167,10 @@ async function getZksyncTransactions(addresses) {
           if (response.data.length >= 100) {
             console.log(`WARNING: Account ${address} seems to have more than 100 zksync transactions, but pagination hasn't been implemented to fetch them.`);
           }
-          return accumulator.concat(response.data);
+          // For zkSync, we assume that each token transfer has a unique hash. Note that this is NOT true for mainnet transactions.
+          const newTransactions = response.data.filter(x => !seenTxhashes.has(x.hash));
+          newTransactions.forEach(x => seenTxhashes.add(x.hash));
+          return accumulator.concat(newTransactions);
         }
         // TODO: handle response status
         throw new Error('unhandled response status');
@@ -242,7 +258,10 @@ async function run() {
     return acc;
   }, new Set());
   console.log('zkSync users', zksyncAddresses);
-  const zksyncTransactions = await getZksyncTransactions(Array.from(zksyncAddresses.values()));
+  const zksyncTransactions = await getZksyncTransactions(
+    Array.from(zksyncAddresses.values())
+      .concat(Object.values(LEAGUE_ADDRESSES))
+  );
   const transactions = mainnetTransactions.concat(zksyncTransactions);
   const donorNames = await getDonorNames();
 
