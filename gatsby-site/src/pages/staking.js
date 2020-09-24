@@ -105,7 +105,7 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1093397.032917051200104332"
+    "weight": "1093450.977910381169703509"
   },
   "8": {
     "id": 8,
@@ -120,12 +120,12 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "135130.871358675031359291"
+    "weight": "137315.871358675031359291"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "195950.269210689795020246"
+    "weight": "195250.269210689795020246"
   },
   "12": {
     "id": 12,
@@ -135,7 +135,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "632786.019026991731306726"
+    "weight": "633296.314026991731326726"
   },
   "14": {
     "id": 14,
@@ -165,7 +165,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'September 23';
+const stakingTotalsUpdated = 'September 24';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
