@@ -86,6 +86,12 @@ const categories = [
     description:
       "DePo DAO funds and encourages open source projects to break down the political barriers that currently restrain us from real progress."
   },
+  {
+    categoryID: 17,
+    title: 'WhalerDAO',
+    description:
+      "WhalerDAO is a community of builders, researchers, legal experts, and community influencers who are dedicated to help solve the plethora of problems that the world is facing, using the power of blockchain and decentralized finance (DeFi)."
+  },
 ];
 
 const EMPTY_PERCENTAGES = {
@@ -110,7 +116,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "858029.454501597532460231"
+    "weight": "863753.704501597532460231"
   },
   "9": {
     "id": 9,
@@ -135,7 +141,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "635345.563026991731327726"
+    "weight": "635631.404676991731327726"
   },
   "14": {
     "id": 14,
@@ -151,6 +157,11 @@ const stakingResults = {
     "id": 16,
     "name": "DePo DAO",
     "weight": "92947.819859846665296587"
+  },
+  "17": {
+    "id": 17,
+    "name": "WhalerDAO",
+    "weight": "60965.0"
   }
 };
 

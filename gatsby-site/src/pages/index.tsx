@@ -28,6 +28,7 @@ import leagueKERNEL from '../img/league/kernel.png';
 import leagueMetaCartel from '../img/league/metacartel.png';
 import leagueMetaGammaDelta from '../img/league/metagammadelta.jpg';
 import leagueSheFi from '../img/league/shefi.jpg';
+import leagueWhalerDAO from '../img/league/whalerdao.png';
 import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
@@ -155,7 +156,7 @@ const IndexPage = () => {
           usdValue={budgets.epochUSD}
         />
       )}
-      
+
       {/* <!-- Panvala League --> */}
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
@@ -163,7 +164,7 @@ const IndexPage = () => {
           The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have ten communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueCommonsStack}
@@ -172,7 +173,7 @@ const IndexPage = () => {
               <h3>Commons Stack</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueDAppNode}
@@ -181,7 +182,7 @@ const IndexPage = () => {
               <h3>DAppNode</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueMetaCartel}
@@ -190,7 +191,7 @@ const IndexPage = () => {
               <h3>MetaCartel</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueDXdao}
@@ -199,7 +200,7 @@ const IndexPage = () => {
               <h3>DXdao</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueHashingItOut}
@@ -208,7 +209,7 @@ const IndexPage = () => {
               <h3>Hashing it Out</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueMetaGammaDelta}
@@ -217,7 +218,7 @@ const IndexPage = () => {
               <h3>Meta Gamma Delta</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueKERNEL}
@@ -226,7 +227,7 @@ const IndexPage = () => {
               <h3>KERNEL</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueFutureModern}
@@ -235,7 +236,7 @@ const IndexPage = () => {
               <h3>future modern</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueSheFi}
@@ -244,7 +245,7 @@ const IndexPage = () => {
               <h3>SheFi</h3>
             </a>
           </div>
-          <div className="flex flex-column items-center w-20-l w-30 dib v-mid pa4">
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
             <img
               alt=""
               src={leagueDePoDAO}
@@ -253,8 +254,17 @@ const IndexPage = () => {
               <h3>DePo DAO</h3>
             </a>
           </div>
+          <div className="flex flex-column items-center w-25-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueWhalerDAO}
+            />
+            <a class="link dim near-black" href="https://whalerdao.org/">
+              <h3>WhalerDAO</h3>
+            </a>
+          </div>
         </div>
-        
+
         <div className="dib v-top mr3-ns mr2 mv2">
           <a href="/staking">
           <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
