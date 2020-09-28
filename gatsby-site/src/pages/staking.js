@@ -105,6 +105,7 @@ const EMPTY_PERCENTAGES = {
   14: '',
   15: '',
   16: '',
+  17: '',
 };
 
 const stakingResults = {
