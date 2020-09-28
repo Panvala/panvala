@@ -116,7 +116,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "863753.704501597532460231"
+    "weight": "857943.157297105042983866"
   },
   "9": {
     "id": 9,
@@ -131,7 +131,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "219850.269210689795020246"
+    "weight": "219750.269210689795020246"
   },
   "12": {
     "id": 12,
@@ -141,12 +141,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "635631.404676991731327726"
+    "weight": "635769.587476991731331726"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "8602.159539247596709826"
+    "weight": "7102.159539247596709826"
   },
   "15": {
     "id": 15,
@@ -161,7 +161,7 @@ const stakingResults = {
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "60965.0"
+    "weight": "70610.0"
   }
 };
 
