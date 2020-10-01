@@ -117,17 +117,17 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1806253.443618513221906768"
+    "weight": "2436109.505531752376566059"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "884496.72082406827037"
+    "weight": "885833.72082406827037"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "138371.891808675031359791"
+    "weight": "141682.9967225258767005"
   },
   "11": {
     "id": 11,
@@ -137,17 +137,17 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "94823.0527611879817"
+    "weight": "149125.888666418940279682"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "637335.218050030082311951"
+    "weight": "637647.020312869566341951"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "7102.159775735888009826"
+    "weight": "7102.160619785862939826"
   },
   "15": {
     "id": 15,
@@ -157,12 +157,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "92483.969859846665296587"
+    "weight": "91883.969859846665296587"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "87005.323652766108819903"
+    "weight": "91931.287800462134179823"
   }
 };
 
@@ -177,7 +177,7 @@ categories.sort((a, b) => {
 
 const pollID = '4';
 const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'September 29';
+const stakingTotalsUpdated = 'September 30';
 const leagueBudget = 1369935;
 
 const ClipContainer = styled.div`
