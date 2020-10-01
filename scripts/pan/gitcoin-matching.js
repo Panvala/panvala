@@ -11,7 +11,7 @@ const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 const ZKSYNC_ADDRESS = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF';
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
-  '0x1b21609d42fa32f371f58df294ed25b2d2e5c8ba', // Uniswap v2
+  '0x1b21609D42fa32F371F58DF294eD25b2D2e5C8ba', // Uniswap v2
   '0x6F400810b62df8E13fded51bE75fF5393eaa841F', // dFusion
   '0x11111254369792b2Ca5d084aB5eEA397cA8fa48B', // 1inch.exchange
 ]);
@@ -26,6 +26,8 @@ const IGNORED_TXHASHES = new Set([
   '0x873dcaaaf4625e2aefcae5ae30a144fe00caff3076d44eff1579d9a643b9efca',
   '0x652733b11f9b2716b34774e5f10aac39aa5e4b4c2bc77fe1335841ae75f707d9',
   '0x3a08cee8abb05d31bcdfe78329cc161f9e715ced06020d23eed0daf14e02c918',
+  '0x75bb5594e81cafa30a5ab16425520b8d2acba7fd3141f6534cb207db14f51e64',
+  '0x9112ac92409134ec473aae17c9786e2c48dde22a680ed5dc55701d13e94b7660',
 ]);
 
 const ENS_ADDRESSES = {
@@ -151,29 +153,41 @@ function getTransactions() {
   });
 }
 
+async function fetchZksyncPages(address, olderThan = null) {
+  console.log('zksync fetch', address, olderThan);
+  return axios({
+    method: 'get',
+    url: `https://api.zksync.io/api/v0.1/account/${address}/history/older_than`,
+    params: {
+      tx_id: olderThan,
+    },
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  }).then(response => {
+    if (response.status === 200) {
+      if (response.data.length >= 100) {
+        return fetchZksyncPages(address, response.data[response.data.length - 1].tx_id)
+          .then(morePages => response.data.concat(morePages));
+      } else {
+        return response.data;
+      }
+    }
+    // TODO: handle response status
+    throw new Error('unhandled response status');
+  });
+}
+
 async function getZksyncTransactions(addresses) {
   const seenTxhashes = new Set();
   const transactions = await addresses.reduce((accumulatorPromise, address) => {
     return accumulatorPromise.then(accumulator => {
-      return axios({
-        method: 'get',
-        url: `https://api.zksync.io/api/v0.1/account/${address}/history/older_than`,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }).then(response => {
-        if (response.status === 200) {
-          if (response.data.length >= 100) {
-            console.log(`WARNING: Account ${address} seems to have more than 100 zksync transactions, but pagination hasn't been implemented to fetch them.`);
-          }
-          // For zkSync, we assume that each token transfer has a unique hash. Note that this is NOT true for mainnet transactions.
-          const newTransactions = response.data.filter(x => !seenTxhashes.has(x.hash));
-          newTransactions.forEach(x => seenTxhashes.add(x.hash));
-          return accumulator.concat(newTransactions);
-        }
-        // TODO: handle response status
-        throw new Error('unhandled response status');
+      return fetchZksyncPages(address).then(transactions => {
+        // For zkSync, we assume that each token transfer has a unique hash. Note that this is NOT true for mainnet transactions.
+        const newTransactions = transactions.filter(x => !seenTxhashes.has(x.hash));
+        newTransactions.forEach(x => seenTxhashes.add(x.hash));
+        return accumulator.concat(newTransactions);
       }).catch(error => {
         console.log('error:', error);
         throw error;
@@ -305,7 +319,7 @@ async function run() {
     };
     donors[donorAddress] = donor;
   });
-  
+
   /* Uncomment to list all Gitcoin Grants in the spreadsheet.
   Object.keys(grantNames).forEach(address => {
     grants[address] = grants[address] || {
