@@ -40,6 +40,7 @@ const ENS_ADDRESSES = {
   'etherchest.eth': '0x007e60C669cf96dC32655d1Eb1c1eBcf96459975',
   'tomotouch.eth': '0xA211e2FCbae4f3D5d0f74e7156cdbA795fEc2EE7',
   '@enzosumo': '0x0',
+  ' 0xEbC1209aB9D75e64615601D0554fa443D24494Fe': '0xEbC1209aB9D75e64615601D0554fa443D24494Fe',
 };
 
 const LEAGUE_ADDRESSES = {
