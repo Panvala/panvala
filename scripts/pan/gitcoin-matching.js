@@ -8,7 +8,10 @@ const stringify = require('csv-stringify/lib/sync');
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
-const ZKSYNC_ADDRESS = '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF';
+const ZKSYNC_ADDRESSES = new Set([
+  '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF',
+  '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6',
+]);
 const IGNORED_ADDRESSES = new Set([
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
   '0x1b21609D42fa32F371F58DF294eD25b2D2e5C8ba', // Uniswap v2
@@ -16,6 +19,7 @@ const IGNORED_ADDRESSES = new Set([
   '0x11111254369792b2Ca5d084aB5eEA397cA8fa48B', // 1inch.exchange
 ]);
 const IGNORED_SENDERS = new Set([
+  ...ZKSYNC_ADDRESSES,
   '0xcd2E72aEBe2A203b84f46DEEC948E6465dB51c75', // Alice transfer
   '0xB320759d1A0ADbE55360a0a28a221013aA2DA4fC', // LevelK transfer
   '0x7117fb4E85286c159EFa691a7699587Ccd01E26E', // LevelK transfer
@@ -267,7 +271,7 @@ async function run() {
   const grantNames = await getGrantAddresses();
   const mainnetTransactions = await getTransactions();
   const zksyncAddresses = mainnetTransactions.reduce((acc, tx) => {
-    if (ethers.utils.getAddress(tx['To']) === ZKSYNC_ADDRESS) {
+    if (ZKSYNC_ADDRESSES.has(ethers.utils.getAddress(tx['To']))) {
       acc.add(ethers.utils.getAddress(tx['From']));
     }
     return acc;
