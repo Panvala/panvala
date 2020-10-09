@@ -114,7 +114,7 @@ const IndexPage = () => {
             <h1 className="white f1-ns f2 b ma0 mb3">The sustainable treasury for communities to share.</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
               Bitcoin subsidizes its own security by creating new bitcoins for miners. Panvala's PAN token uses that same model
-              for <b className="white fw6"> philanthropy mining</b>, with 4x donation matching last quarter.
+              for <b className="white fw6"> philanthropy mining</b>, with 10x donation matching last quarter.
               Panvala is run by our communities and people like you.
             </p>
             <div className="">
