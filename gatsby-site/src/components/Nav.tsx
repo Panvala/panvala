@@ -20,6 +20,7 @@ const NavLink = ({ href, children }) => (
 export default function Nav({ account, balance, handleClick }: Props) {
   return (
     <>
+      {/*
       <TopBar>
         <Box height={64} bg="white" color="blue" flex justifyContent="center" alignItems="center">
           <a href="https://gitcoin.co/grants/?keyword=panvala+league" className="link dim blue">
@@ -27,6 +28,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           </a>
         </Box>
       </TopBar>
+      */}
 
       {/* Nav links */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
