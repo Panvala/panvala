@@ -42,6 +42,12 @@ export default function Nav({ account, balance, handleClick }: Props) {
 
         <div className="dtc-ns db v-mid tc center w-50-ns w-100">
           <a
+            href="https://handbook.panvala.com/"
+            className="link dim white-60 f6 fw6 dib mr3"
+          >
+            Handbook
+          </a>
+          <a
             href="https://forum.panvala.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -58,22 +64,12 @@ export default function Nav({ account, balance, handleClick }: Props) {
             Twitter
           </a>
           <a
-            href="https://t.me/panvala"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            Telegram
-          </a>
-          <a
-            href="https://www.coingecko.com/en/coins/panvala-pan"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="https://handbook.panvala.com/the-pan-token/pan-token-resources"
             className="link dim white-60 f6 fw6 dib mr3"
           >
             Token
           </a>
-          <a href="/join" className="link dim white-60 f6 dn-ns dib fw6">
+          <a href="https://handbook.panvala.com/join-panvala" className="link dim white-60 f6 dn-ns dib fw6">
             Join
           </a>
         </div>
@@ -125,7 +121,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           ) : (
             typeof window !== 'undefined' &&
             !window.location.href.includes('join') && (
-              <a href="/join">
+              <a href="https://handbook.panvala.com/join-panvala">
                 <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
                   Join Panvala
                 </button>

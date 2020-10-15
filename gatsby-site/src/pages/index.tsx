@@ -119,7 +119,7 @@ const IndexPage = () => {
             </p>
             <div className="">
               <div className="dib v-top mr3-ns mr2 mv2">
-                <a href="/join">
+                <a href="https://handbook.panvala.com/join-panvala">
                   <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
                     Join Panvala
                   </button>
@@ -416,7 +416,7 @@ const IndexPage = () => {
             <h2 className="f2-5 ma0 mb4 lh-copy">
               Join Panvala today and help communities amplify their contributions
             </h2>
-            <a href="/join">
+            <a href="https://handbook.panvala.com/join-panvala">
               <button className="f6 link dim bn br-pill pv3 ph4 white bg-blue fw7 pointer">
                 Join Panvala
               </button>
