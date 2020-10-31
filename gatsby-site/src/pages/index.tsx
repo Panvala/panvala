@@ -295,15 +295,14 @@ const IndexPage = () => {
         <div className="w-50-l w-70-m w-90 center relative z-1">
           <h2 className="f2-5 ma0 mb4 mt0-ns mt6 pt6-ns pt5 white tc">Hodlers Are Philanthropists</h2>
           <p className="ma0 f4 lh-text mb4 white-60">
-            Bitcoin subsidizes its own security by creating new bitcoins. What if Satoshi had decided to subsidize other
-            public goods instead? With Panvala, we use that same model to subsidize our communities.  Panvala is the
-            sustainable treasury for communities to share.  Donations made with the PAN token are matched at incredible
-            rates—4x last quarter, 12x prior to that—allowing us to subsidize the public goods that we’ve all wanted but
-            couldn’t coordinate to fund.
+            Panvala's treasury is a new kind of community-managed endowment—like a university endowment. PAN tokens
+            are designed to build this endowment from scratch: the more we share Panvala's treasury, the stronger it gets.
+            By giving communities an economic tool that rivals corporate equity and national currencies, we can shift our
+            society's focus away from corporate life and political life. Let's focus on community life instead.
           </p>
           <p className="ma0 f4 lh-text mb4 white-60">
             <strong class="white">Today's society systematically rewards the people who make prosperity scarce. Together, let's be the light that
-            produces abundance for our communities instead.</strong>
+            produces abundance for our communities.</strong>
           </p>
         </div>
       </section>
