@@ -132,7 +132,8 @@ async function run() {
     });
     console.log('Sending transaction...');
     // The gasPrice ethers uses by default doesn't always yield quick transactions, so consider hardcoding a gasPrice.
-    const tx = await tokenWithSigner.transfer(grant['Address'], grant['Match']); // { gasPrice: ethers.utils.parseUnits('15.2', 'gwei') });
+    const gasPrice = (await provider.getGasPrice()).add(ethers.utils.parseUnits('10', 'gwei'));
+    const tx = await tokenWithSigner.transfer(grant['Address'], grant['Match'], { gasPrice }); // { gasPrice: ethers.utils.parseUnits('15.2', 'gwei') });
     console.log(tx.hash);
     await tx.wait();
     
