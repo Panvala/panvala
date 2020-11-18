@@ -35,6 +35,15 @@ import leagueLab10Collective from '../img/league/lab10collective.png';
 import leagueDeFiSafety from '../img/league/defisafety.jpg';
 import leagueWeb3Bridge from '../img/league/web3bridge.jpg';
 import leagueMolLeArt from '../img/league/molleart.jpg';
+import leagueRotki from '../img/league/rotki.jpg';
+import leagueBrightID from '../img/league/brightid.jpg';
+import leagueEthereumFrance from '../img/league/ethereumfrance.jpg';
+import leagueAbridged from '../img/league/abridged.jpg';
+import leagueNFTHub from '../img/league/nfthub.jpg';
+import leagueMetaGame from '../img/league/metagame.jpg';
+import leagueMetaSpace from '../img/league/metaspace.jpg';
+import leagueTripsCommunity from '../img/league/tripscommunity.jpg';
+import leagueUpala from '../img/league/upala.png';
 import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
@@ -167,7 +176,7 @@ const IndexPage = () => {
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
-          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have sixteen communities—we're aiming for thousands.
+          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 25 communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
@@ -323,6 +332,87 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://twitter.com/molleart">
               <h3>Mol LeArt</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueRotki}
+            />
+            <a class="link dim near-black" href="https://rotki.com/">
+              <h3>Rotki</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueBrightID}
+            />
+            <a class="link dim near-black" href="https://www.brightid.org/">
+              <h3>BrightID</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueEthereumFrance}
+            />
+            <a class="link dim near-black" href="https://www.ethereum-france.com/">
+              <h3>EthCC by Ethereum France</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueAbridged}
+            />
+            <a class="link dim near-black" href="https://abridged.io/">
+              <h3>Abridged</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueNFTHub}
+            />
+            <a class="link dim near-black" href="http://nfthub.xyz/">
+              <h3>NFThub</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMetaGame}
+            />
+            <a class="link dim near-black" href="https://metagame.wtf/">
+              <h3>MetaGame</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMetaSpace}
+            />
+            <a class="link dim near-black" href="https://metaspacenow.com/">
+              <h3>MetaSpace</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueTripsCommunity}
+            />
+            <a class="link dim near-black" href="https://tripscommunity.com/en/">
+              <h3>Trips Community</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueUpala}
+            />
+            <a class="link dim near-black" href="https://upala-docs.readthedocs.io/en/latest/">
+              <h3>Upala</h3>
             </a>
           </div>
         </div>
