@@ -250,7 +250,7 @@ export default function Index() {
               </ResponsiveContainer>
             </div>
             <Typography variant="caption" display="block">
-              All values in PAN.
+              All values in PAN. These allocations are for the donation matching round that ended on 10/2/2020.
             </Typography>
           </Paper>
         </Grid>
