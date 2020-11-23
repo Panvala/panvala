@@ -274,6 +274,9 @@ export default function Index() {
                 );
               })}
             </Grid>
+            <Box p={2} display="flex" justifyContent="flex-end">
+              <Button className={classes.button} variant="contained" color="secondary" href="https://handbook.panvala.com/governance/panvala-league">Join the League</Button>
+            </Box>
           </Paper>
         </Grid>
       </Grid>
