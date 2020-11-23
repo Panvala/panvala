@@ -1,5 +1,5 @@
 import { makeStyles, Box, Button, Grid, Paper, Typography } from '@material-ui/core';
-import { BarChart, Bar, Legend, LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { BarChart, Bar, Legend, LineChart, Line, PieChart, Pie, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import BaseLayout from "../layout";
 
@@ -27,6 +27,38 @@ const quarterlyMetrics = [{
   fullDonations: 17490.25,
   leagueMultiplier: 10.26,
   fullMultiplier: 11.55,
+}];
+
+const fundingAllocations = [{
+  name: "Commons Stack Community Fund",
+  funding: 681805.60,
+}, {
+  name: "KERNEL",
+  funding: 125472.13,
+}, {
+  name: "DAppNode",
+  funding: 124967.46,
+}, {
+  name: "Meta Gamma Delta",
+  funding: 119751.02,
+}, {
+  name: "MetaCartel Builder Awards",
+  funding: 102809.70,
+}, {
+  name: "DXdao's DeFi Community Awards",
+  funding: 74812.64,
+}, {
+  name: "future modern",
+  funding: 62782.47,
+}, {
+  name: "Hashing it Out's Community Fund",
+  funding: 51864.06,
+}, {
+  name: "WhalerDAO",
+  funding: 13116.89,
+}, {
+  name: "DePo DAO",
+  funding: 12553.03,
 }];
 
 const useStyles = makeStyles((theme) => ({
@@ -119,7 +151,15 @@ export default function Index() {
         </Grid>
         <Grid item sm={12} md={6}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component="h1" variant="h4" gutterBottom>Funding Allocations</Typography> 
+            <Typography component="h1" variant="h4" gutterBottom>Funding Allocations</Typography>
+            <div style={{ width: '100%', height: 300 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie data={fundingAllocations} dataKey="funding" fill="#46b0aa" />
+                  <Tooltip />
+                </PieChart> 
+              </ResponsiveContainer>
+            </div>
           </Paper>
         </Grid>
         <Grid item sm={12} md={6}>
