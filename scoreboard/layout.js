@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, Box, ThemeProvider } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -39,11 +39,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#2138b7',
+    },
+    secondary: {
+      main: '#46b0aa',
+    },
+  }
+});
+
 export default function BaseLayout(props) {
   const classes = useStyles();
 
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <Head>
         <title>Panvala Scoreboard{ props.title ? ` ${props.title}` : '' }</title>
         <link rel="icon" href="/favicon.ico" />
@@ -54,6 +65,9 @@ export default function BaseLayout(props) {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
+            <Box mr={2}>
+              <img src="/panvala-logo.png" width="36"/>
+            </Box>
             <Typography variant="h6" noWrap>
               Panvala Scoreboard
             </Typography>
@@ -106,6 +120,6 @@ export default function BaseLayout(props) {
           { props.children }
         </main>
       </div>
-    </div>
+    </ThemeProvider>
   )
 };

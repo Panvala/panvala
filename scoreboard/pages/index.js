@@ -4,6 +4,9 @@ import BaseLayout from "../layout";
 
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    color: "white",
+  },
   gridItemPaper: {
     minHeight: 300,
     padding: theme.spacing(4),
@@ -50,7 +53,7 @@ export default function Index() {
               </Grid>
             </Grid>
             <Box p={2} display="flex" justifyContent="flex-end">
-              <Button color="primary" href="https://handbook.panvala.com/governance/panvala-league">More Info</Button>
+              <Button className={classes.button} variant="contained" color="secondary" href="https://handbook.panvala.com/governance/panvala-league">More Info</Button>
             </Box>
           </Paper>
         </Grid>
