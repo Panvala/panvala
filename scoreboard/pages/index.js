@@ -207,6 +207,9 @@ export default function Index() {
                 </BarChart> 
               </ResponsiveContainer>
             </div>
+            <Typography variant="caption" display="block">
+              All values in USD.
+            </Typography>
           </Paper>
         </Grid>
         <Grid item sm={12} md={6}>
@@ -224,6 +227,9 @@ export default function Index() {
                 </BarChart> 
               </ResponsiveContainer>
             </div>
+            <Typography variant="caption" display="block">
+              All values in USD.
+            </Typography>
           </Paper>
         </Grid>
         <Grid item sm={12} md={6}>
@@ -237,6 +243,9 @@ export default function Index() {
                 </PieChart> 
               </ResponsiveContainer>
             </div>
+            <Typography variant="caption" display="block">
+              All values in PAN.
+            </Typography>
           </Paper>
         </Grid>
         <Grid item sm={12} md={6}>
@@ -263,7 +272,7 @@ export default function Index() {
             <Grid container spacing={4}>
               {panvalaLeagueCommunities.map(community => {
                 return (
-                  <Grid item sm={12} md={4}>
+                  <Grid item sm={12} md={4} key={community.name}>
                     <Box display="flex" alignItems="center">
                       <Box mr={3}>
                         <img src={`/league/${community.img}`} height="144" />
