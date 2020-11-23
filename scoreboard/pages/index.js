@@ -61,6 +61,83 @@ const fundingAllocations = [{
   funding: 12553.03,
 }];
 
+const panvalaLeagueCommunities = [{
+  name: "Commons Stack",
+  img: "commonsstack.png",
+}, {
+  name: "DAppNode",
+  img: "dappnode.png",
+}, {
+  name: "MetaCartel",
+  img: "metacartel.png",
+}, {
+  name: "DXdao",
+  img: "dxdao.png",
+}, {
+  name: "Hashing it Out",
+  img: "hashingitout.jpg",
+}, {
+  name: "Meta Gamma Delta",
+  img: "metagammadelta.jpg",
+}, {
+  name: "KERNEL",
+  img: "kernel.png",
+}, {
+  name: "future modern",
+  img: "futuremodern.jpg",
+}, {
+  name: "DePo DAO",
+  img: "depodao.jpg",
+}, {
+  name: "WhalerDAO",
+  img: "whalerdao.png",
+}, {
+  name: "Matic Mitra",
+  img: "maticmitra.jpg",
+}, {
+  name: "FightPandemics",
+  img: "fightpandemics.jpg",
+}, {
+  name: "lab10 collective",
+  img: "lab10collective.png",
+}, {
+  name: "DeFi Safety",
+  img: "defisafety.jpg",
+}, {
+  name: "Web3Bridge",
+  img: "web3bridge.jpg",
+}, {
+  name: "Mol LeArt",
+  img: "molleart.jpg",
+}, {
+  name: "Rotki",
+  img: "rotki.jpg",
+}, {
+  name: "BrightID",
+  img: "brightid.jpg",
+}, {
+  name: "EthCC by Ethereum France",
+  img: "ethereumfrance.jpg",
+}, {
+  name: "Abridged",
+  img: "abridged.jpg",
+}, {
+  name: "NFThub",
+  img: "nfthub.jpg",
+}, {
+  name: "MetaGame",
+  img: "metagame.jpg",
+}, {
+  name: "MetaSpace",
+  img: "metaspace.jpg",
+}, {
+  name: "Trips Community",
+  img: "tripscommunity.jpg",
+}, {
+  name: "Upala",
+  img: "upala.png",
+}];
+
 const useStyles = makeStyles((theme) => ({
   button: {
     color: "white",
@@ -182,7 +259,21 @@ export default function Index() {
         <Grid item sm={12}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Panvala League Communities</Typography>
-            <Typography component="h2" variant="h6" gutterBottom>25 communities</Typography>
+            <Typography component="h2" variant="h6" gutterBottom>{panvalaLeagueCommunities.length} communities</Typography>
+            <Grid container spacing={4}>
+              {panvalaLeagueCommunities.map(community => {
+                return (
+                  <Grid item sm={12} md={4}>
+                    <Box display="flex" alignItems="center">
+                      <Box mr={3}>
+                        <img src={`/league/${community.img}`} height="144" />
+                      </Box>
+                      <Typography component="h3" variant="h6">{community.name}</Typography>
+                    </Box>
+                  </Grid>
+                );
+              })}
+            </Grid>
           </Paper>
         </Grid>
       </Grid>
