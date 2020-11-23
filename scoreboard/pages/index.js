@@ -1,34 +1,86 @@
-import Typography from '@material-ui/core/Typography';
+import { makeStyles, Box, Button, Grid, Paper, Typography } from '@material-ui/core';
 
 import BaseLayout from "../layout";
 
 
+const useStyles = makeStyles((theme) => ({
+  gridItemPaper: {
+    minHeight: 300,
+    padding: theme.spacing(4),
+  },
+}));
+
 export default function Index() {
+  const classes = useStyles();
+
   return (
     <BaseLayout>
-      <Typography paragraph>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-        ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-        facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-        gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-        donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-        adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-        Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-        imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-        arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-        donec massa sapien faucibus et molestie ac.
-      </Typography>
-      <Typography paragraph>
-        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
-        facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
-        tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
-        consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
-        vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
-        hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
-        tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
-        nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
-        accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
-      </Typography>
+      <Grid container spacing={4}>
+        <Grid item sm={12}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Current Quarter</Typography>
+            <Grid container spacing={4}>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Total Inflation</Typography>
+                <Typography variant="body1">1,755,937.14 PAN</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">League Application Deadline</Typography>
+                <Typography variant="body1">November 13</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Donations Begin</Typography>
+                <Typography variant="body1">December 2</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Donations End</Typography>
+                <Typography variant="body1">TBD</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Staking Deadline</Typography>
+                <Typography variant="body1">January 15</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Stake Holding Period</Typography>
+                <Typography variant="body1">January 15 - 29</Typography>
+              </Grid>
+              <Grid item sm={12} md={4}>
+                <Typography component="h2" variant="h6">Inflation Released</Typography>
+                <Typography variant="body1">January 29</Typography>
+              </Grid>
+            </Grid>
+            <Box p={2} display="flex" justifyContent="flex-end">
+              <Button color="primary" href="https://handbook.panvala.com/governance/panvala-league">More Info</Button>
+            </Box>
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Quarterly Value Allocated</Typography> 
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Quarterly Donations</Typography> 
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Funding Allocations</Typography> 
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Matching Multipliers</Typography> 
+          </Paper>
+        </Grid>
+        <Grid item sm={12}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography component="h1" variant="h4" gutterBottom>Panvala League Communities</Typography>
+            <Typography component="h2" variant="h6" gutterBottom>25 communities</Typography>
+          </Paper>
+        </Grid>
+      </Grid>
     </BaseLayout>
   );
 };

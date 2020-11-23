@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: -1,
-    padding: theme.spacing(1),
+    padding: theme.spacing(4),
   },
 }));
 
@@ -73,29 +73,29 @@ export default function BaseLayout(props) {
                 <ListItemIcon><Home /></ListItemIcon>
                 <ListItemText primary="Overview" />
               </ListItem>
-              <ListItem button key="Donations">
+              <ListItem button disabled key="Donations">
                 <ListItemText inset primary="Donations" />
               </ListItem>
-              <ListItem button key="Staking">
+              <ListItem button disabled key="Staking">
                 <ListItemText inset primary="Staking" />
               </ListItem>
-              <ListItem button key="History">
+              <ListItem button disabled key="History">
                 <ListItemText inset primary="Funding History" />
               </ListItem>
-              <ListItem button key="Inflation">
+              <ListItem button disabled key="Inflation">
                 <ListItemText inset primary="Net Inflation" />
               </ListItem>
             </List>
             <Divider />
             <List>
-              <ListItem button key="Handbook">
+              <ListItem button component="a" href="https://handbook.panvala.com/" key="Handbook">
                 <ListItemIcon><MenuBook /></ListItemIcon>
                 <ListItemText primary="Handbook" />
               </ListItem>
-              <ListItem button key="Discord">
+              <ListItem button component="a" href="https://discord.gg/yZmYZbf" key="Discord">
                 <ListItemText inset primary="Discord" />
               </ListItem>
-             <ListItem button key="Twitter">
+             <ListItem button component="a" href="https://twitter.com/PanvalaHQ" key="Twitter">
                 <ListItemText inset primary="Twitter" />
               </ListItem>
             </List>
