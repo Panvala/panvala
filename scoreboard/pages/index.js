@@ -160,35 +160,35 @@ export default function Index() {
   return (
     <BaseLayout>
       <Grid container spacing={4}>
-        <Grid item sm={12}>
+        <Grid item xs={12}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Current Quarter</Typography>
             <Grid container spacing={4}>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Total Inflation</Typography>
                 <Typography variant="body1">1,755,937.14 PAN</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">League Application Deadline</Typography>
                 <Typography variant="body1">November 13</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Donations Begin</Typography>
                 <Typography variant="body1">December 2</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Donations End</Typography>
                 <Typography variant="body1">TBD</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Staking Deadline</Typography>
                 <Typography variant="body1">January 15</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Stake Holding Period</Typography>
                 <Typography variant="body1">January 15 - 29</Typography>
               </Grid>
-              <Grid item sm={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Typography component="h2" variant="h6">Inflation Released</Typography>
                 <Typography variant="body1">January 29</Typography>
               </Grid>
@@ -198,7 +198,7 @@ export default function Index() {
             </Box>
           </Paper>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Quarterly Value Allocated</Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -218,7 +218,7 @@ export default function Index() {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Quarterly Donations</Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -238,7 +238,7 @@ export default function Index() {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Funding Allocations</Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -254,7 +254,7 @@ export default function Index() {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item xs={12} md={6}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Matching Multipliers</Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -271,14 +271,14 @@ export default function Index() {
             </div>
           </Paper>
         </Grid>
-        <Grid item sm={12}>
+        <Grid item xs={12}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Panvala League Communities</Typography>
             <Typography component="h2" variant="h6" gutterBottom>{panvalaLeagueCommunities.length} communities</Typography>
             <Grid container spacing={4}>
               {panvalaLeagueCommunities.map(community => {
                 return (
-                  <Grid item sm={12} md={4} key={community.name}>
+                  <Grid item xs={12} md={4} key={community.name}>
                     <Box display="flex" alignItems="center">
                       <Box mr={3}>
                         <img src={`/league/${community.img}`} height="144" />
