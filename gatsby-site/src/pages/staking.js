@@ -74,12 +74,14 @@ const categories = [
     description:
       "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
   },
+  /*
   {
     categoryID: 15,
     title: 'SheFi',
     description:
       "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
   },
+  */
   {
     categoryID: 16,
     title: 'DePo DAO',
@@ -92,47 +94,137 @@ const categories = [
     description:
       "WhalerDAO is a community of builders, researchers, legal experts, and community influencers who are dedicated to help solve the plethora of problems that the world is facing, using the power of blockchain and decentralized finance (DeFi)."
   },
+  {
+    categoryID: 18,
+    title: 'Matic Mitra',
+    description:
+      "Matic Mitra is a community of builders, researchers, legal experts, and community influencers who are dedicated to help solve the plethora of problems that the world is facing, using the power of blockchain and decentralized finance (DeFi).",
+  },
+  {
+    categoryID: 19,
+    title: 'FightPandemics',
+    description:
+      "FightPandemics is an open source altruistic platform that connects individuals and organizations that need help with those that can provide it at the local and global level.",
+  },
+  {
+    categoryID: 20,
+    title: 'lab10 collective',
+    description:
+      "lab10 collective is the cooperative behind the Minerva Wallet that aims to co-create a zero-carbon society. Their work uses a non-extractive business model: their clients pay for features they need in the wallet, which they build and release as open source software.",
+  },
+  {
+    categoryID: 21,
+    title: 'DeFi Safety',
+    description:
+      "DeFi Safety performs community funded Process and Quality Audits on DeFi contracts. They answer standard questions using the public artifacts (website, GitHub, documentation) to find the answers. The result is a simple % score.",
+  },
+  {
+    categoryID: 22,
+    title: 'Web3Bridge',
+    description:
+      "Web3Bridge (formerly 500NigeriaDevs4Eth) is designed to be a bridge connecting web2 developers in Africa into web3. The program runs an 8-week remote learning plan which has been in operation since October 2019.",
+  },
+  {
+    categoryID: 23,
+    title: 'Mol LeArt',
+    description:
+      "Mol LeArt is a DAO representing Web3 creative commons, where we create smart NFTs that work for creators.",
+  },
+  {
+    categoryID: 24,
+    title: 'Rotki',
+    description:
+      "Rotki is an open source portfolio tracking, accounting, analytics and tax reporting tool that protects your privacy. The mission of Rotki is to bring transparency into the crypto and financial sectors through the use of open source local-first tech.",
+  },
+  {
+    categoryID: 25,
+    title: 'BrightID',
+    description:
+      "BrightID is a social identity network that allows you to prove that you’re only using one account. It’s the holy grail of digital identity.",
+  },
+  {
+    categoryID: 26,
+    title: 'Ethereum France',
+    description:
+      "Ethereum France is a French non-profit organization mainstreaming blockchain and Ethereum in all French-speaking countries. It runs the Ethereum Community Conference (EthCC), the largest annual European Ethereum event focused on technology and community. Three intense days of conferences, networking, learning and (covid-free) partying.",
+  },
+  {
+    categoryID: 27,
+    title: 'Abridged',
+    description:
+      "Abridged creates delightful web3 experiences with the ability to onboard anyone to receive value from crypto. Recently, they created Collab.Land. This free service allows anyone to create a tokenized online community with existing social interfaces like Telegram and Discord.",
+  },
+  {
+    categoryID: 28,
+    title: 'NFThub',
+    description:
+      "NFThub is an upcoming community-driven platform with an extensive directory and analytics for all things NFT.",
+  },
+  {
+    categoryID: 29,
+    title: 'MetaGame',
+    description:
+      "MetaGame’s community aims to build a new world as a layer atop of the old one. They use SourceCred to track contributions from community members, and reward contributors with SEED tokens.",
+  },
+  {
+    categoryID: 30,
+    title: 'MetaSpace',
+    description:
+      "MetaSpace is a hub for exploring health and wellness in Web3 communities. Bringing professionals from many disciplines together to share their knowledge and experience through discussions, classes, and retreats while creating a bridge between healing practitioners and the Web3 community.",
+  },
+  {
+    categoryID: 31,
+    title: 'Trips Community',
+    description:
+      "Trips Community aims to build a completely decentralized vacation rental platform (think “Airbnb the platform, without Airbnb the company”), along with the tools to help users transition from today’s online marketplaces to Web 3 marketplaces.",
+  },
+  {
+    categoryID: 32,
+    title: 'Upala',
+    description:
+      "Upala is an anti-Sybil system for DApps and a decentralized digital identity. It provides a digital identity uniqueness score in dollars (price of forgery).",
+  },
+  {
+    categoryID: 33,
+    title: 'Bloom Network',
+    description:
+      "Bloom connects people and existing initiatives to build capacity together and inspire a billion acts of regeneration. We do direct actions to create food security, social equity, regional economies, art and more!",
+  },
+  {
+    categoryID: 34,
+    title: 'Handshake Development Fund',
+    description:
+      "Handshake is a completely community-run decentralized blockchain built to dismantle ICANN's monopoly on top-level domains (.com, .net, .org, .io, etc.) and improve internet security by replacing Certificate Authorities. This community run development fund is the only source of non-VC, non-dilutive, grants funding in the HNS community.",
+  },
 ];
 
-const EMPTY_PERCENTAGES = {
-  7: '',
-  8: '',
-  9: '',
-  10: '',
-  11: '',
-  12: '',
-  13: '',
-  14: '',
-  15: '',
-  16: '',
-  17: '',
-};
+const EMPTY_PERCENTAGES = Object.fromEntries(categories.map(x => [x.categoryID, '']));
 
 const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1059695.538748532468163042"
+    "weight": "1059283.639894158217280373"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1972748.916074047407459123"
+    "weight": "1684481.242590724928505164"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "884751.08082406827037"
+    "weight": "1006803.38924574393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "82572.0799903578337005"
+    "weight": "180695.6185411058767005"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "214909.769210689795020246"
+    "weight": "205180.809210689795020246"
   },
   "12": {
     "id": 12,
@@ -142,12 +234,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "623767.535524364502174585"
+    "weight": "137092.522866444238148385"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "34076.781886475346790085"
+    "weight": "10710.138100989213002666"
   },
   "15": {
     "id": 15,
@@ -157,28 +249,28 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "77577.569859846665296587"
+    "weight": "10572.209172500667596587"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "109013.582596282680398581"
+    "weight": "102250.197395820546218758"
   }
 };
 
 categories.sort((a, b) => {
-  const stakedA = parseFloat(stakingResults[a.categoryID].weight);
-  const stakedB = parseFloat(stakingResults[b.categoryID].weight);
+  const stakedA = stakingResults[a.categoryID] ? parseFloat(stakingResults[a.categoryID].weight) : 0;
+  const stakedB = stakingResults[b.categoryID] ? parseFloat(stakingResults[b.categoryID].weight) : 0;
   if (stakedA === stakedB) return 0;
   // Sort from greatest to least.
   if (stakedA < stakedB) return 1;
   return -1;
 });
 
-const pollID = '4';
-const pollDeadline = 'October 16';
-const stakingTotalsUpdated = 'October 14';
-const leagueBudget = 1369935;
+const pollID = '5';
+const pollDeadline = 'January 15';
+const stakingTotalsUpdated = 'November 23';
+const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -557,7 +649,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from September 15 to October 2. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                starting on December 2. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -611,7 +703,7 @@ const Poll = () => {
       </section>
 
       {/* Ballot */}
-      <section id="poll-form" ref={pollFormRef} className="pv6 mb4 bg-gray full-clip-down-lg">
+      <section id="poll-form" ref={pollFormRef} className="pv6 mb4 bg-gray">
         <div className="w-100 w-60-ns center">
           {modalOpen ? (
             <Box flex flexDirection="column" justifyContent="center" alignItems="center">
