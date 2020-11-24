@@ -198,7 +198,8 @@ const categories = [
   },
 ];
 
-const EMPTY_PERCENTAGES = Object.fromEntries(categories.map(x => [x.categoryID, '']));
+const EMPTY_PERCENTAGES = {};
+categories.forEach(x => EMPTY_PERCENTAGES[x.categoryID] = '');
 
 const stakingResults = {
   "7": {
