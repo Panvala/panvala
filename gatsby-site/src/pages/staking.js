@@ -74,14 +74,13 @@ const categories = [
     description:
       "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
   },
-  /*
   {
     categoryID: 15,
     title: 'SheFi',
+    hidden: true,
     description:
       "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
   },
-  */
   {
     categoryID: 16,
     title: 'DePo DAO',
@@ -200,7 +199,6 @@ const categories = [
 
 const EMPTY_PERCENTAGES = {};
 categories.forEach(x => EMPTY_PERCENTAGES[x.categoryID] = '');
-categories[15] = ''; // SheFi
 
 const stakingResults = {
   "7": {
@@ -835,7 +833,7 @@ const Poll = () => {
                   {props => (
                     <form onSubmit={props.handleSubmit}>
                       {categories.map((category, index) => {
-                        const { description, title, categoryID } = category;
+                        const { description, title, categoryID, hidden } = category;
                         const staked = stakingResults[categoryID] !== undefined ? parseFloat(stakingResults[categoryID].weight) : 0;
                         const identifier = `poll-points-category-${categoryID}`;
 
@@ -845,7 +843,7 @@ const Poll = () => {
                         const matchingCapacity = staked / totalStaked * leagueBudget;
 
                         return (
-                          <div key={identifier} className="cf pa3 bb bw-2 b--black-10">
+                          <div key={identifier} className="cf pa3 bb bw-2 b--black-10" style={ hidden ? { display: "none" } : {} }>
                             <div className="fl w-70 pa2 pr4">
                               <div className="f4 b">{title}</div>
                               <p dangerouslySetInnerHTML={{ __html: description }}></p>
