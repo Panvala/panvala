@@ -73,6 +73,7 @@ function SEO({ description, lang, meta, title }) {
       </script>
       {/* <!-- End Google Tag Manager --> */}
 
+      {/*
       <script type="text/javascript">
         {process.env.NODE_ENV === 'production' &&
           `(function(o) {
@@ -117,6 +118,7 @@ function SEO({ description, lang, meta, title }) {
           }
         })({})`}
       </script>
+      */}
     </Helmet>
   );
 }
