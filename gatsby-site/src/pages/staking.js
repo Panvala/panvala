@@ -200,6 +200,7 @@ const categories = [
 
 const EMPTY_PERCENTAGES = {};
 categories.forEach(x => EMPTY_PERCENTAGES[x.categoryID] = '');
+categories[15] = ''; // SheFi
 
 const stakingResults = {
   "7": {
