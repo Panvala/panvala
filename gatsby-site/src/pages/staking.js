@@ -249,12 +249,97 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "10572.209172500667596587"
+    "weight": "6572.209172500667596587"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
     "weight": "102250.197395820546218758"
+  },
+  "18": {
+    "id": 18,
+    "name": "Matic Mitra",
+    "weight": "0.0"
+  },
+  "19": {
+    "id": 19,
+    "name": "FightPandemics",
+    "weight": "0.0"
+  },
+  "20": {
+    "id": 20,
+    "name": "lab10 collective",
+    "weight": "0.0"
+  },
+  "21": {
+    "id": 21,
+    "name": "DeFi Safety",
+    "weight": "0.0"
+  },
+  "22": {
+    "id": 22,
+    "name": "Web3Bridge",
+    "weight": "0.0"
+  },
+  "23": {
+    "id": 23,
+    "name": "Mol LeArt",
+    "weight": "0.0"
+  },
+  "24": {
+    "id": 24,
+    "name": "Rotki",
+    "weight": "0.0"
+  },
+  "25": {
+    "id": 25,
+    "name": "BrightID",
+    "weight": "0.0"
+  },
+  "26": {
+    "id": 26,
+    "name": "Ethereum France",
+    "weight": "0.0"
+  },
+  "27": {
+    "id": 27,
+    "name": "Abridged",
+    "weight": "0.0"
+  },
+  "28": {
+    "id": 28,
+    "name": "NFThub",
+    "weight": "0.0"
+  },
+  "29": {
+    "id": 29,
+    "name": "MetaGame",
+    "weight": "0.0"
+  },
+  "30": {
+    "id": 30,
+    "name": "MetaSpace",
+    "weight": "0.0"
+  },
+  "31": {
+    "id": 31,
+    "name": "Trips Community",
+    "weight": "0.0"
+  },
+  "32": {
+    "id": 32,
+    "name": "Upala",
+    "weight": "14051.41"
+  },
+  "33": {
+    "id": 33,
+    "name": "Bloom Network",
+    "weight": "0.0"
+  },
+  "34": {
+    "id": 34,
+    "name": "Handshake Development Fund",
+    "weight": "0.0"
   }
 };
 
@@ -269,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'November 23';
+const stakingTotalsUpdated = 'November 24';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
