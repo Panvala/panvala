@@ -136,6 +136,12 @@ const panvalaLeagueCommunities = [{
 }, {
   name: "Upala",
   img: "upala.png",
+}, {
+  name: "Bloom Network",
+  img: "bloomnetwork.jpg",
+}, {
+  name: "Handshake Development Fund",
+  img: "handshakedevelopmentfund.png",
 }];
 
 const useStyles = makeStyles((theme) => ({
@@ -204,7 +210,7 @@ export default function Index() {
                   <Legend />
                   <Bar dataKey="leagueValue" name="Panvala League" fill="#2138b7" />
                   <Bar dataKey="fullValue" name="Full Treasury" fill="#46b0aa" />
-                </BarChart> 
+                </BarChart>
               </ResponsiveContainer>
             </div>
             <Typography variant="caption" display="block">
@@ -224,7 +230,7 @@ export default function Index() {
                   <Legend />
                   <Bar dataKey="leagueDonations" name="Panvala League" fill="#2138b7" />
                   <Bar dataKey="fullDonations" name="Full Treasury" fill="#46b0aa" />
-                </BarChart> 
+                </BarChart>
               </ResponsiveContainer>
             </div>
             <Typography variant="caption" display="block">
@@ -240,7 +246,7 @@ export default function Index() {
                 <PieChart>
                   <Pie data={fundingAllocations} dataKey="funding" fill="#46b0aa" />
                   <Tooltip />
-                </PieChart> 
+                </PieChart>
               </ResponsiveContainer>
             </div>
             <Typography variant="caption" display="block">
@@ -260,9 +266,9 @@ export default function Index() {
                   <Legend />
                   <Line type="monotone" dataKey="leagueMultiplier" name="Panvala League" stroke="#2138b7" />
                   <Line type="monotone" dataKey="fullMultiplier" name="Full Treasury" stroke="#46b0aa" />
-                </LineChart> 
+                </LineChart>
               </ResponsiveContainer>
-            </div> 
+            </div>
           </Paper>
         </Grid>
         <Grid item sm={12}>
