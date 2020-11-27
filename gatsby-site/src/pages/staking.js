@@ -229,7 +229,7 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "204056.451150695254506652"
+    "weight": "104045.6759111879817"
   },
   "13": {
     "id": 13,
@@ -284,7 +284,7 @@ const stakingResults = {
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "0.0"
+    "weight": "100010.775239507272806652"
   },
   "24": {
     "id": 24,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'November 24';
+const stakingTotalsUpdated = 'November 26';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
