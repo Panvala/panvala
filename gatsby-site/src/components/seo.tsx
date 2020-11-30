@@ -73,6 +73,18 @@ function SEO({ description, lang, meta, title }) {
       </script>
       {/* <!-- End Google Tag Manager --> */}
 
+      <script>
+        {`
+          (function () {
+            window.eventCalId=7238;
+            var integrationScript = document.createElement("script");
+            integrationScript.async = 1;
+            integrationScript.setAttribute("src", "https://api.eventcalendarapp.com/integration-script.js");
+            document.head.appendChild(integrationScript);
+          })();
+        `}
+      </script>
+
       {/*
       <script type="text/javascript">
         {process.env.NODE_ENV === 'production' &&

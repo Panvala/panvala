@@ -48,6 +48,12 @@ export default function Nav({ account, balance, handleClick }: Props) {
             Handbook
           </a>
           <a
+            href="/events"
+            className="link dim white-60 f6 fw6 dib mr3"
+          >
+            Events
+          </a>
+          <a
             href="https://forum.panvala.com"
             target="_blank"
             rel="noopener noreferrer"
