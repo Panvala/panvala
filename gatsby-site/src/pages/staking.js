@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1684481.242590724928505164"
+    "weight": "1669759.562590724928505164"
   },
   "9": {
     "id": 9,
@@ -234,7 +234,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "137092.522866444238148385"
+    "weight": "716929.210688984453621069"
   },
   "14": {
     "id": 14,
@@ -309,12 +309,12 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "0.0"
+    "weight": "2004.341224273182623636"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "0.0"
+    "weight": "51053.759449251957"
   },
   "30": {
     "id": 30,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'November 26';
+const stakingTotalsUpdated = 'November 29';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
