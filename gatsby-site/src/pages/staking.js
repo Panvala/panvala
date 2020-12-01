@@ -214,7 +214,7 @@ const stakingResults = {
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1006803.38924574393757"
+    "weight": "996541.84924574393757"
   },
   "10": {
     "id": 10,
@@ -249,7 +249,7 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "31572.209172500667596587"
+    "weight": "139572.209172500667596587"
   },
   "17": {
     "id": 17,
@@ -289,7 +289,7 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "0.0"
+    "weight": "10261.54"
   },
   "25": {
     "id": 25,
