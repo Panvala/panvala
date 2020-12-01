@@ -279,7 +279,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "0.0"
+    "weight": "20000.083257251679836965"
   },
   "23": {
     "id": 23,
@@ -324,7 +324,7 @@ const stakingResults = {
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "0.0"
+    "weight": "190.0"
   },
   "32": {
     "id": 32,
