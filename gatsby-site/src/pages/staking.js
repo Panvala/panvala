@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2016879.405379425375921781"
+    "weight": "1542093.017617782761855177"
   },
   "9": {
     "id": 9,
@@ -234,12 +234,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "716929.210688984453621069"
+    "weight": "720779.210688984453621069"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "10710.138100989213002666"
+    "weight": "78126.326803053058856922"
   },
   "15": {
     "id": 15,
@@ -269,12 +269,12 @@ const stakingResults = {
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "7098.788601574700481769"
+    "weight": "7111.425598601304883036"
   },
   "21": {
     "id": 21,
     "name": "DeFi Safety",
-    "weight": "7077.960241237647104977"
+    "weight": "7427.960241237647104977"
   },
   "22": {
     "id": 22,
@@ -294,7 +294,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "335369.49681341787523486"
+    "weight": "335265.89870141787523486"
   },
   "26": {
     "id": 26,
@@ -324,7 +324,7 @@ const stakingResults = {
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "190.0"
+    "weight": "678.295954064560612162"
   },
   "32": {
     "id": 32,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'November 30';
+const stakingTotalsUpdated = 'December 1';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
