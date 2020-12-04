@@ -214,12 +214,12 @@ const stakingResults = {
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "996541.84924574393757"
+    "weight": "996622.59924574393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "180695.6185411058767005"
+    "weight": "180776.3685411058767005"
   },
   "11": {
     "id": 11,
@@ -234,7 +234,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "720779.210688984453621069"
+    "weight": "720894.980688984453621069"
   },
   "14": {
     "id": 14,
@@ -249,12 +249,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "139472.209172500667596587"
+    "weight": "142477.569859846665296587"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "71945.929395820546218758"
+    "weight": "101250.197395820546218758"
   },
   "18": {
     "id": 18,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 3';
+const stakingTotalsUpdated = 'December 4';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
