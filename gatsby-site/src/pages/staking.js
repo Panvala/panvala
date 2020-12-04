@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1542093.017617782761855177"
+    "weight": "1492093.017617782761855177"
   },
   "9": {
     "id": 9,
@@ -229,7 +229,7 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "104045.6759111879817"
+    "weight": "54045.6759111879817"
   },
   "13": {
     "id": 13,
@@ -249,12 +249,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "139572.209172500667596587"
+    "weight": "139472.209172500667596587"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "102250.197395820546218758"
+    "weight": "71945.929395820546218758"
   },
   "18": {
     "id": 18,
@@ -279,7 +279,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "20000.083257251679836965"
+    "weight": "22481.859466173807534485"
   },
   "23": {
     "id": 23,
@@ -324,7 +324,7 @@ const stakingResults = {
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "678.295954064560612162"
+    "weight": "1663.931054905531999947"
   },
   "32": {
     "id": 32,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 1';
+const stakingTotalsUpdated = 'December 3';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
