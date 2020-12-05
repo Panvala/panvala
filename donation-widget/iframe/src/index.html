@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+    <title>Donate</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="boot-loader-container" class="flex">
+      <div id="boot-loader"></div>
+    </div>
+
+    <form class="flex-col items-center hidden relative">
+      <div id="close">✕</div>
+      <p id="address" class="hidden">Connected as <span>x</span></p>
+      <select name="asset">
+        <option>Asset:</option>
+        <option value="ETH">Ethereum (ETH)</option>
+        <option value="DAI">Dai (DAI)</option>
+        <option value="PAN">Panvala (PAN)</option>
+      </select>
+
+      <input name="amount" step="any" type="number" placeholder="Amount" />
+
+      <button type="submit">Connect Wallet</button>
+    </form>
+
+    <div class="flex flex-col notification hidden">
+      <div>Thank you!</div>
+      <div class="text-xs">Waiting for transaction to be mined..</div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
