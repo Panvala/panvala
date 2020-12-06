@@ -1,11 +1,15 @@
-import Debug from 'debug';
+export default debug('panvala:iframe', 'rgb(243, 132, 30)');
 
-const debug = Debug('panvala:iframe');
-debug.enabled = 'localhost' === window.location.hostname;
-try {
-  debug.enabled =
-    debug.enabled ||
-    (window.localStorage && window.localStorage.getItem('DEBUG')) === '1';
-} catch (e) {}
+function debug(scope, color) {
+  let enabled = 'localhost' === window.location.hostname;
+  try {
+    enabled ||
+      (window.localStorage && window.localStorage.getItem('DEBUG')) === '1';
+  } catch (e) {}
 
-export default debug;
+  if (!enabled) return function() {};
+
+  return function(s, ...args) {
+    console.log(`%c ${scope} ${s}`, `color: ${color}`, ...args);
+  };
+}

@@ -4,6 +4,8 @@
 
 :root {
   --primary-color: #46b0aa;
+  --dark-color: #248e88;
+  --light-color: #bff1ee;
   --radius: 8px;
 }
 
@@ -14,7 +16,7 @@ body {
 button,
 button:after,
 button:before {
-  background-color: #bff1ee;
+  background-color: var(--light-color);
 }
 
 button:before {
@@ -40,7 +42,7 @@ button:after {
 }
 
 button {
-  color: #248e88;
+  color: var(--dark-color);
   position: relative;
   margin: 0 20px;
   width: 150px;
@@ -64,8 +66,8 @@ button:hover {
 }
 
 .notification.success {
-  background-color: #bff1ee;
-  color: #248e88;
+  background-color: var(--light-color);
+  color: var(--dark-color);
 }
 
 .notification.error {

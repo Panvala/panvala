@@ -85,7 +85,7 @@ function showExampleCode() {
   const button = document.getElementById('donation-button');
   button.onclick = function() {
     const closeModal = window.panvala({
-      to: '0x',
+      to: '0x..',
       defaultAsset: 'ETH',
       defaultAmount: 1,
       onDonate(transactionHash) {
