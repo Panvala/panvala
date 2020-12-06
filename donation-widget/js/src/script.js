@@ -234,7 +234,7 @@ class Donate {
   }
 }
 
-window.panvala = window.panvala = options => {
+window.panvala = function(options) {
   debug('donate');
   const donate = new Donate(options);
   return () => donate.onClose.call(donate);

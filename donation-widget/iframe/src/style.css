@@ -24,6 +24,7 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1;
+  font-family: 'Work Sans', sans-serif;
 }
 
 #root {
