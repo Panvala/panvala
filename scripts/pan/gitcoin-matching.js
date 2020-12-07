@@ -7,6 +7,7 @@ const stringify = require('csv-stringify/lib/sync');
 
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
+const DONATIONS_STARTED_AT = Date.parse('2020-12-01');
 const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
 const ZKSYNC_ADDRESSES = new Set([
   '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF',
@@ -17,6 +18,7 @@ const IGNORED_ADDRESSES = new Set([
   '0x1b21609D42fa32F371F58DF294eD25b2D2e5C8ba', // Uniswap v2
   '0x6F400810b62df8E13fded51bE75fF5393eaa841F', // dFusion
   '0x11111254369792b2Ca5d084aB5eEA397cA8fa48B', // 1inch.exchange
+  '0x1c5b75Aa581b3DbBF3E5Fd2A76D9c40dbb4ABa55', // TREERewards
 ]);
 const IGNORED_SENDERS = new Set([
   ...ZKSYNC_ADDRESSES,
@@ -39,12 +41,20 @@ const ENS_ADDRESSES = {
   'daiparaprincipiantes.eth': '0x333E08D7C12ABf223789dC00305C4FE3e8B4b956',
   'specie.eth': '0x32672af4edc13cf1ab5dab6c5cda5df71ad35951',
   'nazariy.eth': '0xE73E7eEfDacc89069DE5B7757830FcF1D7DdAcD2',
-  '1HNa1bzkViHVkCnhYzHyB8r1eurbbCsTAS': '0x0',
+  '1HNa1bzkViHVkCnhYzHyB8r1eurbbCsTAS': '0x0000000000000000000000000000000000000000',
   'eth:0x03add42d442ae2ab4a763c28e5ae1bc016840a12': '0x03add42d442ae2ab4a763c28e5ae1bc016840a12',
   'etherchest.eth': '0x007e60C669cf96dC32655d1Eb1c1eBcf96459975',
   'tomotouch.eth': '0xA211e2FCbae4f3D5d0f74e7156cdbA795fEc2EE7',
-  '@enzosumo': '0x0',
+  '@enzosumo': '0x0000000000000000000000000000000000000000',
   ' 0xEbC1209aB9D75e64615601D0554fa443D24494Fe': '0xEbC1209aB9D75e64615601D0554fa443D24494Fe',
+  '0x0': '0x0000000000000000000000000000000000000000',
+  '': '0x0000000000000000000000000000000000000000',
+  '1x1': '0x0000000000000000000000000000000000000000',
+  null: '0x0000000000000000000000000000000000000000',
+  'ryanb.eth': '0x56329ACd726a373177f8Bf2f94Ca601C0BB3C4FA',
+  ' 0x93f3f612a525a59523e91cc5552f718df9fc0746': '0x93f3f612a525a59523e91cc5552f718df9fc0746',
+  'deffo.xyz': '0x0000000000000000000000000000000000000000',
+  'jabyl.eth': '0x207ac8e8b2Db9BeC1B53176f26fC16c349363309',
 };
 
 const LEAGUE_ADDRESSES = {
@@ -58,6 +68,8 @@ const LEAGUE_ADDRESSES = {
   "future modern": "0x5ab45FB874701d910140e58EA62518566709c408",
   "DePo DAO": "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
 }
+
+const seenTxhashes = new Set();
 
 run();
 
@@ -173,6 +185,10 @@ async function fetchZksyncPages(address, olderThan = null) {
   }).then(response => {
     if (response.status === 200) {
       if (response.data.length >= 100) {
+        if (!response.data[response.data.length - 1].success) {
+          console.log(`WARNING ${address}: Tried to paginate off of a failed transaction, which does not work. Some transactions might have been missed`)
+          return response.data;
+        }
         return fetchZksyncPages(address, response.data[response.data.length - 1].tx_id)
           .then(morePages => response.data.concat(morePages));
       } else {
@@ -184,9 +200,8 @@ async function fetchZksyncPages(address, olderThan = null) {
   });
 }
 
-async function getZksyncTransactions(addresses) {
-  const seenTxhashes = new Set();
-  const transactions = await addresses.reduce((accumulatorPromise, address) => {
+async function getZksyncTransactionsInOrder(addresses) {
+  return addresses.reduce((accumulatorPromise, address) => {
     return accumulatorPromise.then(accumulator => {
       return fetchZksyncPages(address).then(transactions => {
         // For zkSync, we assume that each token transfer has a unique hash. Note that this is NOT true for mainnet transactions.
@@ -199,7 +214,28 @@ async function getZksyncTransactions(addresses) {
       });
     });
   }, Promise.resolve([]));
-  const panTransactions = transactions.filter(x => x.tx.token === 'PAN');
+}
+
+async function getZksyncTransactionsInParallel(addresses, count = 20) {
+  const batches = [];
+  for (let i = 0; i < count; i++) {
+    batches.push([]);
+  };
+  addresses.forEach((address, i) => batches[i % count].push(address));
+  return (await Promise.all(batches.map(batch => getZksyncTransactionsInOrder(batch)))).flat();
+}
+
+
+async function getZksyncTransactions(addresses) {
+  const transactions = await getZksyncTransactionsInParallel(addresses);
+  const panTransactions = transactions.filter(x => {
+    if (!x.tx) {
+      console.log(x);
+    }
+    return x.tx.token === 'PAN'
+      && x.tx.type !== 'ForcedExit'
+      && Date.parse(x.tx.created_at) > DONATIONS_STARTED_AT;
+  });
   return panTransactions.map(transaction => {
     return {
       'Txhash': transaction['hash'],
@@ -270,6 +306,7 @@ function calculateMatching(grants) {
 async function run() {
   const grantNames = await getGrantAddresses();
   const mainnetTransactions = await getTransactions();
+  /*
   const zksyncAddresses = mainnetTransactions.reduce((acc, tx) => {
     if (ZKSYNC_ADDRESSES.has(ethers.utils.getAddress(tx['To']))) {
       acc.add(ethers.utils.getAddress(tx['From']));
@@ -277,6 +314,8 @@ async function run() {
     return acc;
   }, new Set());
   console.log('zkSync users', zksyncAddresses);
+  */
+ const zksyncAddresses = Object.keys(grantNames);
   const zksyncTransactions = await getZksyncTransactions(
     Array.from(zksyncAddresses.values())
       .concat(Object.values(LEAGUE_ADDRESSES))
