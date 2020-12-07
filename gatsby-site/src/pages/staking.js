@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1331493.408336401397587282"
+    "weight": "1331293.408336401397587282"
   },
   "9": {
     "id": 9,
@@ -219,7 +219,7 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "180826.3685411058767005"
+    "weight": "384478.993593871985520403"
   },
   "11": {
     "id": 11,
@@ -234,7 +234,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "720982.780688984453621069"
+    "weight": "720988.500688984453621069"
   },
   "14": {
     "id": 14,
@@ -249,7 +249,7 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "8991.419846457406628816"
+    "weight": "10991.419846457406628816"
   },
   "17": {
     "id": 17,
@@ -294,7 +294,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "335265.89870141787523486"
+    "weight": "334469.49681341787523486"
   },
   "26": {
     "id": 26,
@@ -314,12 +314,12 @@ const stakingResults = {
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "51053.759449251957"
+    "weight": "55250.184741011610350476"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "41497.208149647479986422"
+    "weight": "41597.208149647479986422"
   },
   "31": {
     "id": 31,
@@ -334,12 +334,12 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "0.0"
+    "weight": "304.533275651817712042"
   },
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "0.0"
+    "weight": "9408.987297159739132967"
   }
 };
 
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 6';
+const stakingTotalsUpdated = 'December 7';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
