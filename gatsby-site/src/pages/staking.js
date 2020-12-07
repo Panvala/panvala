@@ -209,22 +209,22 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1492093.017617782761855177"
+    "weight": "1331493.408336401397587282"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "996622.59924574393757"
+    "weight": "996651.09924574393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "180776.3685411058767005"
+    "weight": "180826.3685411058767005"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "205180.809210689795020246"
+    "weight": "205209.309210689795020246"
   },
   "12": {
     "id": 12,
@@ -234,7 +234,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "720894.980688984453621069"
+    "weight": "720982.780688984453621069"
   },
   "14": {
     "id": 14,
@@ -249,12 +249,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "142477.569859846665296587"
+    "weight": "8991.419846457406628816"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "101250.197395820546218758"
+    "weight": "234736.347409209804886529"
   },
   "18": {
     "id": 18,
@@ -319,12 +319,12 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "41447.208149647479986422"
+    "weight": "41497.208149647479986422"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "1663.931054905531999947"
+    "weight": "4924.719792400187786784"
   },
   "32": {
     "id": 32,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 4';
+const stakingTotalsUpdated = 'December 6';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
