@@ -11,3 +11,8 @@ build/
 # solidity-coverage artifacts
 coverage/
 coverage.json
+
+# Panvala/pavala-subgraph
+node_modules
+build
+generated

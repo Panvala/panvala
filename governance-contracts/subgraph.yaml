@@ -1,0 +1,168 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: BasicToken
+    network: mainnet
+    source:
+      address: "0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44"
+      abi: BasicToken
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - Transfer
+      abis:
+        - name: BasicToken
+          file: ./abis/BasicToken.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Gatekeeper
+    network: mainnet
+    source:
+      address: "0x21C3FAc9b5bF2738909C32ce8e086C2A5e6F5711"
+      abi: Gatekeeper
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - BallotCommitted
+        - BallotRevealed
+        - ContestAutomaticallyFinalized
+        - ContestFinalizedWithoutWinner
+        - PermissionRequested
+        - RunoffFinalized
+        - SlateCreated
+        - SlateStaked
+        - StakeWithdrawn
+        - VoteFailed
+        - VoteFinalized
+        - VotingRightsDelegated
+        - VotingTokensDeposited
+        - VotingTokensWithdrawn
+      abis:
+        - name: Gatekeeper
+          file: ./abis/Gatekeeper.json
+      eventHandlers:
+        - event: BallotCommitted(indexed uint256,indexed address,indexed address,uint256,bytes32)
+          handler: handleBallotCommitted
+        - event: BallotRevealed(indexed uint256,indexed address,uint256)
+          handler: handleBallotRevealed
+        - event: ContestAutomaticallyFinalized(indexed uint256,indexed address,uint256)
+          handler: handleBallotRevealed
+        - event: ContestFinalizedWithoutWinner(indexed uint256,indexed address)
+          handler: handleContestFinalizedWithoutWinner
+        - event: PermissionRequested(indexed uint256,indexed address,uint256,bytes)
+          handler: handlePermissionRequested
+        - event: RunoffFinalized(indexed uint256,indexed address,uint256,uint256,uint256,uint256)
+          handler: handleRunoffFinalized
+        - event: SlateCreated(uint256,indexed address,uint256[],bytes)
+          handler: handleSlateCreated
+        - event: SlateStaked(uint256,indexed address,uint256)
+          handler: handleSlateStaked
+        - event: StakeWithdrawn(uint256,indexed address,uint256)
+          handler: handleStakeWithdrawn
+        - event: VoteFailed(indexed uint256,indexed address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleVoteFailed
+        - event: VoteFinalized(indexed uint256,indexed address,uint256,uint256,uint256)
+          handler: handleVoteFinalized
+        - event: VotingRightsDelegated(indexed address,address)
+          handler: handleVotingRightsDelegated
+        - event: VotingTokensDeposited(indexed address,uint256)
+          handler: handleVotingTokensDeposited
+        - event: VotingTokensWithdrawn(indexed address,uint256)
+          handler: handleVotingTokensWithdrawn
+      file: ./src/gatekeeper_mapping.ts
+  - kind: ethereum/contract
+    name: TokenCapacitor
+    network: mainnet
+    source:
+      address: "0x9a7B675619d3633304134155c6c976E9b4c1cfB3"
+      abi: TokenCapacitor
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - BalancesUpdated
+        - Donation
+        - ProposalCreated
+        - TokensWithdrawn
+      abis:
+        - name: TokenCapacitor
+          file: ./abis/TokenCapacitor.json
+      eventHandlers:
+        - event: BalancesUpdated(uint256,uint256,uint256,uint256)
+          handler: handleBalancesUpdated
+        - event: Donation(indexed address,indexed address,uint256,bytes)
+          handler: handleDonation
+        - event: ProposalCreated(uint256,indexed address,uint256,indexed address,uint256,bytes)
+          handler: handleProposalCreated
+        - event: TokensWithdrawn(uint256,indexed address,uint256)
+          handler: handleTokensWithdrawn
+      file: ./src/tokenCapacitor_mapping.ts
+  - kind: ethereum/contract
+    name: ReservedTokenCapacitor
+    network: mainnet
+    source:
+      address: "0x171dcDE3AC66a6DbED0FaC5e1d53132145520302"
+      abi: ReservedTokenCapacitor
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - BalancesUpdated
+        - Donation
+        - ProposalCreated
+        - TokensWithdrawn
+      abis:
+        - name: ReservedTokenCapacitor
+          file: ./abis/ReservedTokenCapacitor.json
+      eventHandlers:
+        - event: BalancesUpdated(uint256,uint256,uint256,uint256)
+          handler: handleReservedBalancesUpdated
+        - event: Donation(indexed address,indexed address,uint256,bytes)
+          handler: handleReservedDonation
+        - event: ProposalCreated(uint256,indexed address,uint256,indexed address,uint256,bytes)
+          handler: handleReservedProposalCreated
+        - event: TokensWithdrawn(uint256,indexed address,uint256)
+          handler: handleReservedTokensWithdrawn
+      file: ./src/reservedTokenCapacitor_mapping.ts
+  - kind: ethereum/contract
+    name: ParameterStore
+    network: mainnet
+    source:
+      address: "0x6a43334331dc689318Af551b0CFD624a8B11A70B"
+      abi: ParameterStore
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Initialized
+        - ParameterSet
+        - ProposalAccepted
+        - ProposalCreated
+      abis:
+        - name: ParameterStore
+          file: ./abis/ParameterStore.json
+      eventHandlers:
+        - event: Initialized()
+          handler: handleInitialized
+        - event: ParameterSet(string,bytes32,bytes32)
+          handler: handleParameterSet
+        - event: ProposalAccepted(uint256,string,bytes32)
+          handler: handleProposalAccepted
+        - event: ProposalCreated(uint256,indexed address,uint256,string,bytes32,bytes)
+          handler: handleParameterProposalCreated
+      file: ./src/parameter_mapping.ts

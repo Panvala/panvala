@@ -1,0 +1,630 @@
+[
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "getWinningSlate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "numTokens", "type": "uint256" }],
+    "name": "depositVoteTokens",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "slateID", "type": "uint256" }],
+    "name": "slateRequests",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "numTokens", "type": "uint256" }],
+    "name": "withdrawVoteTokens",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "slateID", "type": "uint256" }],
+    "name": "withdrawStake",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "contestSlates",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "address", "name": "_delegate", "type": "address" }],
+    "name": "delegateVotingRights",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" },
+      { "internalType": "uint256", "name": "slateID", "type": "uint256" }
+    ],
+    "name": "getFirstChoiceVotes",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "bytes", "name": "metadataHash", "type": "bytes" }],
+    "name": "requestPermission",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "finalizeContest",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "voteTokenBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" },
+      { "internalType": "uint256", "name": "startIndex", "type": "uint256" },
+      { "internalType": "uint256", "name": "count", "type": "uint256" }
+    ],
+    "name": "donateChallengerStakes",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address", "name": "voter", "type": "address" },
+      { "internalType": "bytes32", "name": "commitHash", "type": "bytes32" },
+      { "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "commitBallot",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address", "name": "resource", "type": "address" },
+      { "internalType": "uint256[]", "name": "requestIDs", "type": "uint256[]" },
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "recommendSlate",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "voter", "type": "address" }
+    ],
+    "name": "didCommit",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "voter", "type": "address" },
+      { "internalType": "address[]", "name": "resources", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "firstChoices", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "secondChoices", "type": "uint256[]" },
+      { "internalType": "uint256", "name": "salt", "type": "uint256" }
+    ],
+    "name": "revealBallot",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "requestCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "delegate",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "ballots",
+    "outputs": [{ "internalType": "bool", "name": "created", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" },
+      { "internalType": "uint256", "name": "slateID", "type": "uint256" }
+    ],
+    "name": "getSecondChoiceVotes",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "currentEpochNumber",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "slateID", "type": "uint256" }],
+    "name": "stakeTokens",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "startTime",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "voter", "type": "address" }
+    ],
+    "name": "didReveal",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "COMMIT_PERIOD_START",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "requests",
+    "outputs": [
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" },
+      { "internalType": "address", "name": "resource", "type": "address" },
+      { "internalType": "bool", "name": "approved", "type": "bool" },
+      { "internalType": "uint256", "name": "expirationTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "voter", "type": "address" }
+    ],
+    "name": "getCommitHash",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "parameters",
+    "outputs": [{ "internalType": "contract ParameterStore", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "slateCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "REVEAL_PERIOD_START",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "address", "name": "resource", "type": "address" }],
+    "name": "slateSubmissionPeriodActive",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "slateSubmissionDeadline",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "contestDetails",
+    "outputs": [
+      { "internalType": "enum Gatekeeper.ContestStatus", "name": "status", "type": "uint8" },
+      { "internalType": "uint256[]", "name": "allSlates", "type": "uint256[]" },
+      { "internalType": "uint256[]", "name": "stakedSlates", "type": "uint256[]" },
+      { "internalType": "uint256", "name": "lastStaked", "type": "uint256" },
+      { "internalType": "uint256", "name": "voteWinner", "type": "uint256" },
+      { "internalType": "uint256", "name": "voteRunnerUp", "type": "uint256" },
+      { "internalType": "uint256", "name": "winner", "type": "uint256" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "epoch", "type": "uint256" }],
+    "name": "epochStart",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "EPOCH_LENGTH",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "contestStatus",
+    "outputs": [{ "internalType": "enum Gatekeeper.ContestStatus", "name": "", "type": "uint8" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "requestID", "type": "uint256" }],
+    "name": "hasPermission",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address[]", "name": "_voters", "type": "address[]" },
+      { "internalType": "bytes[]", "name": "_ballots", "type": "bytes[]" },
+      { "internalType": "uint256[]", "name": "_salts", "type": "uint256[]" }
+    ],
+    "name": "revealManyBallots",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "incumbent",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "SLATE_SUBMISSION_PERIOD_START",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "isCurrentGatekeeper",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "token",
+    "outputs": [{ "internalType": "contract IERC20", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "slates",
+    "outputs": [
+      { "internalType": "address", "name": "recommender", "type": "address" },
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" },
+      { "internalType": "enum Gatekeeper.SlateStatus", "name": "status", "type": "uint8" },
+      { "internalType": "address", "name": "staker", "type": "address" },
+      { "internalType": "uint256", "name": "stake", "type": "uint256" },
+      { "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_startTime", "type": "uint256" },
+      { "internalType": "contract ParameterStore", "name": "_parameters", "type": "address" },
+      { "internalType": "contract IERC20", "name": "_token", "type": "address" }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "requestID", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "PermissionRequested",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "slateID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "recommender", "type": "address" },
+      { "indexed": false, "internalType": "uint256[]", "name": "requestIDs", "type": "uint256[]" },
+      { "indexed": false, "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "SlateCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "slateID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "staker", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "SlateStaked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "VotingTokensDeposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "VotingTokensWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": false, "internalType": "address", "name": "delegate", "type": "address" }
+    ],
+    "name": "VotingRightsDelegated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "committer", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32", "name": "commitHash", "type": "bytes32" }
+    ],
+    "name": "BallotCommitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "voter", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "BallotRevealed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "winningSlate", "type": "uint256" }
+    ],
+    "name": "ContestAutomaticallyFinalized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" }
+    ],
+    "name": "ContestFinalizedWithoutWinner",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "winningSlate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "winnerVotes", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "totalVotes", "type": "uint256" }
+    ],
+    "name": "VoteFinalized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "leadingSlate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "leaderVotes", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "runnerUpSlate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "runnerUpVotes", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "totalVotes", "type": "uint256" }
+    ],
+    "name": "VoteFailed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "uint256", "name": "epochNumber", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "resource", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "winningSlate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "winnerVotes", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "losingSlate", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "loserVotes", "type": "uint256" }
+    ],
+    "name": "RunoffFinalized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "slateID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "staker", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "StakeWithdrawn",
+    "type": "event"
+  }
+]
