@@ -1,3 +1,6 @@
+import { BigInt, BigDecimal } from '@graphprotocol/graph-ts';
+import { ByteArray } from '@graphprotocol/graph-ts';
+
 import {
   BallotCommitted as BallotCommittedEvent,
   BallotRevealed as BallotRevealedEvent,
@@ -56,18 +59,6 @@ export function handleBallotRevealed(event: BallotRevealedEvent): void {
   ballot.save();
 }
 
-export function handleContestAutomaticallyFinalized(
-  event: ContestAutomaticallyFinalizedEvent
-): void {
-  let contest = new ContestAutomaticallyFinalized(
-    event.transaction.hash.toHex() + '-' + event.logIndex.toString()
-  );
-
-  contest.epochNumber = event.params.epochNumber;
-  contest.resource = event.params.resource;
-  contest.winningSlate = event.params.winningSlate;
-  contest.save();
-}
 
 export function handleContestAutomaticallyFinalized(
   event: ContestAutomaticallyFinalizedEvent
@@ -115,17 +106,17 @@ export function handleRunoffFinalized(event: RunoffFinalizedEvent): void {
   runoff.resource = event.params.resource;
   runoff.winningSlate = event.params.winningSlate;
   runoff.losingSlate = event.params.losingSlate;
-  runoff.losingVotes = event.params.losingVotes;
+  runoff.loserVotes = event.params.loserVotes;
   runoff.save();
 }
 
-export function handleSlateCreated(event: SlateCreatedEvent): void {
-  let slate = new SlateCreated(event.transaction.hash.toHex() + '-' + event.logIndex.toString());
-
-  slate.slateID = event.params.slateID;
-  slate.recommender = event.params.recommender;
-  slate.requestIDs = event.params.requestIDs;
-  slate.save();
+export function handleSlateCreated(call: SlateCreatedEvent): void {
+  let id = call.transaction.hash.toHex();
+  let slate = new SlateCreated(id)
+  slate.slateID = call.params.slateID;
+  slate.recommender = call.params.recommender;
+  slate.requestIDs = call.params.requestIDs;
+  slate.save()
 }
 
 export function handleStakeWithdrawn(event: StakeWithdrawnEvent): void {

@@ -56,16 +56,16 @@ type RunoffFinalized @entity {
   winningSlate: BigInt! # unit256
   winnerVotes: BigInt! # unit256
   losingSlate: BigInt! # unit256
-  losingVotes: BigInt! # unit256
+  loserVotes: BigInt! # unit256
 }
 
 type SlateCreated @entity {
   id: ID!
   slateID: BigInt! # unit256
   recommender: Bytes! # address
-  requestIDs: [BigInt]! #uint256[]
+  requestIDs: [BigInt!]! # unit256[]
 }
-
+ 
 type SlateStaked @entity {
   id: ID!
   slateID: BigInt! # unit256

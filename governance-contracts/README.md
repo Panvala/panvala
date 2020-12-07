@@ -39,5 +39,9 @@ yarn build
 Deploy Panvala Subgraph
 
 ```
-graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ panvala/panvala-subgraph --access-token <token> 
+graph deploy \              
+    --debug \
+    --node https://api.thegraph.com/deploy/ \
+    --ipfs https://api.thegraph.com/ipfs/ \
+    panvala/panvala-subgraph --access-token <access-token>
 ```

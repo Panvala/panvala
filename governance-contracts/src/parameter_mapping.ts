@@ -1,7 +1,7 @@
 import {
   ParameterSet as ParameterSetEvent,
   ProposalAccepted as ProposalAcceptedEvent,
-  ParameterProposalCreated as ParameterProposalCreatedEvent,
+  ProposalCreated as ParameterProposalCreatedEvent,
 } from '../generated/ParameterStore/ParameterStore';
 
 import { ParameterSet, ProposalAccepted, ParameterProposalCreated } from '../generated/schema';

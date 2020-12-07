@@ -157,8 +157,6 @@ dataSources:
         - name: ParameterStore
           file: ./abis/ParameterStore.json
       eventHandlers:
-        - event: Initialized()
-          handler: handleInitialized
         - event: ParameterSet(string,bytes32,bytes32)
           handler: handleParameterSet
         - event: ProposalAccepted(uint256,string,bytes32)
