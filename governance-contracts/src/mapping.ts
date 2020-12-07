@@ -1,12 +1,6 @@
 
 import { Approval as ApprovalEvent, Transfer as TransferEvent } from "../generated/BasicToken/BasicToken";
 
-import {
-  Approval as ApprovalEvent,
-  Transfer as TransferEvent
-} from '../generated/BaiscToken/BasicToken';
-
-
 import { 
   Approval,
   Transfer,
