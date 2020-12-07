@@ -22,3 +22,22 @@ Compile contracts and run tests (you must have an Ethereum node running).
 ```
 yarn test
 ```
+
+# Usage SubGraph
+
+Compile SubGraph
+```
+yarn codegen
+```
+
+Build Subgraph
+
+```
+yarn build
+```
+
+Deploy Panvala Subgraph
+
+```
+graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ panvala/panvala-subgraph --access-token <token> 
+```
