@@ -23,19 +23,58 @@ class Donate {
     this.createIframe();
   }
 
-  validateOptions({ to, defaultAmount, defaultAsset }) {
+  handleMessages() {
+    if (window.addEventListener) {
+      window.addEventListener('message', this.handleMessage, false);
+    } else {
+      window.attachEvent('onmessage', this.handleMessage);
+    }
+  }
+
+  close() {
+    if (window.removeEventListener) {
+      window.removeEventListener('message', this.handleMessage, false);
+    } else {
+      window.detachEvent('onmessage', this.handleMessage);
+    }
+
+    document.body.removeChild(this.iframe);
+  }
+
+  handleMessageBound(evt) {
+    let msg;
+    try {
+      msg = JSON.parse(evt.data);
+    } catch {
+      return;
+    }
+    debug('msg: %s', msg.sid);
+    if (parseInt(msg.sid) !== parseInt(this.sid)) {
+      return debug('ignoring msg(%s) self(%s)', msg.sid, this.sid);
+    }
+    debug('msg %o', msg);
+    const meth = _camelCase('on-' + msg.type);
+    if (!this[meth]) return debug('unknown msg type %s', meth);
+    this[meth](msg.sid, msg.payload);
+  }
+
+  postMessageToIframe(sid, type, payload = {}) {
+    this.iframe.contentWindow.postMessage(
+      JSON.stringify({ type, payload, sid }),
+      IFRAME_HOST
+    );
+  }
+
+  validateOptions({ to, defaultUSDAmount }) {
     // todo: validate `to` address
 
-    // todo: validate `asset`
-
-    // validate `amount`
-    defaultAmount = Number(defaultAmount);
-    if (defaultAmount <= 0) throw new Error('invalid amount');
+    // validate `defaultUSDAmount`
+    defaultUSDAmount = Number(defaultUSDAmount);
+    if (defaultUSDAmount <= 0) throw new Error('invalid default usd amount');
 
     return {
       to,
-      defaultAmount,
-      defaultAsset,
+      defaultUSDAmount,
     };
   }
 
@@ -81,18 +120,14 @@ class Donate {
     this.iframe.style.display = show ? 'flex' : 'none';
   }
 
-  onClose() {
-    if (window.removeEventListener) {
-      window.removeEventListener('message', this.handleMessage, false);
-    } else {
-      window.detachEvent('onmessage', this.handleMessage);
-    }
+  // events from js
 
-    document.body.removeChild(this.iframe);
+  onError(sid, payload) {
+    this.options.onError(new Error(payload));
   }
 
   onCancel() {
-    this.onClose();
+    this.close();
     this.options.onCancel && this.options.onCancel();
   }
 
@@ -158,7 +193,7 @@ class Donate {
         );
         transaction = await contract.transfer(to, value);
       }
-      this.postMessageToIframe(sid, 'sent', {
+      this.postMessageToIframe(sid, 'send', {
         transactionHash: transaction.hash,
       });
     } catch (err) {
@@ -171,71 +206,17 @@ class Donate {
     }
   }
 
-  handleMessages() {
-    if (window.addEventListener) {
-      window.addEventListener('message', this.handleMessage, false);
+  onComplete(sid, { transactionHash }) {
+    if (this.options.onDonate) {
+      this.options.onDonate(transactionHash);
     } else {
-      window.attachEvent('onmessage', this.handleMessage);
+      this.close();
     }
-  }
-
-  handleMessageBound(evt) {
-    let msg;
-    try {
-      msg = JSON.parse(evt.data);
-    } catch {
-      return;
-    }
-    debug('msg: %s', msg.sid);
-    if (parseInt(msg.sid) !== parseInt(this.sid)) {
-      return debug('ignoring msg(%s) self(%s)', msg.sid, this.sid);
-    }
-    debug('msg %o', msg);
-    switch (msg.type) {
-      case 'error': {
-        this.options.onError(new Error(msg.payload));
-        break;
-      }
-
-      case 'connect-wallet': {
-        this.onConnectWallet(msg.sid);
-        break;
-      }
-
-      case 'send': {
-        this.onSend(msg.sid, msg.payload);
-        break;
-      }
-
-      case 'complete': {
-        if (this.options.onDonate) {
-          this.options.onDonate(msg.payload.transactionHash);
-        } else {
-          this.onClose();
-        }
-        break;
-      }
-
-      case 'cancel': {
-        this.onCancel();
-        break;
-      }
-
-      default:
-        debug('unknown msg type');
-    }
-  }
-
-  postMessageToIframe(sid, type, payload = {}) {
-    this.iframe.contentWindow.postMessage(
-      JSON.stringify({ type, payload, sid }),
-      IFRAME_HOST
-    );
   }
 }
 
 window.panvala = function(options) {
   debug('donate');
   const donate = new Donate(options);
-  return () => donate.onClose.call(donate);
+  return () => donate.close.call(donate);
 };

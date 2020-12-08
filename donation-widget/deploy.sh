@@ -9,6 +9,7 @@ source .env.production
 export a=http://localhost:3401/script.js
 export b=$JS_HOST/script.js
 sed -i '' -- "s#$a#$b#g" dist/index.html
+cp src/shot.png dist
 cp -r dist ..
 cd ..
 

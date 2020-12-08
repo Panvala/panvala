@@ -22,8 +22,7 @@ function onStartDonation(e) {
 
   const close = window.panvala({
     to: '0xcADB5e3FC3AdeF3Dd9edD1C6F1C0b3149d3901B8',
-    defaultAsset: 'ETH',
-    defaultAmount: 0.1,
+    defaultUSDAmount: 50,
     async onDonate(transactionHash) {
       debug('donated %s!', transactionHash);
 
@@ -86,8 +85,7 @@ function showExampleCode() {
   button.onclick = function() {
     const closeModal = window.panvala({
       to: '0x..',
-      defaultAsset: 'ETH',
-      defaultAmount: 1,
+      defaultUSDAmount: 50,
       onDonate(transactionHash) {
         console.log('donated at %s!', transactionHash);
         closeModal();

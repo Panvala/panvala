@@ -3,8 +3,8 @@
   "source": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "rm -rf .cache && parcel src/index.html --port 3402",
-    "build": "NODE_ENV=production parcel build src/index.html --no-source-maps",
+    "start": "rm -rf .cache && parcel src/index.html --port 3402 --no-autoinstall",
+    "build": "NODE_ENV=production parcel build src/index.html --no-source-maps --no-autoinstall",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node src/server.js"
   },
@@ -20,6 +20,7 @@
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "lodash": "^4.17.20",
     "parcel-bundler": "^1.12.4",
     "parcel-plugin-inliner": "^1.0.14",
     "postcss": "^7",
