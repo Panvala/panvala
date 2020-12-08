@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, createMuiTheme, Box, ThemeProvider } from '@material-ui/core';
+import { makeStyles, Box, ThemeProvider } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Home, MenuBook } from '@material-ui/icons';
 import Head from 'next/head';
-
 
 const drawerWidth = 238;
 
@@ -39,43 +38,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#2138b7',
-    },
-    secondary: {
-      main: '#46b0aa',
-    },
-  }
-});
-
 export default function BaseLayout(props) {
   const classes = useStyles();
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Head>
-        <title>Panvala Scoreboard{ props.title ? ` ${props.title}` : '' }</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Panvala Scoreboard{props.title ? ` ${props.title}` : ''}</title>
+        <link rel='icon' href='/favicon.ico' />
       </Head>
 
       {/* Sidebar Nav */}
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
+        <AppBar position='fixed' className={classes.appBar}>
           <Toolbar>
             <Box mr={2}>
-              <img src="/panvala-logo.png" width="36"/>
+              <img src='/panvala-logo.png' width='36' />
             </Box>
-            <Typography variant="h6" noWrap>
+            <Typography variant='h6' noWrap>
               Panvala Scoreboard
             </Typography>
           </Toolbar>
         </AppBar>
         <Drawer
           className={classes.drawer}
-          variant="permanent"
+          variant='permanent'
           classes={{
             paper: classes.drawerPaper,
           }}
@@ -83,43 +71,62 @@ export default function BaseLayout(props) {
           <Toolbar />
           <div className={classes.drawerContainer}>
             <List>
-              <ListItem button key="Overview">
-                <ListItemIcon><Home /></ListItemIcon>
-                <ListItemText primary="Overview" />
+              <ListItem button key='Overview'>
+                <ListItemIcon>
+                  <Home />
+                </ListItemIcon>
+                <ListItemText primary='Overview' />
               </ListItem>
-              <ListItem button disabled key="Donations">
-                <ListItemText inset primary="Donations" />
+              <ListItem button disabled key='Donations'>
+                <ListItemText inset primary='Donations' />
               </ListItem>
-              <ListItem button disabled key="Staking">
-                <ListItemText inset primary="Staking" />
+              <ListItem button disabled key='Staking'>
+                <ListItemText inset primary='Staking' />
               </ListItem>
-              <ListItem button disabled key="History">
-                <ListItemText inset primary="Funding History" />
+              <ListItem button disabled key='History'>
+                <ListItemText inset primary='Funding History' />
               </ListItem>
-              <ListItem button disabled key="Inflation">
-                <ListItemText inset primary="Net Inflation" />
+              <ListItem button disabled key='Inflation'>
+                <ListItemText inset primary='Net Inflation' />
               </ListItem>
             </List>
             <Divider />
             <List>
-              <ListItem button component="a" href="https://handbook.panvala.com/" key="Handbook">
-                <ListItemIcon><MenuBook /></ListItemIcon>
-                <ListItemText primary="Handbook" />
+              <ListItem
+                button
+                component='a'
+                href='https://handbook.panvala.com/'
+                key='Handbook'
+              >
+                <ListItemIcon>
+                  <MenuBook />
+                </ListItemIcon>
+                <ListItemText primary='Handbook' />
               </ListItem>
-              <ListItem button component="a" href="https://discord.gg/yZmYZbf" key="Discord">
-                <ListItemText inset primary="Discord" />
+              <ListItem
+                button
+                component='a'
+                href='https://discord.gg/yZmYZbf'
+                key='Discord'
+              >
+                <ListItemText inset primary='Discord' />
               </ListItem>
-             <ListItem button component="a" href="https://twitter.com/PanvalaHQ" key="Twitter">
-                <ListItemText inset primary="Twitter" />
+              <ListItem
+                button
+                component='a'
+                href='https://twitter.com/PanvalaHQ'
+                key='Twitter'
+              >
+                <ListItemText inset primary='Twitter' />
               </ListItem>
             </List>
           </div>
         </Drawer>
         <main className={classes.content}>
           <Toolbar />
-          { props.children }
+          {props.children}
         </main>
       </div>
-    </ThemeProvider>
-  )
-};
+    </>
+  );
+}
