@@ -116,6 +116,7 @@ class Donate {
       this.postMessageToParentWindow('donate', {
         fromAsset: this.fromAssetSelect.value,
         fromAssetAmount: this.fromAssetAmount,
+        toPanAmount: this.toPanAmount,
         toAddress: this.props.to,
       });
     }
@@ -141,6 +142,12 @@ class Donate {
   }
 
   // events from iframe
+
+  onError(err) {
+    debug('received error: %s', err.message); // todo display error to user
+    this.setIsWorking(false);
+    this.getQuote();
+  }
 
   onConnect({ address }) {
     dom.hide(this.loader);
@@ -173,13 +180,15 @@ class Donate {
     approve,
     hasSufficientBalance,
   }) {
+    this.fromAssetAmount = fromAssetAmount;
+    this.toPanAmount = toPanAmount;
+
     const fromPAN = this.fromAssetSelect.value === 'PAN';
     // dom.toggle(this.toPanAmountLabelContainer, !fromPAN);
     if (fromPAN) {
       fromAssetAmount = toPanAmount;
     }
     // if (!fromPAN) {
-    this.fromAssetAmount = fromAssetAmount;
     this.fromAssetAmountLabel.innerText = fromAssetAmount;
     // }
     this.toPanAmountLabel.innerText = toPanAmount;
@@ -202,11 +211,18 @@ class Donate {
     }
   }
 
-  async onDonate(payload) {
-    this.button.innerHTML =
-      'Sent <span class="pl-2" style="font-family: none;">✓</span>';
+  async onApprove() {
+    this.setIsWorking(false);
+    this.getQuote();
+  }
+
+  async onSwap(props) {
+    this.setIsWorking(false);
+    this.setButtonText(
+      'Donated <span class="pl-2" style="font-family: none;">✓</span>'
+    );
     await sleep(3000);
-    this.postMessageToParentWindow('complete', payload);
+    this.postMessageToParentWindow('complete', props);
   }
 }
 
