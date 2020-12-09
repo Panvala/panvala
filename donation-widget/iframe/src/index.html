@@ -18,14 +18,42 @@
     <form class="flex-col items-center hidden relative">
       <div id="close">✕</div>
       <p id="address" class="hidden">Connected as <span>x</span></p>
-      <select name="asset">
-        <option>Asset:</option>
-        <option value="ETH">Ethereum (ETH)</option>
-        <option value="DAI">Dai (DAI)</option>
-        <option value="PAN">Panvala (PAN)</option>
-      </select>
 
-      <input name="amount" step="any" type="number" placeholder="Amount" />
+      <table class="mb-4">
+        <tbody>
+          <tr>
+            <td>
+              Amount of USD you'd like to donate
+            </td>
+            <td>
+              <input step="any" type="number" placeholder="" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex items-center">
+                You will be donating this amount of
+                <select class="ml-1">
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="DAI">Dai (DAI)</option>
+                  <option value="PAN">Panvala (PAN)</option>
+                </select>
+              </div>
+            </td>
+            <td>≈ <span id="from-asset-amount"></span></td>
+          </tr>
+          <tr id="from-asset-balance-container" class="hidden">
+            <td>
+              Your balance
+            </td>
+            <td><span></span></td>
+          </tr>
+          <tr id="to-pan-amount-container">
+            <td>The community will be receiving this amount of PAN</td>
+            <td>≈ <span id="to-pan-amount"></span></td>
+          </tr>
+        </tbody>
+      </table>
 
       <button type="submit">Connect Wallet</button>
     </form>

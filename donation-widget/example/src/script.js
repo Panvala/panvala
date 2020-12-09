@@ -21,9 +21,10 @@ function onStartDonation(e) {
   debug('donating..');
 
   const close = window.panvala({
-    to: '0xcADB5e3FC3AdeF3Dd9edD1C6F1C0b3149d3901B8',
+    to: '0x4BCe86c0921B4d4c2Bdd5b9e5e8764483E411C12',
     defaultUSDAmount: 50,
     async onDonate(transactionHash) {
+      close();
       debug('donated %s!', transactionHash);
 
       button.innerHTML = 'Donated <span style="font-family: none;">✓</span>';
@@ -33,7 +34,6 @@ function onStartDonation(e) {
         'Waiting for transaction to be mined..'
       );
       button.innerHTML = 'Donate';
-      close();
     },
     onError(e) {
       close();

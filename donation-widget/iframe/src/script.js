@@ -1,3 +1,6 @@
+import _debounce from 'lodash/debounce';
+import _camelCase from 'lodash/camelCase';
+import _bindAll from 'lodash/bindAll';
 import debug from './debug';
 import * as qs from './qs';
 import * as dom from './dom';
@@ -6,34 +9,43 @@ window.onload = () => new Donate();
 
 class Donate {
   constructor() {
-    this.handleMessage = e => this.handleMessageBound(e);
-    this.handleMessages();
-
-    this.addressLabel = document.getElementById('address');
-
-    this.button = document.querySelector('button');
-
-    this.amountInput = document.querySelector('input');
-    this.amountInput.oninput = e => this.handleAmountChange(e);
-
-    this.assetSelect = document.querySelector('select');
-    this.assetSelect.onchange = e => this.handleAssetChange(e);
-
-    this.form = document.querySelector('form');
-    this.form.onsubmit = e => this.connectWalletOrApproveOrSwap(e);
-
-    document.getElementById('close').onclick = () =>
-      this.postMessageToParentWindow('cancel');
-
-    this.loader = document.getElementById('boot-loader-container');
-    dom.hide(this.loader);
-    dom.show(this.form);
+    _bindAll(this, 'handleMessage');
+    this.getQuote = _debounce(this.getQuoteDebounced.bind(this), 100);
 
     const querystring = qs.parse(window.location.search.substring(1));
     this.props = JSON.parse(atob(unescape(querystring.options)));
     debug('props %o', this.props);
-    this.amount = Number(this.props.defaultUSDAmount) || 100;
-    this.form.amount.value = this.amount;
+
+    this.addressLabel = document.getElementById('address');
+    this.fromAssetAmountLabel = document.getElementById('from-asset-amount');
+    this.fromAssetBalanceContainer = document.getElementById(
+      'from-asset-balance-container'
+    );
+    this.fromAssetBalanceLabel = this.fromAssetBalanceContainer.querySelector(
+      'span'
+    );
+    this.toPanAmountLabel = document.getElementById('to-pan-amount');
+    this.toPanAmountLabelContainer = document.getElementById(
+      'to-pan-amount-container'
+    );
+    this.button = document.querySelector('button');
+    this.usdInput = document.querySelector('input');
+    this.fromAssetSelect = document.querySelector('select');
+    this.form = document.querySelector('form');
+    this.close = document.getElementById('close');
+    this.loader = document.getElementById('boot-loader-container');
+
+    this.setUpEventHandlers();
+    this.load();
+  }
+
+  setUpEventHandlers() {
+    this.handleMessages();
+
+    this.usdInput.oninput = this.getQuote;
+    this.fromAssetSelect.onchange = this.getQuote;
+    this.form.onsubmit = e => this.connectWalletOrApproveOrDonate(e);
+    this.close.onclick = () => this.postMessageToParentWindow('cancel');
   }
 
   handleMessages() {
@@ -44,7 +56,7 @@ class Donate {
     }
   }
 
-  async handleMessageBound(evt) {
+  async handleMessage(evt) {
     let msg;
     try {
       msg = JSON.parse(evt.data);
@@ -61,35 +73,28 @@ class Donate {
     this[meth](msg.payload);
   }
 
-  handleAmountChange(e) {
-    this.amount = e.target.value;
-    this.updateButtonText();
+  postMessageToParentWindow(type, payload = {}) {
+    window.top.postMessage(
+      JSON.stringify({ type, payload, sid: this.props.sid }),
+      this.props.host
+    );
   }
 
-  handleAssetChange(e) {
-    this.asset = e.target.value;
-    this.updateButtonText();
+  load() {
+    this.postMessageToParentWindow('iframe-load', this.props);
   }
 
-  updateButtonText() {
-    if (this.address) {
-      this.button.innerText = `Donate (${this.amount} ${this.asset}) →`;
-    }
-  }
-
-  setIsSending(working = true) {
-    this.working = working;
-    dom.attr(this.amountInput, 'disabled', working);
-    dom.attr(this.assetSelect, 'disabled', working);
+  setIsWorking(text) {
+    const working = !!text;
+    dom.attr(this.usdInput, 'disabled', working);
+    dom.attr(this.fromAssetSelect, 'disabled', working);
     dom.attr(this.button, 'disabled', working);
     if (working) {
-      this.button.innerText = 'Sending...';
-    } else {
-      this.updateButtonText();
+      this.setButtonText(text);
     }
   }
 
-  connectWalletOrApproveOrSwap(e) {
+  connectWalletOrApproveOrDonate(e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -98,18 +103,46 @@ class Donate {
       dom.show(this.loader);
       dom.hide(this.form);
       this.postMessageToParentWindow('connect-wallet');
+    } else if (this.approve) {
+      debug('approving..');
+      this.setIsWorking('Approving..');
+      this.postMessageToParentWindow('approve', {
+        fromAsset: this.fromAssetSelect.value,
+        fromAssetAmount: this.fromAssetAmount,
+      });
     } else {
       debug('donating..');
-      this.setIsSending();
-      const { amount, asset } = this;
-      const { to } = this.props;
-      this.postMessageToParentWindow('send', { to, amount, asset });
+      this.setIsWorking('Donating..');
+      this.postMessageToParentWindow('donate', {
+        fromAsset: this.fromAssetSelect.value,
+        fromAssetAmount: this.fromAssetAmount,
+        toAddress: this.props.to,
+      });
     }
+  }
+
+  setButtonText(text) {
+    this.button.innerHTML = text;
+  }
+
+  getQuoteDebounced() {
+    const fromAsset = this.fromAssetSelect.value;
+    const usd = parseFloat(this.usdInput.value);
+    if (!usd) {
+      this.toPanAmountLabel.innerText = '0';
+      this.fromAssetAmountLabel.innerText = '0';
+      return;
+    }
+
+    this.postMessageToParentWindow('get-quote', {
+      fromAsset,
+      usd,
+    });
   }
 
   // events from iframe
 
-  async onConnect({ address }) {
+  onConnect({ address }) {
     dom.hide(this.loader);
     dom.show(this.form);
 
@@ -120,10 +153,56 @@ class Donate {
       0,
       6
     )}....${address.slice(-4)}`;
-    this.updateButtonText();
+    dom.show(this.fromAssetBalanceContainer);
+    this.getQuote();
   }
 
-  async onSend(payload) {
+  onIframeLoad({}) {
+    this.usdInput.value = this.props.defaultUSDAmount;
+
+    dom.hide(this.loader);
+    dom.show(this.form);
+
+    this.getQuote();
+  }
+
+  onGetQuote({
+    fromAssetAmount,
+    toPanAmount,
+    fromAssetBalance,
+    approve,
+    hasSufficientBalance,
+  }) {
+    const fromPAN = this.fromAssetSelect.value === 'PAN';
+    // dom.toggle(this.toPanAmountLabelContainer, !fromPAN);
+    if (fromPAN) {
+      fromAssetAmount = toPanAmount;
+    }
+    // if (!fromPAN) {
+    this.fromAssetAmount = fromAssetAmount;
+    this.fromAssetAmountLabel.innerText = fromAssetAmount;
+    // }
+    this.toPanAmountLabel.innerText = toPanAmount;
+
+    if (this.address) {
+      this.fromAssetBalanceLabel.innerText = fromAssetBalance;
+    }
+
+    this.approve = approve;
+    dom.attr(this.button, 'disabled', this.address && !hasSufficientBalance);
+
+    if (!this.address) {
+      this.setButtonText('Connect Wallet');
+    } else if (!hasSufficientBalance) {
+      this.setButtonText('Insufficent Balance');
+    } else if (approve) {
+      this.setButtonText(`Approve ${this.fromAssetSelect.value}`);
+    } else if (this.address) {
+      this.setButtonText('Donate →');
+    }
+  }
+
+  async onDonate(payload) {
     this.button.innerHTML =
       'Sent <span class="pl-2" style="font-family: none;">✓</span>';
     await sleep(3000);
