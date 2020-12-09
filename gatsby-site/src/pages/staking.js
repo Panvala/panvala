@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1331293.408336401397587282"
+    "weight": "1330875.700234287068333207"
   },
   "9": {
     "id": 9,
@@ -224,7 +224,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "205209.309210689795020246"
+    "weight": "202092.449487689795020246"
   },
   "12": {
     "id": 12,
@@ -289,7 +289,7 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "10261.54"
+    "weight": "11868.14"
   },
   "25": {
     "id": 25,
@@ -309,7 +309,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "2004.341224273182623636"
+    "weight": "3359.268395875457401737"
   },
   "29": {
     "id": 29,
@@ -324,7 +324,7 @@ const stakingResults = {
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "4924.719792400187786784"
+    "weight": "5111.915078865410858138"
   },
   "32": {
     "id": 32,
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 7';
+const stakingTotalsUpdated = 'December 8';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
