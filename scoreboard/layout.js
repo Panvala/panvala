@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, Box, ThemeProvider } from '@material-ui/core';
+import { makeStyles, Box } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';

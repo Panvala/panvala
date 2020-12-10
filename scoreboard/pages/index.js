@@ -19,6 +19,9 @@ import {
 } from 'recharts';
 
 import BaseLayout from '../layout';
+import { getData } from '../utils/getData';
+
+const data = getData();
 
 const quarterlyMetrics = [
   {
@@ -62,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
+
+  console.log(getData());
 
   return (
     <BaseLayout>
