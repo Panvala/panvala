@@ -7,8 +7,9 @@ import debug from './debug';
 const INFURA_ID = process.env.INFURA_ID;
 const IFRAME_HOST = process.env.IFRAME_HOST;
 const PRECISION = 4;
-const ETH_ONE_INCH_ADDR = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const ETH_ONE_INCH_ADDR = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
 const ONE_SPLIT_ADDRESS = '1proto.eth'; // '1split.eth';
+const SLIPPAGE = 1;
 const UNISWAP_ROUTER_V2_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 const TOKEN_CONTRACT_ADDRESSES = {
   DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
@@ -129,6 +130,28 @@ class Donate {
     this.iframe.style.display = show ? 'flex' : 'none';
   }
 
+  toFixed(a, b) {
+    if (this.isZero(bign(a)) || this.isZero(bign(b))) {
+      return '0';
+    }
+    return bign(a.toString())
+      .div(bign(b.toString()))
+      .toFixed(PRECISION);
+  }
+
+  formatUnits(a, decimals) {
+    return this.toFixed(a.toString(), bign(10).pow(decimals));
+  }
+
+  isZero(a) {
+    return a.eq(bign('0'));
+  }
+
+  // bn.js
+  bn(a) {
+    return this.ethers.BigNumber.from(a.toString());
+  }
+
   getSigner() {
     return this.ethersWallet || this.defaultProvider;
   }
@@ -151,15 +174,6 @@ class Donate {
     );
   }
 
-  async getOneSplitContract() {
-    const oneSplitAbi = await import('./abis/onesplit.json');
-    return new this.ethers.Contract(
-      ONE_SPLIT_ADDRESS,
-      oneSplitAbi,
-      this.getSigner()
-    );
-  }
-
   // events from js
 
   onError(sid, payload) {
@@ -169,28 +183,6 @@ class Donate {
   onCancel() {
     this.close();
     this.options.onCancel && this.options.onCancel();
-  }
-
-  toFixed(a, b) {
-    if (this.isZero(bign(a)) || this.isZero(bign(b))) {
-      return '0';
-    }
-    return bign(a.toString())
-      .div(bign(b.toString()))
-      .toFixed(PRECISION);
-  }
-
-  formatUnits(a, decimals) {
-    return this.toFixed(a.toString(), bign(10).pow(decimals));
-  }
-
-  isZero(a) {
-    return a.eq(bign('0'));
-  }
-
-  // bn.js
-  bn(a) {
-    return this.ethers.BigNumber.from(a.toString());
   }
 
   async onIframeLoad(sid) {
@@ -266,51 +258,55 @@ class Donate {
     if (fromPAN) {
       const {
         [COIN_GECKO_IDS.PAN]: { usd: panPrice },
-      } = await request(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${COIN_GECKO_IDS.PAN}&vs_currencies=usd`
-      );
+      } = await request('https://api.coingecko.com/api/v3/simple/price', {
+        ids: COIN_GECKO_IDS.PAN,
+        vs_currencies: 'usd',
+      });
 
-      fromAssetAmount = toPanAmount = bign(usdAmount)
-        .mul(Math.pow(10, 18))
-        .div(bign(panPrice));
+      fromAssetAmount = toPanAmount = this.bn(
+        bign(usdAmount)
+          .mul(Math.pow(10, 18))
+          .div(bign(panPrice))
+          .toFixed(0)
+      );
     } else {
       const fromAssetId = COIN_GECKO_IDS[fromAsset];
       const {
         [fromAssetId]: { usd: fromAssetPrice },
-      } = await request(
-        `https://api.coingecko.com/api/v3/simple/price?ids=${fromAssetId}&vs_currencies=usd`
-      );
+      } = await request('https://api.coingecko.com/api/v3/simple/price', {
+        ids: fromAssetId,
+        vs_currencies: 'usd',
+      });
 
       fromAssetAmount = this.ethers.utils.parseEther(
         bign(usdAmount)
           .div(bign(fromAssetPrice))
           .toFixed(PRECISION)
       );
-      debug('d %s', fromAssetAmount.toString());
-      // const uniswapRouterV2Contract = await this.getUniswapRouterV2Contract();
-      // [
-      //   fromAssetAmount,
-      //   toPanAmount,
-      // ] = await uniswapRouterV2Contract.getAmountsOut(estimateFromAssetAmount, [
-      //   TOKEN_CONTRACT_ADDRESSES[fromETH ? 'WETH' : fromAsset],
-      //   TOKEN_CONTRACT_ADDRESSES.PAN,
-      // ]);
 
-      const oneSplitContract = await this.getOneSplitContract();
-      const quote = await oneSplitContract.getExpectedReturnWithGas(
-        fromETH ? ETH_ONE_INCH_ADDR : TOKEN_CONTRACT_ADDRESSES[fromAsset],
-        TOKEN_CONTRACT_ADDRESSES.PAN,
-        fromAssetAmount,
-        100,
-        0,
-        0
+      const fromTokenAddress = fromETH
+        ? ETH_ONE_INCH_ADDR
+        : TOKEN_CONTRACT_ADDRESSES[fromAsset];
+
+      const { toTokenAmount } = await request(
+        'https://api.1inch.exchange/v2.0/quote',
+        {
+          fromTokenAddress,
+          toTokenAddress: TOKEN_CONTRACT_ADDRESSES.PAN,
+          amount: fromAssetAmount.toString(),
+        }
       );
-      toPanAmount = quote.returnAmount;
 
-      debug('c %s %s', toPanAmount.toString(), fromAssetAmount.toString());
+      toPanAmount = this.bn(toTokenAmount);
     }
 
-    // fromAssetBalance = fromAssetBalance && bign(fromAssetBalance.toString());
+    if (fromAssetBalance && fromAssetAmount) {
+      console.log(
+        'gg %s %s',
+        fromAssetBalance.toString(),
+        fromAssetAmount.toString()
+      );
+    }
 
     const hasSufficientBalance =
       fromAssetBalance &&
@@ -373,25 +369,34 @@ class Donate {
         const panContract = await this.getERC20Contract('PAN');
         tx = await panContract.transfer(toAddress, fromAssetAmount);
       } else {
-        const uniswapRouterV2Contract = await this.getUniswapRouterV2Contract();
-        if (fromETH) {
-          tx = await uniswapRouterV2Contract.swapETHForExactTokens(
-            toPanAmount, // amountOut
-            [TOKEN_CONTRACT_ADDRESSES.WETH, TOKEN_CONTRACT_ADDRESSES.PAN],
-            toAddress,
-            deadline(),
-            { value: fromAssetAmount }
-          );
-        } else {
-          // DAI
-          tx = await uniswapRouterV2Contract.swapTokensForExactTokens(
-            toPanAmount, // amountOut
-            fromAssetAmount, // amountInMax
-            [TOKEN_CONTRACT_ADDRESSES[fromAsset], TOKEN_CONTRACT_ADDRESSES.PAN],
-            toAddress,
-            deadline()
-          );
-        }
+        const fromAssetAddress = fromETH
+          ? ETH_ONE_INCH_ADDR
+          : TOKEN_CONTRACT_ADDRESSES[fromAsset];
+        const toAssetAddress = TOKEN_CONTRACT_ADDRESSES.PAN;
+        const {
+          tx: {
+            from,
+            to,
+            data,
+            value,
+            // gasPrice,
+            // gas
+          },
+        } = await request('https://api.1inch.exchange/v2.0/swap', {
+          fromTokenAddress: fromAssetAddress,
+          toTokenAddress: toAssetAddress,
+          amount: fromAssetAmount.toString(),
+          fromAddress: toAddress,
+          slippage: SLIPPAGE,
+        });
+        tx = await this.ethersWallet.sendTransaction({
+          from,
+          to,
+          data,
+          value: this.bn(value),
+          // gasPrice,
+          // gas
+        });
       }
 
       this.postMessageToIframe(sid, 'donate', {
@@ -412,18 +417,15 @@ class Donate {
   }
 }
 
-async function request(url) {
+async function request(url, query) {
+  if (query) {
+    url += '?' + qs.stringify(query);
+  }
   return await (await fetch(url)).json();
 }
 
-function deadline() {
-  const now = new Date();
-  const utcMilllisecondsSinceEpoch =
-    now.getTime() + now.getTimezoneOffset() * 60 * 1000;
-  return (
-    UNISWAP_DEADLINE_MINUTES * 60 +
-    Math.round(utcMilllisecondsSinceEpoch / 1000)
-  );
+function isEth(addr) {
+  return addr.toLowerCase() === ETH_ONE_INCH_ADDR;
 }
 
 window.panvala = function(options) {

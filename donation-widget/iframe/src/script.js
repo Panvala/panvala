@@ -193,7 +193,7 @@ class Donate {
     // }
     this.toPanAmountLabel.innerText = toPanAmount;
 
-    if (this.address) {
+    if (this.address && fromAssetBalance) {
       this.fromAssetBalanceLabel.innerText = fromAssetBalance;
     }
 
@@ -216,7 +216,7 @@ class Donate {
     this.getQuote();
   }
 
-  async onSwap(props) {
+  async onDonate(props) {
     this.setIsWorking(false);
     this.setButtonText(
       'Donated <span class="pl-2" style="font-family: none;">✓</span>'
