@@ -83,15 +83,15 @@ export default function BaseLayout(props) {
           <Toolbar />
           <div className={classes.drawerContainer}>
             <List>
-              <ListItem button key="Overview">
+              <ListItem button component="a" href="/" key="Overview">
                 <ListItemIcon><Home /></ListItemIcon>
                 <ListItemText primary="Overview" />
               </ListItem>
-              <ListItem button disabled key="Donations">
+              <ListItem button component="a" href="/donations" key="Donations">
                 <ListItemText inset primary="Donations" />
               </ListItem>
               <ListItem button disabled key="Staking">
-                <ListItemText inset primary="Staking" />
+                <ListItemText inset primary="Staking Yield" />
               </ListItem>
               <ListItem button disabled key="History">
                 <ListItemText inset primary="Funding History" />
