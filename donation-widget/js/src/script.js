@@ -8,9 +8,7 @@ const INFURA_ID = process.env.INFURA_ID;
 const IFRAME_HOST = process.env.IFRAME_HOST;
 const PRECISION = 4;
 const ETH_ONE_INCH_ADDR = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
-const ONE_SPLIT_ADDRESS = '1proto.eth'; // '1split.eth';
 const SLIPPAGE = 1;
-const UNISWAP_ROUTER_V2_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 const TOKEN_CONTRACT_ADDRESSES = {
   DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
   PAN: '0xd56dac73a4d6766464b38ec6d91eb45ce7457c44',
@@ -21,7 +19,6 @@ const COIN_GECKO_IDS = {
   DAI: 'dai',
   PAN: 'panvala-pan',
 };
-const UNISWAP_DEADLINE_MINUTES = 10;
 
 class Donate {
   constructor(options) {
@@ -186,12 +183,18 @@ class Donate {
   }
 
   async onIframeLoad(sid) {
-    const { ethers } = await import('ethers');
+    const [{ ethers }, { address: spenderAddress }] = await Promise.all([
+      import('ethers'),
+      request('https://api.1inch.exchange/v2.0/approve/spender'),
+    ]);
+
     this.ethers = ethers;
     this.defaultProvider = new this.ethers.providers.InfuraProvider(
       'homestead',
       INFURA_ID
     );
+
+    this.spenderAddress = spenderAddress;
 
     this.postMessageToIframe(sid, 'iframe-load', {});
   }
@@ -300,14 +303,6 @@ class Donate {
       toPanAmount = this.bn(toTokenAmount);
     }
 
-    if (fromAssetBalance && fromAssetAmount) {
-      console.log(
-        'gg %s %s',
-        fromAssetBalance.toString(),
-        fromAssetAmount.toString()
-      );
-    }
-
     const hasSufficientBalance =
       fromAssetBalance &&
       fromAssetAmount &&
@@ -318,10 +313,7 @@ class Donate {
       fromAssetContract &&
       fromAssetAmount &&
       fromAssetAmount.gt(
-        await fromAssetContract.allowance(
-          this.address,
-          UNISWAP_ROUTER_V2_ADDRESS
-        )
+        await fromAssetContract.allowance(this.address, this.spenderAddress)
       );
 
     this.postMessageToIframe(sid, 'get-quote', {
@@ -343,7 +335,7 @@ class Donate {
     const fromAssetContract = await this.getERC20Contract(fromAsset);
     try {
       const tx = await fromAssetContract.approve(
-        UNISWAP_ROUTER_V2_ADDRESS,
+        this.spenderAddress,
         fromAssetAmount
       );
       await tx.wait();
