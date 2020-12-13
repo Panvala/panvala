@@ -159,7 +159,7 @@ button:hover {
   @apply mb-1;
 }
 
-#address span {
+#address .address {
   color: var(--dark-color);
 }
 

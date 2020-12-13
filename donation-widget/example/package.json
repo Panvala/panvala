@@ -3,8 +3,8 @@
   "source": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "rm -rf .cache && parcel src/index.html --port 3400 --no-autoinstall",
-    "build": "NODE_ENV=production parcel build src/index.html --no-source-maps --no-autoinstall",
+    "start": "rm -rf .cache dist && parcel src/index.html --port 3400 --no-autoinstall",
+    "build": "rm -rf .cache dist && NODE_ENV=production parcel build src/index.html --no-source-maps --no-autoinstall",
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node src/server.js"
   },

@@ -62,9 +62,6 @@ function showNotification(type, show) {
     notification.classList[t === type ? 'add' : 'remove'](t);
   });
   notification.classList[show ? 'remove' : 'add']('hidden');
-  button.innerHTML = show
-    ? 'Donated <span style="font-family: none;">✓</span>'
-    : 'Donate';
 }
 
 async function sleep(ms) {

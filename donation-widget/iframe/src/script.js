@@ -46,6 +46,8 @@ class Donate {
     this.fromAssetSelect.onchange = this.getQuote;
     this.form.onsubmit = e => this.connectWalletOrApproveOrDonate(e);
     this.close.onclick = () => this.postMessageToParentWindow('cancel');
+    this.addressLabel.querySelector('.disconnect').onclick = () =>
+      this.postMessageToParentWindow('disconnectWallet');
   }
 
   handleMessages() {
@@ -155,12 +157,19 @@ class Donate {
 
     this.address = address;
     debug('connected', address);
-    dom.show(this.addressLabel, 1);
-    this.addressLabel.querySelector('span').innerText = `${address.slice(
+    dom.show(this.addressLabel);
+    this.addressLabel.querySelector('.address').innerText = `${address.slice(
       0,
       6
     )}....${address.slice(-4)}`;
     dom.show(this.fromAssetBalanceContainer);
+    this.getQuote();
+  }
+
+  onDisconnect() {
+    this.address = null;
+    dom.hide(this.addressLabel);
+    dom.hide(this.fromAssetBalanceContainer);
     this.getQuote();
   }
 

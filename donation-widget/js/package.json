@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "rm -rf .cache && parcel src/script.js --port 3401 --no-autoinstall",
-    "build": "NODE_ENV=production parcel build src/script.js --no-source-maps --no-autoinstall",
+    "start": "rm -rf .cache dist && parcel src/script.js --port 3401 --no-autoinstall",
+    "build": "rm -rf .cache dist && NODE_ENV=production parcel build src/script.js --no-source-maps --no-autoinstall",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
