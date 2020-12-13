@@ -394,6 +394,7 @@ class Donate {
           toTokenAddress: toAssetAddress,
           amount: fromAssetAmount.toString(),
           fromAddress: this.address,
+          destReceiver: toAddress,
           slippage: SLIPPAGE,
         });
         tx = await this.ethersWallet.sendTransaction({
