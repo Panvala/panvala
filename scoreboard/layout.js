@@ -91,7 +91,7 @@ export default function BaseLayout(props) {
                 <ListItemText inset primary="Donations" />
               </ListItem>
               <ListItem button disabled key="Staking">
-                <ListItemText inset primary="Staking Yield" />
+                <ListItemText inset primary="Staking" />
               </ListItem>
               <ListItem button disabled key="History">
                 <ListItemText inset primary="Funding History" />
