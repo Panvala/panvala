@@ -209,7 +209,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1330875.700234287068333207"
+    "weight": "1245462.923022287068333207"
   },
   "9": {
     "id": 9,
@@ -224,7 +224,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "202092.449487689795020246"
+    "weight": "161894.805737689794988623"
   },
   "12": {
     "id": 12,
@@ -234,7 +234,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "720988.500688984453621069"
+    "weight": "721374.570677534453621069"
   },
   "14": {
     "id": 14,
@@ -249,12 +249,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "10991.419846457406628816"
+    "weight": "10659.457295457406628816"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "234736.347409209804886529"
+    "weight": "233934.304969209804886529"
   },
   "18": {
     "id": 18,
@@ -269,12 +269,12 @@ const stakingResults = {
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "7111.425598601304883036"
+    "weight": "7411.425598601304883036"
   },
   "21": {
     "id": 21,
     "name": "DeFi Safety",
-    "weight": "7427.960241237647104977"
+    "weight": "7422.960241237647104977"
   },
   "22": {
     "id": 22,
@@ -289,12 +289,12 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "11868.14"
+    "weight": "12826.971294276275443489"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "334469.49681341787523486"
+    "weight": "335985.810100801833528013"
   },
   "26": {
     "id": 26,
@@ -309,7 +309,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "3359.268395875457401737"
+    "weight": "2558.270381645721594481"
   },
   "29": {
     "id": 29,
@@ -334,12 +334,12 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "304.533275651817712042"
+    "weight": "352.033275651817712042"
   },
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "9408.987297159739132967"
+    "weight": "8858.987297159739132967"
   }
 };
 
@@ -354,7 +354,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 8';
+const stakingTotalsUpdated = 'December 13';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
