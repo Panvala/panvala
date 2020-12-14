@@ -55,6 +55,11 @@ const ENS_ADDRESSES = {
   ' 0x93f3f612a525a59523e91cc5552f718df9fc0746': '0x93f3f612a525a59523e91cc5552f718df9fc0746',
   'deffo.xyz': '0x0000000000000000000000000000000000000000',
   'jabyl.eth': '0x207ac8e8b2Db9BeC1B53176f26fC16c349363309',
+  '123567890': '0x0000000000000000000000000000000000000000',
+  'ih0dl.eth': '0x49E5C693dC0cC586B6e29E2404B17dc0565Ac12B',
+  'rtbynelly': '0x0000000000000000000000000000000000000000',
+  'https://etherscan.io/address/0x4aadd19eab55b09281e': '0x0000000000000000000000000000000000000000',
+  '0x78eE8F02653e8Fb65f078Fe22D26eC0B91d0943': '0x0000000000000000000000000000000000000000',
 };
 
 const LEAGUE_ADDRESSES = {
@@ -70,6 +75,7 @@ const LEAGUE_ADDRESSES = {
 }
 
 const seenTxhashes = new Set();
+let zksyncErrors = 0;
 
 run();
 
@@ -123,11 +129,12 @@ function donationsToCSV(grants, donors) {
       donation.grant.donations[donation.donor.address],
       donation.grant.donations[donation.donor.address] / ONE_DOLLAR_PAN,
       donation.donor.projects[donation.grant.address].time,
+      donation.donor.projects[donation.grant.address].txhash,
     ];
   });
 
   const data = stringify(rows, { header: true, columns: [
-    'Donor', 'Donor Address', 'Grant', 'Grant Address', 'Donated Tokens', 'Donated Value', 'Time'] });
+    'Donor', 'Donor Address', 'Grant', 'Grant Address', 'Donated Tokens', 'Donated Value', 'Time', 'Txhash'] });
   return data;
 }
 
@@ -197,6 +204,10 @@ async function fetchZksyncPages(address, olderThan = null) {
     }
     // TODO: handle response status
     throw new Error('unhandled response status');
+  }).catch(error => {
+    console.log(`ERROR: zkSync fetch failed for ${address}`);
+    zksyncErrors++;
+    return [];
   });
 }
 
@@ -228,14 +239,13 @@ async function getZksyncTransactionsInParallel(addresses, count = 20) {
 
 async function getZksyncTransactions(addresses) {
   const transactions = await getZksyncTransactionsInParallel(addresses);
-  const panTransactions = transactions.filter(x => {
-    if (!x.tx) {
-      console.log(x);
-    }
-    return x.tx.token === 'PAN'
-      && x.tx.type !== 'ForcedExit'
-      && Date.parse(x.tx.created_at) > DONATIONS_STARTED_AT;
-  });
+  console.log('zksync transactions: ', transactions.length);
+  const currentTransactions = transactions.filter(x => Date.parse(x.created_at) > DONATIONS_STARTED_AT);
+  console.log(`donation period: ${DONATIONS_STARTED_AT} - ${Date.now()}`);
+  console.log('zksync current transactions: ', currentTransactions.length);
+  const panTransactions = currentTransactions.filter(x => x.tx.token === 'PAN' && x.tx.type !== 'ForcedExit');
+  console.log('zksync PAN transactions: ', panTransactions.length);
+
   return panTransactions.map(transaction => {
     return {
       'Txhash': transaction['hash'],
@@ -315,7 +325,7 @@ async function run() {
   }, new Set());
   console.log('zkSync users', zksyncAddresses);
   */
- const zksyncAddresses = Object.keys(grantNames);
+  const zksyncAddresses = Object.keys(grantNames);
   const zksyncTransactions = await getZksyncTransactions(
     Array.from(zksyncAddresses.values())
       .concat(Object.values(LEAGUE_ADDRESSES))
@@ -360,6 +370,7 @@ async function run() {
     donor.projects[grantAddress] = {
       name: grant.name || grantAddress,
       time: item['DateTime'],
+      txhash: item['Txhash'],
     };
     donors[donorAddress] = donor;
   });
@@ -384,4 +395,7 @@ async function run() {
 
   const donationsCsv = donationsToCSV(grants, donors);
   fs.writeFileSync('gitcoin-donations.csv', donationsCsv);
+
+  console.log('zksync fetch errors:', zksyncErrors);
+  console.log('CSV files written.')
 }
