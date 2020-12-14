@@ -142,6 +142,12 @@ const panvalaLeagueCommunities = [{
 }, {
   name: "Handshake Development Fund",
   img: "handshakedevelopmentfund.png",
+}, {
+  name: "LexDAO",
+  img: "lexdao.jpg",
+}, {
+  name: "Grassroots Economics",
+  img: "grassrootseconomics.jpg",
 }];
 
 const useStyles = makeStyles((theme) => ({

@@ -195,6 +195,18 @@ const categories = [
     description:
       "Handshake is a completely community-run decentralized blockchain built to dismantle ICANN's monopoly on top-level domains (.com, .net, .org, .io, etc.) and improve internet security by replacing Certificate Authorities. This community run development fund is the only source of non-VC, non-dilutive, grants funding in the HNS community.",
   },
+  {
+    categoryID: 35,
+    title: 'LexDAO',
+    description:
+      "LexDAO is a group of legal engineering professionals who are seeking to provide a trusted layer between the decentralized world of blockchains and a legal settlement layer in the real world. We are trying to bridge this layer to provide a working framework for organizations to work in a trustless and trusted manner using Ethereum, blockchains, smart contracts and decentralized organizations.",
+  },
+  {
+    categoryID: 36,
+    title: 'Grassroots Economics',
+    description:
+      "Grassroots Economics is a non-profit foundation that seeks to empower marginalized communities to take charge of their own livelihoods and economic future. We focus on community development through economic empowerment and community currency programs. Beneficiaries of our programs include small businesses and people living in informal settlements as well as rural areas.",
+  },
 ];
 
 const EMPTY_PERCENTAGES = {};
@@ -340,7 +352,17 @@ const stakingResults = {
     "id": 34,
     "name": "Handshake Development Fund",
     "weight": "8858.987297159739132967"
-  }
+  },
+  "35": {
+    "id": 35,
+    "name": "LexDAO",
+    "weight": "0.0"
+  },
+  "36": {
+    "id": 36,
+    "name": "Grassroots Economics",
+    "weight": "0.0"
+  },
 };
 
 categories.sort((a, b) => {
