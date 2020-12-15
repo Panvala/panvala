@@ -221,22 +221,22 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1245462.923022287068333207"
+    "weight": "1246298.910276262196085384"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "996651.09924574393757"
+    "weight": "1004444.46024574393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "384478.993593871985520403"
+    "weight": "390938.049717721588742333"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "161894.805737689794988623"
+    "weight": "162749.805737689794988623"
   },
   "12": {
     "id": 12,
@@ -246,7 +246,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "721374.570677534453621069"
+    "weight": "724034.707081694953621069"
   },
   "14": {
     "id": 14,
@@ -266,7 +266,7 @@ const stakingResults = {
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "233934.304969209804886529"
+    "weight": "232200.781069209804886529"
   },
   "18": {
     "id": 18,
@@ -291,7 +291,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "22481.859466173807534485"
+    "weight": "22909.359466173807534485"
   },
   "23": {
     "id": 23,
@@ -321,7 +321,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "2558.270381645721594481"
+    "weight": "1208.270381645721594481"
   },
   "29": {
     "id": 29,
@@ -341,12 +341,12 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "14051.41"
+    "weight": "14140.41"
   },
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "352.033275651817712042"
+    "weight": "779.533275651817712042"
   },
   "34": {
     "id": 34,
@@ -362,7 +362,7 @@ const stakingResults = {
     "id": 36,
     "name": "Grassroots Economics",
     "weight": "0.0"
-  },
+  }
 };
 
 categories.sort((a, b) => {
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 13';
+const stakingTotalsUpdated = 'December 14';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
