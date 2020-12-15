@@ -5,14 +5,6 @@ module.exports = {
     return queryInterface.bulkInsert(
       'FundingCategories',
       [{ id: 35, displayName: 'LexDAO', createdAt: new Date(), updatedAt: new Date() }],
-      [
-        {
-          id: 36,
-          displayName: 'Grassroots Economics',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
       {}
     );
   },
@@ -21,7 +13,7 @@ module.exports = {
     return queryInterface.bulkDelete(
       'FundingCategories',
       {
-        id: [35, 36],
+        id: [35],
       },
       {}
     );
