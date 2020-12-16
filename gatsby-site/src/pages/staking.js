@@ -221,22 +221,22 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1246298.910276262196085384"
+    "weight": "1225769.173185313326325324"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1004444.46024574393757"
+    "weight": "1000444.08045374393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "390938.049717721588742333"
+    "weight": "481527.909717721588742333"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "162749.805737689794988623"
+    "weight": "162830.555737689794988623"
   },
   "12": {
     "id": 12,
@@ -246,12 +246,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "724034.707081694953621069"
+    "weight": "725194.307581694953621069"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "78126.326803053058856922"
+    "weight": "79704.096803053058856922"
   },
   "15": {
     "id": 15,
@@ -261,12 +261,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "10659.457295457406628816"
+    "weight": "9651.386123457406628816"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "232200.781069209804886529"
+    "weight": "469299.997156358725955414"
   },
   "18": {
     "id": 18,
@@ -321,7 +321,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "1208.270381645721594481"
+    "weight": "2080.979050567804208844"
   },
   "29": {
     "id": 29,
@@ -331,7 +331,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "41597.208149647479986422"
+    "weight": "47136.539737647479986422"
   },
   "31": {
     "id": 31,
@@ -361,7 +361,7 @@ const stakingResults = {
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "0.0"
+    "weight": "19415.98709094886976006"
   }
 };
 
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 14';
+const stakingTotalsUpdated = 'December 15';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
