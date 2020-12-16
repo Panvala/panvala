@@ -1,5 +1,5 @@
 import { UseWalletProvider } from 'use-wallet';
-import App from '../components/App';
+import App from '../components/app';
 
 function Embed(props) {
   return (
