@@ -57,7 +57,7 @@ export default function Donations({ scoreboard, totals }) {
             </Grid>
           </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Staking Yield Curves</Typography>
             <div style={{ width: '100%', height: 300 }}>
