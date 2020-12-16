@@ -44,6 +44,7 @@ export function getStakingYieldCurveData(communityRow, totals) {
       stakedAmount,
       subsidy,
       funding: subsidy + parseCommaFloat(communityRow['PAN Donated']),
+      reference: currentStakedTokens < fullyStakedAmount ? stakedAmount === currentStakedTokens : stakedAmount === fullyStakedAmount,
     };
   });
 }
@@ -73,6 +74,7 @@ export function getCommunitySubsidyChartData(communityName, scoreboard, totals) 
   const communityRow = scoreboard[communityName];
   const chartData = {};
   const communityData = getStakingYieldCurveData(communityRow, totals);
+  let referenceDot = null;
   communityData.forEach(item => {
     const stakedAmount = Math.round(item.stakedAmount * 100) / 100;
     chartData[stakedAmount] = chartData[stakedAmount] || { stakedAmount };
@@ -81,14 +83,21 @@ export function getCommunitySubsidyChartData(communityName, scoreboard, totals) 
       const percentYield = Math.log((item.subsidy + item.stakedAmount) / item.stakedAmount) / 0.25 * 100;
       chartData[stakedAmount].yield = Math.round(percentYield * 100) / 100;
     }
-  });
-  return Object.values(chartData).sort((a, b) => {
-    if (a.stakedAmount === b.stakedAmount) {
-      return 0;
+    if (item.reference) {
+      referenceDot = chartData[stakedAmount];
     }
-    if (a.stakedAmount > b.stakedAmount) {
-      return 1;
-    }
-    return -1;
   });
+
+  return {
+    line: Object.values(chartData).sort((a, b) => {
+      if (a.stakedAmount === b.stakedAmount) {
+        return 0;
+      }
+      if (a.stakedAmount > b.stakedAmount) {
+        return 1;
+      }
+      return -1;
+    }),
+    dot: referenceDot,
+  };
 }
