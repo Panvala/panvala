@@ -1,35 +1,16 @@
-import fs from 'fs';
-import csvParse from 'csv-parse';
-import path from 'path';
 import { makeStyles, Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@material-ui/core';
 import { Info } from '@material-ui/icons';
+import Link from 'next/link'
 import { Legend, LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
+import { getLeagueSubsidyChartData, parseCommaFloat } from '../lib/calculations';
+import { communitySlugs } from '../communities';
 import BaseLayout from "../layout";
+import { getSpreadsheetData } from '../lib/static';
 
-function parseCommaFloat(text) {
-  return parseFloat(text.replace(/,/g, ''));
-}
 
-function parsePercent(text) {
-  return parseFloat(text) / 100;
-}
-
-export function getStaticProps(context) {
-  return new Promise((resolve) => {
-    const scoreboard = {};
-    let totals = null;
-    fs.createReadStream(path.resolve(process.cwd(), 'data/scoreboard-batch-9.csv'))
-      .pipe(csvParse({columns: true}))
-      .on('data', row => {
-        if(row['Community'] === '' && parseCommaFloat(row['Staked Tokens']) > 0) {
-          totals = row;
-        } else if (row['Community'] !== '') {
-          scoreboard[row['Community']] = row;
-        }
-      })
-      .on('end', () => resolve([scoreboard, totals]));
-  }).then(([scoreboard, totals]) => { return { props: { scoreboard, totals } } });
+export async function getStaticProps(content) {
+  return { props: await getSpreadsheetData() };
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -42,68 +23,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function getStakingYieldCurveData(community, totals) {
-  const donationShare = parsePercent(community['Share of Quadratic Funding']);
-  if (donationShare === 0) {
-    return [{
-      stakedAmount: 0,
-      subsidy: 0,
-      funding: 0,
-    }];
-  }
 
-  const currentStakedTokens = parseCommaFloat(community['Staked Tokens']);
-  const totalStakedTokens = parseCommaFloat(totals['Staked Tokens']);
-  const fullyStakedAmount = (donationShare * totalStakedTokens - donationShare * currentStakedTokens) /
-    (1 - donationShare);
-  
-  const SAMPLE_COUNT = 20;
-  const stakedAmounts = [fullyStakedAmount];
-  for (let i = 0; i < SAMPLE_COUNT; i++) {
-    stakedAmounts.push(fullyStakedAmount / SAMPLE_COUNT * i);
-  }
-
-  const OVERFLOW_SLOPE = 2;
-  const quadraticFunding = parseCommaFloat(community['Quadratic Funding']);
-  const totalQuadraticFunding = parseCommaFloat(totals['Quadratic Funding']);
-  const totalSubsidy = parseCommaFloat(totals['Estimated Subsidy\n(PAN)']);
-  return stakedAmounts.map(stakedAmount => {
-    const utilization = stakedAmount === 0 ? 0 : donationShare * (stakedAmount + totalStakedTokens - currentStakedTokens) / stakedAmount;
-    const adjustedUtilization = Math.sqrt(-4 * (OVERFLOW_SLOPE / 2) * (1 - (OVERFLOW_SLOPE / 2 ) - utilization) / OVERFLOW_SLOPE);
-    const subsidyPoints = utilization === 0 ? 0 : adjustedUtilization / utilization * quadraticFunding;
-    const shareOfSubsidy = subsidyPoints / (totalQuadraticFunding - quadraticFunding + subsidyPoints);
-    const subsidy = shareOfSubsidy * totalSubsidy;
-    return {
-      stakedAmount,
-      subsidy,
-      funding: subsidy + parseCommaFloat(community['PAN Donated']),
-    };
-  });
-}
-
-function getAllSubsidies(scoreboard, totals) {
-  const chartData = {};
-  Object.values(scoreboard).forEach(community => {
-    const communityData = getStakingYieldCurveData(community, totals);
-    communityData.forEach(item => {
-      chartData[item.stakedAmount] = chartData[item.stakedAmount] || { stakedAmount: item.stakedAmount };
-      chartData[item.stakedAmount][community['Community']] = item.subsidy;
-    })
-  });
-  return Object.values(chartData).sort((a, b) => {
-    if (a.stakedAmount === b.stakedAmount) {
-      return 0;
-    }
-    if (a.stakedAmount > b.stakedAmount) {
-      return 1;
-    }
-    return -1;
-  });
-}
 
 export default function Donations({ scoreboard, totals }) {
   const classes = useStyles();
-  const subsidyChartData = getAllSubsidies(scoreboard, totals);
+  const subsidyChartData = getLeagueSubsidyChartData(scoreboard, totals);
+  const sortedScoreboardEntries = Object.entries(scoreboard).sort((a, b) => {
+    const stakedA = parseCommaFloat(a[1]['Fully Staked Funding\n(PAN)']);
+    const stakedB = parseCommaFloat(b[1]['Fully Staked Funding\n(PAN)']);
+    // Sort descending.
+    if (stakedA === stakedB) return 0;
+    if (stakedA > stakedB) return -1;
+    return 1;
+  });
 
   return (
     <BaseLayout>
@@ -165,10 +97,10 @@ export default function Donations({ scoreboard, totals }) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {Object.entries(scoreboard).map(([community, data]) => {
+                    {sortedScoreboardEntries.map(([community, data]) => {
                       return (
                         <TableRow key={community}>
-                          <TableCell>{data['Community']}</TableCell>
+                          <TableCell><Link href={`/${communitySlugs[data['Community Name']]}`}>{data['Community']}</Link></TableCell>
                           <TableCell>{data['PAN Donated']}</TableCell>
                           <TableCell>{data['Donation Count']}</TableCell>
                           <TableCell>{data['Share of Quadratic Funding']}</TableCell>

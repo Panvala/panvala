@@ -1,7 +1,9 @@
 import { makeStyles, Box, Button, Grid, Paper, Typography } from '@material-ui/core';
+import Link from 'next/link'
 import { BarChart, Bar, Legend, LineChart, Line, PieChart, Pie, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import BaseLayout from "../layout";
+import { communitiesBySlug } from '../communities';
 
 const quarterlyMetrics = [{
   date: '4/7/2020',
@@ -61,94 +63,7 @@ const fundingAllocations = [{
   funding: 12553.03,
 }];
 
-const panvalaLeagueCommunities = [{
-  name: "Commons Stack",
-  img: "commonsstack.png",
-}, {
-  name: "DAppNode",
-  img: "dappnode.png",
-}, {
-  name: "MetaCartel",
-  img: "metacartel.png",
-}, {
-  name: "DXdao",
-  img: "dxdao.png",
-}, {
-  name: "Hashing it Out",
-  img: "hashingitout.jpg",
-}, {
-  name: "Meta Gamma Delta",
-  img: "metagammadelta.jpg",
-}, {
-  name: "KERNEL",
-  img: "kernel.png",
-}, {
-  name: "future modern",
-  img: "futuremodern.jpg",
-}, {
-  name: "DePo DAO",
-  img: "depodao.jpg",
-}, {
-  name: "WhalerDAO",
-  img: "whalerdao.png",
-}, {
-  name: "Matic Mitra",
-  img: "maticmitra.jpg",
-}, {
-  name: "FightPandemics",
-  img: "fightpandemics.jpg",
-}, {
-  name: "lab10 collective",
-  img: "lab10collective.png",
-}, {
-  name: "DeFi Safety",
-  img: "defisafety.jpg",
-}, {
-  name: "Web3Bridge",
-  img: "web3bridge.jpg",
-}, {
-  name: "Mol LeArt",
-  img: "molleart.jpg",
-}, {
-  name: "Rotki",
-  img: "rotki.jpg",
-}, {
-  name: "BrightID",
-  img: "brightid.jpg",
-}, {
-  name: "EthCC by Ethereum France",
-  img: "ethereumfrance.jpg",
-}, {
-  name: "Abridged",
-  img: "abridged.jpg",
-}, {
-  name: "NFThub",
-  img: "nfthub.jpg",
-}, {
-  name: "MetaGame",
-  img: "metagame.jpg",
-}, {
-  name: "MetaSpace",
-  img: "metaspace.jpg",
-}, {
-  name: "Trips Community",
-  img: "tripscommunity.jpg",
-}, {
-  name: "Upala",
-  img: "upala.png",
-}, {
-  name: "Bloom Network",
-  img: "bloomnetwork.jpg",
-}, {
-  name: "Handshake Development Fund",
-  img: "handshakedevelopmentfund.png",
-}, {
-  name: "LexDAO",
-  img: "lexdao.jpg",
-}, {
-  name: "Grassroots Economics",
-  img: "grassrootseconomics.jpg",
-}];
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -280,16 +195,16 @@ export default function Index() {
         <Grid item xs={12}>
           <Paper className={classes.gridItemPaper}>
             <Typography component="h1" variant="h4" gutterBottom>Panvala League Communities</Typography>
-            <Typography component="h2" variant="h6" gutterBottom>{panvalaLeagueCommunities.length} communities</Typography>
+            <Typography component="h2" variant="h6" gutterBottom>{Object.values(communitiesBySlug).length} communities</Typography>
             <Grid container spacing={4}>
-              {panvalaLeagueCommunities.map(community => {
+              {Object.values(communitiesBySlug).map(community => {
                 return (
                   <Grid item xs={12} md={4} key={community.name}>
                     <Box display="flex" alignItems="center">
                       <Box mr={3}>
                         <img src={`/league/${community.img}`} height="144" />
                       </Box>
-                      <Typography component="h3" variant="h6">{community.name}</Typography>
+                      <Typography component="h3" variant="h6"><Link href={`/${community.slug}`}>{community.name}</Link></Typography>
                     </Box>
                   </Grid>
                 );
