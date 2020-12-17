@@ -221,17 +221,17 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1225769.173185313326325324"
+    "weight": "1213381.134097677284874243"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1000444.08045374393757"
+    "weight": "1000919.08045374393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "481527.909717721588742333"
+    "weight": "482022.909717721588742333"
   },
   "11": {
     "id": 11,
@@ -246,12 +246,12 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "725194.307581694953621069"
+    "weight": "726140.007581694953621069"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "79704.096803053058856922"
+    "weight": "86291.791398677741131741"
   },
   "15": {
     "id": 15,
@@ -261,17 +261,17 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "9651.386123457406628816"
+    "weight": "6497.499347868748260579"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "469299.997156358725955414"
+    "weight": "316326.744647909129814423"
   },
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "0.0"
+    "weight": "674.11970870682065611"
   },
   "19": {
     "id": 19,
@@ -296,7 +296,7 @@ const stakingResults = {
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "100010.775239507272806652"
+    "weight": "100110.775239507272806652"
   },
   "24": {
     "id": 24,
@@ -311,7 +311,7 @@ const stakingResults = {
   "26": {
     "id": 26,
     "name": "Ethereum France",
-    "weight": "0.0"
+    "weight": "100.0"
   },
   "27": {
     "id": 27,
@@ -331,7 +331,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "47136.539737647479986422"
+    "weight": "47852.139737647479986422"
   },
   "31": {
     "id": 31,
@@ -346,7 +346,7 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "779.533275651817712042"
+    "weight": "1064.533275651817712042"
   },
   "34": {
     "id": 34,
@@ -361,7 +361,7 @@ const stakingResults = {
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "19415.98709094886976006"
+    "weight": "19869.98709094886976006"
   }
 };
 
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 15';
+const stakingTotalsUpdated = 'December 16';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
