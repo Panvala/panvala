@@ -6,6 +6,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import { useEffect } from 'react';
 import {
   BarChart,
   Bar,
@@ -16,12 +17,21 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Pie,
+  PieChart,
 } from 'recharts';
+import Header from '../components/Header';
+import EstimatedFunds from '../components/EstimatedFunds';
+import records from '../data/record-slugify.json';
 
 import BaseLayout from '../layout';
-import { getData } from '../utils/getData';
-
-const data = getData();
+import { getQuarterData } from '../utils/getData';
+import NumberOfPeople from '../components/NumberOfPeople';
+import TotalTokensStaked from '../components/TotalTokensStaked';
+import StakedVsDonated from '../components/RewardWithStaked';
+import FundingOverflow from '../components/FundingOverflow';
+import DonationVsStaked from '../components/DonationVsStaked';
+import NumberOfDonations from '../components/NumberOfDonations';
 
 const quarterlyMetrics = [
   {
@@ -65,76 +75,29 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
-
-  console.log(getData());
+  const quarterData = getQuarterData();
 
   return (
     <BaseLayout>
-      <Grid container spacing={4}>
-        <Grid item sm={12}>
-          <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
-              Current Quarter
-            </Typography>
-            <Grid container spacing={4}>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Total Inflation
-                </Typography>
-                <Typography variant='body1'>1,755,937.14 PAN</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  League Application Deadline
-                </Typography>
-                <Typography variant='body1'>November 13</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Donations Begin
-                </Typography>
-                <Typography variant='body1'>December 2</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Donations End
-                </Typography>
-                <Typography variant='body1'>TBD</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Staking Deadline
-                </Typography>
-                <Typography variant='body1'>January 15</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Stake Holding Period
-                </Typography>
-                <Typography variant='body1'>January 15 - 29</Typography>
-              </Grid>
-              <Grid item sm={12} md={4}>
-                <Typography component='h2' variant='h6'>
-                  Inflation Released
-                </Typography>
-                <Typography variant='body1'>January 29</Typography>
-              </Grid>
-            </Grid>
-            <Box p={2} display='flex' justifyContent='flex-end'>
-              <Button
-                className={classes.button}
-                variant='contained'
-                color='secondary'
-                href='https://handbook.panvala.com/governance/panvala-league'
-              >
-                More Info
-              </Button>
-            </Box>
-          </Paper>
+      <Header />
+      <Grid container spacing={2}>
+        <Grid item lg={4} sm={6} xl={4} xs={12}>
+          <EstimatedFunds quarterData={quarterData} />
         </Grid>
+        <Grid item lg={4} sm={6} xl={4} xs={12}>
+          <TotalTokensStaked quarterData={quarterData} />
+        </Grid>
+        <Grid item lg={4} sm={6} xl={4} xs={12}>
+          <NumberOfPeople quarterData={quarterData} />
+        </Grid>
+
         <Grid item sm={12} md={6}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
               Quarterly Value Allocated
             </Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -161,7 +124,11 @@ export default function Index() {
         </Grid>
         <Grid item sm={12} md={6}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
               Quarterly Donations
             </Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -186,16 +153,57 @@ export default function Index() {
             </div>
           </Paper>
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
-              Funding Allocations
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
+              Staked Token VS Donated Tokens VS Funding
+              Received
             </Typography>
+            <Typography
+              component='h1'
+              variant='caption'
+              gutterBottom
+            >
+              If the donated amount is in proportion to
+              staked amount you get maximum returns.
+            </Typography>
+
+            <StakedVsDonated />
+          </Paper>
+        </Grid>
+        <Grid item sm={12}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
+              Imbalance of Staked and Donated Tokens =
+              MISSED OPPURTINITY
+            </Typography>
+            <Typography
+              component='h1'
+              variant='caption'
+              gutterBottom
+            >
+              The funding was missed becaus of imbalance in
+              Donated and Staked tokens.
+            </Typography>
+
+            <FundingOverflow />
           </Paper>
         </Grid>
         <Grid item sm={12} md={6}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
               Matching Multipliers
             </Typography>
             <div style={{ width: '100%', height: 300 }}>
@@ -222,12 +230,51 @@ export default function Index() {
             </div>
           </Paper>
         </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
+              Donation vs Staked
+            </Typography>
+
+            <DonationVsStaked />
+          </Paper>
+        </Grid>
+        <Grid item sm={12} md={6}>
+          <Paper className={classes.gridItemPaper}>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
+              Number of Donations VS Reward Multiplier
+            </Typography>
+            <Typography variant='caption' gutterBottom>
+              Panvala celebrates community, the number of
+              people making donation is more important than
+              the amount of donation.
+            </Typography>
+
+            <NumberOfDonations />
+          </Paper>
+        </Grid>
         <Grid item sm={12}>
           <Paper className={classes.gridItemPaper}>
-            <Typography component='h1' variant='h4' gutterBottom>
+            <Typography
+              component='h1'
+              variant='h4'
+              gutterBottom
+            >
               Panvala League Communities
             </Typography>
-            <Typography component='h2' variant='h6' gutterBottom>
+            <Typography
+              component='h2'
+              variant='h6'
+              gutterBottom
+            >
               25 communities
             </Typography>
           </Paper>
