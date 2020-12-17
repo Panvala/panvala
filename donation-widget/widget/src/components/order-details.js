@@ -31,10 +31,7 @@ export default function OrderDetails(props) {
             )
           )
           .send({ from: activeAddress });
-        localStorage.setItem(
-          'signedTxFirst',
-          JSON.stringify(res)
-        );
+
         console.log({ res });
         props.setSuccessData(res);
         await sleep(3000);
@@ -55,7 +52,6 @@ export default function OrderDetails(props) {
         defaultAmount / activePaymentMethod.currentPrice
       )}&fromAddress=${activeAddress}&slippage=1`;
 
-      console.log({ url });
       try {
         setIsProcessing(true);
         let { tx, errors } = await fetch(url).then((res) =>
