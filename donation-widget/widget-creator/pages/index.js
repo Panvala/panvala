@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { CopyBlock, dracula } from 'react-code-blocks';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import useCopyToClipboard from '../utils/useCopyToClipBoard';
