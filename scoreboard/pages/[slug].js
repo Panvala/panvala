@@ -72,8 +72,8 @@ export default function Community({ scoreboard, totals }) {
                   <Legend />
                   <Line yAxisId="left" connectNulls={true} dataKey="subsidy" name="Matching PAN" key="subsidy" />
                   <Line yAxisId="right" connectNulls={true} dataKey="yield" name="Yield (APY)" stroke="#888888" key="yield" />
-                  <ReferenceDot yAxisId="left" x={dot.stakedAmount} y={dot.subsidy} fill="red" />
-                  <ReferenceDot yAxisId="right" x={dot.stakedAmount} y={dot.yield} fill="red" />
+                  <ReferenceDot yAxisId="left" x={dot.stakedAmount} y={dot.subsidy} fill={fullyStaked ? "green" : "red"} />
+                  <ReferenceDot yAxisId="right" x={dot.stakedAmount} y={dot.yield} fill={fullyStaked ? "green" : "red"} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
