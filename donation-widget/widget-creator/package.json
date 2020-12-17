@@ -10,7 +10,6 @@
     "next": "latest",
     "prismjs": "^1.22.0",
     "react": "^16.13.1",
-    "react-code-blocks": "^0.0.8",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
