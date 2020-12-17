@@ -12,11 +12,11 @@ Create a widget that Panvala League communities can place on their own website t
 
 1. The website to create a custom widget
 
-![]()
+![](https://github.com/nnnkit/panvala/blob/widget/donation-widget/Screenshot%202020-12-18%20at%204.48.14%20AM.png?raw=true)
 
 2. The widget
 
-![]()
+![](https://github.com/nnnkit/panvala/blob/widget/donation-widget/Screenshot%202020-12-18%20at%204.48.28%20AM.png?raw=true)
 
 ## Information
 
@@ -37,3 +37,5 @@ This project contains two folders:
 #### Tech Stack
 
 - Next JS
+
+[https://youtu.be/1xvRyxj-i8o](https://youtu.be/1xvRyxj-i8o)
