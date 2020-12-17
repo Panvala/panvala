@@ -93,7 +93,7 @@ export default function BaseLayout(props) {
               <ListItem button disabled key="Staking">
                 <ListItemText inset primary="Staking" />
               </ListItem>
-              <ListItem button disabled key="History">
+              <ListItem button component="a" href="/history" key="History">
                 <ListItemText inset primary="Funding History" />
               </ListItem>
               <ListItem button disabled key="Inflation">
