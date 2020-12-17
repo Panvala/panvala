@@ -3,6 +3,9 @@ const {
   CleanWebpackPlugin,
 } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const dotenv = require('dotenv').config({
+  path: path.join(__dirname, '.env'),
+});
 
 module.exports = {
   mode: 'production',

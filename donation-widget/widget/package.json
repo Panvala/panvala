@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "bignumber.js": "^9.0.1",
+    "dotenv": "^8.2.0",
     "ethers": "^5.0.24",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

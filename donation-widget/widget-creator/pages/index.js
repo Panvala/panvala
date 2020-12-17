@@ -10,8 +10,8 @@ let sampleHTML = `
   <meta charset="UTF-8"/>
   </head>
   <body>
+  <div id="panWidget"></div>
   <script defer src="https://panvala.vercel.app/widget.js"></script>
-  <div class="widget"></div>
 </body>
 </html>`;
 
@@ -21,7 +21,6 @@ function Home() {
   const [recieversAddress, setRecieversAddress] = useState(
     ''
   );
-  const [recieversName, setRecieversName] = useState('');
 
   const [copied, copy] = useCopyToClipboard(htmlText);
   function handleAmountChange({ target }) {
@@ -45,7 +44,7 @@ function Home() {
       <meta charset="UTF-8"/>
     </head>
     <body>
-      <div class="widget"></div>
+      <div id="panWidget"></div>
       <script defer src="https://panvala.vercel.app/widget.js"></script>
       <script >
         panWidget.init(${JSON.stringify({

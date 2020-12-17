@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 
-// import App from './App';
-
-// const title = 'My Minimal React Webpack Babel Setup';
-
 import { UseWalletProvider } from 'use-wallet';
 import App from './components/app';
 import './styles/index.css';
@@ -18,8 +14,7 @@ function Widget({ config }) {
       chainId={1}
       connectors={{
         walletconnect: {
-          rpcUrl:
-            'https://mainnet.infura.io/v3/d5229d333091492d97e4791ca44c2596',
+          rpcUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_ID}`,
         },
       }}
     >
@@ -42,20 +37,22 @@ function Widget({ config }) {
   );
 }
 
-ReactDOM.render(
-  <Widget
-    config={{
-      defaultAmount: 5,
-      toAddress:
-        '0x6d0214227c0A521C282215ED2c6b16ADBaEA5ea7',
-    }}
-  />,
-  document.getElementById('app')
-);
+if (process.env.NODE_ENV === 'development') {
+  ReactDOM.render(
+    <Widget
+      config={{
+        defaultAmount: 5,
+        toAddress:
+          '0x6d0214227c0A521C282215ED2c6b16ADBaEA5ea7',
+      }}
+    />,
+    document.getElementById('app')
+  );
+}
 
-// export const init = (config) => {
-//   ReactDOM.render(
-//     <Widget config={config} />,
-//     document.getElementById('widget')
-//   );
-// };
+export function init(config) {
+  ReactDOM.render(
+    <Widget config={config} />,
+    document.getElementById('panWidget')
+  );
+}
