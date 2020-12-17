@@ -70,9 +70,11 @@ export default function Index() {
                   <Grid item xs={12} md={4} key={community.name}>
                     <Box display="flex" alignItems="center">
                       <Box mr={3}>
-                        <img src={`/league/${community.img}`} height="144" />
+                        <Link href={`/${community.slug}`}>
+                          <a><img src={`/league/${community.img}`} height="144" /></a>
+                        </Link>
                       </Box>
-                      <Typography component="h3" variant="h6"><Link href={`/${community.slug}`}>{community.name}</Link></Typography>
+                      <Typography component="h3" variant="h6"><Link href={`/${community.slug}`}><a>{community.name}</a></Link></Typography>
                     </Box>
                   </Grid>
                 );

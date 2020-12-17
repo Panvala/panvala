@@ -100,7 +100,7 @@ export default function Donations({ scoreboard, totals }) {
                     {sortedScoreboardEntries.map(([community, data]) => {
                       return (
                         <TableRow key={community}>
-                          <TableCell><Link href={`/${communitySlugs[data['Community Name']]}`}>{data['Community']}</Link></TableCell>
+                          <TableCell><Link href={`/${communitySlugs[data['Community Name']]}`}><a>{data['Community']}</a></Link></TableCell>
                           <TableCell>{data['PAN Donated']}</TableCell>
                           <TableCell>{data['Donation Count']}</TableCell>
                           <TableCell>{data['Share of Quadratic Funding']}</TableCell>
