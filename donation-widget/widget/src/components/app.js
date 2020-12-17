@@ -11,11 +11,12 @@ import payOptions from '../utils/payment-methods';
 import useAddCurrentPrice from '../utils/useAddCurrentPrice';
 import Error from './error';
 import { PaymentInfoContextProvider } from '../utils/PaymentInfoContext';
+import Connecting from './connecting';
 
 function switchView(status, errorMsg, activePaymentMethod) {
   switch (status) {
     case 'connecting':
-      return <h1>Connecting</h1>;
+      return <Connecting />;
     case 'connected':
       return (
         <PaymentInfo
