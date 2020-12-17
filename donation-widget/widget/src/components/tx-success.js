@@ -1,6 +1,14 @@
 import { useEffect } from 'react';
 
-function TransactionSuccess(props) {
+function TransactionSuccess({ successData }) {
+  useEffect(() => {
+    setTimeout(() => {
+      window.open(
+        `https://etherscan.io/tx/${successData.transactionHash}`,
+        '_blank'
+      );
+    }, 3000);
+  }, []);
   return (
     <div class='bg-white px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-sm sm:w-full sm:p-6'>
       <div>
@@ -25,8 +33,7 @@ function TransactionSuccess(props) {
           </h3>
           <div class='mt-2'>
             <p class='text-sm leading-5 text-gray-500'>
-              Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Consequatur amet labore.
+              Your transaction is successful!
             </p>
           </div>
         </div>
@@ -37,7 +44,12 @@ function TransactionSuccess(props) {
             type='button'
             class='inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5'
           >
-            Go back to dashboard
+            <a
+              target='_blank'
+              href={`https://etherscan.io/tx/${successData.transactionHash}`}
+            >
+              Check EtherScan
+            </a>
           </button>
         </span>
       </div>

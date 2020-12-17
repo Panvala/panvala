@@ -21,6 +21,7 @@ function switchView(status, errorMsg, activePaymentMethod) {
       return (
         <PaymentInfo
           activePaymentMethod={activePaymentMethod}
+          close={close}
         />
       );
     case 'disconnected':

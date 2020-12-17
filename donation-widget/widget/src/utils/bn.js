@@ -7,3 +7,9 @@ export function getBigNumber(value) {
 export function getSmallNumber(value) {
   return new BigNumber(value).shiftedBy(-18).toString();
 }
+
+export function sleep(milliseconds) {
+  return new Promise((resolve) =>
+    setTimeout(resolve, milliseconds)
+  );
+}

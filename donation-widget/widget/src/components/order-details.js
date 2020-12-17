@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import PaymentInfoContext from '../utils/PaymentInfoContext';
 import DonateButton from './donate-button';
 import ERC20Contract from '../contracts/erc20-contract';
-import { getBigNumber } from '../utils/bn';
+import { getBigNumber, sleep } from '../utils/bn';
 import web3 from '../contracts/web3';
 
 export default function OrderDetails(props) {
@@ -31,8 +31,14 @@ export default function OrderDetails(props) {
             )
           )
           .send({ from: activeAddress });
-        props.setActiveModal('success');
+        localStorage.setItem(
+          'signedTxFirst',
+          JSON.stringify(res)
+        );
+        console.log({ res });
         props.setSuccessData(res);
+        await sleep(3000);
+        props.setActiveModal('success');
       } catch (error) {
         props.setActiveModal('error');
         props.setErrorMessage(error);
@@ -49,6 +55,7 @@ export default function OrderDetails(props) {
         defaultAmount / activePaymentMethod.currentPrice
       )}&fromAddress=${activeAddress}&slippage=1`;
 
+      console.log({ url });
       try {
         setIsProcessing(true);
         let { tx, errors } = await fetch(url).then((res) =>
@@ -61,10 +68,10 @@ export default function OrderDetails(props) {
           data,
           value,
         });
-        console.log(tx, signedTx, errors);
-        setSuccessData(tx);
+        props.setSuccessData(signedTx);
+        await sleep(3000);
+        props.setActiveModal('success');
       } catch (error) {
-        console.log(error);
         props.setActiveModal('error');
         props.setErrorMessage(error);
       } finally {

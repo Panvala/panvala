@@ -43,7 +43,10 @@ function PaymentInfo(props) {
 
   if (activeModal === 'success') {
     return (
-      <TransactionSuccess setActiveModal={setActiveModal} />
+      <TransactionSuccess
+        setActiveModal={setActiveModal}
+        successData={successData}
+      />
     );
   }
   if (activeModal === 'error') {
@@ -71,6 +74,7 @@ function PaymentInfo(props) {
         successData={successData}
         setSuccessData={setSuccessData}
         setActiveModal={setActiveModal}
+        close={props.close}
       />
     </div>
   );

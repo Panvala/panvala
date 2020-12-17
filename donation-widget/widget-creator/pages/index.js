@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Head from 'next/head';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-okaidia.css';
 import useCopyToClipboard from '../utils/useCopyToClipBoard';
@@ -49,7 +50,7 @@ function Home() {
       <script >
         panWidget.init(${JSON.stringify({
           defaultAmpunt: amount,
-          recieversAddress: address,
+          toAddress: address,
         })})
       </script>
     </body>
@@ -62,11 +63,18 @@ function Home() {
     );
   }, [defaultAmount, recieversAddress]);
   return (
-    <div className='bg-gradient-to-r from-blue-900 to-blue-400'>
-      <div className='overflow-hidden h-screen max-w-6xl mx-auto'>
+    <div className=''>
+      <Head>
+        <title>PAN Donation Widget</title>
+        <meta
+          name='viewport'
+          content='initial-scale=1.0, width=device-width'
+        />
+      </Head>
+      <div className='overflow-hidden max-w-6xl mx-auto'>
         <h1 className='text-4xl inline-block tracking-tight font-bold text-center leading-3 text-white sm:text-5xl md:text-6xl py-12 w-full'>
           <span>Create Your Custom Widget For </span>
-          <span className='text-yellow-300 block pt-4'>
+          <span className='text-black block pt-4'>
             PAN Donations
           </span>
         </h1>
