@@ -11,7 +11,7 @@ let sampleHTML = `
   </head>
   <body>
   <div id="panWidget"></div>
-  <script defer src="https://panvala.vercel.app/widget.js"></script>
+  <script src="https://panvala.vercel.app/widget.js"></script>
 </body>
 </html>`;
 
@@ -45,7 +45,7 @@ function Home() {
     </head>
     <body>
       <div id="panWidget"></div>
-      <script defer src="https://panvala.vercel.app/widget.js"></script>
+      <script src="https://panvala.vercel.app/widget.js"></script>
       <script >
         panWidget.init(${JSON.stringify({
           defaultAmpunt: amount,
