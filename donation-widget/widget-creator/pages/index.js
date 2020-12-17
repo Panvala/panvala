@@ -8,10 +8,10 @@ let sampleHTML = `
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script src="https://panvala.vercel.app/widget.js"></script>
   </head>
   <body>
   <div id="panWidget"></div>
-  <script src="https://panvala.vercel.app/widget.js"></script>
 </body>
 </html>`;
 
@@ -42,10 +42,10 @@ function Home() {
     <html lang="en">
     <head>
       <meta charset="UTF-8"/>
+      <script src="https://panvala.vercel.app/widget.js"></script>
     </head>
     <body>
       <div id="panWidget"></div>
-      <script src="https://panvala.vercel.app/widget.js"></script>
       <script >
         panWidget.init(${JSON.stringify({
           defaultAmpunt: amount,
