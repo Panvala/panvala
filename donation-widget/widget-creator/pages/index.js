@@ -74,7 +74,7 @@ function Home() {
           <div className='w-3/12'>
             <div className='rounded-md shadow-sm items-baseline justify-between'>
               <h3 className='mt-2 text-lg tracking-tight text-white mb-2'>
-                Default amount for donation (in USD)
+                Default amount for donations (in USD)
               </h3>
               <div className='relative w-full'>
                 <input
@@ -92,7 +92,8 @@ function Home() {
             </div>
             <div className='rounded-md shadow-sm items-baseline justify-between mt-4'>
               <h3 className='mt-2 text-lg tracking-tight text-white mb-2'>
-                ETH Address For Donation (required)
+                Ethereum(ETH) address to recieve donations
+                (required)
               </h3>
               <input
                 placeholder='0x6A92864...'
