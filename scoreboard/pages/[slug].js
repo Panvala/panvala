@@ -50,7 +50,14 @@ export default function Community({ scoreboard, totals }) {
     <BaseLayout title={communityInfo.name}>
       <Grid container spacing={4}>
         <Grid item xs={12}>
-          <Typography variant="h1" gutterBottom>{communityInfo.name}</Typography>
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={2}>
+              <img src={`/league/${communityInfo.img}`} height="144" style={{ margin: "0 auto" }} />
+            </Grid>
+            <Grid item xs={10}>
+              <Typography variant="h1" gutterBottom>{communityInfo.name}</Typography>
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={12}>
           <Paper className={classes.gridItemPaper}>
