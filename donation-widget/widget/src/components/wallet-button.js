@@ -8,7 +8,7 @@ function WalletButton(props) {
     <button
       type='button'
       onClick={() => activate(props.connecter || '')}
-      className='mt-3 inline-flex w-full justify-between items-center px-4 py-3 rounded-md border border-transparent text-sm leading-5 font-medium text-gray-600 border-gray-400 hover:border-gray-800 focus:outline-none focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150'
+      className='mt-3 inline-flex w-full justify-between items-center px-4 py-3 rounded-md border border-transparent text-base text-gray-800 border-gray-400 hover:bg-gray-100 focus:outline-none focus:shadow-outline-blue active:bg-blue-700 tracking-wide'
     >
       <div className='flex justify-center items-center'>
         <img src={props.icon} className='w-8 h-6' alt='' />
@@ -19,7 +19,7 @@ function WalletButton(props) {
         fill='none'
         viewBox='0 0 24 24'
         stroke='currentColor'
-        className='text-gray-400 w-6 h-6'
+        className='text-gray-400 w-6 h-8'
       >
         <path
           strokeLinecap='round'

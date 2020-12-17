@@ -38,11 +38,7 @@ function Home() {
     Prism.highlightAll();
   }, [htmlText]);
 
-  function updateHtmlText(
-    amount = 50,
-    address = '',
-    name = ''
-  ) {
+  function updateHtmlText(amount = 50, address = '') {
     return `
     <!DOCTYPE html>
     <html lang="en">
@@ -56,7 +52,6 @@ function Home() {
         panWidget.init(${JSON.stringify({
           defaultAmpunt: amount,
           recieversAddress: address,
-          name: name,
         })})
       </script>
     </body>
@@ -65,20 +60,16 @@ function Home() {
 
   useEffect(() => {
     setHtmlText(
-      updateHtmlText(
-        defaultAmount,
-        recieversAddress,
-        recieversName
-      )
+      updateHtmlText(defaultAmount, recieversAddress)
     );
-  }, [defaultAmount, recieversAddress, recieversName]);
+  }, [defaultAmount, recieversAddress]);
   return (
-    <div className='bg-blue-800'>
+    <div className='bg-gradient-to-r from-blue-900 to-blue-400'>
       <div className='overflow-hidden h-screen max-w-6xl mx-auto'>
-        <h1 className='text-4xl tracking-tight font-bold leading-3 text-white sm:text-5xl md:text-6xl text-center py-12'>
-          <span>Create Widget For </span>
-          <span className='text-gray-100 xl:inline'>
-            PAN Donation
+        <h1 className='text-4xl inline-block tracking-tight font-bold text-center leading-3 text-white sm:text-5xl md:text-6xl py-12 w-full'>
+          <span>Create Your Custom Widget For </span>
+          <span className='text-yellow-300 block pt-4'>
+            PAN Donations
           </span>
         </h1>
         <div className='px-4 py-5 sm:p-6 flex justify-between'>
@@ -112,19 +103,6 @@ function Home() {
                 onChange={({ target }) => {
                   setRecieversAddress(target.value);
                 }}
-              />
-            </div>
-            <div className='rounded-md shadow-sm items-baseline justify-between mt-4'>
-              <h3 className='mt-2 text-lg tracking-tight text-white mb-2'>
-                Name of the organisation (optional)
-              </h3>
-              <input
-                placeholder='DAppNode'
-                className='w-full form-input block pl-3 pr-12 sm:text-sm sm:leading-5 rounded h-14 text-3xl'
-                value={recieversName}
-                onChange={({ target }) =>
-                  setRecieversName(target.value)
-                }
               />
             </div>
           </div>

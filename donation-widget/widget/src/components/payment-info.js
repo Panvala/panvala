@@ -1,6 +1,4 @@
 import DropdownInfo from './download-info';
-import walletInfo from '../utils/wallet.info.json';
-import WalletButton from './wallet-button';
 import OrderDetails from './order-details';
 import { useContext, useEffect, useState } from 'react';
 import PaymentInfoContext from '../utils/PaymentInfoContext';
@@ -11,8 +9,8 @@ import TransactionSuccess from './tx-success';
 import TransactionError from './tx-error';
 
 function PaymentInfo(props) {
-  const [errorMessage, setErrorMessage] = useState(true);
-  const [showSuccess, setShowSuccess] = useState();
+  const [errorMessage, setErrorMessage] = useState();
+  const [successData, setSuccessData] = useState();
   const [activeModal, setActiveModal] = useState('');
   const [
     availableTokenBalance,
@@ -21,9 +19,6 @@ function PaymentInfo(props) {
   const wallet = useWallet();
   const {
     activeAddress,
-    defaultAmount,
-    receiverAddress,
-    paymentOptions,
     activePaymentMethod: { symbol, contractAddr },
   } = useContext(PaymentInfoContext);
 
@@ -46,17 +41,19 @@ function PaymentInfo(props) {
     })();
   }, [symbol]);
 
-  if (activeModal === 'success')
+  if (activeModal === 'success') {
     return (
       <TransactionSuccess setActiveModal={setActiveModal} />
     );
-  if (activeModal === 'error')
+  }
+  if (activeModal === 'error') {
     return (
       <TransactionError
         setActiveModal={setActiveModal}
         errorMessage={errorMessage}
       />
     );
+  }
   return (
     <div className='px-4 py-5 bg-gray-50 sm:p-4 sm:pb-6'>
       <p className='text-black text-sm uppercase tracking-wider font-bold pt-1'>
@@ -70,9 +67,9 @@ function PaymentInfo(props) {
       <OrderDetails
         availableTokenBalance={availableTokenBalance}
         setErrorMessage={setErrorMessage}
-        setShowSuccess={setShowSuccess}
         errorMessage={errorMessage}
-        showSuccess={showSuccess}
+        successData={successData}
+        setSuccessData={setSuccessData}
         setActiveModal={setActiveModal}
       />
     </div>

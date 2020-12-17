@@ -6,7 +6,7 @@ function TransactionError(props) {
   // }, []);
   return (
     <div
-      class='bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6'
+      class='bg-white px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full sm:p-6'
       role='dialog'
       aria-modal='true'
       aria-labelledby='modal-headline'
@@ -36,7 +36,8 @@ function TransactionError(props) {
           </h3>
           <div class='mt-2'>
             <p class='text-sm leading-5 text-gray-500'>
-              {props.errorMessage.message}
+              {props.errorMessage &&
+                props.errorMessage.message}
             </p>
           </div>
         </div>
@@ -46,7 +47,7 @@ function TransactionError(props) {
           <button
             onClick={() => props.setActiveModal('main')}
             type='button'
-            class='inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5'
+            class='inline-flex justify-center w-full rounded-md border border-transparent px-4 py-3 bg-blue-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5'
           >
             Dismiss
           </button>

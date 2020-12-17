@@ -1,18 +1,17 @@
-// import getTokenPrice from '../utils/getTokenPrice';
-
 import { useContext, useState } from 'react';
 import PaymentInfoContext from '../utils/PaymentInfoContext';
 import DonateButton from './donate-button';
 import ERC20Contract from '../contracts/erc20-contract';
 import { getBigNumber } from '../utils/bn';
 import web3 from '../contracts/web3';
-import TransactionError from './tx-error';
 
 export default function OrderDetails(props) {
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const {
     defaultAmount,
     activePaymentMethod,
-    receiverAddress,
+    toAddress,
     activeAddress,
     paymentOptions,
   } = useContext(PaymentInfoContext);
@@ -20,35 +19,41 @@ export default function OrderDetails(props) {
   async function handleDonate() {
     if (activePaymentMethod.symbol === 'PAN') {
       try {
+        setIsProcessing(true);
         let res = await ERC20Contract(
           activePaymentMethod.contractAddr
         )
           .methods.transfer(
-            receiverAddress,
+            toAddress,
             getBigNumber(
               defaultAmount /
                 activePaymentMethod.currentPrice
             )
           )
           .send({ from: activeAddress });
-        setShowSuccess(true);
+        props.setActiveModal('success');
+        props.setSuccessData(res);
       } catch (error) {
         props.setActiveModal('error');
         props.setErrorMessage(error);
+      } finally {
+        setIsProcessing(false);
       }
     } else {
-      let panContractAddr = paymentOptions[1].contractAddr;
+      let panContractAddr = paymentOptions.find(
+        (t) => t.symbol === 'PAN'
+      ).contractAddr;
       let url = `https://api.1inch.exchange/v2.0/swap?fromTokenAddress=${
         activePaymentMethod.contractAddr
       }&toTokenAddress=${panContractAddr}&amount=${getBigNumber(
         defaultAmount / activePaymentMethod.currentPrice
       )}&fromAddress=${activeAddress}&slippage=1`;
-      let { tx, errors } = await fetch(url).then((res) =>
-        res.json()
-      );
-      if (errors) {
-        console.error(errors.msg);
-      } else {
+
+      try {
+        setIsProcessing(true);
+        let { tx, errors } = await fetch(url).then((res) =>
+          res.json()
+        );
         let { from, to, data, value } = tx;
         let signedTx = await web3.eth.sendTransaction({
           from,
@@ -56,6 +61,14 @@ export default function OrderDetails(props) {
           data,
           value,
         });
+        console.log(tx, signedTx, errors);
+        setSuccessData(tx);
+      } catch (error) {
+        console.log(error);
+        props.setActiveModal('error');
+        props.setErrorMessage(error);
+      } finally {
+        setIsProcessing(false);
       }
     }
   }
@@ -90,8 +103,11 @@ export default function OrderDetails(props) {
         onClick={handleDonate}
         isDisabled={
           props.availableTokenBalance <
-          defaultAmount / activePaymentMethod.currentPrice
+            defaultAmount /
+              activePaymentMethod.currentPrice ||
+          isProcessing
         }
+        isProcessing={isProcessing}
       />
     </>
   );
