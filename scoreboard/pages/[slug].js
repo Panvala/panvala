@@ -43,10 +43,11 @@ export default function Community({ scoreboard, totals }) {
   const communityInfo = communitiesBySlug[slug];
   const { line, dot } = getCommunitySubsidyChartData(communityInfo.name, scoreboard, totals);
   const communityRow = scoreboard[communityInfo.name];
-  const fullyStaked = parsePercent(communityRow['Utilization (Share of QF / Capacity)']) < 1;
+  const fullyStaked = parsePercent(communityRow['Utilization (Share of QF / Capacity)']) < 1 &&
+    parseCommaFloat(communityRow['Staked Tokens']) > 0;
 
   return (
-    <BaseLayout>
+    <BaseLayout title={communityInfo.name}>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant="h1" gutterBottom>{communityInfo.name}</Typography>

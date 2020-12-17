@@ -75,7 +75,7 @@ export default function Index() {
   const classes = useStyles();
 
   return (
-    <BaseLayout>
+    <BaseLayout title="Funding History">
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant="h1" gutterBottom>Funding History</Typography>

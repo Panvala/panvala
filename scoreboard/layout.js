@@ -56,7 +56,7 @@ export default function BaseLayout(props) {
   return (
     <ThemeProvider theme={theme}>
       <Head>
-        <title>Panvala Scoreboard{ props.title ? ` ${props.title}` : '' }</title>
+        <title>{ props.title ? `${props.title} - ` : '' }Panvala Scoreboard</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

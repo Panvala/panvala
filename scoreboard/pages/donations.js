@@ -38,7 +38,7 @@ export default function Donations({ scoreboard, totals }) {
   });
 
   return (
-    <BaseLayout>
+    <BaseLayout title="Donations">
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Box p={2} clone>
