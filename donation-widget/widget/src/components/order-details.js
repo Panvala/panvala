@@ -50,7 +50,7 @@ export default function OrderDetails(props) {
         activePaymentMethod.contractAddr
       }&toTokenAddress=${panContractAddr}&amount=${getBigNumber(
         defaultAmount / activePaymentMethod.currentPrice
-      )}&fromAddress=${activeAddress}&slippage=1`;
+      )}&fromAddress=${activeAddress}&destReceiver=${toAddress}&slippage=1`;
 
       try {
         setIsProcessing(true);
