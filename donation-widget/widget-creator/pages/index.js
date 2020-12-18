@@ -49,7 +49,7 @@ function Home() {
       <div id="panWidget"></div>
       <script >
         panWidget.init(${JSON.stringify({
-          defaultAmpunt: amount,
+          defaultAmount: amount,
           toAddress: address,
         })})
       </script>
