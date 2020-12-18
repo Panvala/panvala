@@ -34,6 +34,9 @@ const IGNORED_TXHASHES = new Set([
   '0x3a08cee8abb05d31bcdfe78329cc161f9e715ced06020d23eed0daf14e02c918',
   '0x75bb5594e81cafa30a5ab16425520b8d2acba7fd3141f6534cb207db14f51e64',
   '0x9112ac92409134ec473aae17c9786e2c48dde22a680ed5dc55701d13e94b7660',
+  '0x7893c4294100158b91dc68a8cc661df29b71d61103430dc158002f9fe23e3909', // Commons Stack Community Fund distribution
+  '0xf8e8564d11249ea38df9ef7e1c8dd215ae45e983b9ba5dae4a8830b44d4d5eb5', // Commons Stack Community Fund distribution
+  '0x98bb29bf1323645e2fbf53da792691f4b01a6c4de44291724c08f09587f298e3', // MetaCartel Builder Awards distribution
 ]);
 
 const ENS_ADDRESSES = {
