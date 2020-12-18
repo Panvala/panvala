@@ -37,7 +37,7 @@ function App({ config, close, open }) {
   const paymentOptions = useAddCurrentPrice(payOptions);
   const wallet = useWallet();
   const [defaultAmount, setDefaultAmount] = useState(
-    Number(config.defaultAmount) || 50
+    Number(config.defaultAmount)
   );
   const toAddress = useRef(config.toAddress);
 
