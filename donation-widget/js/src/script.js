@@ -162,15 +162,6 @@ class Donate {
     );
   }
 
-  async getUniswapRouterV2Contract() {
-    const uniswapRouterV2Abi = await import('./abis/uniswap_router_v2.json');
-    return new this.ethers.Contract(
-      UNISWAP_ROUTER_V2_ADDRESS,
-      uniswapRouterV2Abi,
-      this.getSigner()
-    );
-  }
-
   // events from js
 
   onError(sid, payload) {
