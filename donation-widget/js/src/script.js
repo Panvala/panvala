@@ -20,14 +20,25 @@ const COIN_GECKO_IDS = {
   PAN: 'panvala-pan',
 };
 
+window.panvala = function(options) {
+  debug('donate');
+  const donate = new Donate(options);
+  return () => donate.close.call(donate);
+};
+
 class Donate {
   constructor(options) {
     _bindAll(this, 'handleMessage');
 
     this.options = options;
     this.sid = Date.now();
-    this.handleMessages();
+
+    this.setUpEventHandlers();
     this.createIframe();
+  }
+
+  async setUpEventHandlers() {
+    this.handleMessages();
   }
 
   handleMessages() {
@@ -123,10 +134,6 @@ class Donate {
     }
   }
 
-  showIframe(show) {
-    this.iframe.style.display = show ? 'flex' : 'none';
-  }
-
   toFixed(a, b) {
     if (this.isZero(bign(a)) || this.isZero(bign(b))) {
       return '0';
@@ -190,56 +197,43 @@ class Donate {
     this.postMessageToIframe(sid, 'iframe-load', {});
   }
 
-  async onConnectWallet(sid) {
-    if (!this.web3Modal) {
-      const { default: Web3Modal } = await import('web3modal');
-      const { default: MewConnect } = await import(
-        '@myetherwallet/mewconnect-web-client'
-      );
-      const { default: WalletConnectProvider } = await import(
-        '@walletconnect/web3-provider'
-      );
-
-      this.web3Modal = new Web3Modal({
-        cacheProvider: true,
-        providerOptions: {
-          mewconnect: {
-            package: MewConnect,
-            options: {
-              infuraId: INFURA_ID,
-            },
-          },
-          walletconnect: {
-            package: WalletConnectProvider,
-            options: {
-              infuraId: INFURA_ID,
-            },
-          },
-        },
-      });
+  async onConnectMetamask(sid) {
+    if (!window.ethereum) {
+      return alert('Please install Metamask extension'); // todo: better error message or hide option
     }
+    this.connectProvider(sid, window.ethereum);
+  }
 
-    this.showIframe(false);
-
-    this.web3Provider = await this.web3Modal.connect();
-    this.web3Provider.on('accountsChanged', () => {});
-    this.web3Provider.on('chainChanged', () => {});
-
-    this.ethersProvider = new this.ethers.providers.Web3Provider(
-      this.web3Provider
+  async onConnectWalletConnect(sid) {
+    const { default: WalletConnectProvider } = await import(
+      '@walletconnect/web3-provider'
     );
+    this.connectProvider(
+      sid,
+      new WalletConnectProvider({
+        infuraId: INFURA_ID,
+      })
+    );
+  }
+
+  async connectProvider(sid, web3Provider) {
+    await web3Provider.enable();
+    this.web3Provider = web3Provider;
+
+    web3Provider.on('accountsChanged', () => {});
+    web3Provider.on('chainChanged', () => {});
+
+    this.ethersProvider = new this.ethers.providers.Web3Provider(web3Provider);
 
     this.ethersWallet = this.ethersProvider.getSigner();
 
     const address = (this.address = await this.ethersWallet.getAddress());
     this.postMessageToIframe(sid, 'connect', { address });
-    this.showIframe(true);
   }
 
   async onDisconnectWallet(sid) {
-    this.web3Modal.clearCachedProvider();
+    await this.web3Provider?.disconnect?.();
 
-    this.web3Provider = null;
     this.ethersProvider = null;
     this.ethersWallet = null;
     this.address = null;
@@ -422,13 +416,3 @@ async function request(url, query) {
   }
   return await (await fetch(url)).json();
 }
-
-function isEth(addr) {
-  return addr.toLowerCase() === ETH_ONE_INCH_ADDR;
-}
-
-window.panvala = function(options) {
-  debug('donate');
-  const donate = new Donate(options);
-  return () => donate.close.call(donate);
-};

@@ -21,6 +21,7 @@
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
     "parcel-bundler": "^1.12.4",
+    "parcel-plugin-bundle-visualiser": "^1.2.0",
     "parcel-plugin-inliner": "^1.0.14",
     "postcss": "^7",
     "postcss-modules": "^4.0.0",

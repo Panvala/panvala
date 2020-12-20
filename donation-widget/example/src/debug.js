@@ -1,4 +1,4 @@
-export default debug('panvala:example', '#bada55');
+export default debug('panvala:example', 'rgb(243, 132, 30)');
 
 function debug(scope, color) {
   let enabled = 'localhost' === window.location.hostname;

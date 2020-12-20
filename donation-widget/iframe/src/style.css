@@ -95,6 +95,7 @@ input,
 select {
   border: 2px solid #eee;
   border-radius: var(--radius);
+  display: flex;
 }
 
 input,
@@ -104,7 +105,6 @@ button {
   height: 44px;
   min-height: 44px;
   padding: 0 15px;
-  display: flex;
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -178,6 +178,25 @@ td {
 
 td:nth-child(2) {
   @apply pl-4;
+}
+
+#wallets {
+  border: 2px solid #eee;
+  border-radius: 8px;
+  @apply flex-col mt-2;
+}
+
+#metamask,
+#wallet-connect {
+  @apply flex items-center cursor-pointer py-2 px-5;
+}
+
+#metamask {
+  border-bottom: 1px solid #eee;
+}
+
+#wallet-connect {
+  border-top: 1px solid #eee;
 }
 
 @keyframes loader {

@@ -5,6 +5,8 @@ import debug from './debug';
 import * as qs from './qs';
 import * as dom from './dom';
 
+const WALLET_CACHE_KEY = 'WEB3_CONNECTED_PROVIDER';
+
 window.onload = () => new Donate();
 
 class Donate {
@@ -35,6 +37,10 @@ class Donate {
     this.close = document.getElementById('close');
     this.loader = document.getElementById('boot-loader-container');
 
+    this.walletsContainer = document.getElementById('wallets');
+    this.metamaskEl = document.getElementById('metamask');
+    this.walletConnectEl = document.getElementById('wallet-connect');
+
     this.setUpEventHandlers();
     this.load();
   }
@@ -48,6 +54,15 @@ class Donate {
     this.close.onclick = () => this.postMessageToParentWindow('cancel');
     this.addressLabel.querySelector('.disconnect').onclick = () =>
       this.postMessageToParentWindow('disconnectWallet');
+
+    this.metamaskEl.onclick = () => {
+      this.web3ProviderName = 'metamask';
+      this.postMessageToParentWindow('connect-metamask');
+    };
+    this.walletConnectEl.onclick = () => {
+      this.web3ProviderName = 'wallet-connect';
+      this.postMessageToParentWindow('connect-wallet-connect');
+    };
   }
 
   handleMessages() {
@@ -101,10 +116,15 @@ class Donate {
     e.stopPropagation();
 
     if (!this.address) {
-      debug('connecting wallet..');
-      dom.show(this.loader);
-      dom.hide(this.form);
-      this.postMessageToParentWindow('connect-wallet');
+      this.web3ProviderName = window.localStorage.getItem(WALLET_CACHE_KEY);
+      if (this.web3ProviderName) {
+        debug(`connecting to ${this.web3ProviderName}..`);
+        this.postMessageToParentWindow(`connect-${this.web3ProviderName}`);
+      } else {
+        debug('showing wallets..');
+        dom.show(this.walletsContainer);
+        dom.hide(this.button);
+      }
     } else if (this.approve) {
       debug('approving..');
       this.setIsWorking('Approving..');
@@ -152,8 +172,9 @@ class Donate {
   }
 
   onConnect({ address }) {
-    dom.hide(this.loader);
-    dom.show(this.form);
+    window.localStorage.setItem(WALLET_CACHE_KEY, this.web3ProviderName);
+    dom.hide(this.walletsContainer);
+    dom.show(this.button);
 
     this.address = address;
     debug('connected', address);
@@ -167,6 +188,7 @@ class Donate {
   }
 
   onDisconnect() {
+    window.localStorage.removeItem(WALLET_CACHE_KEY);
     this.address = null;
     dom.hide(this.addressLabel);
     dom.hide(this.fromAssetBalanceContainer);

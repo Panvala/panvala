@@ -1,4 +1,4 @@
-export default debug('panvala:iframe', 'rgb(243, 132, 30)');
+export default debug('panvala:iframe', '#bada55');
 
 function debug(scope, color) {
   let enabled = 'localhost' === window.location.hostname;
