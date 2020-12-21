@@ -31,13 +31,14 @@ export function getStakingYieldCurveData(communityRow, totals, { sampleCount = 2
   
   const OVERFLOW_SLOPE = 2;
   const quadraticFunding = parseCommaFloat(communityRow['Quadratic Funding']);
-  const totalQuadraticFunding = parseCommaFloat(totals['Quadratic Funding']);
+  const spreadsheetSubsidyPoints = parseCommaFloat(communityRow['Subsidy Points']);
+  const totalSubsidyPoints = parseCommaFloat(totals['Subsidy Points']);
   const totalSubsidy = parseCommaFloat(totals['Estimated Subsidy\n(PAN)']);
   return stakedAmounts.map(stakedAmount => {
     const utilization = stakedAmount === 0 ? 0 : donationShare * (stakedAmount + totalStakedTokens - currentStakedTokens) / stakedAmount;
-    const adjustedUtilization = Math.sqrt(-4 * (OVERFLOW_SLOPE / 2) * (1 - (OVERFLOW_SLOPE / 2 ) - utilization) / OVERFLOW_SLOPE);
+    const adjustedUtilization = Math.sqrt(-4 * (OVERFLOW_SLOPE / 2) * (1 - (OVERFLOW_SLOPE / 2 ) - utilization)) / OVERFLOW_SLOPE;
     const subsidyPoints = utilization === 0 ? 0 : adjustedUtilization / utilization * quadraticFunding;
-    const shareOfSubsidy = subsidyPoints / (totalQuadraticFunding - quadraticFunding + subsidyPoints);
+    const shareOfSubsidy = subsidyPoints / (totalSubsidyPoints - spreadsheetSubsidyPoints + subsidyPoints);
     const subsidy = shareOfSubsidy * totalSubsidy;
     return {
       stakedAmount,
