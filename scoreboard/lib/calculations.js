@@ -6,7 +6,7 @@ export function parsePercent(text) {
   return parseFloat(text) / 100;
 }
 
-export function getStakingYieldCurveData(communityRow, totals) {
+export function getStakingYieldCurveData(communityRow, totals, { sampleCount = 20 } = {}) {
   const donationShare = parsePercent(communityRow['Share of Quadratic Funding']);
   if (donationShare === 0) {
     return [{
@@ -21,10 +21,9 @@ export function getStakingYieldCurveData(communityRow, totals) {
   const fullyStakedAmount = (donationShare * totalStakedTokens - donationShare * currentStakedTokens) /
   (1 - donationShare);
   
-  const SAMPLE_COUNT = 20;
   const stakedAmounts = [fullyStakedAmount];
-  for (let i = 0; i < SAMPLE_COUNT; i++) {
-    stakedAmounts.push(fullyStakedAmount / SAMPLE_COUNT * i);
+  for (let i = 0; i < sampleCount; i++) {
+    stakedAmounts.push(fullyStakedAmount / sampleCount * i);
   }
   if (currentStakedTokens < fullyStakedAmount && stakedAmounts.findIndex(x => x === currentStakedTokens) === -1) {
     stakedAmounts.push(currentStakedTokens);
@@ -73,7 +72,7 @@ export function getLeagueSubsidyChartData(scoreboard, totals) {
 export function getCommunitySubsidyChartData(communityName, scoreboard, totals) {
   const communityRow = scoreboard[communityName];
   const chartData = {};
-  const communityData = getStakingYieldCurveData(communityRow, totals);
+  const communityData = getStakingYieldCurveData(communityRow, totals, { sampleCount: 50 });
   let referenceDot = null;
   communityData.forEach(item => {
     const stakedAmount = Math.round(item.stakedAmount * 100) / 100;
