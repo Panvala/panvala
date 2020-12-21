@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, createMuiTheme, Box, ThemeProvider } from '@material-ui/core';
+import { makeStyles, Box, ThemeProvider } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Home, MenuBook } from '@material-ui/icons';
 import Head from 'next/head';
+
+import theme from './theme';
 
 
 const drawerWidth = 238;
@@ -38,17 +40,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(4),
   },
 }));
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#2138b7',
-    },
-    secondary: {
-      main: '#46b0aa',
-    },
-  }
-});
 
 export default function BaseLayout(props) {
   const classes = useStyles();
