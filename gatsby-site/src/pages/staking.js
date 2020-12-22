@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1213543.654097677284874243"
+    "weight": "1211530.064097677284874243"
   },
   "9": {
     "id": 9,
@@ -256,7 +256,7 @@ const stakingResults = {
   "15": {
     "id": 15,
     "name": "SheFi",
-    "weight": "50000.0"
+    "weight": "0.0"
   },
   "16": {
     "id": 16,
@@ -346,7 +346,7 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "1064.533275651817712042"
+    "weight": "1286.533275651817712042"
   },
   "34": {
     "id": 34,
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 20';
+const stakingTotalsUpdated = 'December 21';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
