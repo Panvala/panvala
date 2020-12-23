@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1211530.064097677284874243"
+    "weight": "1210366.815269677284874243"
   },
   "9": {
     "id": 9,
@@ -236,7 +236,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "162830.555737689794988623"
+    "weight": "168034.22957520283530413"
   },
   "12": {
     "id": 12,
@@ -306,7 +306,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "335985.810100801833528013"
+    "weight": "345985.810100801833528013"
   },
   "26": {
     "id": 26,
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 21';
+const stakingTotalsUpdated = 'December 23';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
