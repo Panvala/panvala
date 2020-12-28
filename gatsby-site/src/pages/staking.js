@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1210366.815269677284874243"
+    "weight": "1199275.435269677284874243"
   },
   "9": {
     "id": 9,
@@ -236,7 +236,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "168034.22957520283530413"
+    "weight": "167606.72957520283530413"
   },
   "12": {
     "id": 12,
@@ -271,7 +271,7 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "7738.186126609465168977"
+    "weight": "15273.66697778236280199"
   },
   "19": {
     "id": 19,
@@ -301,7 +301,7 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "12826.971294276275443489"
+    "weight": "14907.471294276275443489"
   },
   "25": {
     "id": 25,
@@ -321,7 +321,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "915.661586314343796676"
+    "weight": "50915.661606662517312657"
   },
   "29": {
     "id": 29,
@@ -356,7 +356,7 @@ const stakingResults = {
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "0.0"
+    "weight": "9.5"
   },
   "36": {
     "id": 36,
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 23';
+const stakingTotalsUpdated = 'December 28';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
