@@ -950,7 +950,7 @@ const Poll = () => {
                         const matchingCapacity = staked / totalStaked * leagueBudget;
 
                         return (
-                          <div key={identifier} className="cf pa3 bb bw-2 b--black-10" style={ hidden ? { display: "none" } : {} }>
+                          <div key={identifier} className={`cf pa3 bb bw-2 b--black-10 ${identifier}`} style={ hidden ? { display: "none" } : {} }>
                             <div className="fl w-70 pa2 pr4">
                               <div className="f4 b">{title}</div>
                               <p>{description}</p>
