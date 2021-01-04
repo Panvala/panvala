@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1201275.435269677284874243"
+    "weight": "1180722.505269677284874243"
   },
   "9": {
     "id": 9,
@@ -246,7 +246,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "726219.077581694953621069"
+    "weight": "731774.077581694953621069"
   },
   "14": {
     "id": 14,
@@ -271,7 +271,7 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "15273.66697778236280199"
+    "weight": "111156.857264466621573299"
   },
   "19": {
     "id": 19,
@@ -296,7 +296,7 @@ const stakingResults = {
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "100110.775239507272806652"
+    "weight": "25110.0"
   },
   "24": {
     "id": 24,
@@ -341,12 +341,12 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "14140.41"
+    "weight": "33927.150698044385392947"
   },
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "2286.533275651817712042"
+    "weight": "4961.420076254561899155"
   },
   "34": {
     "id": 34,
@@ -376,7 +376,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'December 30';
+const stakingTotalsUpdated = 'January 4';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
