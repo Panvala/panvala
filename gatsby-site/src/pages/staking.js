@@ -368,7 +368,12 @@ const stakingResults = {
 categories.sort((a, b) => {
   const stakedA = stakingResults[a.categoryID] ? parseFloat(stakingResults[a.categoryID].weight) : 0;
   const stakedB = stakingResults[b.categoryID] ? parseFloat(stakingResults[b.categoryID].weight) : 0;
-  if (stakedA === stakedB) return 0;
+  if (stakedA === stakedB) {
+    // Since we're rendering React on the server and hydrating on the client, we need to guarantee that the order is the same
+    // in both places. To achieve this, we can't allow categories to ever be equal. If the staked amounts are equal, sort by unique id.
+    // https://reactjs.org/docs/react-dom.html#hydrate
+    return a.categoryID < b.categoryID ? -1 : 1;
+  }
   // Sort from greatest to least.
   if (stakedA < stakedB) return 1;
   return -1;
@@ -942,6 +947,7 @@ const Poll = () => {
                       {categories.map((category) => {
                         const { description, title, categoryID, hidden } = category;
                         const staked = stakingResults[categoryID] !== undefined ? parseFloat(stakingResults[categoryID].weight) : 0;
+                        // 
                         const identifier = `poll-points-category-${categoryID}`;
 
                         const name = `categories.${categoryID}`;
