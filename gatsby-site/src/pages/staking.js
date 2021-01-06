@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1180722.505269677284874243"
+    "weight": "2662417.67631765149904641"
   },
   "9": {
     "id": 9,
@@ -246,7 +246,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "731774.077581694953621069"
+    "weight": "681774.077581694953621069"
   },
   "14": {
     "id": 14,
@@ -266,12 +266,12 @@ const stakingResults = {
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "208217.265126981383590826"
+    "weight": "133217.265126981383590826"
   },
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "111156.857264466621573299"
+    "weight": "127777.59760769927387326"
   },
   "19": {
     "id": 19,
@@ -281,22 +281,22 @@ const stakingResults = {
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "7411.425598601304883036"
+    "weight": "13642.449039899330356996"
   },
   "21": {
     "id": 21,
     "name": "DeFi Safety",
-    "weight": "7422.960241237647104977"
+    "weight": "8846.557214579855715582"
   },
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "22909.359466173807534485"
+    "weight": "36476.191366835940421755"
   },
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "25110.0"
+    "weight": "25160.0"
   },
   "24": {
     "id": 24,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 4';
+const stakingTotalsUpdated = 'January 5';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
