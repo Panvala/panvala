@@ -216,12 +216,12 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1059283.639894158217280373"
+    "weight": "1109506.30904213196157261"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2662417.67631765149904641"
+    "weight": "2626436.579311854497459106"
   },
   "9": {
     "id": 9,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 5';
+const stakingTotalsUpdated = 'January 8';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
@@ -947,7 +947,6 @@ const Poll = () => {
                       {categories.map((category) => {
                         const { description, title, categoryID, hidden } = category;
                         const staked = stakingResults[categoryID] !== undefined ? parseFloat(stakingResults[categoryID].weight) : 0;
-                        // 
                         const identifier = `poll-points-category-${categoryID}`;
 
                         const name = `categories.${categoryID}`;
