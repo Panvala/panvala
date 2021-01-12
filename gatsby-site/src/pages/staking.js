@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2626436.579311854497459106"
+    "weight": "2637526.141364582039360422"
   },
   "9": {
     "id": 9,
@@ -286,7 +286,7 @@ const stakingResults = {
   "21": {
     "id": 21,
     "name": "DeFi Safety",
-    "weight": "8846.557214579855715582"
+    "weight": "10071.557214579855715582"
   },
   "22": {
     "id": 22,
@@ -306,7 +306,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "345985.810100801833528013"
+    "weight": "342985.810100801833528013"
   },
   "26": {
     "id": 26,
@@ -321,7 +321,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "50915.661606662517312657"
+    "weight": "52140.661606662517312657"
   },
   "29": {
     "id": 29,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 8';
+const stakingTotalsUpdated = 'January 11';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
