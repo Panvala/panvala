@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2637526.141364582039360422"
+    "weight": "2677302.502372717876639647"
   },
   "9": {
     "id": 9,
@@ -286,7 +286,7 @@ const stakingResults = {
   "21": {
     "id": 21,
     "name": "DeFi Safety",
-    "weight": "10071.557214579855715582"
+    "weight": "10596.557214579855715582"
   },
   "22": {
     "id": 22,
@@ -296,7 +296,7 @@ const stakingResults = {
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "25160.0"
+    "weight": "26035.0"
   },
   "24": {
     "id": 24,
@@ -356,7 +356,7 @@ const stakingResults = {
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "9.5"
+    "weight": "50009.499999999995805696"
   },
   "36": {
     "id": 36,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 11';
+const stakingTotalsUpdated = 'January 13';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
