@@ -276,7 +276,7 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "60068.5490555657015678"
+    "weight": "140276.175070611811353321"
   },
   "20": {
     "id": 20,
