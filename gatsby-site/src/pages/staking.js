@@ -356,7 +356,7 @@ const stakingResults = {
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "0.0"
+    "weight": "30712.5"
   },
   "36": {
     "id": 36,
