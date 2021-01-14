@@ -281,7 +281,7 @@ const stakingResults = {
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "13642.449039899330356996"
+    "weight": "37691.162882758652773158"
   },
   "21": {
     "id": 21,
@@ -351,12 +351,12 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "8858.987297159739132967"
+    "weight": "22704.907402709693813434"
   },
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "50009.499999999995805696"
+    "weight": "0.0"
   },
   "36": {
     "id": 36,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 13';
+const stakingTotalsUpdated = 'January 14';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
