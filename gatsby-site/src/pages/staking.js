@@ -216,12 +216,12 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1109506.30904213196157261"
+    "weight": "1034506.30904213196157261"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2677302.502372717876639647"
+    "weight": "2649024.846856113906063125"
   },
   "9": {
     "id": 9,
@@ -231,7 +231,7 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "448722.909717721588742333"
+    "weight": "339312.359717721588742333"
   },
   "11": {
     "id": 11,
@@ -241,7 +241,7 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "54045.6759111879817"
+    "weight": "163456.2259111879817"
   },
   "13": {
     "id": 13,
@@ -276,12 +276,12 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "0.0"
+    "weight": "60068.5490555657015678"
   },
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "37691.162882758652773158"
+    "weight": "48033.605984775031481792"
   },
   "21": {
     "id": 21,
