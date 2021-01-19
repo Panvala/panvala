@@ -221,7 +221,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2649024.846856113906063125"
+    "weight": "2631491.466856113906063125"
   },
   "9": {
     "id": 9,
@@ -231,12 +231,12 @@ const stakingResults = {
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "319312.359717721588742333"
+    "weight": "278751.828861834773742333"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "160489.02957520283530413"
+    "weight": "161489.02957520283530413"
   },
   "12": {
     "id": 12,
@@ -276,7 +276,7 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "140276.175070611811353321"
+    "weight": "144620.105571678164105171"
   },
   "20": {
     "id": 20,
@@ -291,7 +291,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "36476.191366835940421755"
+    "weight": "32537.101366835940421755"
   },
   "23": {
     "id": 23,
@@ -331,7 +331,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "163678.089237647479986422"
+    "weight": "199350.089237647479986422"
   },
   "31": {
     "id": 31,
@@ -346,7 +346,7 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "4961.420076254561899155"
+    "weight": "6051.313304501104237938"
   },
   "34": {
     "id": 34,
