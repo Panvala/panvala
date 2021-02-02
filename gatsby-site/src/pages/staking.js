@@ -221,17 +221,17 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2631491.466856113906063125"
+    "weight": "2525711.439909593906063125"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1000919.08045374393757"
+    "weight": "829742.88045374393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "278751.828861834773742333"
+    "weight": "275751.828861834773742333"
   },
   "11": {
     "id": 11,
@@ -251,7 +251,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "86291.791398677741131741"
+    "weight": "86396.791398677741131741"
   },
   "15": {
     "id": 15,
@@ -291,7 +291,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "32537.101366835940421755"
+    "weight": "20000.083257251679836965"
   },
   "23": {
     "id": 23,
@@ -321,7 +321,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "52140.661606662517312657"
+    "weight": "52796.976606662517312657"
   },
   "29": {
     "id": 29,
@@ -331,7 +331,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "199350.089237647479986422"
+    "weight": "121003.089237647479986422"
   },
   "31": {
     "id": 31,
@@ -351,7 +351,7 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "22704.907402709693813434"
+    "weight": "22885.907402709693813434"
   },
   "35": {
     "id": 35,
@@ -381,7 +381,7 @@ categories.sort((a, b) => {
 
 const pollID = '5';
 const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 15';
+const stakingTotalsUpdated = 'January 29';
 const leagueBudget = 1316952.75;
 
 const ClipContainer = styled.div`
