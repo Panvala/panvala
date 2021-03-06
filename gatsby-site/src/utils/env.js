@@ -1,5 +1,6 @@
 import { Contract } from 'ethers';
-import { exchangeAbi, tcAbi, tokenAbi } from './abis';
+import { exchangeAbi, exchangeV2Abi, tcAbi, tokenAbi } from './abis';
+import { networks } from '../data';
 
 export const Environment = {
   staging: 'staging',
@@ -23,6 +24,39 @@ export function getEnvironment() {
     : Environment.production;
 
   return environment;
+}
+
+export async function loadCommunityContracts(provider) {
+  const { chainId } = await provider.getNetwork();
+  const signer = provider.getSigner();
+  
+  const network = networks[chainId.toString()];
+  console.log('[loadCommunityContracts] network: ', network);
+
+  if (!network)
+    throw new Error('MetaMask is not connected.');
+
+  // Addresses
+  const tokenAddress = network.addresses.PAN_TOKEN_ADDRESS;
+  const exchangeAddress = network.addresses.EXCHANGE_ADDRESS;
+
+  // Get codes
+  const tokenCode = await provider.getCode(tokenAddress);
+  const exchangeCode = await provider.getCode(exchangeAddress);
+
+  // prettier-ignore
+  if (!tokenAddress || !exchangeAddress || !tokenCode || !exchangeCode) {
+    throw new Error('Invalid address or no code at address.')
+  }
+
+  // Init token, token capacitor, uniswap exchange contracts
+  const token = new Contract(tokenAddress, tokenAbi, signer);
+  const exchange = new Contract(exchangeAddress, exchangeV2Abi, signer);
+
+  return {
+    token,
+    exchange,
+  };
 }
 
 export async function loadContracts(provider) {
