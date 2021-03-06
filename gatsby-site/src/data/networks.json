@@ -1,0 +1,49 @@
+{
+  "1": {
+    "name": "Mainnet",
+    "chainId": 1,
+    "token": "ETH",
+    "addresses": {
+      "PAN_TOKEN_ADDRESS": "0xD56daC73A4d6766464b38ec6D91eB45Ce7457c44",
+      "PAN_TOKEN_CAPACITOR_ADDRESS": "0x9a7B675619d3633304134155c6c976E9b4c1cfB3",
+      "EXCHANGE_ADDRESS": "0xF53bBFBff01c50F2D42D542b09637DcA97935fF7"
+    },
+    "exchangeName": "Uniswap"
+  },
+  "4": {
+    "name": "Rinkeby",
+    "chainId": 4,
+    "token": "ETH",
+    "addresses": {
+      "PAN_TOKEN_ADDRESS": "0x4912d6aBc68e4F02d1FdD6B79ed045C0A0BAf772",
+      "PAN_TOKEN_CAPACITOR_ADDRESS": "0xA062C59F42a45f228BEBB6e7234Ed1ea14398dE7",
+      "EXCHANGE_ADDRESS": "0x25EAd1E8e3a9C38321488BC5417c999E622e36ea"
+    },
+    "exchangeName": "UniSwap",
+    "exchangeToken": ""
+  },
+  "100": {
+    "name": "xDai",
+    "chainId": 100,
+    "token": "XDAI",
+    "addresses": {
+      "WETH_TOKEN_ADDRESS": "0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1",
+      "PAN_TOKEN_ADDRESS": "0x981fB9BA94078a2275A8fc906898ea107B9462A8",
+      "EXCHANGE_ADDRESS": "0x1C232F01118CB8B424793ae03F870aa7D0ac7f77"
+    },
+    "exchangeName": "HoneySwap",
+    "exchangeToken": "HNY"
+  },
+  "137": {
+    "name": "Matic",
+    "chainId": 137,
+    "token": "MATIC",
+    "addresses": {
+      "WETH_TOKEN_ADDRESS": "",
+      "PAN_TOKEN_ADDRESS": "",
+      "EXCHANGE_ADDRESS": ""
+    },
+    "exchangeName": "QuickSwap",
+    "exchangeToken": ""
+  }
+}
