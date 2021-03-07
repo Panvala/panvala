@@ -24,22 +24,31 @@ export enum TokenEnums {
 }
 
 export enum NetworkEnums {
-  MAINNET = 1,
-  RINKEBY = 4,
-  MATIC = 137,
-  XDAI = 100,
+  MAINNET = '1',
+  RINKEBY = '4',
+  XDAI = '100',
+  MATIC = '137',
 }
 
-// Functions
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
 export function BN(small) {
   return bigNumberify(small);
 }
 
+/**
+ * Check token allowance
+ */
 export async function checkAllowance(token, owner, spender, numTokens) {
   const allowance = await token.functions.allowance(owner, spender);
   return allowance.gte(numTokens);
 }
 
+/**
+ * Fetch current ETH price
+ */
 export async function fetchEthPrice() {
   const result = await fetch('https://api.coinbase.com/v2/prices/ETH-USD/spot?currency=USD');
   const json = await result.json();
@@ -47,14 +56,16 @@ export async function fetchEthPrice() {
   return ethPrice;
 }
 
+/**
+ * Convert USD value -> ETH
+ */
 export function quoteUsdToEth(pledgeTotalUSD, ethPrice) {
   return parseInt(pledgeTotalUSD, 10) / parseInt(ethPrice, 10);
 }
 
-export function trimUsdToEthPrice(tier, price) {
-  return (tier / price).toString().slice(0, 5);
-}
-
+/**
+ * Get current gas price
+ */
 export async function getGasPrice(speed = 'fast') {
   const res = await fetch('https://ethgasstation.info/json/ethgasAPI.json');
   const gasPrices = await res.json();
@@ -70,7 +81,9 @@ export async function getGasPrice(speed = 'fast') {
   return gasPrice.toHexString();
 }
 
-// Sell order (exact input) -> calculates amount bought (output)
+/**
+ * Convert ETH value -> PAN
+ */
 export async function quoteEthToPan(etherToSpend: utils.BigNumber, provider, { token, exchange }) {
 
   // Sell ETH for PAN

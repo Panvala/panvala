@@ -1,6 +1,7 @@
 import { Contract } from 'ethers';
 import { exchangeAbi, exchangeV2Abi, tcAbi, tokenAbi } from './abis';
-import { networks } from '../data';
+import { networks, tokens } from '../data';
+import { TokenEnums } from './communityDonate';
 
 export const Environment = {
   staging: 'staging',
@@ -30,28 +31,29 @@ export async function loadCommunityContracts(provider) {
   const { chainId } = await provider.getNetwork();
   const signer = provider.getSigner();
   
-  const network = networks[chainId.toString()];
-  console.log('[loadCommunityContracts] network: ', network);
-
-  if (!network)
+  if (!chainId)
     throw new Error('MetaMask is not connected.');
 
-  // Addresses
-  const tokenAddress = network.addresses.PAN_TOKEN_ADDRESS;
-  const exchangeAddress = network.addresses.EXCHANGE_ADDRESS;
-
-  // Get codes
-  const tokenCode = await provider.getCode(tokenAddress);
-  const exchangeCode = await provider.getCode(exchangeAddress);
-
-  // prettier-ignore
-  if (!tokenAddress || !exchangeAddress || !tokenCode || !exchangeCode) {
-    throw new Error('Invalid address or no code at address.')
+  const tokenName = TokenEnums.PAN;
+  const tokenAddress = tokens[tokenName]?.addresses[chainId.toString()];
+  if (!tokenAddress) {
+    throw new Error(`Address data not found for token ${tokenName}`);
   }
-
-  // Init token, token capacitor, uniswap exchange contracts
+  const tokenCode = await provider.getCode(tokenAddress);
+  if (!tokenCode) {
+    throw new Error(`Token code data not found at address for token ${tokenName}`);
+  }
   const token = new Contract(tokenAddress, tokenAbi, signer);
+  console.log(`Initialized contract for token ${tokenName} at address: `, tokenAddress);
+
+  const networkData = networks[chainId.toString()];
+  const exchangeAddress = networkData.addresses.EXCHANGE_ADDRESS;
+  const exchangeCode = await provider.getCode(exchangeAddress);
+  if (!exchangeAddress || !exchangeCode) {
+    throw new Error('Invalid address or no code at address for exchange: ', networkData.exchangeName);
+  }
   const exchange = new Contract(exchangeAddress, exchangeV2Abi, signer);
+  console.log(`Initialized contract for exchange ${networkData.exchangeName} at address: `, exchangeAddress);
 
   return {
     token,

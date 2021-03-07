@@ -7,9 +7,9 @@ import FieldText from '../FieldText';
 import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
-import { NetworkEnums, TokenEnums } from '../../utils/communityDonate';
+import { networks, tokens } from '../../data';
 
-interface CommunityDonationFormFields {
+export interface CommunityDonationFormFields {
   paymentToken: string;
   paymentNetwork: string;
   tokenAmount: number;
@@ -26,33 +26,34 @@ const CommunityDonationFormSchema: yup.ObjectSchema<CommunityDonationFormFields>
   paymentToken: yup
     .string()
     .trim()
-    .required('Please enter your payment method'),
+    .required('Please enter your payment method.'),
   paymentNetwork: yup
     .string()
     .trim()
-    .required('Please enter a payment network'),
+    .required('Please enter a payment network.'),
   tokenAmount: yup
     .number()
-    .moreThan(0, 'Please select a donation amount'),
+    .moreThan(0, 'Please select a donation amount.'),
   fiatAmount: yup
     .number()
-    .moreThan(0, 'Please select a donation amount in USD'),
+    .moreThan(0, 'Please select a donation amount in USD.'),
   firstName: yup
     .string()
     .trim(),
-    // .required('Please enter your first name'),
+    // .required('Please enter your first name.'),
   lastName: yup
     .string()
     .trim(),
-    // .required('Please enter your last name'),
+    // .required('Please enter your last name.'),
   email: yup
     .string()
     .trim()
-    .email('Please enter a valid email address'),
-    // .required('Please enter your email'),
+    .email('Please enter a valid email address.'),
+    // .required('Please enter your email.'),
 });
 
 interface CommunityDonationFormProps {
+  initialValues: any;
   onSubmit(values: any, actions: any): void;
   onChangePaymentNetwork(newToken: string): Promise<void>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
@@ -62,6 +63,7 @@ interface CommunityDonationFormProps {
 
 const CommunityDonationForm = (props: CommunityDonationFormProps) => {
   const {
+    initialValues,
     onSubmit,
     onChangePaymentNetwork,
     onChangeTokenAmount,
@@ -78,15 +80,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
 
   return (
     <Formik
-      initialValues={{
-        firstName: '',
-        lastName: '',
-        email: '',
-        paymentToken: TokenEnums.ETH,
-        paymentNetwork: NetworkEnums.XDAI,
-        tokenAmount: '',
-        fiatAmount: '',
-      }}
+      initialValues={initialValues}
       validationSchema={CommunityDonationFormSchema}
       onSubmit={handleDonate}
     >
@@ -96,20 +90,19 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
         // we need to; e.g. to recalculate ETH when USD changes, and vice versa
         // (we only have access to the formik context here within the <Formik> element)
 
-        const handleChangePaymentNetwork = (e: any) => {
-          console.log('New payment network selected: ', e.target.value);
+        const handleChangePaymentNetwork = (e: React.ChangeEvent<any>) => {
           onChangePaymentNetwork(e.target.value);
           handleChange(e);
         };
 
-        const handleChangeTokenAmount = (e: any) => {
+        const handleChangeTokenAmount = (e: React.ChangeEvent<any>) => {
           onChangeTokenAmount(e.target.value, values.paymentToken).then((val) => {
             setFieldValue('fiatAmount', val);
           });
           handleChange(e);
         };
 
-        const handleChangeFiatAmount = (e: any) => {
+        const handleChangeFiatAmount = (e: React.ChangeEvent<any>) => {
           console.log('Fiat amount changed: ', e.target.value);
           onChangeFiatAmount(e.target.value, values.paymentToken).then((val) => {
             setFieldValue('tokenAmount', val);
@@ -136,8 +129,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               onChange={handleChange}
               id="payment-token-select"
             >
-              <option value={TokenEnums.ETH}>ETH</option>
-              <option value={TokenEnums.PAN}>PAN</option>
+              {Object.keys(tokens).map(tokenName => <option key={tokenName}>{tokenName}</option>)}
             </Field>
             <DownArrow />
 
@@ -153,9 +145,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               id="payment-token-select"
             >
               <option value="">Select network...</option>
-              <option value={NetworkEnums.MAINNET}>Ethereum Mainnet</option>
-              <option value={NetworkEnums.MATIC}>MATIC</option>
-              <option value={NetworkEnums.XDAI}>xDai</option>
+              {Object.keys(networks).map(chainId =><option key={chainId} value={chainId}>{networks[chainId].name}</option>)}
             </Field>
             <DownArrow />
   

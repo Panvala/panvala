@@ -10,6 +10,7 @@ interface CommunityDonationProps {
   community: string;
   step: number | null;
   message: string;
+  initialValues: KeyValuePair;
   onCancel(): void;
   onDonate(data: KeyValuePair, actions: KeyValuePair): void;
   onChangePaymentNetwork(newToken: string): Promise<void>;
@@ -20,6 +21,7 @@ interface CommunityDonationProps {
 
 const CommunityDonation = (props: CommunityDonationProps) => {
   const {
+    initialValues,
     onDonate,
     onChangePaymentNetwork,
     onChangeFiatAmount,
@@ -49,6 +51,7 @@ const CommunityDonation = (props: CommunityDonationProps) => {
   return (
     <Box data-testid="community-donation-container">
       <CommunityDonationForm
+        initialValues={initialValues}
         onSubmit={handleDonation}
         connectWallet={connectWallet}
         onChangePaymentNetwork={onChangePaymentNetwork}

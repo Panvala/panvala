@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { providers, utils } from 'ethers';
-import { communities, networks } from '../../data';
+import { communities, networks, tokens } from '../../data';
 import {
   BN,
   getGasPrice,
@@ -11,6 +11,7 @@ import {
   NetworkEnums,
   TokenEnums,
 } from '../../utils/communityDonate';
+import { CommunityDonationFormFields } from './CommunityDonationForm';
 import { loadCommunityContracts, getEnvironment, Environment } from '../../utils/env';
 
 const { parseEther, getAddress, bigNumberify } = utils;
@@ -23,16 +24,27 @@ declare global {
 
 export const withCommunityDonationFlow = WrappedComponent => {
   return (props: any) => {
-    // setting these via state causes component reloading and messes up the donation flow
+    const initialFormValues: CommunityDonationFormFields = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      paymentToken: TokenEnums.ETH,
+      paymentNetwork: NetworkEnums.RINKEBY,
+      tokenAmount: 0,
+      fiatAmount: 0,
+    };
+
+    // don't want to trigger component reloads in the middle of the donation flow
     let provider: providers.Web3Provider;
     let activeAccount = '';
     let exchange: any;
     let token: any;
-    let communityWallet: string = '';
+    // let communityWallet: string = '';
     let panPurchased: utils.BigNumber;
+    // let selectedNetwork: NetworkEnums = initialFormValues.paymentNetwork;
 
-    // TODO: fix the network error handling using react effects
-    const [paymentNetwork, setPaymentNetwork] = useState<number>(NetworkEnums.XDAI);
+    const [communityWallet, setCommunityWallet] = useState<string>();
+    const [selectedNetwork, setSelectedNetwork] = useState<string>(initialFormValues.paymentNetwork);
     const [step, setStep] = useState<string | null>(null);
     const [message, setMessage] = useState<string>('');
 
@@ -41,33 +53,50 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // const [errorMessage, setErrorMessage] = useState<string>('');
 
     // ---------------------------------------------------------------------------
-    // Initialize
+    // React Effects
     // ---------------------------------------------------------------------------
 
+    /**
+     * Set Community Wallet
+     */
     useEffect(() => {
       if (!communityWallet) {
         const address = communities[props.community].addresses.COMMUNITY_WALLET_ADDRESS;
         if (address) {
-          communityWallet = address;
+          setCommunityWallet(address);
         }
       }
     }, [communityWallet]);
   
+    /**
+     * Listen for MetaMask network changes
+     */
     useEffect(() => {
       if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        // Listen for network changes -> reload page
         window.ethereum.on('networkChanged', network => {
-          console.log('MetaMask network changed:', network);
-          setPaymentNetwork(network);
-
-          // NOTE: handling this reactively; will keep this here in the meantime
-          // checkNetwork();
-          // window.location.reload();
+          console.log(`MetaMask network has changed to ${network} - re-checking network`);
+          if (selectedNetwork !== '')
+            setContracts();
         });
       }
     });
 
-    // Setup provider & selected account
+    /**
+     * Listen for selected network changes
+     */
+    useEffect(() => {
+      console.log(`Selected payment network has changed to ${selectedNetwork} - re-checking network`);
+      if (selectedNetwork !== '')
+        setContracts();
+    }, [selectedNetwork]);
+  
+    // ---------------------------------------------------------------------------
+    // Initialization
+    // ---------------------------------------------------------------------------  
+
+    /**
+     * Initialize Provider and get active account
+     */
     async function setSelectedAccount(): Promise<string | void> {
       if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
         if (!provider) {
@@ -93,7 +122,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
       }
     }
   
-    // Setup contracts
+    /**
+     * Set Contracts
+     */
     async function setContracts(): Promise<void> {
       if (typeof provider !== 'undefined') {
         try {
@@ -102,7 +133,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
           console.error(`ERROR: ${err.message}`);
           throw err;
         }
-  
+
         const contracts = await loadCommunityContracts(provider);
         token = contracts.token;
         exchange = contracts.exchange;
@@ -124,7 +155,27 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // Helpers
     // ---------------------------------------------------------------------------
   
-    // Check that provider & contracts are setup correctly
+    // Pass the error up to the caller and cancel everything
+    function handleError(msg: string) {
+      // TODO: use these error flags/messages
+      // setErrorMessage(msg);
+      // setError(true);
+      setStep(null);
+      setMessage('');
+      console.error(msg);
+      throw new Error(msg);
+      // alert(msg);
+    }
+  
+    // Cancel the donation flow
+    function handleCancel() {
+      setStep(null);
+      setMessage('');
+    }
+
+    /**
+     * Validate Providers and Contracts are set up properly
+     */
     async function checkEthereum(): Promise<string | void> {
       let account;
       try {
@@ -151,6 +202,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
       }
     }
   
+    /**
+     * Validate MetaMask is connected to the selected network
+     */
     async function checkNetwork(): Promise<void> {
       let errMsg: string;
       if (!activeAccount || !provider) {
@@ -158,31 +212,38 @@ export const withCommunityDonationFlow = WrappedComponent => {
         if (!account) {
           handleError('Ethereum not setup properly.');
         }
-      } else {
-        const env = getEnvironment();
+      }
+      const env = getEnvironment();
+      const correctChainId: string = selectedNetwork
+        ? selectedNetwork
+        : env === Environment.production
+          ? NetworkEnums.MAINNET
+          : NetworkEnums.RINKEBY;
+      const network: utils.Network = await provider.getNetwork();
 
-        const correctChainId: number = paymentNetwork ? paymentNetwork : env === Environment.production ? 1 : 4;
-
-        const network = await provider.getNetwork();
-
-        console.log(`User has selected the ${networks[correctChainId.toString()].name} network! Current MetaMask network: `, network.chainId);
-    
-        if (network.chainId != correctChainId) {
-          errMsg = `Metamask is connected to an unsupported network. Please connect to the ${networks[correctChainId].name} network.`;
-          handleError(errMsg);
-        }
+      console.log(`User has selected the ${networks[correctChainId].name} network! Current MetaMask network: `, network.chainId);
+  
+      if (network.chainId.toString() !== correctChainId) {
+        errMsg = `Metamask is connected to an unsupported network. Please connect to the ${networks[correctChainId].name} network.`;
+        handleError(errMsg);
       }
     }
   
+    /**
+     * Connect a user's wallet and validate
+     */
     async function connectWallet(): Promise<void> {
+      console.log('Connecting user wallet...');
       await setSelectedAccount();
       await setContracts();
       await checkEthereum();
       console.log('Wallet was successfully connected! Provider: ', provider);
     }
 
-    // Token > USD
-    async function handleChangeTokenAmount(newTokenAmount: number, paymentToken?: string): Promise<number> {
+    /**
+     * Calculate Token -> USD
+     */
+    async function calculateTokenToFiat(newTokenAmount: number, paymentToken?: string): Promise<number> {
       let tokenPrice = 0;
       let usdAmount = 0;
 
@@ -195,8 +256,10 @@ export const withCommunityDonationFlow = WrappedComponent => {
       return usdAmount;
     }
 
-    // USD > Token
-    async function handleChangeFiatAmount(newFiatAmount: number, paymentToken?: TokenEnums): Promise<number> {
+    /**
+     * Calcualte USD -> Token
+     */
+    async function calculateFiatToToken(newFiatAmount: number, paymentToken?: string): Promise<number> {
       let tokenPrice = 0;
       let tokenAmount = 0;
 
@@ -213,32 +276,30 @@ export const withCommunityDonationFlow = WrappedComponent => {
       return tokenAmount;
     }
 
-    // TODO: fix this network error handling
-    async function handleChangePaymentNetwork(newNetwork: NetworkEnums): Promise<void> {
-      setPaymentNetwork(newNetwork);
+    async function handleChangePaymentNetwork(network: string): Promise<void> {
+      setSelectedNetwork(network);
     }
 
-    useEffect(() => {
-      console.log('Payment network changed - re-checking network');
-      checkNetwork();
-    }, [paymentNetwork])
-  
-    // PAN
+    /**
+     * Get ETH -> PAN quote
+     */
     async function getQuote(value: utils.BigNumber) {
-      return quoteEthToPan(value, provider, {
-        token: token,
-        exchange: exchange,
-      });
+      return quoteEthToPan(value, provider, { token, exchange, });
     }
 
-    async function createDonationMetadata(paymentToken: TokenEnums, fiatAmount: number) {
+    /**
+     * Create Community Donation metadata
+     */
+    async function createDonationMetadata(paymentToken: string, fiatAmount: number) {
       const donationTotal: utils.BigNumber = BN(fiatAmount);
       
+      // TODO: Add logic for different payment tokens here
+
       // Get USD price of 1 ETH
       const ethPrice = await fetchEthPrice();
       
       // Convert USD to ETH, print
-      const ethAmount = quoteUsdToEth(donationTotal, ethPrice).toString();
+      const ethAmount = quoteUsdToEth(donationTotal, ethPrice).toFixed(18); // <- cap at 18 to avoid BN underflow/overflow errors
       console.log(`${donationTotal} USD -> ${ethAmount} ETH`);
       
       // Convert to wei, print
@@ -247,7 +308,6 @@ export const withCommunityDonationFlow = WrappedComponent => {
       
       // PAN bought w/ 1 ETH
       await getQuote(parseEther('1'));
-      console.log('[createDonationMetadata] 6');
 
       // Build donation object
       const donation: ICommunityDonationMetadata = {
@@ -259,7 +319,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
       return { metadata: donation, panValue };
     }
   
-    // Sell ETH -> uniswap exchange (buy PAN)
+    /**
+     * Purchase PAN with ETH through exchange
+     */
     async function purchasePan(donation: ICommunityDonationMetadata, panValue: utils.BigNumber): Promise<utils.BigNumber> {
       // TODO: subtract a percentage
       let minTokens = BN(panValue).sub(5000);
@@ -274,7 +336,6 @@ export const withCommunityDonationFlow = WrappedComponent => {
 
       // Buy Pan with Eth
       try {
-
         setMessage(`Purchasing PAN from ${network.exchangeName}...`);
   
         const gasPrice = await getGasPrice();
@@ -285,8 +346,8 @@ export const withCommunityDonationFlow = WrappedComponent => {
         const tx = await exchange.functions.swapExactETHForTokens(
           minTokens,
           [
-            network.addresses.WETH_TOKEN_ADDRESS,
-            network.addresses.PAN_TOKEN_ADDRESS,
+            tokens[TokenEnums.ETH].addresses[chainId.toString()],
+            tokens[TokenEnums.PAN].addresses[chainId.toString()],
           ],
           communityWallet,
           deadline
@@ -317,24 +378,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
       }
     }
   
-    // Pass the error up to the caller and cancel everything
-    function handleError(msg: string) {
-      // TODO: use these error flags/messages
-      // setErrorMessage(msg);
-      // setError(true);
-      setStep(null);
-      setMessage('');
-      console.error(msg);
-      throw new Error(msg);
-    }
-  
-    // Cancel the donation flow
-    function handleCancel() {
-      setStep(null);
-      setMessage('');
-    }
-
-    // Execute the donation flow, throwing on error
+    /**
+     * Master donation handler
+     */
     async function handleDonation(data: any, actions: any) {
       // TODO: validate submitted data
 
@@ -377,11 +423,12 @@ export const withCommunityDonationFlow = WrappedComponent => {
   
     return (
       <WrappedComponent
+        initialValues={initialFormValues}
         onDonate={handleDonation}
         onCancel={handleCancel}
         onChangePaymentNetwork={handleChangePaymentNetwork}
-        onChangeTokenAmount={handleChangeTokenAmount}
-        onChangeFiatAmount={handleChangeFiatAmount}
+        onChangeTokenAmount={calculateTokenToFiat}
+        onChangeFiatAmount={calculateFiatToToken}
         connectWallet={connectWallet}
         message={message}
         step={step}
