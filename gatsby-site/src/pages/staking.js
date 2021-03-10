@@ -75,13 +75,6 @@ const categories = [
       "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
   },
   {
-    categoryID: 15,
-    title: 'SheFi',
-    hidden: true,
-    description:
-      "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
-  },
-  {
     categoryID: 16,
     title: 'DePo DAO',
     description:
