@@ -156,10 +156,10 @@ const IndexPage = () => {
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
-            <h1 className="white f1-ns f2 b ma0 mb3">The sustainable treasury for communities to share.</h1>
+            <h1 className="white f1-ns f2 b ma0 mb3">Money for communities</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
-              Bitcoin subsidizes its own security by creating new bitcoins for miners. Panvala's PAN token uses that same model
-              for <b className="white fw6"> philanthropy mining</b>, with 10x donation matching last quarter.
+              Panvala is a donation matching fund that we want to share with your community.
+              Donations were matched at 7.5x last quarter using the PAN cryptocurrency that powers the system.
               Panvala is run by our communities and people like you.
             </p>
             <div className="">
@@ -627,7 +627,7 @@ const IndexPage = () => {
       {/* <!-- Donation CTA --> */}
       <section className="full-clip-down-blue pv6 mv6-ns mv5">
         <div className="w-50-l w-70-m w-90 center relative z-1">
-          <h2 className="f2-5 ma0 mb4 mt0-ns mt6 pt6-ns pt5 white tc">Hodlers Are Philanthropists</h2>
+          <h2 className="f2-5 ma0 mb4 mt0-ns mt6 pt6-ns pt5 white tc">Elevate Community Life</h2>
           <p className="ma0 f4 lh-text mb4 white-60">
             Panvala's treasury is a new kind of community-managed endowment—like a university endowment. PAN tokens
             are designed to build this endowment from scratch: the more we share Panvala's treasury, the stronger it gets.
