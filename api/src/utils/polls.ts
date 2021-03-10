@@ -10,7 +10,7 @@ const {
   CategoryPollResponse,
   CategoryPollAllocation,
 } = require('../models');
-const { in: opIn } = Sequelize.Op;
+const { in: opIn, notIn: opNotIn } = Sequelize.Op;
 
 // ===== Categories
 
@@ -24,6 +24,16 @@ export async function getCategoryByName(name: string) {
 
 export async function getCategoriesByName(names: string[]) {
   return FundingCategory.findAll({ where: { displayName: names } });
+}
+
+export async function excludeCategoriesByIds(ids: number[]) {
+  return FundingCategory.findAll({
+    where: {
+      id: {
+        [opNotIn]: ids,
+      },
+    },
+  });
 }
 
 // Throw if the category already exists
