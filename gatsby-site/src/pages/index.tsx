@@ -48,6 +48,32 @@ import leagueBloomNetwork from '../img/league/bloomnetwork.jpg';
 import leagueHandshakeDevelopmentFund from '../img/league/handshakedevelopmentfund.png';
 import leagueLexDAO from '../img/league/lexdao.jpg';
 import leagueGrassrootsEconomics from '../img/league/grassrootseconomics.jpg';
+import leagueCirclesUBI from '../img/league/circles-ubi.jpg';
+import leagueGiveth from '../img/league/giveth.jpg';
+import leagueWOCA from '../img/league/woca.jpg';
+import leagueDandelionCollective from '../img/league/dandelion-collective.png';
+import leagueShenanigan from '../img/league/shenanigan.jpg';
+import leaguePeoplesDAO from '../img/league/peoplesdao.png';
+import leagueMarmaJ from '../img/league/marma-j.jpg';
+import leagueHackervilla from '../img/league/hackervilla.png';
+import leaguePrimeDAO from '../img/league/primedao.jpg';
+import leagueSBV from '../img/league/sbv-commonwealth.jpg';
+import leagueKolektivo from '../img/league/kolektivo-labs.png';
+import leagueAustinMeetups from '../img/league/austin-meetups-fund.png';
+import leagueDoinGud from '../img/league/doingud.jpg';
+
+
+
+
+
+
+
+
+
+
+
+
+
 import eventsBg from '../img/events-bg.png';
 
 import Layout from '../components/Layout';
@@ -180,7 +206,7 @@ const IndexPage = () => {
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
-          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 29 communities—we're aiming for thousands.
+          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 42 communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
@@ -455,6 +481,124 @@ const IndexPage = () => {
               <h3>Grassroots Economics</h3>
             </a>
           </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueCirclesUBI}
+            />
+            <a class="link dim near-black" href="https://joincircles.net/">
+              <h3>Circles UBI</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueGiveth}
+            />
+            <a class="link dim near-black" href="https://giveth.io/">
+              <h3>Giveth</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueWOCA}
+            />
+            <a class="link dim near-black" href="https://womenofcrypto.art/">
+              <h3>WOCA (Women of Crypto Art)</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDandelionCollective}
+            />
+            <a class="link dim near-black" href="https://dandelion.earth/">
+              <h3>Dandelion Collective</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueShenanigan}
+            />
+            <a class="link dim near-black" href="https://she.energy/">
+              <h3>Shenanigan</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leaguePeoplesDAO}
+            />
+            <a class="link dim near-black" href="https://www.peoplesdao.community/">
+              <h3>Peoples' Cooperative</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMarmaJ}
+            />
+            <a class="link dim near-black" href="https://www.marmaj.org/">
+              <h3>Marma J Foundation</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueHackervilla}
+            />
+            <a class="link dim near-black" href="https://www.pool-party.club/hackervilla">
+              <h3>Hackervilla</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leaguePrimeDAO}
+            />
+            <a class="link dim near-black" href="https://primedao.eth.link/#/">
+              <h3>PrimeDAO</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueSBV}
+            />
+            <a class="link dim near-black" href="https://sbv.io/">
+              <h3>SBV Commonwealth</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueKolektivo}
+            />
+            <a class="link dim near-black" href="https://kolektivo.co/">
+              <h3>Kolektivo Labs</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueAustinMeetups}
+            />
+            <a class="link dim near-black" href="https://www.meetup.com/ethereum-austin/events/">
+              <h3>Austin Meetups Fund</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDoinGud}
+            />
+            <a class="link dim near-black" href="https://linktr.ee/doingud">
+              <h3>DoinGud</h3>
+            </a>
+          </div>
+
         </div>
 
         <div className="dib v-top mr3-ns mr2 mv2">
