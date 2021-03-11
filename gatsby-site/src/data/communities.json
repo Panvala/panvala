@@ -3,8 +3,11 @@
     "name": "Midtown LA",
     "city": "Los Angeles",
     "state": "CA",
-    "addresses": {
-      "COMMUNITY_WALLET_ADDRESS": "0x41F54f342b8979A4d3FF504F87d7DD7Fa0f48214"
+    "walletAddresses": {
+      "1": "0x41F54f342b8979A4d3FF504F87d7DD7Fa0f48214",
+      "4": "0x41F54f342b8979A4d3FF504F87d7DD7Fa0f48214",
+      "100": "0x41F54f342b8979A4d3FF504F87d7DD7Fa0f48214",
+      "137": "0x41F54f342b8979A4d3FF504F87d7DD7Fa0f48214"
     }
   }
 }
