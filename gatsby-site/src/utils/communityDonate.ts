@@ -1,26 +1,56 @@
-import { utils } from 'ethers';
+import { Contract, providers, utils } from 'ethers';
+import { tokens } from '../data';
 
 const { bigNumberify, parseUnits, formatEther, formatUnits } = utils;
 
 // Types
 
-export interface ICommunityDonationMetadata {
-  paymentToken?: string;
-  usdValue?: string;
-  ethValue?: string;
+export interface INetworksData {
+  [chainId: string]: {
+    name: string;
+    token: string;
+    exchange: string;
+  };
 }
 
-// Base transaction info -- all required
-export interface IDonationTx {
-  txHash: string;
-  sender: string;
-  donor: string;
-  tokens: string;
+export interface ITokensData {
+  [token: string]: {
+    addresses: {
+      [chainId: string]: string;
+    };
+  }
+}
+
+export interface ICommunitiesData {
+  [communityId: string]: {
+    name: string;
+    city: string;
+    state: string;
+    walletAddresses: {
+      [chainId: string]: string;
+    };
+  };
+}
+
+export interface IExchangesData {
+  [exchangeName: string]: {
+    token: string;
+    addresses: {
+      factory: { [chainId: string]: string };
+      router: { [chainId: string]: string };
+    };
+  };
 }
 
 export enum TokenEnums {
   ETH = 'ETH',
+  WETH = 'WETH',
   PAN = 'PAN',
+  XDAI = 'XDAI',
+  STAKE = 'STAKE',
+  HNY = 'HNY',
+  MATIC = 'MATIC',
+  USDC = 'USDC',
 }
 
 export enum NetworkEnums {
@@ -41,9 +71,16 @@ export function BN(small) {
 /**
  * Check token allowance
  */
-export async function checkAllowance(token, owner, spender, numTokens) {
-  const allowance = await token.functions.allowance(owner, spender);
+export async function checkAllowance(token: Contract, ownerAddress: string, spenderAddress: string, numTokens: number) {
+  const allowance = await token.allowance(ownerAddress, spenderAddress);
   return allowance.gte(numTokens);
+}
+
+/**
+ * Get token pair address
+ */
+export async function getTokenPairAddress(factory: Contract, tokenInAddress: string, tokenOutAddress: string): Promise<string> {
+  return await factory.getPair(tokenInAddress, tokenOutAddress);
 }
 
 /**

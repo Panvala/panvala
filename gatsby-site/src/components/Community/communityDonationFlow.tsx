@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { providers, utils } from 'ethers';
-import { communities, networks, tokens } from '../../data';
+import { constants, Contract, providers, utils } from 'ethers';
 import {
   BN,
   getGasPrice,
   quoteEthToPan,
-  ICommunityDonationMetadata,
   fetchEthPrice,
   quoteUsdToEth,
   NetworkEnums,
+  ICommunitiesData,
+  INetworksData,
+  ITokensData,
   TokenEnums,
+  getTokenPairAddress,
+  checkAllowance,
 } from '../../utils/communityDonate';
-import { CommunityDonationFormFields } from './CommunityDonationForm';
-import { loadCommunityContracts, getEnvironment, Environment } from '../../utils/env';
+import { ICommunityDonationFormFields } from './CommunityDonationForm';
+import { loadCommunityDonationContracts, getEnvironment, Environment } from '../../utils/env';
+// import { exchangeAbi, tcAbi, tokenAbi, IUniswapV2Factory, IUniswapV2Router02 } from '../../utils/abis';
 
-const { parseEther, getAddress, bigNumberify } = utils;
+const { parseEther, formatEther, formatUnits, getAddress, bigNumberify } = utils;
 
 declare global {
   interface Window {
@@ -22,14 +26,24 @@ declare global {
   }
 }
 
+interface ICommunityDonationFlowProps {
+  data: {
+    communities: ICommunitiesData;
+    tokens: ITokensData;
+    networks: INetworksData;
+  };
+  [key: string]: any;
+}
+
 export const withCommunityDonationFlow = WrappedComponent => {
-  return (props: any) => {
-    const initialFormValues: CommunityDonationFormFields = {
+  return (props: ICommunityDonationFlowProps) => {
+    const { communities, tokens, networks } = props.data;
+
+    const initialFormValues: ICommunityDonationFormFields = {
       firstName: '',
       lastName: '',
       email: '',
-      paymentToken: TokenEnums.ETH,
-      paymentNetwork: NetworkEnums.RINKEBY,
+      paymentToken: TokenEnums.XDAI,
       tokenAmount: 0,
       fiatAmount: 0,
     };
@@ -37,14 +51,17 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // don't want to trigger component reloads in the middle of the donation flow
     let provider: providers.Web3Provider;
     let activeAccount = '';
-    let exchange: any;
-    let token: any;
-    // let communityWallet: string = '';
     let panPurchased: utils.BigNumber;
-    // let selectedNetwork: NetworkEnums = initialFormValues.paymentNetwork;
 
-    const [communityWallet, setCommunityWallet] = useState<string>();
-    const [selectedNetwork, setSelectedNetwork] = useState<string>(initialFormValues.paymentNetwork);
+    const [factory, setFactory] = useState<Contract>();
+    const [router, setRouter] = useState<Contract>();
+    const [inputToken, setInputToken] = useState<Contract>();
+    const [panToken, setPanToken] = useState<Contract>();
+    const [wethToken, setWethToken] = useState<Contract>();
+
+    const [communityWallet, setCommunityWallet] = useState<string>('');
+    const [selectedToken, setSelectedToken] = useState<string>(initialFormValues.paymentToken);
+    const [selectedNetwork, setSelectedNetwork] = useState<string>(mapTokenToChainId(initialFormValues.paymentToken));
     const [step, setStep] = useState<string | null>(null);
     const [message, setMessage] = useState<string>('');
 
@@ -57,26 +74,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // ---------------------------------------------------------------------------
 
     /**
-     * Set Community Wallet
-     */
-    useEffect(() => {
-      if (!communityWallet) {
-        const address = communities[props.community].addresses.COMMUNITY_WALLET_ADDRESS;
-        if (address) {
-          setCommunityWallet(address);
-        }
-      }
-    }, [communityWallet]);
-  
-    /**
      * Listen for MetaMask network changes
      */
     useEffect(() => {
       if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        window.ethereum.on('networkChanged', network => {
+        window.ethereum.on('networkChanged', async network => {
           console.log(`MetaMask network has changed to ${network} - re-checking network`);
-          if (selectedNetwork !== '')
-            setContracts();
+          await handleNetworkChange();
         });
       }
     });
@@ -86,13 +90,35 @@ export const withCommunityDonationFlow = WrappedComponent => {
      */
     useEffect(() => {
       console.log(`Selected payment network has changed to ${selectedNetwork} - re-checking network`);
-      if (selectedNetwork !== '')
-        setContracts();
+      handleNetworkChange();
     }, [selectedNetwork]);
+
+    /**
+     * Listen for selected token changes
+     */
+    useEffect(() => {
+      setSelectedNetwork(mapTokenToChainId(selectedToken));
+    }, [selectedToken]);
   
     // ---------------------------------------------------------------------------
     // Initialization
     // ---------------------------------------------------------------------------  
+
+    /**
+     * Handle network changes
+     */
+    async function handleNetworkChange() {
+      if (selectedNetwork !== '') {
+        await setContracts();
+        if (selectedNetwork !== '' && communityWallet === '') {
+          const address = communities[props.community]?.walletAddresses[selectedNetwork];
+          if (address) {
+            console.log('Setting community wallet address to: ', address);
+            setCommunityWallet(address);
+          }
+        }
+      }
+    }
 
     /**
      * Initialize Provider and get active account
@@ -134,9 +160,12 @@ export const withCommunityDonationFlow = WrappedComponent => {
           throw err;
         }
 
-        const contracts = await loadCommunityContracts(provider);
-        token = contracts.token;
-        exchange = contracts.exchange;
+        const contracts = await loadCommunityDonationContracts(provider);
+        setFactory(contracts.factory);
+        setRouter(contracts.router);
+        setInputToken(contracts.inputToken);
+        setPanToken(contracts.panToken);
+        setWethToken(contracts.wethToken);
       } else {
         // No provider yet
         const account = await setSelectedAccount();
@@ -177,6 +206,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
      * Validate Providers and Contracts are set up properly
      */
     async function checkEthereum(): Promise<string | void> {
+      // Verify provider and account
       let account;
       try {
         account = getAddress(activeAccount);
@@ -188,37 +218,53 @@ export const withCommunityDonationFlow = WrappedComponent => {
         }
       }
   
-      if (typeof token === 'undefined') {
+      // Verify exchange factory
+      if (typeof factory === 'undefined') {
         try {
           await setContracts();
         } catch (err) {
           console.error(`ERROR : ${err.message}`);
           handleError(err.message);
         }
-        if (typeof token === 'undefined') {
-          const errMsg = 'Contracts not set correctly.';
+        if (typeof factory === 'undefined') {
+          const errMsg = 'Factory contract not set correctly.';
+          handleError(errMsg);
+        }
+      }
+
+      // Verify exchange router
+      if (typeof router === 'undefined') {
+        try {
+          await setContracts();
+        } catch (err) {
+          console.error(`ERROR : ${err.message}`);
+          handleError(err.message);
+        }
+        if (typeof router === 'undefined') {
+          const errMsg = 'Router contract not set correctly.';
           handleError(errMsg);
         }
       }
     }
   
     /**
-     * Validate MetaMask is connected to the selected network
+     * Validate MetaMask is connected to the correct network
      */
     async function checkNetwork(): Promise<void> {
       let errMsg: string;
       if (!activeAccount || !provider) {
         const account = await setSelectedAccount();
         if (!account) {
-          handleError('Ethereum not setup properly.');
+          handleError('Could not get user account - Ethereum not setup properly.');
         }
       }
       const env = getEnvironment();
-      const correctChainId: string = selectedNetwork
-        ? selectedNetwork
-        : env === Environment.production
+      let correctChainId: string = selectedNetwork;
+      if (correctChainId === NetworkEnums.MAINNET)
+        correctChainId = env === Environment.production
           ? NetworkEnums.MAINNET
           : NetworkEnums.RINKEBY;
+
       const network: utils.Network = await provider.getNetwork();
 
       console.log(`User has selected the ${networks[correctChainId].name} network! Current MetaMask network: `, network.chainId);
@@ -241,116 +287,138 @@ export const withCommunityDonationFlow = WrappedComponent => {
     }
 
     /**
+     * Map payment token to network
+     */
+    function mapTokenToChainId(token: string) {
+      switch (token) {
+        case TokenEnums.ETH: return NetworkEnums.MAINNET;
+        case TokenEnums.XDAI: return NetworkEnums.XDAI;
+        case TokenEnums.MATIC: return NetworkEnums.MATIC;
+        default: return '';
+      }
+    }
+
+    /**
+     * Handle payment token change
+     */
+    async function handleChangePaymentToken(newToken: string): Promise<void> {
+       setSelectedToken(newToken);
+    }
+
+    /**
      * Calculate Token -> USD
      */
-    async function calculateTokenToFiat(newTokenAmount: number, paymentToken?: string): Promise<number> {
-      let tokenPrice = 0;
-      let usdAmount = 0;
-
-      if (paymentToken === TokenEnums.ETH) {
-        tokenPrice = parseInt(await fetchEthPrice(), 10);
-        usdAmount = newTokenAmount * tokenPrice;
-        console.log(`${newTokenAmount} ${paymentToken} -> ${usdAmount} USD`);
-      }
+    async function calculateTokenToFiat(inputAmount: number, paymentToken?: string): Promise<number> {
+      let fiatAmount = 0;
       
-      return usdAmount;
+      if (!inputAmount)
+        return fiatAmount;
+      
+      let tokenAmount = inputAmount;
+
+      // get ETH value of input tokens
+      if (paymentToken !== TokenEnums.ETH && router && factory && inputToken && wethToken) {
+        const donationTotal = parseEther(inputAmount.toString());
+        const tokensOut = await router?.getAmountsOut(donationTotal, [
+          inputToken.address,
+          tokens[TokenEnums.WETH].addresses[selectedNetwork],
+        ]);
+        const wethValue = formatUnits(tokensOut[1], 18);
+        tokenAmount = parseFloat(wethValue);
+      }
+
+      // get ETH price and convert to USD
+      const ethPrice = parseInt(await fetchEthPrice(), 10);
+      fiatAmount = tokenAmount * ethPrice;
+      console.log(`${inputAmount} ${paymentToken} -> ${fiatAmount.toFixed(3)} USD`);
+      
+      return parseFloat(fiatAmount.toFixed(3));
     }
 
     /**
-     * Calcualte USD -> Token
+     * Calculate USD -> Token
      */
     async function calculateFiatToToken(newFiatAmount: number, paymentToken?: string): Promise<number> {
-      let tokenPrice = 0;
       let tokenAmount = 0;
-
+      
       if (!newFiatAmount)
         return tokenAmount;
+      
+      const ethPrice = await fetchEthPrice();
+      const ethAmount = quoteUsdToEth(BN(newFiatAmount), ethPrice).toFixed(18);
+      tokenAmount = parseFloat(ethAmount);
+      console.log(`${newFiatAmount} USD -> ${ethAmount} ETH`);
 
-      if (paymentToken === TokenEnums.ETH) {
-        tokenPrice = await fetchEthPrice();
-        // Convert USD to ETH, print
-        tokenAmount = quoteUsdToEth(newFiatAmount.toString(), tokenPrice.toString());
-        console.log(`${newFiatAmount} USD -> ${tokenAmount} ${paymentToken}`);
+      if (paymentToken !== TokenEnums.ETH && router && factory && inputToken && wethToken) {
+        const weiAmountOut = parseEther(ethAmount);
+        const tokensIn = await router?.getAmountsIn(weiAmountOut, [
+          tokens[selectedToken].addresses[selectedNetwork],
+          tokens[TokenEnums.WETH].addresses[selectedNetwork],
+        ]);
+        const tokenValue = formatUnits(tokensIn[0], 18);
+        tokenAmount = parseFloat(tokenValue);
+        console.log(`${ethAmount} ETH -> ${tokenAmount} ${paymentToken}`);
       }
 
-      return tokenAmount;
+      return parseFloat(tokenAmount.toFixed(3));
     }
 
-    async function handleChangePaymentNetwork(network: string): Promise<void> {
-      setSelectedNetwork(network);
-    }
-
-    /**
-     * Get ETH -> PAN quote
-     */
-    async function getQuote(value: utils.BigNumber) {
-      return quoteEthToPan(value, provider, { token, exchange, });
-    }
-
-    /**
-     * Create Community Donation metadata
-     */
-    async function createDonationMetadata(paymentToken: string, fiatAmount: number) {
-      const donationTotal: utils.BigNumber = BN(fiatAmount);
-      
-      // TODO: Add logic for different payment tokens here
-
-      // Get USD price of 1 ETH
-      const ethPrice = await fetchEthPrice();
-      
-      // Convert USD to ETH, print
-      const ethAmount = quoteUsdToEth(donationTotal, ethPrice).toFixed(18); // <- cap at 18 to avoid BN underflow/overflow errors
-      console.log(`${donationTotal} USD -> ${ethAmount} ETH`);
-      
-      // Convert to wei, print
-      const weiAmount = parseEther(ethAmount);
-      const panValue = await getQuote(weiAmount);
-      
-      // PAN bought w/ 1 ETH
-      await getQuote(parseEther('1'));
-
-      // Build donation object
-      const donation: ICommunityDonationMetadata = {
-        paymentToken,
-        usdValue: donationTotal.toString(),
-        ethValue: weiAmount.toString(),
-      };
-
-      return { metadata: donation, panValue };
-    }
-  
     /**
      * Purchase PAN with ETH through exchange
      */
-    async function purchasePan(donation: ICommunityDonationMetadata, panValue: utils.BigNumber): Promise<utils.BigNumber> {
-      // TODO: subtract a percentage
-      let minTokens = BN(panValue).sub(5000);
-      if (minTokens.lt(0))
-        minTokens = BN(0);
-
-      const block = await provider.getBlock(await (provider.getBlockNumber()));
-      const deadline = BN(block.timestamp).add(3600); // add one hour
-
+    async function purchasePan(amountIn: utils.BigNumber, path: string[]): Promise<utils.BigNumber> {      
       const { chainId } = await provider.getNetwork();
-      const network = networks[chainId.toString()];
-
-      // Buy Pan with Eth
+      const networkData = networks[chainId.toString()];
+      console.log('1');
+      
+      if (!router || !inputToken)
+        throw new Error('Contracts not initialized - canceling attempt to purchase PAN');
+      
       try {
-        setMessage(`Purchasing PAN from ${network.exchangeName}...`);
+        const tokensOut = await router?.getAmountsOut(amountIn, path);
+        const panValue: number = tokensOut[2];
+        const amountOut = BN(panValue);
+
+        // TODO: replace with percentage
+        let minAmountOut = amountOut.sub(5000);
+
+        console.log('PAN to purchase: ', formatUnits(amountOut.toString(), 18));
+
+        const currentBlock = await provider.getBlockNumber();
+        const block = await provider.getBlock(currentBlock);
+        const deadline = BN(block.timestamp).add(3600); // add one hour
+
+        setMessage(`Purchasing PAN from ${networkData.exchange}...`);
   
-        const gasPrice = await getGasPrice();
-        const ethValue = BN(donation.ethValue);
+        console.log(`Purchasing PAN from ${networkData.exchange}!\n\nminAmountOut: ${minAmountOut}\ndeadline: ${deadline}\ninputValue: ${amountIn}\ncommunityWallet: ${communityWallet}`);
 
-        console.log(`Purchasing PAN from ${network.exchangeName}!\n\nminTokens: ${minTokens}\ndeadline: ${deadline}\ngasPrice: ${gasPrice}\nethValue: ${ethValue}\ncommunityWallet: ${communityWallet}`);
+        // Check allowance
+        const isAllowed: boolean = await checkAllowance(
+          inputToken,
+          activeAccount,
+          router.address,
+          panValue,
+        );
 
-        const tx = await exchange.functions.swapExactETHForTokens(
-          minTokens,
-          [
-            tokens[TokenEnums.ETH].addresses[chainId.toString()],
-            tokens[TokenEnums.PAN].addresses[chainId.toString()],
-          ],
+        console.log(`${networkData.exchange} Router at ${router.address} is allowed to spend tokens? `, isAllowed);
+
+        // if necessary, approve exchange to spend tokens
+        if (!isAllowed) {
+          setMessage('Approving tokens...');
+
+          const approveTx = await inputToken.approve(
+            router.address,
+            amountOut,
+          );
+          console.log('Tokens have been approved', approveTx.hash);
+        }
+
+        const tx = await router?.swapExactTokensForTokens(
+          amountIn,
+          minAmountOut,
+          path,
           communityWallet,
-          deadline
+          deadline,
         );
   
         console.log('tx:', tx);
@@ -364,16 +432,11 @@ export const withCommunityDonationFlow = WrappedComponent => {
   
         const receipt = await provider.getTransactionReceipt(tx.hash);
         console.log('receipt:', receipt);
-        console.log();
   
-        // Get new quote
-        console.log('NEW QUOTE');
-        await getQuote(ethValue);
-        await getQuote(parseEther('1'));
-        return panValue;
+        return amountOut;
       } catch (err) {
-        console.error(`ERROR: ${err.message}`);
-        handleError(`${network.exchangeName} transaction failed: ${err.message}`);
+        console.error(`ERROR: ${err.data?.message}`);
+        handleError(`${networkData.exchange} transaction failed: ${err.message}`);
         return bigNumberify('0');
       }
     }
@@ -381,33 +444,42 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Master donation handler
      */
-    async function handleDonation(data: any, actions: any) {
+    async function handleDonation(values: ICommunityDonationFormFields, actions: any) {
       // TODO: validate submitted data
 
-      const { donationMetadata } = data;
+      const { tokenAmount } = values;
 
       try {
         /// 1. Connect purchase PAN
         setStep('1');
-        setMessage('');
+        setMessage('Connecting wallet...');
 
         await connectWallet();
 
-        const { paymentToken, fiatAmount, } = donationMetadata;
-        const { metadata, panValue } = await createDonationMetadata(paymentToken, fiatAmount);
-    
+        // Convert donation to wei
+        const donationTotal = parseEther(tokenAmount.toString());
+
+        console.log(`Donation total: ${formatUnits(donationTotal.toString(), 18)} ${selectedToken}`);
+
+        const path: string[] = [
+          tokens[selectedToken].addresses[selectedNetwork],
+          tokens[TokenEnums.HNY].addresses[selectedNetwork],
+          tokens[TokenEnums.PAN].addresses[selectedNetwork],
+        ];
+
         // Purchase Panvala pan
-        panPurchased = await purchasePan(metadata, panValue);
+        setStep('2');
+        panPurchased = await purchasePan(donationTotal, path);
   
-        /// 2. Approve if necessary and donate PAN
+        // 2. Approve if necessary and donate PAN
         if (panPurchased.gt('0') && step != null) {
-          setStep('2');
-          setMessage('');
+          setStep('3');
+          setMessage('Sending PAN to community wallet...');
   
           // Donate Panvala pan
           // await donatePanToCommunity(panPurchased);
 
-          setStep('3');
+          setStep('4');
           setMessage('Donation complete!');
 
           actions.resetForm();
@@ -426,7 +498,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
         initialValues={initialFormValues}
         onDonate={handleDonation}
         onCancel={handleCancel}
-        onChangePaymentNetwork={handleChangePaymentNetwork}
+        onChangePaymentToken={handleChangePaymentToken}
         onChangeTokenAmount={calculateTokenToFiat}
         onChangeFiatAmount={calculateFiatToToken}
         connectWallet={connectWallet}

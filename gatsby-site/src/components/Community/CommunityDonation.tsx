@@ -13,7 +13,7 @@ interface CommunityDonationProps {
   initialValues: KeyValuePair;
   onCancel(): void;
   onDonate(data: KeyValuePair, actions: KeyValuePair): void;
-  onChangePaymentNetwork(newToken: string): Promise<void>;
+  onChangePaymentToken(newToken: string): Promise<void>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
   connectWallet(): void;
@@ -23,38 +23,19 @@ const CommunityDonation = (props: CommunityDonationProps) => {
   const {
     initialValues,
     onDonate,
-    onChangePaymentNetwork,
+    onChangePaymentToken,
     onChangeFiatAmount,
     onChangeTokenAmount,
     connectWallet,
   } = props;
 
-  // Click handler for donations
-  async function handleDonation(values: KeyValuePair, actions: KeyValuePair) {
-    console.log('Donation:', 'handleDonation', values);
-
-    const { firstName, lastName, email, fiatAmount, paymentToken, } = values;
-
-    // Data needed for the donation flow
-    const data = {
-      userData: { firstName, lastName, email },
-      donationMetadata: { paymentToken, fiatAmount },
-    };
-
-    try {
-      onDonate(data, actions);
-    } catch (error) {
-      alert(error.message);
-    }
-  }
-
   return (
     <Box data-testid="community-donation-container">
       <CommunityDonationForm
         initialValues={initialValues}
-        onSubmit={handleDonation}
+        onSubmit={onDonate}
         connectWallet={connectWallet}
-        onChangePaymentNetwork={onChangePaymentNetwork}
+        onChangePaymentToken={onChangePaymentToken}
         onChangeFiatAmount={onChangeFiatAmount}
         onChangeTokenAmount={onChangeTokenAmount}
       />

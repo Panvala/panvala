@@ -1,6 +1,6 @@
 import { Contract } from 'ethers';
-import { exchangeAbi, exchangeV2Abi, tcAbi, tokenAbi } from './abis';
-import { networks, tokens } from '../data';
+import { exchangeAbi, tcAbi, tokenAbi, IUniswapV2ERC20, IUniswapV2Factory, IUniswapV2Router02 } from './abis';
+import { exchanges, networks, tokens } from '../data';
 import { TokenEnums } from './communityDonate';
 
 export const Environment = {
@@ -27,37 +27,56 @@ export function getEnvironment() {
   return environment;
 }
 
-export async function loadCommunityContracts(provider) {
+export async function loadCommunityDonationContracts(provider) {
   const { chainId } = await provider.getNetwork();
   const signer = provider.getSigner();
   
   if (!chainId)
     throw new Error('MetaMask is not connected.');
 
-  const tokenName = TokenEnums.PAN;
-  const tokenAddress = tokens[tokenName]?.addresses[chainId.toString()];
-  if (!tokenAddress) {
-    throw new Error(`Address data not found for token ${tokenName}`);
-  }
-  const tokenCode = await provider.getCode(tokenAddress);
-  if (!tokenCode) {
-    throw new Error(`Token code data not found at address for token ${tokenName}`);
-  }
-  const token = new Contract(tokenAddress, tokenAbi, signer);
-  console.log(`Initialized contract for token ${tokenName} at address: `, tokenAddress);
+  const createContract = async (contractAddress, abi) => {
+    const contractCode = await provider.getCode(contractAddress);
+    if (!contractAddress || !contractCode) {
+      throw new Error('Invalid address or no code at address: ', contractAddress);
+    }
+    return new Contract(contractAddress, abi, signer);
+  };
 
   const networkData = networks[chainId.toString()];
-  const exchangeAddress = networkData.addresses.EXCHANGE_ADDRESS;
-  const exchangeCode = await provider.getCode(exchangeAddress);
-  if (!exchangeAddress || !exchangeCode) {
-    throw new Error('Invalid address or no code at address for exchange: ', networkData.exchangeName);
-  }
-  const exchange = new Contract(exchangeAddress, exchangeV2Abi, signer);
-  console.log(`Initialized contract for exchange ${networkData.exchangeName} at address: `, exchangeAddress);
+  const exchangeData = exchanges[networkData.exchange];
+  const inputTokenData = tokens[networkData.token];
+
+  /* Initialize Factory */
+  const factoryAddress = exchangeData.addresses.factory[chainId.toString()];
+  const factory = await createContract(factoryAddress, IUniswapV2Factory);
+  console.log(`Initialized Factory contract for exchange ${networkData.exchange} at address: `, factoryAddress);
+
+  /* Initialize Router */
+  const routerAddress = exchangeData.addresses.router[chainId.toString()];
+  const router = await createContract(routerAddress, IUniswapV2Router02);
+  console.log(`Initialized Router contract for exchange ${networkData.exchange} at address: `, routerAddress);
+
+  /* Initialize payment token */
+  const inputTokenAddress = inputTokenData.addresses[chainId.toString()];
+  const inputToken = await createContract(inputTokenAddress, IUniswapV2ERC20);
+  console.log(`Initialized ${networkData.token} token contract for network ${networkData.name} at address: `, inputTokenAddress);
+
+  /* Initialize PAN Token */
+  const panTokenAddress = tokens[TokenEnums.PAN].addresses[chainId.toString()];
+  const panToken = await createContract(panTokenAddress, IUniswapV2ERC20);
+  console.log(`Initialized PAN token contract for network ${networkData.name} at address: `, panTokenAddress);
+
+  /* Initialize WETH Token */
+  const wethTokenAddress = tokens[TokenEnums.WETH].addresses[chainId.toString()];
+  const wethToken = await createContract(wethTokenAddress, IUniswapV2ERC20);
+  console.log(`Initialized WETH token contract for network ${networkData.name} at address: `, wethTokenAddress);
 
   return {
-    token,
-    exchange,
+    factory,
+    router,
+    inputToken,
+    panToken,
+    wethToken,
   };
 }
 

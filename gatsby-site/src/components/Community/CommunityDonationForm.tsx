@@ -7,11 +7,9 @@ import FieldText from '../FieldText';
 import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
-import { networks, tokens } from '../../data';
 
-export interface CommunityDonationFormFields {
+export interface ICommunityDonationFormFields {
   paymentToken: string;
-  paymentNetwork: string;
   tokenAmount: number;
   fiatAmount: number;
   firstName: string;
@@ -22,15 +20,11 @@ export interface CommunityDonationFormFields {
 // TODO: add the 'required' tags back to the user metadata fields
 // (they're currently commented out for quicker debugging)
 
-const CommunityDonationFormSchema: yup.ObjectSchema<CommunityDonationFormFields> = yup.object({
+const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields> = yup.object({
   paymentToken: yup
     .string()
     .trim()
     .required('Please enter your payment method.'),
-  paymentNetwork: yup
-    .string()
-    .trim()
-    .required('Please enter a payment network.'),
   tokenAmount: yup
     .number()
     .moreThan(0, 'Please select a donation amount.'),
@@ -55,7 +49,7 @@ const CommunityDonationFormSchema: yup.ObjectSchema<CommunityDonationFormFields>
 interface CommunityDonationFormProps {
   initialValues: any;
   onSubmit(values: any, actions: any): void;
-  onChangePaymentNetwork(newToken: string): Promise<void>;
+  onChangePaymentToken(newToken: string): Promise<void>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
   connectWallet(): void;
@@ -65,7 +59,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
   const {
     initialValues,
     onSubmit,
-    onChangePaymentNetwork,
+    onChangePaymentToken,
     onChangeTokenAmount,
     onChangeFiatAmount,
     connectWallet,
@@ -90,8 +84,8 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
         // we need to; e.g. to recalculate ETH when USD changes, and vice versa
         // (we only have access to the formik context here within the <Formik> element)
 
-        const handleChangePaymentNetwork = (e: React.ChangeEvent<any>) => {
-          onChangePaymentNetwork(e.target.value);
+        const handleChangePaymentToken = (e: React.ChangeEvent<any>) => {
+          onChangePaymentToken(e.target.value);
           handleChange(e);
         };
 
@@ -103,7 +97,6 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
         };
 
         const handleChangeFiatAmount = (e: React.ChangeEvent<any>) => {
-          console.log('Fiat amount changed: ', e.target.value);
           onChangeFiatAmount(e.target.value, values.paymentToken).then((val) => {
             setFieldValue('tokenAmount', val);
           });
@@ -126,29 +119,14 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               required
               className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
               value={values.paymentToken}
-              onChange={handleChange}
+              onChange={handleChangePaymentToken}
               id="payment-token-select"
             >
-              {Object.keys(tokens).map(tokenName => <option key={tokenName}>{tokenName}</option>)}
+              <option value="XDAI">XDAI</option>
+              <option value="MATIC">MATIC</option>
             </Field>
             <DownArrow />
 
-            <Label className="f5 b">Payment Network</Label>
-            <FormError name="paymentNetwork" className="pt2" />
-            <Field
-              as="select"
-              name="paymentNetwork"
-              required
-              className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
-              value={values.paymentNetwork}
-              onChange={handleChangePaymentNetwork}
-              id="payment-token-select"
-            >
-              <option value="">Select network...</option>
-              {Object.keys(networks).map(chainId =><option key={chainId} value={chainId}>{networks[chainId].name}</option>)}
-            </Field>
-            <DownArrow />
-  
             <Label className="f5 b">Amount</Label>
             <div className="flex">
               <div className="w-90 mr2 left">
