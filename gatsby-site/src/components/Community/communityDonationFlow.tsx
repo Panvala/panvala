@@ -308,17 +308,17 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Calculate Token -> USD
      */
-    async function calculateTokenToFiat(inputAmount: number, paymentToken?: string): Promise<number> {
+    async function calculateTokenToFiat(newTokenAmount: number, paymentToken?: string): Promise<number> {
       let fiatAmount = 0;
       
-      if (!inputAmount)
+      if (!newTokenAmount)
         return fiatAmount;
       
-      let tokenAmount = inputAmount;
+      let tokenAmount = newTokenAmount;
 
       // get ETH value of input tokens
       if (paymentToken !== TokenEnums.ETH && router && factory && inputToken && wethToken) {
-        const donationTotal = parseEther(inputAmount.toString());
+        const donationTotal = parseEther(newTokenAmount.toString());
         const tokensOut = await router?.getAmountsOut(donationTotal, [
           inputToken.address,
           tokens[TokenEnums.WETH].addresses[selectedNetwork],
@@ -330,7 +330,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
       // get ETH price and convert to USD
       const ethPrice = parseInt(await fetchEthPrice(), 10);
       fiatAmount = tokenAmount * ethPrice;
-      console.log(`${inputAmount} ${paymentToken} -> ${fiatAmount.toFixed(3)} USD`);
+      console.log(`${newTokenAmount} ${paymentToken} -> ${fiatAmount.toFixed(3)} USD`);
       
       return parseFloat(fiatAmount.toFixed(3));
     }
@@ -446,15 +446,16 @@ export const withCommunityDonationFlow = WrappedComponent => {
      */
     async function handleDonation(values: ICommunityDonationFormFields, actions: any) {
       // TODO: validate submitted data
-
       const { tokenAmount } = values;
 
       try {
-        /// 1. Connect purchase PAN
+        // Connect wallets
         setStep('1');
         setMessage('Connecting wallet...');
 
-        await connectWallet();
+        if (!provider || !activeAccount) {
+          await connectWallet();
+        }
 
         // Convert donation to wei
         const donationTotal = parseEther(tokenAmount.toString());

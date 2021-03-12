@@ -7,6 +7,7 @@ import FieldText from '../FieldText';
 import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
+import swapIcon from '../../img/swap.png';
 
 export interface ICommunityDonationFormFields {
   paymentToken: string;
@@ -20,17 +21,17 @@ export interface ICommunityDonationFormFields {
 // TODO: add the 'required' tags back to the user metadata fields
 // (they're currently commented out for quicker debugging)
 
-const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields> = yup.object({
+const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields> = yup.object().shape({
   paymentToken: yup
     .string()
     .trim()
     .required('Please enter your payment method.'),
   tokenAmount: yup
-    .number()
-    .moreThan(0, 'Please select a donation amount.'),
+    .number(),
+    // .moreThan(0, 'Please select a donation amount.'),
   fiatAmount: yup
-    .number()
-    .moreThan(0, 'Please select a donation amount in USD.'),
+    .number(),
+    // .moreThan(0, 'Please select a donation amount in USD.'),
   firstName: yup
     .string()
     .trim(),
@@ -50,8 +51,8 @@ interface CommunityDonationFormProps {
   initialValues: any;
   onSubmit(values: any, actions: any): void;
   onChangePaymentToken(newToken: string): Promise<void>;
-  onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
+  onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   connectWallet(): void;
 }
 
@@ -128,30 +129,31 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
             <DownArrow />
 
             <Label className="f5 b">Amount</Label>
-            <div className="flex">
-              <div className="w-90 mr2 left">
+            <div className="flex justify-between">
+              <div className="w-80">
                 <FieldText
                   type="number"
                   name="tokenAmount"
                   id="donate-amount"
-                  label={values.paymentToken}
-                  placeholder="0"
+                  placeholder="0.00"
                   value={values.tokenAmount}
                   onChange={handleChangeTokenAmount}
-                  className="f6 input-reset b--black-10 pv3 ph2 db center w-90 br3 mt2"
+                  className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
                 />
+                <div className="fr mr4 o-50" style={{ marginTop: '-35px' }}>{values.paymentToken}</div>
               </div>
-              <div className="w-90 ml2 right">
+              <img alt="" src={swapIcon} className="mh3 mt3 self-center" style={{ marginTop: '17.5px', width: '25px', height: '25px' }} />
+              <div className="w-80">
                 <FieldText
                   type="number"
                   name="fiatAmount"
                   id="donate-amount-fiat"
-                  label="USD"
                   placeholder="0.00"
                   value={values.fiatAmount}
                   onChange={handleChangeFiatAmount}
-                  className="f6 input-reset b--black-10 pv3 ph2 db center w-90 br3 mt2"
+                  className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
                 />
+                <div className="fr mr4 o-50" style={{ marginTop: '-35px' }}>USD</div>
               </div>
             </div>
   
