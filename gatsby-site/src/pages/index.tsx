@@ -57,7 +57,7 @@ import leaguePeoplesDAO from '../img/league/peoplesdao.png';
 import leagueMarmaJ from '../img/league/marma-j.jpg';
 import leagueHackervilla from '../img/league/hackervilla.png';
 import leaguePrimeDAO from '../img/league/primedao.jpg';
-import leagueSBV from '../img/league/sbv-commonwealth.jpg';
+import leagueSenaryCommonwealth from '../img/league/senary-commonwealth.png';
 import leagueKolektivo from '../img/league/kolektivo-labs.png';
 import leagueAustinMeetups from '../img/league/austin-meetups-fund.png';
 import leagueDoinGud from '../img/league/doingud.jpg';
@@ -565,10 +565,10 @@ const IndexPage = () => {
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
             <img
               alt=""
-              src={leagueSBV}
+              src={leagueSenaryCommonwealth}
             />
             <a class="link dim near-black" href="https://sbv.io/">
-              <h3>SBV Commonwealth</h3>
+              <h3>Senary Commonwealth</h3>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">

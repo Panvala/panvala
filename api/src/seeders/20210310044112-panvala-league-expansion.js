@@ -29,7 +29,7 @@ module.exports = {
         { id: 43, displayName: 'Marma J Foundation', createdAt: new Date(), updatedAt: new Date() },
         { id: 44, displayName: 'Hackervilla', createdAt: new Date(), updatedAt: new Date() },
         { id: 45, displayName: 'PrimeDAO', createdAt: new Date(), updatedAt: new Date() },
-        { id: 46, displayName: 'SBV Commonwealth', createdAt: new Date(), updatedAt: new Date() },
+        { id: 46, displayName: 'Senary Commonwealth', createdAt: new Date(), updatedAt: new Date() },
         { id: 47, displayName: 'Kolektivo Labs', createdAt: new Date(), updatedAt: new Date() },
         {
           id: 48,

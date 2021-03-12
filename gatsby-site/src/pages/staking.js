@@ -247,8 +247,8 @@ const categories = [
   },
   {
     categoryID: 46,
-    title: 'SBV Commonwealth',
-    description: "SBV Commonwealth supports web-based public utilities that democratize opportunity, more justly accrue and distribute value, and promote our greater humanity.",
+    title: 'Senary Commonwealth',
+    description: "Senary Commonwealth supports web-based public utilities that democratize opportunity, more justly accrue and distribute value, and promote our greater humanity.",
   },
   {
     categoryID: 47,
