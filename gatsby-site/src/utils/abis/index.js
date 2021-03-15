@@ -693,6 +693,7 @@ export const exchangeAbi = [
   },
 ];
 
+export { default as AggregatorV3Interface } from './AggregatorV3Interface.json';
 export { default as IUniswapV2ERC20 } from './IUniswapV2ERC20.json';
 export { default as IUniswapV2Factory } from './IUniswapV2Factory.json';
 export { default as IUniswapV2Router02 } from './IUniswapV2Router02.json';

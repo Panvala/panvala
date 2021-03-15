@@ -67,8 +67,6 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
   } = props;
 
   function handleDonate(values: any, actions: any) {
-    console.log('CommunityDonationForm:', 'submit', values);
-
     onSubmit(values, actions);
     actions.setSubmitting(false);
   }
@@ -80,10 +78,6 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
       onSubmit={handleDonate}
     >
       {({ values, handleSubmit, handleChange, setFieldValue, isSubmitting }) => {
-
-        // NOTE: we need to intercept these input changes here and call any methods
-        // we need to; e.g. to recalculate ETH when USD changes, and vice versa
-        // (we only have access to the formik context here within the <Formik> element)
 
         const handleChangePaymentToken = (e: React.ChangeEvent<any>) => {
           onChangePaymentToken(e.target.value);

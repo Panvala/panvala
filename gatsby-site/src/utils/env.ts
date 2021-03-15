@@ -1,7 +1,14 @@
-import { Contract } from 'ethers';
-import { exchangeAbi, tcAbi, tokenAbi, IUniswapV2ERC20, IUniswapV2Factory, IUniswapV2Router02 } from './abis';
-import { exchanges, networks, tokens } from '../data';
-import { TokenEnums } from './communityDonate';
+import { Contract, providers } from 'ethers';
+import {
+  exchangeAbi,
+  tcAbi,
+  tokenAbi,
+  AggregatorV3Interface,
+  IUniswapV2ERC20,
+  IUniswapV2Factory,
+  IUniswapV2Router02,
+} from './abis';
+import { exchanges, NetworkEnums, networks } from '../data';
 
 export const Environment = {
   staging: 'staging',
@@ -27,57 +34,69 @@ export function getEnvironment() {
   return environment;
 }
 
-export async function loadCommunityDonationContracts(provider) {
+export async function loadCommunityDonationContracts(provider: providers.Web3Provider) {
   const { chainId } = await provider.getNetwork();
   const signer = provider.getSigner();
-  
-  if (!chainId)
-    throw new Error('MetaMask is not connected.');
 
-  const createContract = async (contractAddress, abi) => {
+  if (!chainId) throw new Error('MetaMask is not connected.');
+
+  const createContract = async (contractAddress: string, abi: any) => {
     const contractCode = await provider.getCode(contractAddress);
-    if (!contractAddress || !contractCode) {
-      throw new Error('Invalid address or no code at address: ', contractAddress);
+    if (contractAddress === '' || !contractCode) {
+      throw new Error(`Invalid address or no code at address: ${contractAddress}`);
     }
     return new Contract(contractAddress, abi, signer);
   };
 
   const networkData = networks[chainId.toString()];
   const exchangeData = exchanges[networkData.exchange];
-  const inputTokenData = tokens[networkData.token];
 
   /* Initialize Factory */
   const factoryAddress = exchangeData.addresses.factory[chainId.toString()];
   const factory = await createContract(factoryAddress, IUniswapV2Factory);
-  console.log(`Initialized Factory contract for exchange ${networkData.exchange} at address: `, factoryAddress);
+  console.log(
+    `Initialized Factory contract for exchange ${networkData.exchange} at address: `,
+    factoryAddress
+  );
 
   /* Initialize Router */
   const routerAddress = exchangeData.addresses.router[chainId.toString()];
   const router = await createContract(routerAddress, IUniswapV2Router02);
-  console.log(`Initialized Router contract for exchange ${networkData.exchange} at address: `, routerAddress);
+  console.log(
+    `Initialized Router contract for exchange ${networkData.exchange} at address: `,
+    routerAddress
+  );
+
+  /* Initialize Price Oracle */
+  let priceOracle: any = undefined;
+  if (chainId.toString() === NetworkEnums.MATIC) {
+    const priceOracleAddress = networkData.oracleAddress || '';
+    priceOracle = await createContract(priceOracleAddress, AggregatorV3Interface);
+  }
 
   /* Initialize payment token */
-  const inputTokenAddress = inputTokenData.addresses[chainId.toString()];
-  const inputToken = await createContract(inputTokenAddress, IUniswapV2ERC20);
-  console.log(`Initialized ${networkData.token} token contract for network ${networkData.name} at address: `, inputTokenAddress);
+  const paymentTokenAddress = await router.WETH();
+  const paymentToken = await createContract(paymentTokenAddress, IUniswapV2ERC20);
+  console.log(
+    `Initialized ${networkData.token} token contract for network ${networkData.name} at address: `,
+    paymentTokenAddress
+  );
 
-  /* Initialize PAN Token */
-  const panTokenAddress = tokens[TokenEnums.PAN].addresses[chainId.toString()];
-  const panToken = await createContract(panTokenAddress, IUniswapV2ERC20);
-  console.log(`Initialized PAN token contract for network ${networkData.name} at address: `, panTokenAddress);
-
-  /* Initialize WETH Token */
-  const wethTokenAddress = tokens[TokenEnums.WETH].addresses[chainId.toString()];
-  const wethToken = await createContract(wethTokenAddress, IUniswapV2ERC20);
-  console.log(`Initialized WETH token contract for network ${networkData.name} at address: `, wethTokenAddress);
-
-  return {
+  const contracts: {
+    factory: Contract;
+    router: Contract;
+    paymentToken: Contract;
+    priceOracle?: Contract;
+  } = {
     factory,
     router,
-    inputToken,
-    panToken,
-    wethToken,
+    paymentToken,
   };
+
+  if (typeof priceOracle !== 'undefined')
+    contracts.priceOracle = priceOracle;
+
+  return contracts;
 }
 
 export async function loadContracts(provider) {

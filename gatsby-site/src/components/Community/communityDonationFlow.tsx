@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { constants, Contract, providers, utils } from 'ethers';
+import { Contract, providers, utils } from 'ethers';
 import {
-  BN,
-  getGasPrice,
-  quoteEthToPan,
-  fetchEthPrice,
-  quoteUsdToEth,
-  NetworkEnums,
   ICommunitiesData,
   INetworksData,
   ITokensData,
+  NetworkEnums,
   TokenEnums,
-  getTokenPairAddress,
-  checkAllowance,
-} from '../../utils/communityDonate';
+} from '../../data';
 import { ICommunityDonationFormFields } from './CommunityDonationForm';
 import { loadCommunityDonationContracts, getEnvironment, Environment } from '../../utils/env';
-// import { exchangeAbi, tcAbi, tokenAbi, IUniswapV2Factory, IUniswapV2Router02 } from '../../utils/abis';
 
-const { parseEther, formatEther, formatUnits, getAddress, bigNumberify } = utils;
+const { formatUnits, parseEther, getAddress, bigNumberify } = utils;
 
 declare global {
   interface Window {
@@ -48,26 +40,22 @@ export const withCommunityDonationFlow = WrappedComponent => {
       fiatAmount: 0,
     };
 
-    // don't want to trigger component reloads in the middle of the donation flow
     let provider: providers.Web3Provider;
     let activeAccount = '';
-    let panPurchased: utils.BigNumber;
 
     const [factory, setFactory] = useState<Contract>();
     const [router, setRouter] = useState<Contract>();
     const [inputToken, setInputToken] = useState<Contract>();
-    const [panToken, setPanToken] = useState<Contract>();
-    const [wethToken, setWethToken] = useState<Contract>();
-
+    const [priceOracle, setPriceOracle] = useState<Contract>();
     const [communityWallet, setCommunityWallet] = useState<string>('');
     const [selectedToken, setSelectedToken] = useState<string>(initialFormValues.paymentToken);
     const [selectedNetwork, setSelectedNetwork] = useState<string>(mapTokenToChainId(initialFormValues.paymentToken));
+    
+    // TODO: use these
     const [step, setStep] = useState<string | null>(null);
     const [message, setMessage] = useState<string>('');
-
-    // TODO: use these
-    // const [error, setError] = useState<boolean>(false);
-    // const [errorMessage, setErrorMessage] = useState<string>('');
+    const [error, setError] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     // ---------------------------------------------------------------------------
     // React Effects
@@ -163,9 +151,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
         const contracts = await loadCommunityDonationContracts(provider);
         setFactory(contracts.factory);
         setRouter(contracts.router);
-        setInputToken(contracts.inputToken);
-        setPanToken(contracts.panToken);
-        setWethToken(contracts.wethToken);
+        setInputToken(contracts.paymentToken);
+        if (typeof contracts.priceOracle !== 'undefined')
+          setPriceOracle(contracts.priceOracle);
       } else {
         // No provider yet
         const account = await setSelectedAccount();
@@ -184,11 +172,66 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // Helpers
     // ---------------------------------------------------------------------------
   
+    function BN(small) {
+      return bigNumberify(small);
+    }
+    
+    /**
+     * Check token allowance
+     */
+    async function checkAllowance(token: Contract, ownerAddress: string, spenderAddress: string, numTokens: utils.BigNumber) {
+      const allowance = await token.allowance(ownerAddress, spenderAddress);
+      return allowance.gte(numTokens);
+    }
+    
+    /**
+     * Fetch current ETH price
+     */
+    async function fetchEthPrice(chainId?: string) {
+      if (chainId) {
+        if (chainId === NetworkEnums.XDAI) {
+          const result = await fetch('https://blockscout.com/xdai/mainnet/api?module=stats&action=ethprice');
+          const json = await result.json();
+          return json.result.ethusd;
+        } else if (chainId === NetworkEnums.MATIC) {
+          const priceData = await priceOracle?.latestRoundData();
+          const lastPrice: utils.BigNumber = priceData?.answer;
+          if (lastPrice)
+            return formatUnits(lastPrice, 8);
+          else
+            return '';
+        }
+      } else {
+        const result = await fetch('https://api.coinbase.com/v2/prices/ETH-USD/spot?currency=USD');
+        const json = await result.json();
+        return json.data.amount;
+      }
+    }
+    
+    /**
+     * Get path from payment token to PAN
+     */
+    async function getPathByNetwork(chainId: string) {
+      const path: string[] = [];
+
+      if (router) {
+        path.push(await router.WETH());
+        
+        if (chainId === NetworkEnums.XDAI)
+          path.push(tokens[TokenEnums.HNY].addresses[chainId]);
+        else if (chainId === NetworkEnums.MATIC)
+          path.push(tokens[TokenEnums.USDC].addresses[chainId]);
+
+        path.push(tokens[TokenEnums.PAN].addresses[chainId]);
+      }
+
+      return path;
+    }
+
     // Pass the error up to the caller and cancel everything
     function handleError(msg: string) {
-      // TODO: use these error flags/messages
-      // setErrorMessage(msg);
-      // setError(true);
+      setErrorMessage(msg);
+      setError(true);
       setStep(null);
       setMessage('');
       console.error(msg);
@@ -308,29 +351,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Calculate Token -> USD
      */
-    async function calculateTokenToFiat(newTokenAmount: number, paymentToken?: string): Promise<number> {
-      let fiatAmount = 0;
+    async function calculateTokenToFiat(tokenAmount: number, paymentToken: string): Promise<number> {
+      if (tokenAmount === 0)
+        return 0;
       
-      if (!newTokenAmount)
-        return fiatAmount;
-      
-      let tokenAmount = newTokenAmount;
-
-      // get ETH value of input tokens
-      if (paymentToken !== TokenEnums.ETH && router && factory && inputToken && wethToken) {
-        const donationTotal = parseEther(newTokenAmount.toString());
-        const tokensOut = await router?.getAmountsOut(donationTotal, [
-          inputToken.address,
-          tokens[TokenEnums.WETH].addresses[selectedNetwork],
-        ]);
-        const wethValue = formatUnits(tokensOut[1], 18);
-        tokenAmount = parseFloat(wethValue);
-      }
-
-      // get ETH price and convert to USD
-      const ethPrice = parseInt(await fetchEthPrice(), 10);
-      fiatAmount = tokenAmount * ethPrice;
-      console.log(`${newTokenAmount} ${paymentToken} -> ${fiatAmount.toFixed(3)} USD`);
+      const ethPrice = parseFloat(await fetchEthPrice(selectedNetwork));
+      const fiatAmount = tokenAmount * ethPrice;
+      console.log(`${tokenAmount} ${paymentToken} -> ${fiatAmount} USD`);
       
       return parseFloat(fiatAmount.toFixed(3));
     }
@@ -338,27 +365,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Calculate USD -> Token
      */
-    async function calculateFiatToToken(newFiatAmount: number, paymentToken?: string): Promise<number> {
-      let tokenAmount = 0;
-      
-      if (!newFiatAmount)
-        return tokenAmount;
-      
-      const ethPrice = await fetchEthPrice();
-      const ethAmount = quoteUsdToEth(BN(newFiatAmount), ethPrice).toFixed(18);
-      tokenAmount = parseFloat(ethAmount);
-      console.log(`${newFiatAmount} USD -> ${ethAmount} ETH`);
+    async function calculateFiatToToken(fiatAmount: number, paymentToken: string): Promise<number> {
+      if (fiatAmount === 0)
+        return 0;
 
-      if (paymentToken !== TokenEnums.ETH && router && factory && inputToken && wethToken) {
-        const weiAmountOut = parseEther(ethAmount);
-        const tokensIn = await router?.getAmountsIn(weiAmountOut, [
-          tokens[selectedToken].addresses[selectedNetwork],
-          tokens[TokenEnums.WETH].addresses[selectedNetwork],
-        ]);
-        const tokenValue = formatUnits(tokensIn[0], 18);
-        tokenAmount = parseFloat(tokenValue);
-        console.log(`${ethAmount} ETH -> ${tokenAmount} ${paymentToken}`);
-      }
+      const ethPrice = parseFloat(await fetchEthPrice(selectedNetwork));
+      const tokenAmount = fiatAmount / ethPrice;
+      console.log(`${fiatAmount} USD -> ${tokenAmount} ${paymentToken}`);
 
       return parseFloat(tokenAmount.toFixed(3));
     }
@@ -366,41 +379,33 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Purchase PAN with ETH through exchange
      */
-    async function purchasePan(amountIn: utils.BigNumber, path: string[]): Promise<utils.BigNumber> {      
+    async function purchaseAndDonatePan(amountIn: utils.BigNumber): Promise<utils.BigNumber> {      
       const { chainId } = await provider.getNetwork();
       const networkData = networks[chainId.toString()];
-      console.log('1');
       
-      if (!router || !inputToken)
+      if (!router || !inputToken || !router)
         throw new Error('Contracts not initialized - canceling attempt to purchase PAN');
       
       try {
-        const tokensOut = await router?.getAmountsOut(amountIn, path);
-        const panValue: number = tokensOut[2];
-        const amountOut = BN(panValue);
+        // const path: string[] = [];
+        // path[0] = await router.WETH();
+        // path[1] = tokens[TokenEnums.HNY].addresses[selectedNetwork];
+        // path[2] = tokens[TokenEnums.PAN].addresses[selectedNetwork];
 
-        // TODO: replace with percentage
-        let minAmountOut = amountOut.sub(5000);
+        const path: string[] = await getPathByNetwork(selectedNetwork);
 
-        console.log('PAN to purchase: ', formatUnits(amountOut.toString(), 18));
-
-        const currentBlock = await provider.getBlockNumber();
-        const block = await provider.getBlock(currentBlock);
-        const deadline = BN(block.timestamp).add(3600); // add one hour
-
-        setMessage(`Purchasing PAN from ${networkData.exchange}...`);
-  
-        console.log(`Purchasing PAN from ${networkData.exchange}!\n\nminAmountOut: ${minAmountOut}\ndeadline: ${deadline}\ninputValue: ${amountIn}\ncommunityWallet: ${communityWallet}`);
+        const tokensOut = await router.getAmountsOut(amountIn, path);
+        const amountOut: utils.BigNumber = tokensOut[2];
 
         // Check allowance
         const isAllowed: boolean = await checkAllowance(
           inputToken,
           activeAccount,
           router.address,
-          panValue,
+          amountIn,
         );
 
-        console.log(`${networkData.exchange} Router at ${router.address} is allowed to spend tokens? `, isAllowed);
+        console.log(`${networkData.exchange} Router at ${router.address} is allowed to spend ${amountIn.toString()} tokens? `, isAllowed);
 
         // if necessary, approve exchange to spend tokens
         if (!isAllowed) {
@@ -408,20 +413,31 @@ export const withCommunityDonationFlow = WrappedComponent => {
 
           const approveTx = await inputToken.approve(
             router.address,
-            amountOut,
+            amountIn,
           );
           console.log('Tokens have been approved', approveTx.hash);
         }
 
-        const tx = await router?.swapExactTokensForTokens(
-          amountIn,
-          minAmountOut,
+        // the swaps set min out to 99.5% of the desired value
+        const minAmountOut = parseFloat(amountOut.toString()) * 0.995;
+
+        const block = await provider.getBlock(await provider.getBlockNumber());
+        const deadline = BN(block.timestamp).add(3600); // add one hour
+  
+        setMessage('Purchasing PAN and sending to community wallet...');
+        console.log(`Purchasing PAN from ${networkData.exchange} using ${selectedToken}!\n\ntokenAddress: ${inputToken.address}\n\namountOut: ${amountOut}\n\nminAmountOut: ${minAmountOut}\n\ndeadline: ${deadline}\n\ninputValue: ${amountIn}\n\ncommunityWallet: ${communityWallet}`);
+
+        const tx = await router.swapExactETHForTokens(
+          BN(minAmountOut.toString()),
           path,
           communityWallet,
           deadline,
+          {
+            value: amountIn,
+          }
         );
-  
-        console.log('tx:', tx);
+
+        console.log('Purchase transaction:', tx);
   
         setMessage('Waiting for transaction confirmation...');
   
@@ -449,39 +465,21 @@ export const withCommunityDonationFlow = WrappedComponent => {
       const { tokenAmount } = values;
 
       try {
-        // Connect wallets
         setStep('1');
         setMessage('Connecting wallet...');
 
-        if (!provider || !activeAccount) {
+        if (!provider || !activeAccount)
           await connectWallet();
-        }
 
-        // Convert donation to wei
-        const donationTotal = parseEther(tokenAmount.toString());
-
-        console.log(`Donation total: ${formatUnits(donationTotal.toString(), 18)} ${selectedToken}`);
-
-        const path: string[] = [
-          tokens[selectedToken].addresses[selectedNetwork],
-          tokens[TokenEnums.HNY].addresses[selectedNetwork],
-          tokens[TokenEnums.PAN].addresses[selectedNetwork],
-        ];
-
-        // Purchase Panvala pan
         setStep('2');
-        panPurchased = await purchasePan(donationTotal, path);
+        const amountIn = parseEther(tokenAmount.toString());
+        const panPurchased = await purchaseAndDonatePan(amountIn);
   
-        // 2. Approve if necessary and donate PAN
-        if (panPurchased.gt('0') && step != null) {
+        if (panPurchased.gt('0') && step !== null) {
+  
           setStep('3');
-          setMessage('Sending PAN to community wallet...');
-  
-          // Donate Panvala pan
-          // await donatePanToCommunity(panPurchased);
-
-          setStep('4');
           setMessage('Donation complete!');
+          console.log('Donation complete!');
 
           actions.resetForm();
         }

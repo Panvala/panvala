@@ -8,12 +8,11 @@ import SEO from '../../components/seo';
 import { communities, networks, tokens } from '../../data';
 
 interface CommunityDonateProps {
-  params: {
-    community: string;
-  };
+  community: string;
+  [key: string]: any;
 }
 
-const CommunityDonate = ({ params }: CommunityDonateProps) => {
+const CommunityDonate = (props: CommunityDonateProps) => {
   const data = {
     communities,
     networks,
@@ -31,7 +30,7 @@ const CommunityDonate = ({ params }: CommunityDonateProps) => {
             <h1 className="f1-5 b ma0 mb4 w-80-l w-100 center pb2">
               Make a Donation
             </h1>
-            <CommunityDonation data={data} community={params.community} />
+            <CommunityDonation data={data} community={props.community} />
           </div>
         </div>
       </section>
