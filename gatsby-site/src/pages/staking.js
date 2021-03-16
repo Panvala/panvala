@@ -274,22 +274,22 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1001640.29745029546157261"
+    "weight": "985050.29745029546157261"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2493624.355470691487004573"
+    "weight": "2325204.147088728500915069"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "967990.84045374393757"
+    "weight": "968964.59045374393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "139158.49380906866492243"
+    "weight": "116470.387037315207261213"
   },
   "11": {
     "id": 11,
@@ -299,17 +299,17 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "218374.4514711879817"
+    "weight": "218088.4619111879817"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "1326.516662944238148385"
+    "weight": "2637.891662944238148385"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "23112.493430827184931936"
+    "weight": "29515.176492347271534051"
   },
   "15": {
     "id": 15,
@@ -334,7 +334,7 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "5838.12050106635275185"
+    "weight": "44753.728888409764313908"
   },
   "20": {
     "id": 20,
@@ -349,7 +349,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "5000.0"
+    "weight": "4975.0"
   },
   "23": {
     "id": 23,
@@ -359,17 +359,22 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "25416.151294276275443489"
+    "weight": "25891.151294276275443489"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "343886.383513488066002829"
+    "weight": "344067.383513488066002829"
   },
   "26": {
     "id": 26,
     "name": "Ethereum France",
     "weight": "100.0"
+  },
+  "27": {
+    "id": 27,
+    "name": "Abridged",
+    "weight": "0.0"
   },
   "28": {
     "id": 28,
@@ -379,12 +384,12 @@ const stakingResults = {
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "90013.415506133437972786"
+    "weight": "89183.135506133437972786"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "9428.700000000000720896"
+    "weight": "5830.932056200000720896"
   },
   "31": {
     "id": 31,
@@ -394,12 +399,12 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "33927.150698044385392947"
+    "weight": "32927.150698044385392947"
   },
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "2311.893228246542338783"
+    "weight": "500.0"
   },
   "34": {
     "id": 34,
@@ -415,6 +420,71 @@ const stakingResults = {
     "id": 36,
     "name": "Grassroots Economics",
     "weight": "37585.93709094886976006"
+  },
+  "37": {
+    "id": 37,
+    "name": "Circles UBI",
+    "weight": "171990.712330683031708739"
+  },
+  "38": {
+    "id": 38,
+    "name": "Giveth",
+    "weight": "42393.58470792864950734"
+  },
+  "39": {
+    "id": 39,
+    "name": "Women of Crypto Art",
+    "weight": "22370.405936078979172278"
+  },
+  "40": {
+    "id": 40,
+    "name": "Dandelion Collective",
+    "weight": "0.0"
+  },
+  "41": {
+    "id": 41,
+    "name": "Shenanigan",
+    "weight": "19387.028650002166427524"
+  },
+  "42": {
+    "id": 42,
+    "name": "Peoples' Collective",
+    "weight": "0.0"
+  },
+  "43": {
+    "id": 43,
+    "name": "Marma J Foundation",
+    "weight": "0.0"
+  },
+  "44": {
+    "id": 44,
+    "name": "Hackervilla",
+    "weight": "0.0"
+  },
+  "45": {
+    "id": 45,
+    "name": "PrimeDAO",
+    "weight": "0.0"
+  },
+  "46": {
+    "id": 46,
+    "name": "SBV Commonwealth",
+    "weight": "0.0"
+  },
+  "47": {
+    "id": 47,
+    "name": "Kolektivo Labs",
+    "weight": "0.0"
+  },
+  "48": {
+    "id": 48,
+    "name": "Austin Meetups Fund",
+    "weight": "0.0"
+  },
+  "49": {
+    "id": 49,
+    "name": "DoinGud",
+    "weight": "0.0"
   }
 };
 
@@ -434,7 +504,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'March 9';
+const stakingTotalsUpdated = 'March 16';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
