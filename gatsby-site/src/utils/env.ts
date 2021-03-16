@@ -1,4 +1,4 @@
-import { Contract, providers } from 'ethers';
+import { Contract, ContractInterface, providers } from 'ethers';
 import {
   exchangeAbi,
   tcAbi,
@@ -130,7 +130,7 @@ export async function loadContracts(provider) {
   // Init token, token capacitor, uniswap exchange contracts
   const token = new Contract(tokenAddress, tokenAbi, signer);
   const tokenCapacitor = new Contract(tcAddress, tcAbi, signer);
-  const exchange = new Contract(exchangeAddress, exchangeAbi, signer);
+  const exchange = new Contract(exchangeAddress, exchangeAbi as ContractInterface, signer);
 
   return {
     token,

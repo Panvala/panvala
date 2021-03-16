@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import orderBy from 'lodash/orderBy';
 
 export function sliceDecimals(floatingPt, decimalDigits = 3) {
@@ -29,8 +29,7 @@ function mapDatesToText(date, epochNumber) {
 
 export function formatDates(epochDates) {
   // Get current UTS
-  const nowDate = utils
-    .bigNumberify(Date.now())
+  const nowDate = BigNumber.from(Date.now())
     .div(1000)
     .toNumber();
 

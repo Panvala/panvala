@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Contract, providers, utils } from 'ethers';
+import { BigNumber, Contract, providers, utils } from 'ethers';
 import {
   ICommunityData,
   INetworksData,
@@ -10,7 +10,7 @@ import {
 import { ICommunityDonationFormFields } from './CommunityDonationForm';
 import { loadCommunityDonationContracts, getEnvironment, Environment } from '../../utils/env';
 
-const { formatUnits, parseEther, getAddress, bigNumberify } = utils;
+const { formatUnits, parseEther, getAddress } = utils;
 
 declare global {
   interface Window {
@@ -186,13 +186,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // ---------------------------------------------------------------------------
   
     function BN(small) {
-      return bigNumberify(small);
+      return BigNumber.from(small);
     }
     
     /**
      * Check token allowance
      */
-    async function checkAllowance(token: Contract, ownerAddress: string, spenderAddress: string, numTokens: utils.BigNumber) {
+    async function checkAllowance(token: Contract, ownerAddress: string, spenderAddress: string, numTokens: BigNumber) {
       const allowance = await token.allowance(ownerAddress, spenderAddress);
       return allowance.gte(numTokens);
     }
@@ -208,7 +208,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
           return json.result.ethusd;
         } else if (chainId === NetworkEnums.MATIC) {
           const priceData = await priceOracle?.latestRoundData();
-          const lastPrice: utils.BigNumber = priceData?.answer;
+          const lastPrice: BigNumber = priceData?.answer;
           if (lastPrice)
             return formatUnits(lastPrice, 8);
           else
@@ -321,7 +321,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
           ? NetworkEnums.MAINNET
           : NetworkEnums.RINKEBY;
 
-      const network: utils.Network = await provider.getNetwork();
+      const network: providers.Network = await provider.getNetwork();
 
       console.log(`User has selected the ${networks[correctChainId].name} network! Current MetaMask network: `, network.chainId);
   
@@ -392,7 +392,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Purchase PAN with ETH through exchange
      */
-    async function purchaseAndDonatePan(amountIn: utils.BigNumber): Promise<utils.BigNumber> {      
+    async function purchaseAndDonatePan(amountIn: BigNumber): Promise<BigNumber> {      
       const { chainId } = await provider.getNetwork();
       const networkData = networks[chainId.toString()];
       
@@ -402,7 +402,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
       try {
         const path: string[] = await getPathByNetwork(selectedNetwork);
         const tokensOut = await router.getAmountsOut(amountIn, path);
-        const amountOut: utils.BigNumber = tokensOut[2];
+        const amountOut: BigNumber = tokensOut[2];
 
         // Check allowance
         const isAllowed: boolean = await checkAllowance(
@@ -460,7 +460,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
       } catch (err) {
         console.error(`ERROR: ${err.data?.message}`);
         handleError(`${networkData.exchange} transaction failed: ${err.message}`);
-        return bigNumberify('0');
+        return BN('0');
       }
     }
   
