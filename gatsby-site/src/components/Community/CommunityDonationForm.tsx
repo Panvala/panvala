@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Field, } from 'formik';
 import * as yup from 'yup';
 
@@ -8,6 +8,7 @@ import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
 import swapIcon from '../../img/swap.png';
+import { NetworkEnums, TokenEnums } from '../../data';
 
 export interface ICommunityDonationFormFields {
   paymentToken: string;
@@ -49,6 +50,11 @@ const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields
 
 interface CommunityDonationFormProps {
   initialValues: any;
+  walletAddresses: {
+    [chainId: string]: string;
+  };
+  selectedToken: string;
+  activeAccount: string;
   onSubmit(values: any, actions: any): void;
   onChangePaymentToken(newToken: string): Promise<void>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
@@ -59,6 +65,9 @@ interface CommunityDonationFormProps {
 const CommunityDonationForm = (props: CommunityDonationFormProps) => {
   const {
     initialValues,
+    walletAddresses,
+    selectedToken,
+    activeAccount,
     onSubmit,
     onChangePaymentToken,
     onChangeTokenAmount,
@@ -79,8 +88,16 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
     >
       {({ values, handleSubmit, handleChange, setFieldValue, isSubmitting }) => {
 
+        useEffect(() => {
+          if (values.paymentToken === '' && selectedToken !== '')
+            setFieldValue('paymentToken', selectedToken);
+        }, [selectedToken]);
+
         const handleChangePaymentToken = (e: React.ChangeEvent<any>) => {
           onChangePaymentToken(e.target.value);
+          // TODO: recalculate instead of clear
+          setFieldValue('tokenAmount', 0);
+          setFieldValue('fiatAmount', 0);
           handleChange(e);
         };
 
@@ -97,6 +114,22 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
           });
           handleChange(e);
         };
+
+        function getWalletExplorerUrl(walletAddress: string): string {
+          if (values.paymentToken === TokenEnums.ETH)
+            return `https://etherscan.io/address/${walletAddress}`;
+          else if (values.paymentToken === TokenEnums.XDAI)
+            return `https://blockscout.com/poa/xdai/address/${walletAddress}`;
+          else if (values.paymentToken === TokenEnums.MATIC)
+            return `https://explorer-mainnet.maticvigil.com/address/${walletAddress}`;
+          return '';
+        }
+
+        function shortenString(input: string) {
+          const pre = input.slice(0, 6);
+          const post = input.slice(input.length - 4, input.length);
+          return `${pre}...${post}`;
+        }
 
         return (  
           <form
@@ -117,8 +150,9 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               onChange={handleChangePaymentToken}
               id="payment-token-select"
             >
-              <option value="XDAI">XDAI</option>
-              <option value="MATIC">MATIC</option>
+              {walletAddresses && walletAddresses[NetworkEnums.MAINNET] && <option value="ETH">ETH</option>}
+              {walletAddresses && walletAddresses[NetworkEnums.XDAI] && <option value="XDAI">XDAI</option>}
+              {walletAddresses && walletAddresses[NetworkEnums.MATIC] && <option value="MATIC">MATIC</option>}
             </Field>
             <DownArrow />
 
@@ -152,7 +186,10 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
             </div>
   
             <div>
-              <p><span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a> or select the credit card payment method.</p>
+              {!!!activeAccount &&
+                <p><span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a> or select the credit card payment method.</p>}
+              {!!activeAccount &&
+                <p className="f5">Connected to MetaMask wallet <a href={getWalletExplorerUrl(activeAccount)} target="_blank" rel="noreferrer" className="link teal">{shortenString(activeAccount)}</a>.</p>}
             </div>
   
             <Label className="f5 b">Your Information</Label>

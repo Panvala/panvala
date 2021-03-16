@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "dependencies": {
+    "csv-parse": "^4.15.3",
     "ethers": "^4.0.39",
     "formik": "^2.2.6",
     "gatsby": "^2.32.9",

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Contract, providers, utils } from 'ethers';
 import {
-  ICommunitiesData,
+  ICommunityData,
   INetworksData,
   ITokensData,
   NetworkEnums,
@@ -19,8 +19,8 @@ declare global {
 }
 
 interface ICommunityDonationFlowProps {
+  community: ICommunityData;
   data: {
-    communities: ICommunitiesData;
     tokens: ITokensData;
     networks: INetworksData;
   };
@@ -29,20 +29,20 @@ interface ICommunityDonationFlowProps {
 
 export const withCommunityDonationFlow = WrappedComponent => {
   return (props: ICommunityDonationFlowProps) => {
-    const { communities, tokens, networks } = props.data;
+    const { tokens, networks } = props.data;
 
     const initialFormValues: ICommunityDonationFormFields = {
       firstName: '',
       lastName: '',
       email: '',
-      paymentToken: TokenEnums.XDAI,
+      paymentToken: '',
       tokenAmount: 0,
       fiatAmount: 0,
     };
 
     let provider: providers.Web3Provider;
-    let activeAccount = '';
 
+    const [activeAccount, setActiveAccount] = useState<string>('');
     const [factory, setFactory] = useState<Contract>();
     const [router, setRouter] = useState<Contract>();
     const [inputToken, setInputToken] = useState<Contract>();
@@ -62,11 +62,24 @@ export const withCommunityDonationFlow = WrappedComponent => {
     // ---------------------------------------------------------------------------
 
     /**
+     * Set selected token to first in the list
+     */
+    useEffect(() => {
+      const chainId = Object.keys(props.community?.addresses)[0];
+      if (chainId) {
+        if (selectedToken === '')
+          setSelectedToken(networks[chainId].token);
+        if (selectedNetwork === '')
+          setSelectedNetwork(chainId);
+      }
+    }, [props.community]);
+
+    /**
      * Listen for MetaMask network changes
      */
     useEffect(() => {
       if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        window.ethereum.on('networkChanged', async network => {
+        window.ethereum.on('chainChanged', async network => {
           console.log(`MetaMask network has changed to ${network} - re-checking network`);
           await handleNetworkChange();
         });
@@ -87,7 +100,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
     useEffect(() => {
       setSelectedNetwork(mapTokenToChainId(selectedToken));
     }, [selectedToken]);
-  
+
     // ---------------------------------------------------------------------------
     // Initialization
     // ---------------------------------------------------------------------------  
@@ -99,9 +112,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
       if (selectedNetwork !== '') {
         await setContracts();
         if (selectedNetwork !== '' && communityWallet === '') {
-          const address = communities[props.community]?.walletAddresses[selectedNetwork];
+          const address = props.community.addresses[selectedNetwork];
           if (address) {
-            console.log('Setting community wallet address to: ', address);
+            console.log(`Setting ${props.community.name}'s community wallet address to ${address} for network ${selectedNetwork}`);
             setCommunityWallet(address);
           }
         }
@@ -129,7 +142,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
             }
           }
         }
-        activeAccount = selectedAccount;
+        setActiveAccount(selectedAccount);
         return selectedAccount;
       } else {
         handleError('MetaMask not found. Please download MetaMask @ metamask.io');
@@ -187,7 +200,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Fetch current ETH price
      */
-    async function fetchEthPrice(chainId?: string) {
+    async function fetchEthPrice(chainId: string) {
       if (chainId) {
         if (chainId === NetworkEnums.XDAI) {
           const result = await fetch('https://blockscout.com/xdai/mainnet/api?module=stats&action=ethprice');
@@ -200,11 +213,11 @@ export const withCommunityDonationFlow = WrappedComponent => {
             return formatUnits(lastPrice, 8);
           else
             return '';
+        } else if (chainId === NetworkEnums.MAINNET || chainId === NetworkEnums.RINKEBY) {
+          const result = await fetch('https://api.coinbase.com/v2/prices/ETH-USD/spot?currency=USD');
+          const json = await result.json();
+          return json.data.amount;
         }
-      } else {
-        const result = await fetch('https://api.coinbase.com/v2/prices/ETH-USD/spot?currency=USD');
-        const json = await result.json();
-        return json.data.amount;
       }
     }
     
@@ -387,13 +400,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
         throw new Error('Contracts not initialized - canceling attempt to purchase PAN');
       
       try {
-        // const path: string[] = [];
-        // path[0] = await router.WETH();
-        // path[1] = tokens[TokenEnums.HNY].addresses[selectedNetwork];
-        // path[2] = tokens[TokenEnums.PAN].addresses[selectedNetwork];
-
         const path: string[] = await getPathByNetwork(selectedNetwork);
-
         const tokensOut = await router.getAmountsOut(amountIn, path);
         const amountOut: utils.BigNumber = tokensOut[2];
 
@@ -501,8 +508,8 @@ export const withCommunityDonationFlow = WrappedComponent => {
         onChangeTokenAmount={calculateTokenToFiat}
         onChangeFiatAmount={calculateFiatToToken}
         connectWallet={connectWallet}
-        message={message}
-        step={step}
+        activeAccount={activeAccount}
+        selectedToken={selectedToken}
         {...passThroughProps}
       />
     );

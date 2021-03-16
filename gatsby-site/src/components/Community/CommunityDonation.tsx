@@ -3,16 +3,17 @@ import React from 'react';
 import Box from '../system/Box';
 import CommunityDonationForm from './CommunityDonationForm';
 import { withCommunityDonationFlow } from './communityDonationFlow';
-
-type KeyValuePair = { [key: string]: any; };
+import { ICommunityData } from '../../data';
 
 interface CommunityDonationProps {
-  community: string;
+  community: ICommunityData;
   step: number | null;
   message: string;
-  initialValues: KeyValuePair;
+  initialValues: any;
+  selectedToken: string;
+  activeAccount: string;
   onCancel(): void;
-  onDonate(data: KeyValuePair, actions: KeyValuePair): void;
+  onDonate(data: any, actions: any): void;
   onChangePaymentToken(newToken: string): Promise<void>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
@@ -22,6 +23,9 @@ interface CommunityDonationProps {
 const CommunityDonation = (props: CommunityDonationProps) => {
   const {
     initialValues,
+    community,
+    selectedToken,
+    activeAccount,
     onDonate,
     onChangePaymentToken,
     onChangeFiatAmount,
@@ -35,9 +39,12 @@ const CommunityDonation = (props: CommunityDonationProps) => {
         initialValues={initialValues}
         onSubmit={onDonate}
         connectWallet={connectWallet}
+        activeAccount={activeAccount}
         onChangePaymentToken={onChangePaymentToken}
         onChangeFiatAmount={onChangeFiatAmount}
         onChangeTokenAmount={onChangeTokenAmount}
+        walletAddresses={community.addresses}
+        selectedToken={selectedToken}
       />
     </Box>
   );

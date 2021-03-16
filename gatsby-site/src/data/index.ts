@@ -1,4 +1,3 @@
-import _communities from './communities.json';
 import _exchanges from './exchanges.json';
 import _networks from './networks.json';
 import _tokens from './tokens.json';
@@ -45,21 +44,6 @@ export enum TokenEnums {
 export const tokens: ITokensData = _tokens;
 
 /**
- * Communities (to be deprecated in favor of CSV)
- */
-export interface ICommunitiesData {
-  [communityId: string]: {
-    name: string;
-    city: string;
-    state: string;
-    walletAddresses: {
-      [chainId: string]: string;
-    };
-  };
-}
-export const communities: ICommunitiesData = _communities;
-
-/**
  * Exchanges
  */
 export interface IExchangesData {
@@ -72,3 +56,13 @@ export interface IExchangesData {
   };
 }
 export const exchanges: IExchangesData = _exchanges;
+
+/**
+ * Communities
+ */
+export interface ICommunityData {
+  name: string;
+  addresses: {
+    [chainId: string]: string;
+  };
+}
