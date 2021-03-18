@@ -79,3 +79,12 @@ export function prettify(ugly) {
   }
   return ugly;
 }
+
+/* Convert to camelCase */
+export const toCamelCase = (input) => {
+  const word = input.replace(/[' ']/g, '');
+  return word[0].toLowerCase() + word.slice(1);
+};
+
+/* Convert to kebab-case */
+export const toKebabCase = (input) => input.replace(/[' ']/g, '-').toLowerCase();

@@ -135,7 +135,6 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
           <form
             data-testid="community-donation-form"
             onSubmit={handleSubmit}
-            className="w-80-l w-90-m w-100 center"
             name="community-donation"
           >
 
@@ -160,7 +159,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
             <div className="flex justify-between">
               <div className="w-80">
                 <FieldText
-                  type="number"
+                  type="text"
                   name="tokenAmount"
                   id="donate-amount"
                   placeholder="0.00"
@@ -173,7 +172,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               <img alt="" src={swapIcon} className="mh3 mt3 self-center" style={{ marginTop: '17.5px', width: '25px', height: '25px' }} />
               <div className="w-80">
                 <FieldText
-                  type="number"
+                  type="text"
                   name="fiatAmount"
                   id="donate-amount-fiat"
                   placeholder="0.00"

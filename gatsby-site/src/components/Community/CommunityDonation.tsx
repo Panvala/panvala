@@ -1,14 +1,19 @@
 import React from 'react';
 
-import Box from '../system/Box';
 import CommunityDonationForm from './CommunityDonationForm';
 import { withCommunityDonationFlow } from './communityDonationFlow';
 import { ICommunityData } from '../../data';
+import { InfoPopup, ErrorPopup } from './Popups';
 
 interface CommunityDonationProps {
   community: ICommunityData;
   step: number | null;
   message: string;
+  errorMessage: string;
+  infoPopupVisible: boolean;
+  infoPopupLoading: boolean;
+  infoPopupSuccess: boolean;
+  errorPopupVisible: boolean;
   initialValues: any;
   selectedToken: string;
   activeAccount: string;
@@ -26,6 +31,13 @@ const CommunityDonation = (props: CommunityDonationProps) => {
     community,
     selectedToken,
     activeAccount,
+    step,
+    message,
+    errorMessage,
+    infoPopupVisible,
+    infoPopupLoading,
+    infoPopupSuccess,
+    errorPopupVisible,
     onDonate,
     onChangePaymentToken,
     onChangeFiatAmount,
@@ -34,7 +46,7 @@ const CommunityDonation = (props: CommunityDonationProps) => {
   } = props;
 
   return (
-    <Box data-testid="community-donation-container">
+    <div data-testid="community-donation-container">
       <CommunityDonationForm
         initialValues={initialValues}
         onSubmit={onDonate}
@@ -46,7 +58,15 @@ const CommunityDonation = (props: CommunityDonationProps) => {
         walletAddresses={community.addresses}
         selectedToken={selectedToken}
       />
-    </Box>
+      <InfoPopup
+        step={step}
+        message={message}
+        isVisible={infoPopupVisible}
+        isLoading={infoPopupLoading}
+        isSuccess={infoPopupSuccess}
+      />
+      {/* <ErrorPopup message={errorMessage} isVisible={errorPopupVisible} /> */}
+    </div>
   );
 };
 

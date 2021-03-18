@@ -24,6 +24,14 @@ export enum NetworkEnums {
 export const networks: INetworksData = _networks;
 
 /**
+ * Donation Methods
+ */
+export enum DonationMethodEnums {
+  GITCOIN = 'Gitcoin',
+  GIVETH = 'Giveth',
+}
+
+/**
  * Tokens
  */
 export interface ITokensData {

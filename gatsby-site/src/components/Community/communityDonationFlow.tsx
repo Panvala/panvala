@@ -53,6 +53,8 @@ export const withCommunityDonationFlow = WrappedComponent => {
     
     // TODO: use these
     const [step, setStep] = useState<string | null>(null);
+    const [donationLoading, setDonationLoading] = useState<boolean>(false);
+    const [donationComplete, setDonationComplete] = useState<boolean>(false);
     const [message, setMessage] = useState<string>('');
     const [error, setError] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -64,33 +66,33 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Set selected token to first in the list
      */
-    useEffect(() => {
-      const chainId = Object.keys(props.community?.addresses)[0];
-      if (chainId) {
-        if (selectedToken === '')
-          setSelectedToken(networks[chainId].token);
-        if (selectedNetwork === '')
-          setSelectedNetwork(chainId);
-      }
-    }, [props.community]);
+    // useEffect(() => {
+    //   const chainId = Object.keys(props.community?.addresses)[0];
+    //   if (chainId) {
+    //     if (selectedToken === '')
+    //       setSelectedToken(networks[chainId].token);
+    //     if (selectedNetwork === '')
+    //       setSelectedNetwork(chainId);
+    //   }
+    // }, [props.community]);
 
     /**
      * Listen for MetaMask network changes
      */
-    useEffect(() => {
-      if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        window.ethereum.on('chainChanged', async network => {
-          console.log(`MetaMask network has changed to ${network} - re-checking network`);
-          await handleNetworkChange();
-        });
-      }
-    });
+    // useEffect(() => {
+    //   if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+    //     window.ethereum.on('chainChanged', async network => {
+    //       console.log(`MetaMask network has changed to ${network} - re-checking network`);
+    //       await handleNetworkChange();
+    //     });
+    //   }
+    // });
 
     /**
      * Listen for selected network changes
      */
     useEffect(() => {
-      console.log(`Selected payment network has changed to ${selectedNetwork} - re-checking network`);
+      console.log(`Selected payment network has changed to ${selectedNetwork} - re-checking MetaMask network`);
       handleNetworkChange();
     }, [selectedNetwork]);
 
@@ -98,6 +100,7 @@ export const withCommunityDonationFlow = WrappedComponent => {
      * Listen for selected token changes
      */
     useEffect(() => {
+      console.log(`Selected payment token has changed to ${selectedToken} - re-checking MetaMask network`);
       setSelectedNetwork(mapTokenToChainId(selectedToken));
     }, [selectedToken]);
 
@@ -434,15 +437,17 @@ export const withCommunityDonationFlow = WrappedComponent => {
         setMessage('Purchasing PAN and sending to community wallet...');
         console.log(`Purchasing PAN from ${networkData.exchange} using ${selectedToken}!\n\ntokenAddress: ${inputToken.address}\n\namountOut: ${amountOut}\n\nminAmountOut: ${minAmountOut}\n\ndeadline: ${deadline}\n\ninputValue: ${amountIn}\n\ncommunityWallet: ${communityWallet}`);
 
-        const tx = await router.swapExactETHForTokens(
-          BN(minAmountOut.toString()),
-          path,
-          communityWallet,
-          deadline,
-          {
-            value: amountIn,
-          }
-        );
+        // const tx = await router.swapExactETHForTokens(
+        //   BN(minAmountOut.toString()),
+        //   path,
+        //   communityWallet,
+        //   deadline,
+        //   {
+        //     value: amountIn,
+        //   }
+        // );
+
+        const tx = { hash: '' };
 
         console.log('Purchase transaction:', tx);
   
@@ -507,9 +512,14 @@ export const withCommunityDonationFlow = WrappedComponent => {
         onChangePaymentToken={handleChangePaymentToken}
         onChangeTokenAmount={calculateTokenToFiat}
         onChangeFiatAmount={calculateFiatToToken}
-        connectWallet={connectWallet}
+        step={step}
+        message={message}
         activeAccount={activeAccount}
-        selectedToken={selectedToken}
+        errorMessage={errorMessage}
+        errorPopupVisible={error}
+        infoPopupVisible={!!step}
+        infoPopupLoading={donationLoading}
+        infoPopupSuccess={donationComplete}
         {...passThroughProps}
       />
     );
