@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import logoWhite from '../img/logo-white.png';
 import logoTwitter from '../img/twitter.png';
-import logoTelegram from '../img/telegram.png';
+import logoDiscord from '../img/discord.png';
 import logoGithub from '../img/github.png';
 import privacyPolicy from '../img/docs/panvala-privacy-policy.pdf';
 
@@ -25,15 +25,15 @@ export default () => (
                 <img alt="" src={logoTwitter} className="w2" />
               </a>
               <a
-                href="https://t.me/panvala"
+                href="https://discord.gg/yZmYZbf"
                 rel="noopener noreferrer"
                 target="_blank"
                 className="link dim dtc pr4"
               >
-                <img alt="" src={logoTelegram} className="w2" />
+                <img alt="" src={logoDiscord} className="w2" />
               </a>
               <a
-                href="https://github.com/ConsenSys/panvala"
+                href="https://github.com/Panvala/panvala"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link dim dtc"

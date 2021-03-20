@@ -75,13 +75,6 @@ const categories = [
       "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
   },
   {
-    categoryID: 15,
-    title: 'SheFi',
-    hidden: true,
-    description:
-      "SheFi is a DeFi educational program that doubles as a vehicle to donate funds to nonprofits that focus on educating women in STEM."
-  },
-  {
     categoryID: 16,
     title: 'DePo DAO',
     description:
@@ -207,6 +200,71 @@ const categories = [
     description:
       "Grassroots Economics is a non-profit foundation that seeks to empower marginalized communities to take charge of their own livelihoods and economic future. We focus on community development through economic empowerment and community currency programs. Beneficiaries of our programs include small businesses and people living in informal settlements as well as rural areas.",
   },
+  {
+    categoryID: 37,
+    title: 'Circles UBI',
+    description: "Circles is a basic income made to promote local economy within your community.",
+  },
+  {
+    categoryID: 38,
+    title: 'Giveth',
+    description: "Giveth is a community of makers building the future of giving.",
+  },
+  {
+    categoryID: 39,
+    title: 'Women of Crypto Art',
+    description: "Women of Crypto Art (WOCA) is a new community group formed to highlight and promote, collaborate and support any artist who identifies as a woman in the crypto art space. As a community we come together to share ideas, information, tips and general support in all things crypto art.",
+  },
+  {
+    categoryID: 40,
+    title: 'Dandelion Collective',
+    description: "Dandelion Collective is a UK-based not-for-profit worker co-op. Their flagship project is Dandelion (https://dandelion.earth), a web platform for ticketed events and co-created gatherings. They also put on a range of events themselves as the Psychedelic Society (http://psychedelicsociety.org.uk/).",
+  },
+  {
+    categoryID: 41,
+    title: 'Shenanigan',
+    description: "Shenanigan provides a competitive and motivating platform for athletes of all types utilizing fiscal incentives to drive personal improvement.",
+  },
+  {
+    categoryID: 42,
+    title: "Peoples' Collective",
+    description: "People’s Cooperative pools funds to help support each other and families in need especially with the growing impact of the pandemic. We also support and advance the benefit of blockchain to the general community in Nigeria.",
+  },
+  {
+    categoryID: 43,
+    title: 'Marma J Foundation',
+    description: "The Marma J Foundation was founded in mid-2019 with the simple goal of being an altruistic foundation with an efficient ability to spread love and positivity throughout the world. In September of the same year, the foundation moved to Antigua and Barbuda to start their very first hands-on projects.",
+  },
+  {
+    categoryID: 44,
+    title: 'Hackervilla',
+    description: "The HackerVilla is a roving pop-up hacking space / hackathon that plans on sponsoring events around ETHX events and DevCon.",
+  },
+  {
+    categoryID: 45,
+    title: 'PrimeDAO',
+    description: "PrimeDAO is a collective of Web 3 builders and creators committed to enabling the DeFi space’s systemic innovation. We’re collectively building and governing protocols that support DAO 2 DAO value creation.",
+  },
+  {
+    categoryID: 46,
+    title: 'Senary Commonwealth',
+    description: "Senary Commonwealth supports web-based public utilities that democratize opportunity, more justly accrue and distribute value, and promote our greater humanity.",
+  },
+  {
+    categoryID: 47,
+    title: 'Kolektivo Labs',
+    description: "Kolektivo Labs is a systems innovation lab committed to unleashing the full potential of human coordination. We do this by implementing Web 3 primitives in a real-world setting. We’ve launched CuraDAO, a social-impact DAO in Curacao, in 2019.",
+  },
+  {
+    categoryID: 48,
+    title: 'Austin Meetups Fund',
+    description: "The Austin Meetups Fund is a donation-based fund shared by all local meetup groups who choose to participate. The goal of the fund is to build community, reward outstanding meetup contributors, and use new technology at the same time.",
+  },
+  {
+    categoryID: 49,
+    title: 'DoinGud',
+    description: "DoinGud is a community of over +1800 individuals creating an NFT marketplace and social platform fully focused on doing good by empowering artist, creators, collectors, curators and social organizations to support one another and become self-owned, self-sustained and self-governed.",
+  },
 ];
 
 const EMPTY_PERCENTAGES = {};
@@ -216,42 +274,42 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "1034506.30904213196157261"
+    "weight": "985050.29745029546157261"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2525711.439909593906063125"
+    "weight": "2325204.147088728500915069"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "829742.88045374393757"
+    "weight": "968964.59045374393757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "275751.828861834773742333"
+    "weight": "116470.387037315207261213"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "161489.02957520283530413"
+    "weight": "146068.37965457833530413"
   },
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "163456.2259111879817"
+    "weight": "218088.4619111879817"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "681774.077581694953621069"
+    "weight": "2637.891662944238148385"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "86396.791398677741131741"
+    "weight": "29515.176492347271534051"
   },
   "15": {
     "id": 15,
@@ -266,22 +324,22 @@ const stakingResults = {
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "133217.265126981383590826"
+    "weight": "105295.039566981383590826"
   },
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "134801.207606155757788816"
+    "weight": "54558.475948928515149704"
   },
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "144620.105571678164105171"
+    "weight": "44753.728888409764313908"
   },
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "48033.605984775031481792"
+    "weight": "31447.502444434022897931"
   },
   "21": {
     "id": 21,
@@ -291,22 +349,22 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "20000.083257251679836965"
+    "weight": "4975.0"
   },
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "26035.0"
+    "weight": "13433.35"
   },
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "14907.471294276275443489"
+    "weight": "25891.151294276275443489"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "342985.810100801833528013"
+    "weight": "344067.383513488066002829"
   },
   "26": {
     "id": 26,
@@ -321,32 +379,32 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "52796.976606662517312657"
+    "weight": "55797.128781348935143044"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "55250.184741011610350476"
+    "weight": "89183.135506133437972786"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "121003.089237647479986422"
+    "weight": "5830.932056200000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "5111.915078865410858138"
+    "weight": "8968.495078865410858138"
   },
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "33927.150698044385392947"
+    "weight": "32927.150698044385392947"
   },
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "6051.313304501104237938"
+    "weight": "500.0"
   },
   "34": {
     "id": 34,
@@ -356,12 +414,77 @@ const stakingResults = {
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "30712.5"
+    "weight": "43804.95"
   },
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "19869.98709094886976006"
+    "weight": "37585.93709094886976006"
+  },
+  "37": {
+    "id": 37,
+    "name": "Circles UBI",
+    "weight": "171990.712330683031708739"
+  },
+  "38": {
+    "id": 38,
+    "name": "Giveth",
+    "weight": "42393.58470792864950734"
+  },
+  "39": {
+    "id": 39,
+    "name": "Women of Crypto Art",
+    "weight": "22370.405936078979172278"
+  },
+  "40": {
+    "id": 40,
+    "name": "Dandelion Collective",
+    "weight": "0.0"
+  },
+  "41": {
+    "id": 41,
+    "name": "Shenanigan",
+    "weight": "19387.028650002166427524"
+  },
+  "42": {
+    "id": 42,
+    "name": "Peoples' Collective",
+    "weight": "0.0"
+  },
+  "43": {
+    "id": 43,
+    "name": "Marma J Foundation",
+    "weight": "0.0"
+  },
+  "44": {
+    "id": 44,
+    "name": "Hackervilla",
+    "weight": "0.0"
+  },
+  "45": {
+    "id": 45,
+    "name": "PrimeDAO",
+    "weight": "0.0"
+  },
+  "46": {
+    "id": 46,
+    "name": "SBV Commonwealth",
+    "weight": "0.0"
+  },
+  "47": {
+    "id": 47,
+    "name": "Kolektivo Labs",
+    "weight": "0.0"
+  },
+  "48": {
+    "id": 48,
+    "name": "Austin Meetups Fund",
+    "weight": "0.0"
+  },
+  "49": {
+    "id": 49,
+    "name": "DoinGud",
+    "weight": "0.0"
   }
 };
 
@@ -379,10 +502,10 @@ categories.sort((a, b) => {
   return -1;
 });
 
-const pollID = '5';
-const pollDeadline = 'January 15';
-const stakingTotalsUpdated = 'January 29';
-const leagueBudget = 1316952.75;
+const pollID = '6';
+const snapshotsBeginOn = 'April 2';
+const stakingTotalsUpdated = 'March 16';
+const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -598,7 +721,7 @@ const Poll = () => {
           if (json.responded) {
             setAlreadyVoted(true);
             if (submitted) {
-              alert('The connected account has already voted in this poll.');
+              alert('The connected account has already staked for this quarter.');
             }
           }
         });
@@ -728,10 +851,9 @@ const Poll = () => {
           <ModalBody>
             <ModalTitle>Stake PAN for Your Community</ModalTitle>
             <ModalCopy>
-              PAN holders stake their tokens to earn donation matching capacity for their community. If you do not
-              currently have a PAN balance but want to stake, or you would
-              like to increase your stake before the <b>{pollDeadline}</b> deadline, you can
-              do so via Uniswap.
+              PAN holders stake their tokens to increase their community's donation matching multiplier. If you do not
+              currently have a PAN balance but want to stake, or you would like to increase your stake,
+              you can do so via Uniswap. Daily staking snapshots begin on <b>{snapshotsBeginOn}</b>.
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
@@ -761,7 +883,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                starting on December 2. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                from March 10 to 25. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -853,8 +975,9 @@ const Poll = () => {
               </Box>
               <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
-                Even though your vote has been submitted, you have until the <b>{pollDeadline}</b>{' '}
-                deadline to increase your stake by holding more PAN tokens.
+                Even though your vote has been submitted, you have until <b>{snapshotsBeginOn}</b>{' '}
+                to increase your stake by holding more PAN tokens. After that date, donation matching will
+                be allocated through daily staking snapshots.
               </Box>
               <a
                 href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
@@ -888,16 +1011,15 @@ const Poll = () => {
               <div className="tc pv4">
                 <h2>Stake PAN for Your Community</h2>
                 <Box mt={1} mb={3} className="w-80 center tc lh-copy">
-                  PAN holders stake their tokens to earn donation matching capacity for their community. The Panvala League's
+                  PAN holders stake their tokens to increase their community's donation matching multiplier. The Panvala League's
                   goal is for communities to own the same share of Panvala as the share of the budget they want to receive,
                   so we reward them for it with a higher matching multiplier. Stake more PAN to increase your
                   community's <strong>funding at capacity</strong>, the amount of funding you can receive this quarter
-                  with the highest matching multiplier.
+                  with the highest possible matching multiplier.
                 </Box>
                 <Box my={1} className="w-80 center tc lh-copy">
                   If you do not currently have a PAN balance but want to stake, or you would
-                  like to increase your stake before the <b>{pollDeadline}</b> deadline, you can
-                  do so via Uniswap.
+                  like to increase your stake, you can do so via Uniswap. Daily staking snapshots begin on <b>{snapshotsBeginOn}</b>.
                   <Box flex justifyContent="center" my={3}>
                     <a
                       href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
@@ -1028,8 +1150,8 @@ const Poll = () => {
 
                       <div className="cf pa4">
                         <div className="f5 tl pb3 lh-copy">
-                          The final staking amounts will be calculated using the balance of PAN tokens
-                          in your account on {pollDeadline}.
+                          The daily staking snapshots will be calculated using the balance of PAN tokens
+                          in your account each day beginning on {snapshotsBeginOn}.
                         </div>
                         <div className="f5 tl pb4 lh-copy">
                           <b>
