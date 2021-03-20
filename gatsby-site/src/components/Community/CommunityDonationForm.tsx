@@ -36,16 +36,13 @@ const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields
   firstName: yup
     .string()
     .trim(),
-    // .required('Please enter your first name.'),
   lastName: yup
     .string()
     .trim(),
-    // .required('Please enter your last name.'),
   email: yup
     .string()
     .trim()
     .email('Please enter a valid email address.'),
-    // .required('Please enter your email.'),
 });
 
 interface CommunityDonationFormProps {
@@ -80,7 +77,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
     connectWallet,
   } = props;
 
-  const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(true);
+  const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(false);
 
   function getAddNetworkHelpText(token: TokenEnums) {
     let helpUrl = '';
