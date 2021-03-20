@@ -1,10 +1,19 @@
+import { toCamelCase, toKebabCase } from './format';
+
 export const loadImage = (communityName: string) => {
   const extensions = ['png', 'jpg', 'jpeg', 'gif', 'svg'];
-  for (let i = 0, il = extensions.length; i < il; i += 1) {
-    try {
-      return require(`../img/league/${communityName.replace(/ /g, '').toLowerCase()}.${extensions[i]}`);
-    } catch (err) {
-      continue;
+  const filenames = [
+    communityName.replace(/ /g, '').toLowerCase(),
+    toKebabCase(communityName),
+    toCamelCase(communityName),
+  ];
+  for (let e = 0, el = extensions.length; e < el; e += 1) {
+    for (let f = 0, fl = filenames.length; f < fl; f += 1) {
+      try {
+        return require(`../img/league/${filenames[f]}.${extensions[e]}`);
+      } catch (err) {
+        continue;
+      }
     }
   }
 };
