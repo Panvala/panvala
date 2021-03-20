@@ -88,3 +88,6 @@ export const toCamelCase = (input) => {
 
 /* Convert to kebab-case */
 export const toKebabCase = (input) => input.replace(/[' ']/g, '-').toLowerCase();
+
+/* Shorten a string */
+export const shortenString = (input) => `${input.slice(0, 6)}...${input.slice(input.length - 4, input.length)}`;

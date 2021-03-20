@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
-import { Formik, Field, } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 
-import DonateButton from '../DonateButton';
 import FieldText from '../FieldText';
 import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
 import swapIcon from '../../img/swap.png';
-import { NetworkEnums, TokenEnums } from '../../data';
+import { TokenEnums, networks, NetworkEnums } from '../../data';
+import { shortenString } from '../../utils/format';
 
 export interface ICommunityDonationFormFields {
   paymentToken: string;
@@ -25,14 +25,14 @@ export interface ICommunityDonationFormFields {
 const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields> = yup.object().shape({
   paymentToken: yup
     .string()
-    .trim()
-    .required('Please enter your payment method.'),
+    .trim(),
+    // .required('Please enter your payment method.'),
   tokenAmount: yup
-    .number(),
-    // .moreThan(0, 'Please select a donation amount.'),
+    .number()
+    .moreThan(0, 'Please select a donation amount.'),
   fiatAmount: yup
-    .number(),
-    // .moreThan(0, 'Please select a donation amount in USD.'),
+    .number()
+    .moreThan(0, 'Please select a donation amount in USD.'),
   firstName: yup
     .string()
     .trim(),
@@ -55,6 +55,9 @@ interface CommunityDonationFormProps {
   };
   selectedToken: string;
   activeAccount: string;
+  errorMessage: string;
+  step: number | null;
+  message: string;
   onSubmit(values: any, actions: any): void;
   onChangePaymentToken(newToken: string): Promise<void>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
@@ -68,12 +71,39 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
     walletAddresses,
     selectedToken,
     activeAccount,
+    errorMessage,
+    message,
     onSubmit,
     onChangePaymentToken,
     onChangeTokenAmount,
     onChangeFiatAmount,
     connectWallet,
   } = props;
+
+  const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(true);
+
+  function getAddNetworkHelpText(token: TokenEnums) {
+    let helpUrl = '';
+    let networkName = '';
+    if (token === TokenEnums.XDAI) {
+      networkName = networks[NetworkEnums.XDAI].name;
+      helpUrl = 'https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup#setting-up-metamask-for-xdai';
+    }
+    else if (token === TokenEnums.MATIC) {
+      networkName = networks[NetworkEnums.MATIC].name;
+      helpUrl = 'https://docs.matic.network/docs/develop/metamask/config-matic/';
+    }
+
+    return (
+      <>
+        {!!helpUrl && !!networkName && (
+          <p className="f6 lh-copy">
+            <a href={helpUrl} target="_blank" rel="noreferrer" className="teal link">Click here for instructions</a> on how to add the {networkName} network to MetaMask.
+          </p>
+        )}
+      </>
+    )
+  }
 
   function handleDonate(values: any, actions: any) {
     onSubmit(values, actions);
@@ -125,12 +155,6 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
           return '';
         }
 
-        function shortenString(input: string) {
-          const pre = input.slice(0, 6);
-          const post = input.slice(input.length - 4, input.length);
-          return `${pre}...${post}`;
-        }
-
         return (  
           <form
             data-testid="community-donation-form"
@@ -149,11 +173,17 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               onChange={handleChangePaymentToken}
               id="payment-token-select"
             >
-              {walletAddresses && walletAddresses[NetworkEnums.MAINNET] && <option value="ETH">ETH</option>}
-              {walletAddresses && walletAddresses[NetworkEnums.XDAI] && <option value="XDAI">XDAI</option>}
-              {walletAddresses && walletAddresses[NetworkEnums.MATIC] && <option value="MATIC">MATIC</option>}
+              {walletAddresses && Object.keys(walletAddresses).map(chainId =>
+                <option key={networks[chainId].token} value={networks[chainId].token}>{networks[chainId].token}</option>)}
             </Field>
             <DownArrow />
+
+            {!!errorMessage && (
+              <>
+                <p className="red lh-copy">{errorMessage}</p>
+                {(/please connect metamask to the/g).test(errorMessage.toLowerCase()) && getAddNetworkHelpText(values.paymentToken)}
+              </>
+            )}
 
             <Label className="f5 b">Amount</Label>
             <div className="flex justify-between">
@@ -186,43 +216,57 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
   
             <div>
               {!!!activeAccount &&
-                <p><span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a> or select the credit card payment method.</p>}
+                <p className="f5"><span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a> or select the credit card payment method.</p>}
               {!!activeAccount &&
                 <p className="f5">Connected to MetaMask wallet <a href={getWalletExplorerUrl(activeAccount)} target="_blank" rel="noreferrer" className="link teal">{shortenString(activeAccount)}</a>.</p>}
             </div>
   
-            <Label className="f5 b">Your Information</Label>
-            <FieldText
-              type="text"
-              name="firstName"
-              id="donate-first-name"
-              placeholder="First Name"
-              value={values.firstName}
-              onChange={handleChange}
-              className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
-            />
+            {showPersonalInfo && (
+              <>
+                <Label className="f5 b">Your Information</Label>
+                <FieldText
+                  type="text"
+                  name="firstName"
+                  id="donate-first-name"
+                  placeholder="First Name"
+                  value={values.firstName}
+                  onChange={handleChange}
+                  className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+                />
+      
+                <FieldText
+                  type="text"
+                  name="lastName"
+                  id="donate-last-name"
+                  placeholder="Last Name"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+                />
+      
+                <FieldText
+                  type="text"
+                  name="email"
+                  id="donate-email"
+                  placeholder="Email address"
+                  value={values.email}
+                  onChange={handleChange}
+                  className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
+                />
+              </>
+            )}
   
-            <FieldText
-              type="text"
-              name="lastName"
-              id="donate-last-name"
-              placeholder="Last Name"
-              value={values.lastName}
-              onChange={handleChange}
-              className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
-            />
-  
-            <FieldText
-              type="text"
-              name="email"
-              id="donate-email"
-              placeholder="Email address"
-              value={values.email}
-              onChange={handleChange}
-              className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
-            />
-  
-            <DonateButton disabled={isSubmitting} handleClick={handleSubmit} />
+            <div>
+              <input
+                type="submit"
+                name="submit"
+                onClick={handleSubmit as any}
+                className="f5 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+                disabled={isSubmitting}
+                value="Donate"
+              />
+              {!!message && <span className="pl2 f6">{message}</span>}
+            </div>
           </form>
         );
       }}

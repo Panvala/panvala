@@ -49,8 +49,10 @@ export interface InfoPopupProps {
 }
 
 const InfoPopup = (props: InfoPopupProps) => {
-  const { message, isLoading, isSuccess, isVisible } = props;
+  const { message, isLoading, isSuccess } = props;
   
+  const isVisible = true;
+
   return (
     <>
       {isVisible && <StyledInfoPopup className="mw5 center bg-white br3 pa3 pa4-ns mv3 ba b--black-10">

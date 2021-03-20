@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import CommunityDonation from '../components/Community/CommunityDonation';
 import Layout from '../components/Layout';
@@ -11,6 +11,7 @@ import givethIcon from '../img/giveth.png';
 import { DonationMethodEnums, ICommunityData, NetworkEnums, networks, tokens } from '../data';
 import { MatchingMultiplierInfo } from '../components/Community/InfoCards';
 import { loadImage } from '../utils/images';
+import { getMatchingMultiplier } from '../utils/calculations';
 
 interface CommunityDonateProps {
   pageContext: {
@@ -21,15 +22,13 @@ interface CommunityDonateProps {
     layer2Address?: string;
     primaryDonationMethod?: string;
     donationURL?: string;
+    scoreboard: any,
   };
   [key: string]: any;
 }
 
 const CommunityDonate = (props: CommunityDonateProps) => {
   const data = { networks, tokens };
-  
-  // TODO: pull real data for this
-  const matchingMultiplier = '6.1';
 
   function mapDonationMethodToEnum(donationMethod: string) {
     const testString = donationMethod.toLowerCase();
@@ -56,6 +55,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
     layer2Preference,
     primaryDonationMethod,
     donationURL,
+    scoreboard,
   } = props.pageContext;
 
   const communityImage = loadImage(communityName);
@@ -79,12 +79,21 @@ const CommunityDonate = (props: CommunityDonateProps) => {
   if (primaryDonationMethod && donationURL)
     donationMethod = mapDonationMethodToEnum(primaryDonationMethod);
 
+  const [matchingMultiplier, setMatchingMultiplier] = useState<number>(0);
+
+  useEffect(() => {
+    if (scoreboard) {
+      setMatchingMultiplier(getMatchingMultiplier(scoreboard));
+    }
+  }, [scoreboard]);
+  
+
   const Spacer = ({ width }) => <div className={`w-${width}-l w-${width}-m w-${width} pv5`} />;
 
   const ExternalDonationLink = ({ image }) => (
-    <a className="blue link flex mv4" href={donationURL} target="_blank" rel="noreferrer">
-      <img className="w2" src={image} alt={donationMethod} />
-      <div className="f5 ml3">Donate on {donationMethod}</div>
+    <a className="blue link mv4 dt" href={donationURL} target="_blank" rel="noreferrer">
+      <img className="w2 dtc v-mid" src={image} alt={donationMethod} />
+      <div className="f5 pl3 ml3 dtc v-mid">Donate on {donationMethod}</div>
     </a>
   );
 
@@ -93,7 +102,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
       <SEO title="Donate" />
       <section className="bg-gradient pb6">
         <Nav />
-        <div className="bg-white bottom-clip-hero pb6 flex">
+        <div className="bg-white pb2 flex z-0">
           <Spacer width="10" />
 
           {/* Donation Form */}
@@ -101,9 +110,10 @@ const CommunityDonate = (props: CommunityDonateProps) => {
             <div className="w-90-l w-90-m w-100 center">
               <a
                 href={`/${communityName.replace(/[' ']/g, '-').toLowerCase()}`}
-                className="dib mb4 teal link pointer"
+                className="dt mb4 teal link pointer"
               >
-                <img src={leftArrowIcon} /> Back to Community
+                <img className="dtc v-mid" src={leftArrowIcon} />
+                <span className="dtc pl1 v-mid">Back to Community</span>
               </a>
               <h1 className="f1-5 b ma0 mb4 pb2">Make a Donation</h1>
               <CommunityDonation data={data} community={community} />
@@ -111,7 +121,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
           </div>
 
           {/* Matching Multiplier Info */}
-          <div className="w-50-l w-50-m w-20 pv5 flex-column fixed right-0">
+          <div className="w-50-l w-50-m w-20 pv5 mt3 flex-column z-999">
             <MatchingMultiplierInfo
               image={communityImage}
               title={communityName}

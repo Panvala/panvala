@@ -3,7 +3,7 @@ import React from 'react';
 interface MatchingMultiplierInfoProps {
   image: any;
   title: string;
-  multiplier: string;
+  multiplier: number;
 }
 
 const MatchingMultiplierInfo = (props: MatchingMultiplierInfoProps) => {
