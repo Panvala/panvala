@@ -32,7 +32,7 @@ const Community = (props: CommunityProps) => {
   // TODO: pull real data for this
   const communityWebsite = props?.pageContext?.scoreboard?.communityWebsite || '';
   const communityTwitter = props?.pageContext?.scoreboard?.communityTwitter || '';
-  const startDate = props?.pageContext?.scoreboard?.startDate || null;
+  const startDate = props?.pageContext?.scoreboard?.startDate || 'March 10';
   const donorsList = props?.pageContext?.donorsList || [];
   const ownersList = props?.pageContext?.ownersList || [];
   const usdDonated = '';
@@ -71,12 +71,12 @@ const Community = (props: CommunityProps) => {
   useEffect(() => {
     if (scoreboard) {
       setMatchingMultiplier(getMatchingMultiplier(scoreboard));
-      setMaxMatchingMultiplier(getMaxMatchingMultiplier(scoreboard));
     }
   }, [scoreboard]);
 
   useEffect(() => {
     if (scoreboard && scoreboardTotals) {
+      setMaxMatchingMultiplier(getMaxMatchingMultiplier(scoreboard, scoreboardTotals));
       let fullStake = Math.round(getFullyStakedAmount(scoreboard, scoreboardTotals));
       if (parseCommaFloat(scoreboard.stakedTokens) >= fullStake)
         fullStake = 0;
@@ -233,7 +233,7 @@ const Community = (props: CommunityProps) => {
                   </div>
                 </div>
               </div>
-              <p className="f4 mid-gray">Community earns more matching from Panvala with each additional donor!</p>
+              <p className="f4 mid-gray">{communityName} earns more matching from Panvala with each additional donor!</p>
               <a
                 href={`/${communityName.replace(/[' ']/g, '-').toLowerCase()}/donate`}
                 className="w-100 dim dib mv2 pv3 ph4 bn tc br-pill white bg-gradient f4 fw7 link pointer"

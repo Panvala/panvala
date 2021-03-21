@@ -30,7 +30,7 @@ const csvParse = require('csv-parse');
     fs.createReadStream(path.resolve(__dirname, 'src/data/communities-scoreboard.csv'))
       .pipe(csvParse({columns: true}))
       .on('data', row => {
-        if (row['Community'] === '__Totals__') {
+        if (row['Community'] === 'Totals') {
           totals = row;
         } else if (row['Community Name'] !== '') {
           communities[row['Community Name']] = row;
@@ -145,7 +145,10 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
     pageContext.scoreboard = {};
     pageContext.scoreboardTotals = {};
 
-    Object.keys(communityData).forEach(dataKey => pageContext[toCamelCase(dataKey)] = communityData[dataKey]);
+    Object.keys(communityData).forEach(dataKey => {
+      if (!!dataKey)
+        pageContext[toCamelCase(dataKey)] = communityData[dataKey];
+    });
     Object.keys(scoreboardData).forEach(dataKey => {
       if (!!dataKey)
         pageContext.scoreboard[toCamelCase(dataKey)] = scoreboardData[dataKey];

@@ -25,8 +25,13 @@ export function getMatchingMultiplier(communityRow) {
   return parseFloat(((donations + subsidy) / donations).toFixed(1));
 }
 
-export function getMaxMatchingMultiplier(communityRow) {
-  const maxSubsidy = parseCommaFloat(communityRow['fullyStakedSubsidy(PAN)']);
+export function getMaxMatchingMultiplier(communityRow, totals) {
+  const quadraticFunding = parseCommaFloat(communityRow.quadraticFunding);
+  const spreadsheetSubsidyPoints = parseCommaFloat(communityRow.subsidyPoints);
+  const totalSubsidyPoints = parseCommaFloat(totals.subsidyPoints);
+  const totalSubsidy = parseCommaFloat(totals['estimatedSubsidy(PAN)']);
+  const shareOfSubsidy = quadraticFunding / (totalSubsidyPoints - spreadsheetSubsidyPoints + quadraticFunding);
+  const maxSubsidy = shareOfSubsidy * totalSubsidy;
   const donations = parseCommaFloat(communityRow.pANDonated);
   return parseFloat(((donations + maxSubsidy) / donations).toFixed(1));
 }
