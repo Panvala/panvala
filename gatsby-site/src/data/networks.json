@@ -1,0 +1,23 @@
+{
+  "1": {
+    "name": "Mainnet",
+    "token": "ETH",
+    "exchange": "UniSwap"
+  },
+  "4": {
+    "name": "Rinkeby",
+    "token": "ETH",
+    "exchange": "UniSwap"
+  },
+  "100": {
+    "name": "xDai",
+    "token": "XDAI",
+    "exchange": "HoneySwap"
+  },
+  "137": {
+    "name": "Matic",
+    "token": "MATIC",
+    "exchange": "QuickSwap",
+    "oracleAddress": "0xAB594600376Ec9fD91F8e885dADF0CE036862dE0"
+  }
+}

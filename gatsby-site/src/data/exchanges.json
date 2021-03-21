@@ -1,0 +1,29 @@
+{
+  "UniSwap": {
+    "token": "UNI",
+    "addresses": {
+      "factory": {
+        "1": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+        "4": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+      },
+      "router": {
+        "1": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+        "4": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+      }
+    }
+  },
+  "HoneySwap": {
+    "token": "HNY",
+    "addresses": {
+      "factory": { "100": "0xA818b4F111Ccac7AA31D0BCc0806d64F2E0737D7" },
+      "router": { "100": "0x1C232F01118CB8B424793ae03F870aa7D0ac7f77" }
+    }
+  },
+  "QuickSwap": {
+    "token": "QUICK",
+    "addresses": {
+      "factory": { "137": "0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32" },
+      "router": { "137": "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff" }
+    }
+  }
+}

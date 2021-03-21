@@ -1,4 +1,4 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import orderBy from 'lodash/orderBy';
 
 export function sliceDecimals(floatingPt, decimalDigits = 3) {
@@ -29,8 +29,7 @@ function mapDatesToText(date, epochNumber) {
 
 export function formatDates(epochDates) {
   // Get current UTS
-  const nowDate = utils
-    .bigNumberify(Date.now())
+  const nowDate = BigNumber.from(Date.now())
     .div(1000)
     .toNumber();
 
@@ -80,3 +79,15 @@ export function prettify(ugly) {
   }
   return ugly;
 }
+
+/* Convert to camelCase */
+export const toCamelCase = (input) => {
+  const word = input.replace(/[' ']/g, '');
+  return word[0].toLowerCase() + word.slice(1);
+};
+
+/* Convert to kebab-case */
+export const toKebabCase = (input) => input.replace(/[' ']/g, '-').toLowerCase();
+
+/* Shorten a string */
+export const shortenString = (input) => `${input.slice(0, 6)}...${input.slice(input.length - 4, input.length)}`;

@@ -7,7 +7,7 @@ function DonateButton({ handleClick, text, disabled }: any) {
         type="submit"
         name="submit"
         onClick={handleClick}
-        className="f6 link dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+        className="f6 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
         disabled={disabled}
         value={text ? text : 'Donate'}
       />

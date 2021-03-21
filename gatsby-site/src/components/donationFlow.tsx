@@ -1,5 +1,5 @@
 import React from 'react';
-import { providers, constants, utils } from 'ethers';
+import { BigNumber, providers, constants, utils } from 'ethers';
 
 import {
   BN,
@@ -19,7 +19,7 @@ import {
 } from '../utils/donate';
 import { loadContracts, getEnvironment, Environment } from '../utils/env';
 
-const { parseEther, hexlify, getAddress, bigNumberify } = utils;
+const { parseEther, hexlify, getAddress } = utils;
 
 declare global {
   interface Window {
@@ -199,7 +199,7 @@ export const withDonationFlow = WrappedComponent => {
     }
 
     // PAN
-    async getQuote(value: utils.BigNumber) {
+    async getQuote(value: BigNumber) {
       return quoteEthToPan(value, this.provider, {
         token: this.token,
         exchange: this.exchange,
@@ -210,7 +210,7 @@ export const withDonationFlow = WrappedComponent => {
       // Calculate pledge total value (monthly * term)
       const pledgeMonthlyUSD: number = parseInt(monthlyPledge, 10);
       const pledgeTerm: number = parseInt(pledgeDuration, 10);
-      const pledgeTotal: utils.BigNumber = BN(pledgeMonthlyUSD).mul(pledgeTerm);
+      const pledgeTotal: BigNumber = BN(pledgeMonthlyUSD).mul(pledgeTerm);
 
       // Get USD price of 1 ETH
       const ethPrice = await fetchEthPrice();
@@ -240,7 +240,7 @@ export const withDonationFlow = WrappedComponent => {
     }
 
     // Sell ETH -> uniswap exchange (buy PAN)
-    async purchasePan(donation: IMetadata, panValue: utils.BigNumber): Promise<utils.BigNumber> {
+    async purchasePan(donation: IMetadata, panValue: BigNumber): Promise<BigNumber> {
       // TODO: subtract a percentage
       const minTokens = BN(panValue).sub(5000);
       const block = await this.provider.getBlock();
@@ -283,7 +283,7 @@ export const withDonationFlow = WrappedComponent => {
       } catch (error) {
         console.error(`ERROR: ${error.message}`);
         this.handleError(`Uniswap transaction failed: ${error.message}`);
-        return bigNumberify('0');
+        return BN('0');
       }
     }
 
@@ -419,7 +419,7 @@ export const withDonationFlow = WrappedComponent => {
         console.log('multihash:', multihash);
 
         // Purchase Panvala pan
-        const panPurchased: utils.BigNumber = await this.purchasePan(metadata, panValue);
+        const panPurchased: BigNumber = await this.purchasePan(metadata, panValue);
 
         /// 2. Approve if necessary, donate PAN, save to API, autopilot
         if (panPurchased.gt('0') && this.state.step != null) {

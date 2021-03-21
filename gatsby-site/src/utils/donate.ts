@@ -1,7 +1,7 @@
-import { utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import { toUSDCents } from './format';
 
-const { bigNumberify, parseUnits, formatEther, formatUnits } = utils;
+const { parseUnits, formatEther, formatUnits } = utils;
 
 // Types
 export interface IMetadata {
@@ -43,7 +43,7 @@ export interface IAPIDonation extends IDonationTx {
 
 // Functions
 export function BN(small) {
-  return bigNumberify(small);
+  return BigNumber.from(small);
 }
 
 export async function checkAllowance(token, owner, spender, numTokens) {
@@ -157,7 +157,7 @@ export async function postAutopilot(
 }
 
 // Sell order (exact input) -> calculates amount bought (output)
-export async function quoteEthToPan(etherToSpend: utils.BigNumber, provider, { token, exchange }) {
+export async function quoteEthToPan(etherToSpend: BigNumber, provider, { token, exchange }) {
   console.log('');
   // Sell ETH for PAN
   const ethAmount = BN(etherToSpend);
