@@ -83,14 +83,20 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Wait for MetaMask plugin to initialize
      */
+    function getWindowEthereum() {
+      if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+        return window.ethereum;
+      }
+    }
+
     useEffect(() => {
-      if (window.ethereum) {
+      if (getWindowEthereum()) {
         if (!provider) {
           setProvider(new providers.Web3Provider(window.ethereum));
           console.log('Initialized MetaMask provider');
         }
       }
-    }, [window?.ethereum]);
+    }, [getWindowEthereum()]);
 
     /**
      * Connect MetaMask account
