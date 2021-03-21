@@ -164,17 +164,17 @@ const Community = (props: CommunityProps) => {
               <div className="w-50">
                 <div className="f5 teal">PAN owned by community members</div>
                 <div className="f2 b mv3">{utils.commify(Math.round(parseCommaFloat(scoreboard.stakedTokens)))} PAN</div>
-                <p className="f5 mv0 lh-copy">Donation matching is earned from community members who are owners of Panvala. The more PAN we own, the more matching we earn!</p>
+                <p className="f5 mv0 lh-copy">Our PAN holdings include any PAN we hold together as a community, plus any PAN held by individual community members to increase our matching multiplier.</p>
                 <div className="w-70 bg-gray mv5 center">
-                  <a href="" className="w-100 dim dib pv3 ph4 bn tc br-pill white bg-teal f5 fw7 link pointer">Become an Owner</a>
+                  <a href="/staking" className="w-100 dim dib pv3 ph4 bn tc br-pill white bg-teal f5 fw7 link pointer">Become a Holder</a>
                 </div>
               </div>
               <div className="w-50 pl4">
                 <div className="f5 teal">PAN needed for maximum matching</div>
                 <div className="f2 b mv3">{utils.commify(fullyStakedAmount)} PAN</div>
-                <p className="f5 mv0 lh-copy">To increase {communityName}'s matching multiplier, community members can increase their ownership stake by up to {utils.commify(fullyStakedAmount)} PAN.</p>
-                <div className="w-70 mv5 center">
-                  <a href="" className="w-100 dim dib pv3 ph4 tc br-pill teal b--teal ba bw1 f5 fw7 link pointer">Log in as an Owner</a>
+                <p className="f5 mv0 lh-copy">To increase {communityName}'s matching multiplier, community members can increase their PAN holdings by up to {utils.commify(fullyStakedAmount)} PAN.</p>
+                <div className="w-70 mv5 center dn">
+                  <a href="" className="w-100 dim dib pv3 ph4 tc br-pill teal b--teal ba bw1 f5 fw7 link pointer">Log in as a Holder</a>
                 </div>
               </div>
             </div>
