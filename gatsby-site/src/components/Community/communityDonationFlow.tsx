@@ -194,9 +194,9 @@ export const withCommunityDonationFlow = WrappedComponent => {
     async function fetchEthPrice(chainId: string) {
       if (chainId) {
         if (chainId === NetworkEnums.XDAI) {
-          const result = await fetch('https://blockscout.com/xdai/mainnet/api?module=stats&action=ethprice');
+          const result = await fetch('https://blockscout.com/xdai/mainnet/api?module=stats&action=coinprice');
           const json = await result.json();
-          return json.result.ethusd;
+          return json.result.coin_usd;
         } else if (chainId === NetworkEnums.MATIC) {
           const priceData = await priceOracle?.latestRoundData();
           const lastPrice: BigNumber = priceData?.answer;
