@@ -61,18 +61,11 @@ import leagueSenaryCommonwealth from '../img/league/senary-commonwealth.png';
 import leagueKolektivo from '../img/league/kolektivo-labs.png';
 import leagueAustinMeetups from '../img/league/austin-meetups-fund.png';
 import leagueDoinGud from '../img/league/doingud.jpg';
-
-
-
-
-
-
-
-
-
-
-
-
+import leagueGitcoin from '../img/league/gitcoin.png';
+import leagueRaidGuild from '../img/league/raidguild.jpg';
+import leagueDAOhaus from '../img/league/daohaus.png';
+import leagueBEN from '../img/league/blockchain-education-network.jpg';
+import leagueDAOSquare from '../img/league/daosquare.jpg';
 
 import eventsBg from '../img/events-bg.png';
 
@@ -596,6 +589,51 @@ const IndexPage = () => {
             />
             <a class="link dim near-black" href="https://linktr.ee/doingud">
               <h3>DoinGud</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueGitcoin}
+            />
+            <a class="link dim near-black" href="https://gitcoin.co/">
+              <h3>Gitcoin</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueRaidGuild}
+            />
+            <a class="link dim near-black" href="https://raidguild.org/">
+              <h3>RaidGuild</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDAOhaus}
+            />
+            <a class="link dim near-black" href="https://daohaus.club/">
+              <h3>DAOhaus</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueBEN}
+            />
+            <a class="link dim near-black" href="https://blockchainedu.org/">
+              <h3>Blockchain Education Network</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueDAOSquare}
+            />
+            <a class="link dim near-black" href="https://www.daosquare.io/">
+              <h3>DAOSquare</h3>
             </a>
           </div>
 
