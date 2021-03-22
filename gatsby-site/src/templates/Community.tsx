@@ -72,10 +72,12 @@ const Community = (props: CommunityProps) => {
     if (scoreboard && scoreboardTotals) {
       setMatchingMultiplier(getMatchingMultiplier(scoreboard, scoreboardTotals));
       setMaxMatchingMultiplier(getMaxMatchingMultiplier(scoreboard, scoreboardTotals));
-      let fullStake = Math.round(getFullyStakedAmount(scoreboard, scoreboardTotals));
-      if (parseCommaFloat(scoreboard.stakedTokens) >= fullStake)
-        fullStake = 0;
-      setFullyStakedAmount(fullStake);
+      const fullStake = getFullyStakedAmount(scoreboard, scoreboardTotals);
+      let neededForFullStake = fullStake - parseCommaFloat(scoreboard.stakedTokens);
+      if (neededForFullStake < 0) {
+        neededForFullStake = 0;
+      }
+      setFullyStakedAmount(Math.round(neededForFullStake));
     }
   }, [scoreboard, scoreboardTotals]);
   
