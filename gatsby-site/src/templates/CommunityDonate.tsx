@@ -56,6 +56,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
     primaryDonationMethod,
     donationURL,
     scoreboard,
+    scoreboardTotals,
   } = props.pageContext;
 
   const communityImage = loadImage(communityName);
@@ -82,8 +83,8 @@ const CommunityDonate = (props: CommunityDonateProps) => {
   const [matchingMultiplier, setMatchingMultiplier] = useState<number>(0);
 
   useEffect(() => {
-    if (scoreboard) {
-      setMatchingMultiplier(getMatchingMultiplier(scoreboard));
+    if (scoreboard && scoreboardTotals) {
+      setMatchingMultiplier(getMatchingMultiplier(scoreboard, scoreboardTotals));
     }
   }, [scoreboard]);
   

@@ -69,13 +69,8 @@ const Community = (props: CommunityProps) => {
   const [maxMatchingMultiplier, setMaxMatchingMultiplier] = useState<number>(0);
 
   useEffect(() => {
-    if (scoreboard) {
-      setMatchingMultiplier(getMatchingMultiplier(scoreboard));
-    }
-  }, [scoreboard]);
-
-  useEffect(() => {
     if (scoreboard && scoreboardTotals) {
+      setMatchingMultiplier(getMatchingMultiplier(scoreboard, scoreboardTotals));
       setMaxMatchingMultiplier(getMaxMatchingMultiplier(scoreboard, scoreboardTotals));
       let fullStake = Math.round(getFullyStakedAmount(scoreboard, scoreboardTotals));
       if (parseCommaFloat(scoreboard.stakedTokens) >= fullStake)

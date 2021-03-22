@@ -19,10 +19,18 @@ export function getFullyStakedAmount(communityRow, totals) {
   return fullyStakedAmount;
 }
 
-export function getMatchingMultiplier(communityRow) {
+export function getMatchingMultiplier(communityRow, totals) {
   const subsidy = parseCommaFloat(communityRow['estimatedSubsidy(PAN)']);
   const donations = parseCommaFloat(communityRow.pANDonated);
-  return parseFloat(((donations + subsidy) / donations).toFixed(1));
+
+  if (donations > 0) {
+    return parseFloat(((donations + subsidy) / donations).toFixed(1));
+  } else {
+    // If the community doesn't have any donations yet, use the League average multiplier as the current multiplier.
+    const totalSubsidy = parseCommaFloat(totals['estimatedSubsidy(PAN)']);
+    const totalDonations = parseCommaFloat(totals.pANDonated);
+    return parseFloat(((totalDonations + totalSubsidy) / totalDonations).toFixed(1));
+  }
 }
 
 export function getMaxMatchingMultiplier(communityRow, totals) {
@@ -33,5 +41,12 @@ export function getMaxMatchingMultiplier(communityRow, totals) {
   const shareOfSubsidy = quadraticFunding / (totalSubsidyPoints - spreadsheetSubsidyPoints + quadraticFunding);
   const maxSubsidy = shareOfSubsidy * totalSubsidy;
   const donations = parseCommaFloat(communityRow.pANDonated);
-  return parseFloat(((donations + maxSubsidy) / donations).toFixed(1));
+  console.log('donations', donations);
+  if (donations > 0) {
+    return parseFloat(((donations + maxSubsidy) / donations).toFixed(1));
+  } else {
+    // If the community doesn't have any donations yet, use the League average multiplier as the max multiplier.
+    const totalDonations = parseCommaFloat(totals.pANDonated);
+    return parseFloat(((totalDonations + totalSubsidy) / totalDonations).toFixed(1));
+  }
 }
