@@ -47,7 +47,7 @@ const Community = (props: CommunityProps) => {
   }
 
   const getProgressBarWidth = (multiplier: number, max: number) => {
-    const percent = (multiplier / max) * 100;
+    const percent = ((multiplier - 1) / (max - 1)) * 100;
     return percent > 100 ? 100 : percent;
   };
 
