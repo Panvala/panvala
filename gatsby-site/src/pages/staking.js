@@ -237,8 +237,8 @@ const categories = [
   },
   {
     categoryID: 44,
-    title: 'Hackervilla',
-    description: "The HackerVilla is a roving pop-up hacking space / hackathon that plans on sponsoring events around ETHX events and DevCon.",
+    title: 'Pool-Party',
+    description: "Pool-Party is a smart contract-based platform where people can pool and manage crypto currencies together. Pool-Parties are set up by groups looking to combine their crypto in order to jointly invest in a project or series of other tokens all while earning interest and tokens on the pooled crypto that remains in their pool-party.",
   },
   {
     categoryID: 45,
@@ -265,6 +265,31 @@ const categories = [
     title: 'DoinGud',
     description: "DoinGud is a community of over +1800 individuals creating an NFT marketplace and social platform fully focused on doing good by empowering artist, creators, collectors, curators and social organizations to support one another and become self-owned, self-sustained and self-governed.",
   },
+  {
+    categoryID: 50,
+    title: 'Gitcoin',
+    description: "Gitcoin’s mission is to enable anyone to work on the open internet. We want to build a world in which everyone has the financial leverage to leave their job, and where it’s as easy to find work in software as it is for an Uber driver to find a ride today.",
+  },
+  {
+    categoryID: 51,
+    title: 'RaidGuild',
+    description: "RaidGuild is the premier design and dev agency of the Web3 ecosystem. Our decentralized collective is deeply entrenched in the bleeding edge of DAOs, DeFi, dApps and everything else in between. Hailing from the MetaCartel network, our team consists of a diverse group of talent with over 9000 years of combined experience.",
+  },
+  {
+    categoryID: 52,
+    title: 'DAOhaus',
+    description: "DAOhaus is a no-code platform for launching and running DAOs. Is it owned and operated by the community itself. Our mission is to foster a diverse, open economy of transparent collaboration.",
+  },
+  {
+    categoryID: 53,
+    title: 'Blockchain Education Network',
+    description: "The Blockchain Education Network (BEN) is a seven-year-old 501©3 nonprofit network of blockchain clubs, students, professors, and alumni around the world. BEN provides free educational resources, conference tickets, travel scholarships, jobs and internship opportunities, and an online and offline community for all its members. BEN has had 2,350+ students go through its program across 1,000+ universities in 95+ countries.",
+  },
+  {
+    categoryID: 54,
+    title: 'DAOSquare',
+    description: "DAOSquare originated from the most celebrated DAO community MetaCartel in the west and inspired by MetaCartel and MolochDAO. Since DAOSquare was founded on December 5th, 2019, it grew rapidly from a We-Media to the most influential DAO in China, or even in all Chinese-speaking areas. Different from other DAOs which focus on specific products or services, DAOSquare devotes itself to the construction of a global DAO.",
+  },
 ];
 
 const EMPTY_PERCENTAGES = {};
@@ -284,7 +309,7 @@ const stakingResults = {
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "969012.09045374393757"
+    "weight": "970311.09045374393757"
   },
   "10": {
     "id": 10,
@@ -294,7 +319,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "146115.87965457833530413"
+    "weight": "146214.87965457833530413"
   },
   "12": {
     "id": 12,
@@ -304,7 +329,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "2732.891662944238148385"
+    "weight": "4571.544468195749240137"
   },
   "14": {
     "id": 14,
@@ -319,12 +344,12 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "6497.499347868748260579"
+    "weight": "3881.253353968748260579"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "105295.039566981383590826"
+    "weight": "83295.039566981383590826"
   },
   "18": {
     "id": 18,
@@ -394,7 +419,7 @@ const stakingResults = {
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "8963.495078865410858138"
+    "weight": "8860.260419602410858138"
   },
   "32": {
     "id": 32,
@@ -409,7 +434,7 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "33330.25165362732794055"
+    "weight": "32890.25165362732794055"
   },
   "35": {
     "id": 35,
@@ -444,7 +469,7 @@ const stakingResults = {
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "19482.028650002166427524"
+    "weight": "19696.028650002166427524"
   },
   "42": {
     "id": 42,
@@ -458,7 +483,7 @@ const stakingResults = {
   },
   "44": {
     "id": 44,
-    "name": "Hackervilla",
+    "name": "Pool-Party",
     "weight": "0.0"
   },
   "45": {
@@ -504,7 +529,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'March 20';
+const stakingTotalsUpdated = 'March 22';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
