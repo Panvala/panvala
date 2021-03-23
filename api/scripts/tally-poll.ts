@@ -98,7 +98,6 @@ async function run() {
   const data = await Promise.all(
     responses.map(async response => {
       const plainResponse = await response.get({ plain: true });
-      console.log(plainResponse);
       return token.balanceOf(response.account).then(balance => {
         return { ...plainResponse, balance, prettyBalance: prettyToken(balance) };
       });

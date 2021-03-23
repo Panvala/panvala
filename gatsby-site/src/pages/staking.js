@@ -304,7 +304,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "2295032.027088728500915069"
+    "weight": "1718091.240604619838760374"
   },
   "9": {
     "id": 9,
@@ -319,7 +319,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "146214.87965457833530413"
+    "weight": "142719.08594987833530413"
   },
   "12": {
     "id": 12,
@@ -329,7 +329,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "4571.544468195749240137"
+    "weight": "224484.144468195749240137"
   },
   "14": {
     "id": 14,
@@ -454,12 +454,12 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "34934.00470792864950734"
+    "weight": "40240.18470792864950734"
   },
   "39": {
     "id": 39,
     "name": "Women of Crypto Art",
-    "weight": "28381.293248117637984588"
+    "weight": "28386.043248117637984588"
   },
   "40": {
     "id": 40,
@@ -469,11 +469,11 @@ const stakingResults = {
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "19696.028650002166427524"
+    "weight": "32670.423660981510721256"
   },
   "42": {
     "id": 42,
-    "name": "Peoples' Collective",
+    "name": "Peoples' Cooperative",
     "weight": "0.0"
   },
   "43": {
@@ -484,7 +484,7 @@ const stakingResults = {
   "44": {
     "id": 44,
     "name": "Pool-Party",
-    "weight": "0.0"
+    "weight": "6781.29"
   },
   "45": {
     "id": 45,
@@ -499,7 +499,7 @@ const stakingResults = {
   "47": {
     "id": 47,
     "name": "Kolektivo Labs",
-    "weight": "0.0"
+    "weight": "95.0"
   },
   "48": {
     "id": 48,
@@ -510,6 +510,31 @@ const stakingResults = {
     "id": 49,
     "name": "DoinGud",
     "weight": "0.0"
+  },
+  "50": {
+    "id": 50,
+    "name": "Gitcoin",
+    "weight": "0.0"
+  },
+  "51": {
+    "id": 51,
+    "name": "RaidGuild",
+    "weight": "0.0"
+  },
+  "52": {
+    "id": 52,
+    "name": "DAOhaus",
+    "weight": "0.0"
+  },
+  "53": {
+    "id": 53,
+    "name": "Blockchain Education Network",
+    "weight": "0.0"
+  },
+  "54": {
+    "id": 54,
+    "name": "DAOSquare",
+    "weight": "1000.0"
   }
 };
 
@@ -529,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'March 22';
+const stakingTotalsUpdated = 'March 23';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
