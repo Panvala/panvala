@@ -434,7 +434,7 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "32890.25165362732794055"
+    "weight": "196018.37165362732794055"
   },
   "35": {
     "id": 35,
