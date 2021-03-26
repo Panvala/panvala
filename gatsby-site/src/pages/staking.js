@@ -299,12 +299,12 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "985050.29745029546157261"
+    "weight": "985185.29745029546157261"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1718091.240604619838760374"
+    "weight": "1712406.362004619838760374"
   },
   "9": {
     "id": 9,
@@ -324,17 +324,17 @@ const stakingResults = {
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "218088.4619111879817"
+    "weight": "272925.2119111879817"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "224484.144468195749240137"
+    "weight": "170150.203868195749240137"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "31611.554144742554234591"
+    "weight": "33493.489734005354632528"
   },
   "15": {
     "id": 15,
@@ -344,7 +344,7 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "3881.253353968748260579"
+    "weight": "1911.253353968748260579"
   },
   "17": {
     "id": 17,
@@ -359,7 +359,7 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "28737.156295881741792857"
+    "weight": "26608.156295881741792857"
   },
   "20": {
     "id": 20,
@@ -389,7 +389,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "344067.383513488066002829"
+    "weight": "402503.669085984540204938"
   },
   "26": {
     "id": 26,
@@ -414,7 +414,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "2967.824730880000720896"
+    "weight": "3062.824730880000720896"
   },
   "31": {
     "id": 31,
@@ -434,7 +434,7 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "196018.37165362732794055"
+    "weight": "196113.37165362732794055"
   },
   "35": {
     "id": 35,
@@ -454,12 +454,12 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "40240.18470792864950734"
+    "weight": "37240.18470792864950734"
   },
   "39": {
     "id": 39,
     "name": "Women of Crypto Art",
-    "weight": "28386.043248117637984588"
+    "weight": "28481.043248117637984588"
   },
   "40": {
     "id": 40,
@@ -509,7 +509,7 @@ const stakingResults = {
   "49": {
     "id": 49,
     "name": "DoinGud",
-    "weight": "0.0"
+    "weight": "741.0"
   },
   "50": {
     "id": 50,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'March 23';
+const stakingTotalsUpdated = 'March 25';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
