@@ -14,6 +14,7 @@ const ZKSYNC_ADDRESSES = new Set([
   '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6',
 ]);
 const IGNORED_ADDRESSES = new Set([
+  '0x0000000000000000000000000000000000000000', // Minting address for bridges
   '0xF53bBFBff01c50F2D42D542b09637DcA97935fF7', // Uniswap
   '0x1b21609D42fa32F371F58DF294eD25b2D2e5C8ba', // Uniswap v2
   '0x6F400810b62df8E13fded51bE75fF5393eaa841F', // dFusion
@@ -29,6 +30,9 @@ const IGNORED_SENDERS = new Set([
   '0x7117fb4E85286c159EFa691a7699587Ccd01E26E', // LevelK transfer
   '0x3eCb4bf3A4C483cA0A4C897396E1FD85b48FB129',
   '0x6c645C934B7f5eC7589F3d96192000E5ABAbF90F', // MetaCartel
+  '0x47aE9FaF3AbeA7b2acAC69aB0A7B939201FeA5F6', // Panvala Fellows
+  '0xe44f10A925411A3a0086E5EDba8A4399C6F75ad6', // Panvala Activities Fund
+  '0x64853bb1fe38d2a1e1ef5cefd3c109e874628ff5', // Yalor
 ]);
 const IGNORED_TXHASHES = new Set([
   '0x873dcaaaf4625e2aefcae5ae30a144fe00caff3076d44eff1579d9a643b9efca',
@@ -41,6 +45,9 @@ const IGNORED_TXHASHES = new Set([
   '0x98bb29bf1323645e2fbf53da792691f4b01a6c4de44291724c08f09587f298e3', // MetaCartel Builder Awards distribution
   '0xd4a313038f635b0b71cec28099534e7461bec2bfd5fab0c2b69cfcd52b57daae', // KERNEL address change
   '0x93967255d299bb139f7ea3b7f8d35ec793e8fe57896f43972916569b5dcc83d9', // Meta Gamma Delta address change
+  '0x92f334cb1a0312410bf36f277786115c9b1073a96547267b58da999166fff7a0', // Meta Gamma Delta address change
+  '0x910c626d89cc9ff23123f77b57178c7d1c225929fa9a9bbd9d53e5ab67df3f25', // KERNEL to Meta Gamma Delta
+  '0xde72f81e8aacb332db6cdc32e022fbf72edfcfa10e71e6f6e6aa77638fe5b2b0', // LexDAO
 ]);
 
 const ENS_ADDRESSES = {
@@ -83,6 +90,21 @@ const LEAGUE_ADDRESSES = {
   "future modern": "0x5ab45FB874701d910140e58EA62518566709c408",
   "DePo DAO": "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
 }
+
+const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
+const XDAI_ADDRESSES = {
+  "Shenanigan": "0x5A9CE898f0B03c5A3Cd2d0c727efdD0555C86f81",
+  "Austin Meetups Fund": "0x07294360e0bb89eBbE3542c478A8d1F6840ee2eE",
+  "future modern": "0x5ab45FB874701d910140e58EA62518566709c408",
+  "Hashing it Out": "0xe027688a57c4A6Fb2708343cF330aaeB8fe594bb",
+  "Trips Community": "0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF",
+};
+
+const BLOCKSCOUT_MATIC = 'https://explorer-mainnet.maticvigil.com/api/';
+const MATIC_ADDRESSES = {
+  "Blockchain Education Network": "0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621",
+  "Matic Mitra": "0xd9D66f6eB790c82A1e98CDa99C153983461A3725",
+};
 
 const seenTxhashes = new Set();
 let zksyncErrors = 0;
@@ -149,6 +171,10 @@ function donationsToCSV(grants, donors) {
 }
 
 async function getGrantAddresses() {
+  const initialGrantAddresses = {};
+  Object.entries(XDAI_ADDRESSES).forEach(([name, address]) => initialGrantAddresses[address] = name);
+  Object.entries(MATIC_ADDRESSES).forEach(([name, address]) => initialGrantAddresses[address] = name);
+
   try {
     const response = await axios({
       method: 'get',
@@ -163,7 +189,7 @@ async function getGrantAddresses() {
         const address = ENS_ADDRESSES[item[1]] || ethers.utils.getAddress(item[1]);
         accumulator[address] = item[0];
         return accumulator;
-      }, {});
+      }, initialGrantAddresses);
     }
     // TODO: handle response status
     return response;
@@ -267,6 +293,82 @@ async function getZksyncTransactions(addresses) {
   });
 }
 
+async function getBlockscoutTransactionsForTransfers(blockscout_url, txhashes) {
+  return txhashes.reduce((accumulatorPromise, txhash) => {
+    return accumulatorPromise.then(accumulator => {
+      return axios({
+        method: 'get',
+        url: blockscout_url,
+        params: {
+          module: 'transaction',
+          action: 'gettxinfo',
+          txhash,
+        },
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        accumulator[txhash] = response.data.result;
+        return accumulator;
+      });
+    });
+  }, Promise.resolve({}));;
+}
+
+async function getBlockscoutTransfers(blockscout_url, addresses) {
+  return addresses.reduce((accumulatorPromise, address) => {
+    return accumulatorPromise.then(accumulator => {
+      return axios({
+        method: 'get',
+        url: blockscout_url,
+        params: {
+          module: 'account',
+          action: 'tokentx',
+          address,
+        },
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        const transfers = response.data.result;
+        // Generate a unique ID for each transfer from the txhash and log index of the transfer.
+        transfers.forEach(x => x.uniqueId = `${x.hash}-${x.logIndex}`)
+        const newTransfers = transfers.filter(x => !seenTxhashes.has(x.uniqueId));
+        newTransfers.forEach(x => seenTxhashes.add(x.uniqueId));
+        return accumulator.concat(newTransfers);
+      }).catch(error => {
+        console.log('error:', error);
+        throw error;
+      });
+    });
+  }, Promise.resolve([]));
+}
+
+async function getBlockscoutTransactions(blockscout_url, addresses) {
+  console.log('blockscout URL: ', blockscout_url);
+  const transfers = await getBlockscoutTransfers(blockscout_url, addresses);
+  console.log('blockscout transfers: ', transfers.length);
+  const currentTransfers = transfers.filter(x => (new Date(parseInt(x.timeStamp) * 1000)) > DONATIONS_STARTED_AT);
+  console.log('blockscout current transfers: ', currentTransfers.length);
+  const panTransfers = currentTransfers.filter(x => x.tokenSymbol === 'PAN');
+  console.log('blockscout PAN transactions: ', panTransfers.length);
+
+  const transactionsByHash = await getBlockscoutTransactionsForTransfers(blockscout_url, panTransfers.map(x => x.hash));
+  return panTransfers.map(transfer => {
+    return {
+      'Txhash': transfer.uniqueId,
+      'To': ethers.utils.getAddress(transfer.to),
+      // The from address on the transfer will be Uniswap in many cases. Get the from address from
+      // the transaction containing the transfer.
+      'From': ethers.utils.getAddress(transactionsByHash[transfer.hash].from),
+      'Quantity': ethers.utils.formatEther(transfer.value),
+      'DateTime': (new Date(parseInt(transfer.timeStamp * 1000))).toISOString(),
+    };
+  });
+}
+
 function getDonorNames() {
   return new Promise((resolve, reject) => {
     const donors = {};
@@ -340,7 +442,12 @@ async function run() {
     Array.from(zksyncAddresses.values())
       .concat(Object.values(LEAGUE_ADDRESSES))
   );
-  const transactions = mainnetTransactions.concat(zksyncTransactions);
+
+  const xdaiTransactions = await getBlockscoutTransactions(BLOCKSCOUT_XDAI, Object.values(XDAI_ADDRESSES));
+  const maticTransactions = await getBlockscoutTransactions(BLOCKSCOUT_MATIC, Object.values(MATIC_ADDRESSES));
+
+  const transactions = mainnetTransactions.concat(zksyncTransactions, xdaiTransactions, maticTransactions);
+
   const donorNames = await getDonorNames();
 
   const donors = {};
