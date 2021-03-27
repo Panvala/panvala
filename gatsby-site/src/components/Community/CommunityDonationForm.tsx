@@ -183,8 +183,8 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
             )}
 
             <Label className="f5 b">Amount</Label>
-            <div className="flex justify-between">
-              <div className="w-80">
+            <div className="flex-l justify-between-l">
+              <div className="w-80-l w-100">
                 <FieldText
                   type="text"
                   name="tokenAmount"
@@ -196,8 +196,8 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
                 />
                 <div className="fr mr4 o-50" style={{ marginTop: '-35px' }}>{values.paymentToken}</div>
               </div>
-              <img alt="" src={swapIcon} className="mh3 mt3 self-center" style={{ marginTop: '17.5px', width: '25px', height: '25px' }} />
-              <div className="w-80">
+              <img alt="" src={swapIcon} className="ph3 mt3 self-center-l db center w-100" style={{ marginTop: '17.5px', width: '25px', height: '25px' }} />
+              <div className="w-80-l w-100">
                 <FieldText
                   type="text"
                   name="fiatAmount"
@@ -258,7 +258,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
                 type="submit"
                 name="submit"
                 onClick={handleSubmit as any}
-                className="f5 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4"
+                className="f5 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4-ns mt2 w-100 w-auto-ns"
                 disabled={isSubmitting}
                 value="Donate"
               />
