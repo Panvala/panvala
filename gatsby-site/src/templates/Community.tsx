@@ -32,7 +32,7 @@ const Community = (props: CommunityProps) => {
   // TODO: pull real data for this
   const communityWebsite = props?.pageContext?.scoreboard?.communityWebsite || '';
   const communityTwitter = props?.pageContext?.scoreboard?.communityTwitter || '';
-  const startDate = props?.pageContext?.scoreboard?.startDate || 'March 10';
+  const startDate = props?.pageContext?.scoreboard?.startDate || moment('2021-03-10');
   const donorsList = props?.pageContext?.donorsList || [];
   const ownersList = props?.pageContext?.ownersList || [];
   const usdDonated = '';
@@ -271,7 +271,6 @@ const Community = (props: CommunityProps) => {
               right-0
               bottom-0 
               z-999
-              
               br3 
               shadow-5 
             ">

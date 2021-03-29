@@ -50,12 +50,12 @@ import leagueLexDAO from '../img/league/lexdao.jpg';
 import leagueGrassrootsEconomics from '../img/league/grassrootseconomics.jpg';
 import leagueCirclesUBI from '../img/league/circles-ubi.jpg';
 import leagueGiveth from '../img/league/giveth.jpg';
-import leagueWOCA from '../img/league/woca.jpg';
+import leagueWOCA from '../img/league/women-of-crypto-art.jpg';
 import leagueDandelionCollective from '../img/league/dandelion-collective.png';
 import leagueShenanigan from '../img/league/shenanigan.jpg';
-import leaguePeoplesDAO from '../img/league/peoplesdao.png';
-import leagueMarmaJ from '../img/league/marma-j.jpg';
-import leagueHackervilla from '../img/league/hackervilla.png';
+import leaguePeoplesDAO from '../img/league/peoples--cooperative.png';
+import leagueMarmaJ from '../img/league/marma-j-foundation.jpg';
+import leaguePoolParty from '../img/league/pool-party.png';
 import leaguePrimeDAO from '../img/league/primedao.jpg';
 import leagueSenaryCommonwealth from '../img/league/senary-commonwealth.png';
 import leagueKolektivo from '../img/league/kolektivo-labs.png';
@@ -540,10 +540,10 @@ const IndexPage = () => {
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
             <img
               alt=""
-              src={leagueHackervilla}
+              src={leaguePoolParty}
             />
             <a class="link dim near-black" href="https://www.pool-party.club/hackervilla">
-              <h3>Hackervilla</h3>
+              <h3>Pool-Party</h3>
             </a>
           </div>
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
