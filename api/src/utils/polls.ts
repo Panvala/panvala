@@ -1,5 +1,4 @@
-import { Wallet } from 'ethers';
-import { verifyMessage, getAddress } from 'ethers/utils';
+import { ethers, Wallet } from 'ethers';
 
 import { Sequelize } from '../models';
 import { hasDuplicates } from '.';
@@ -180,7 +179,7 @@ export async function hasAccountRespondedToPoll(pollID: number, account: string)
 
 // ===== Calculations
 export function ensureChecksumAddress(address: string): string {
-  return getAddress(address.toLowerCase());
+  return ethers.utils.getAddress(address.toLowerCase());
 }
 
 function generateMessage(response: IDBPollResponse): string {
@@ -193,7 +192,7 @@ export async function verifyPollSignature(signature: string, response: IDBPollRe
   const { account } = response;
 
   const message = generateMessage(response);
-  const recoveredAddress = verifyMessage(message, signature);
+  const recoveredAddress = ethers.utils.verifyMessage(message, signature);
   console.log('recovered:', recoveredAddress);
 
   return ensureChecksumAddress(recoveredAddress) === ensureChecksumAddress(account);

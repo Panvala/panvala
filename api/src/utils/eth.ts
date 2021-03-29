@@ -25,22 +25,22 @@ const genBlocks = {
 async function getContracts() {
   const provider = new ethers.providers.JsonRpcProvider(rpcEndpoint);
   const network = await provider.getNetwork();
-  const gatekeeper: IGatekeeper = new ethers.Contract(
+  const gatekeeper: IGatekeeper = (new ethers.Contract(
     gatekeeperAddress,
     Gatekeeper.abi,
     provider
-  ) as IGatekeeper;
+  ) as unknown) as IGatekeeper;
   const parameterStoreAddress = await gatekeeper.parameters();
-  const parameterStore: IParameterStore = new ethers.Contract(
+  const parameterStore: IParameterStore = (new ethers.Contract(
     parameterStoreAddress,
     ParameterStore.abi,
     provider
-  ) as IParameterStore;
-  const tokenCapacitor: ITokenCapacitor = new ethers.Contract(
+  ) as unknown) as IParameterStore;
+  const tokenCapacitor: ITokenCapacitor = (new ethers.Contract(
     tokenCapacitorAddress,
     TokenCapacitor.abi,
     provider
-  ) as ITokenCapacitor;
+  ) as unknown) as ITokenCapacitor;
 
   const uniswapExchangeAddress =
     network.chainId === 4
@@ -51,11 +51,11 @@ async function getContracts() {
 
   let exchange: IUniswapExchange | undefined;
   if (uniswapExchangeAddress) {
-    exchange = new ethers.Contract(
+    exchange = (new ethers.Contract(
       uniswapExchangeAddress,
       UniswapExchange.abi,
       provider
-    ) as IUniswapExchange;
+    ) as unknown) as IUniswapExchange;
   }
 
   const genesisBlockNumber: number = genBlocks[network.chainId] || genBlocks.unknown;

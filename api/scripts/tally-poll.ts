@@ -1,8 +1,9 @@
-import { Contract } from 'ethers';
-import { BigNumber, bigNumberify, formatUnits, commify, getAddress } from 'ethers/utils';
+import Bottleneck from 'bottleneck';
+import { ethers, BigNumber, Contract } from 'ethers';
 import * as yargs from 'yargs';
 import * as csvParse from 'csv-parse';
 import * as stringify from 'csv-stringify/lib/sync';
+import { getDefaultProvider } from 'zksync';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -12,14 +13,16 @@ import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
 
 function prettyToken(amount: BigNumber) {
-  return commify(formatUnits(amount.toString(), 18));
+  return ethers.utils.commify(ethers.utils.formatUnits(amount.toString(), 18));
 }
 
 function responsesToCSV(data, categories) {
   const rows = data.reduce((acc, item) => {
     const allocations = item.allocations.map(allocation => [
       item.account,
-      formatUnits(item.balance.toString(), 18),
+      ethers.utils.formatUnits(item.mainnetBalance.toString(), 18),
+      ethers.utils.formatUnits(item.zkSyncBalance.toString(), 18),
+      ethers.utils.formatUnits(item.balance.toString(), 18),
       allocation.points,
       allocation.categoryID,
       categories[allocation.categoryID].displayName,
@@ -28,8 +31,20 @@ function responsesToCSV(data, categories) {
     return acc.concat(allocations);
   }, []);
   return stringify(
-    rows.filter(row => row[2] > 0),
-    { header: true, columns: ['Address', 'Balance', 'Points', 'Category ID', 'Category', 'Source'] }
+    rows.filter(row => row[4] > 0),
+    {
+      header: true,
+      columns: [
+        'Address',
+        'Mainnet Balance',
+        'zkSync Balance',
+        'Balance',
+        'Points',
+        'Category ID',
+        'Category',
+        'Source',
+      ],
+    }
   );
 }
 
@@ -42,6 +57,41 @@ function getManualResponses(responsesFilename): Promise<any> {
         responses.push(row);
       })
       .on('end', () => resolve(responses));
+  });
+}
+
+const zkSyncLimiter = new Bottleneck({
+  maxConcurrent: 5,
+  minTime: 50,
+});
+
+async function getZkSyncAccountBalance(address) {
+  const provider = await getDefaultProvider('mainnet');
+  const accountState = await zkSyncLimiter.schedule(() => provider.getState(address));
+  const balance = accountState.verified.balances.PAN;
+  console.log(`Got zksync balance for ${address}`);
+  return BigNumber.from(balance || 0);
+}
+
+async function getAccountBalances(token, address) {
+  console.log(`Getting balances for ${address}`);
+  const balancePromises = [
+    (async () => {
+      const balance = await token.balanceOf(address);
+      console.log(`Got mainnet balance for ${address}`);
+      return balance;
+    })(),
+    getZkSyncAccountBalance(address),
+  ];
+  return Promise.all(balancePromises).then(([mainnetBalance, zkSyncBalance]) => {
+    console.log(`Got all balances for ${address}`);
+    const totalBalance = (mainnetBalance as BigNumber).add(zkSyncBalance as BigNumber);
+    return {
+      mainnetBalance,
+      zkSyncBalance,
+      balance: totalBalance,
+      prettyBalance: prettyToken(totalBalance),
+    };
   });
 }
 
@@ -98,27 +148,27 @@ async function run() {
   const data = await Promise.all(
     responses.map(async response => {
       const plainResponse = await response.get({ plain: true });
-      return token.balanceOf(response.account).then(balance => {
-        return { ...plainResponse, balance, prettyBalance: prettyToken(balance) };
+      return getAccountBalances(token, response.account).then(balances => {
+        return { ...plainResponse, ...balances };
       });
     })
   );
   // console.log(data);
 
   if (argv.manualResponses) {
-    const submittedStakers = new Set(data.map((x: any) => getAddress(x.account)));
+    const submittedStakers = new Set(data.map((x: any) => ethers.utils.getAddress(x.account)));
     const manualResponses = await getManualResponses(argv.manualResponses);
+    console.log('Getting balances for manual responses...');
     await Promise.all(
       manualResponses.map(async response => {
-        if (submittedStakers.has(getAddress(response['Address']))) return;
-        submittedStakers.add(getAddress(response['Address']));
+        if (submittedStakers.has(ethers.utils.getAddress(response['Address']))) return;
+        submittedStakers.add(ethers.utils.getAddress(response['Address']));
 
-        const balance = await token.balanceOf(response['Address']);
+        const balances = await getAccountBalances(token, response['Address']);
         data.push({
+          ...balances,
           pollID,
           account: response['Address'],
-          balance,
-          prettyBalance: prettyToken(balance),
           allocations: [
             {
               categoryID: categoriesByName[response['Category']].id,
@@ -129,10 +179,11 @@ async function run() {
         });
       })
     );
+    console.log('Got all balances for manual responses');
   }
 
   const initialTotal: Tally = {
-    total: bigNumberify(0),
+    total: BigNumber.from(0),
     nonZeroResponses: 0,
   };
 
@@ -166,7 +217,7 @@ async function run() {
     const updatedNonZeroResponses = balance.gt(0) ? nonZeroResponses + 1 : nonZeroResponses;
     return { ...updated, total: total.add(balance), nonZeroResponses: updatedNonZeroResponses };
   }, initialTotal);
-  const displayTotal = commify(formatUnits(tally.total.toString(), 18));
+  const displayTotal = ethers.utils.commify(ethers.utils.formatUnits(tally.total.toString(), 18));
 
   const count = await responseCount(pollID);
 
@@ -209,7 +260,7 @@ async function run() {
       categoryJSON[categoryID] = {
         id: categoryID,
         name: category.displayName,
-        weight: formatUnits(weight, 18),
+        weight: ethers.utils.formatUnits(weight, 18),
       };
     }
   });
