@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Bottleneck from 'bottleneck';
 import { ethers, BigNumber, Contract } from 'ethers';
 import * as yargs from 'yargs';
@@ -12,6 +13,11 @@ import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
 
+const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
+const BLOCKSCOUT_MATIC = 'https://explorer-mainnet.maticvigil.com/api/';
+const TOKEN_ADDRESS_XDAI = '0x981fB9BA94078a2275A8fc906898ea107B9462A8';
+const TOKEN_ADDRESS_MATIC = '0xe9949106f0777e7A2e36df891d59583AC94dc896';
+
 function prettyToken(amount: BigNumber) {
   return ethers.utils.commify(ethers.utils.formatUnits(amount.toString(), 18));
 }
@@ -22,6 +28,8 @@ function responsesToCSV(data, categories) {
       item.account,
       ethers.utils.formatUnits(item.mainnetBalance.toString(), 18),
       ethers.utils.formatUnits(item.zkSyncBalance.toString(), 18),
+      ethers.utils.formatUnits(item.xDaiBalance.toString(), 18),
+      ethers.utils.formatUnits(item.maticBalance.toString(), 18),
       ethers.utils.formatUnits(item.balance.toString(), 18),
       allocation.points,
       allocation.categoryID,
@@ -31,13 +39,15 @@ function responsesToCSV(data, categories) {
     return acc.concat(allocations);
   }, []);
   return stringify(
-    rows.filter(row => row[4] > 0),
+    rows.filter(row => row[6] > 0),
     {
       header: true,
       columns: [
         'Address',
         'Mainnet Balance',
         'zkSync Balance',
+        'xDai Balance',
+        'Matic Balance',
         'Balance',
         'Points',
         'Category ID',
@@ -62,7 +72,7 @@ function getManualResponses(responsesFilename): Promise<any> {
 
 const zkSyncLimiter = new Bottleneck({
   maxConcurrent: 5,
-  minTime: 50,
+  minTime: 100,
 });
 
 async function getZkSyncAccountBalance(address) {
@@ -71,6 +81,26 @@ async function getZkSyncAccountBalance(address) {
   const balance = accountState.verified.balances.PAN;
   console.log(`Got zksync balance for ${address}`);
   return BigNumber.from(balance || 0);
+}
+
+async function getBlockscoutAccountBalance(blockscoutUrl, tokenAddress, address) {
+  return axios({
+    method: 'get',
+    url: blockscoutUrl,
+    params: {
+      module: 'account',
+      action: 'tokenbalance',
+      contractaddress: tokenAddress,
+      address,
+    },
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+  }).then(response => {
+    console.log(`Got blockscout balance for ${address}`);
+    return BigNumber.from(response.data.result);
+  });
 }
 
 async function getAccountBalances(token, address) {
@@ -82,17 +112,26 @@ async function getAccountBalances(token, address) {
       return balance;
     })(),
     getZkSyncAccountBalance(address),
+    getBlockscoutAccountBalance(BLOCKSCOUT_XDAI, TOKEN_ADDRESS_XDAI, address),
+    getBlockscoutAccountBalance(BLOCKSCOUT_MATIC, TOKEN_ADDRESS_MATIC, address),
   ];
-  return Promise.all(balancePromises).then(([mainnetBalance, zkSyncBalance]) => {
-    console.log(`Got all balances for ${address}`);
-    const totalBalance = (mainnetBalance as BigNumber).add(zkSyncBalance as BigNumber);
-    return {
-      mainnetBalance,
-      zkSyncBalance,
-      balance: totalBalance,
-      prettyBalance: prettyToken(totalBalance),
-    };
-  });
+  return Promise.all(balancePromises).then(
+    ([mainnetBalance, zkSyncBalance, xDaiBalance, maticBalance]) => {
+      console.log(`Got all balances for ${address}`);
+      const totalBalance = [mainnetBalance, zkSyncBalance, xDaiBalance, maticBalance].reduce(
+        (a, b) => a.add(b),
+        BigNumber.from(0)
+      );
+      return {
+        mainnetBalance,
+        zkSyncBalance,
+        xDaiBalance,
+        maticBalance,
+        balance: totalBalance,
+        prettyBalance: prettyToken(totalBalance),
+      };
+    }
+  );
 }
 
 interface Tally {
@@ -145,40 +184,34 @@ async function run() {
     return acc;
   }, {});
 
-  const data = await Promise.all(
-    responses.map(async response => {
-      const plainResponse = await response.get({ plain: true });
-      return getAccountBalances(token, response.account).then(balances => {
-        return { ...plainResponse, ...balances };
-      });
-    })
-  );
-  // console.log(data);
+  const data = [];
+  for (const response of responses) {
+    const plainResponse = await response.get({ plain: true });
+    const balances = await getAccountBalances(token, response.account);
+    data.push({ ...plainResponse, ...balances });
+  }
 
   if (argv.manualResponses) {
     const submittedStakers = new Set(data.map((x: any) => ethers.utils.getAddress(x.account)));
     const manualResponses = await getManualResponses(argv.manualResponses);
     console.log('Getting balances for manual responses...');
-    await Promise.all(
-      manualResponses.map(async response => {
-        if (submittedStakers.has(ethers.utils.getAddress(response['Address']))) return;
-        submittedStakers.add(ethers.utils.getAddress(response['Address']));
-
-        const balances = await getAccountBalances(token, response['Address']);
-        data.push({
-          ...balances,
-          pollID,
-          account: response['Address'],
-          allocations: [
-            {
-              categoryID: categoriesByName[response['Category']].id,
-              points: response['Points'] || 100,
-              manual: true,
-            },
-          ],
-        });
-      })
-    );
+    for (const response of manualResponses) {
+      if (submittedStakers.has(ethers.utils.getAddress(response['Address']))) continue;
+      submittedStakers.add(ethers.utils.getAddress(response['Address']));
+      const balances = await getAccountBalances(token, response['Address']);
+      data.push({
+        ...balances,
+        pollID,
+        account: response['Address'],
+        allocations: [
+          {
+            categoryID: categoriesByName[response['Category']].id,
+            points: response['Points'] || 100,
+            manual: true,
+          },
+        ],
+      });
+    }
     console.log('Got all balances for manual responses');
   }
 
