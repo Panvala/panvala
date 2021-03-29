@@ -220,7 +220,7 @@ const Community = (props: CommunityProps) => {
                   <div className="mb4 f4 fw1 mid-gray">{usdDonated}</div>
 
                   <div className="mt2 mb2 f4 fw1">Donors</div>
-                  <div className="mt2 f2 b">{utils.commify(scoreboard.donationCount)}</div>
+                  <div className="mt2 f2 b">{utils.commify(parseCommaFloat(scoreboard.donationCount))}</div>
                 </div>
                 <div className="w-30 relative">
                   <div className="pa4 tc bg-blue white dib br-100 absolute" style={{ right: '-4.5rem' }}>
