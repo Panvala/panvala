@@ -160,14 +160,7 @@ const Community = (props: CommunityProps) => {
             </div>
 
             {/* Matching Info */}
-            <div className="
-              w-90-l
-              w-80
-              center 
-              pl4-l
-              pl3-m
-              flex-column
-            ">
+            <div className="w-90-l w-80 center  pl4-l pl3-m flex-column">
 
               {/* Title */}
               <div className="mt5-ns mt4">
@@ -254,26 +247,7 @@ const Community = (props: CommunityProps) => {
           
           {/* Donation Call to Action */}
           <div className="w-40 w-50-m fixed right-0">
-            <div className="
-              w-100 
-              w-80-ns
-              mv5-ns 
-              ml2-m
-              pa3
-              pa4-l
-              pa3-m
-              left-m
-              flex-column 
-              bg-white 
-              fixed 
-              static-ns 
-              left-0 
-              right-0
-              bottom-0 
-              z-999
-              br3 
-              shadow-5 
-            ">
+            <div className="w-100 w-80-ns mv5-ns ml2-m pa3 pa4-l pa3-m left-m flex-column bg-white fixed static-ns left-0 right-0 bottom-0 z-999 br3 shadow-5">
               <div className="flex flex-wrap flex-nowrap-ns">
                 <div className="w-70-ns w-60 flex-column">
                   <div className="mt2-ns mb2-ns f5 fw1">Raised since {startDate ? moment(startDate).format('MMMM D') : ''}</div>

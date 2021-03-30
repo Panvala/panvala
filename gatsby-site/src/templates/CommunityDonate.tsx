@@ -104,25 +104,12 @@ const CommunityDonate = (props: CommunityDonateProps) => {
 
       <section className="bg-gradient pb6">
         <Nav />
-        <div className="
-          bg-white 
-          pb2
-          flex
-          flex-wrap
-          flex-nowrap-ns
-        ">
+        <div className="bg-white pb2 flex flex-wrap flex-nowrap-ns">
 
           <Spacer width="10" />
 
           {/* Donation Form */}
-          <div className="
-            w-40-l
-            w-50-m
-            w-100
-            pa4
-            pv5-l
-            ph0-ns
-          ">
+          <div className="w-40-l w-50-m w-100 pa4 pv5-l ph0-ns">
             <div className="w-90-l w-80-m w-100 center">
               <a
                 href={`/${communityName.replace(/[' ']/g, '-').toLowerCase()}`}
@@ -137,21 +124,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
           </div>   
 
           {/* Matching Multiplier Info */}
-          <div className="
-            w-100
-            w-50-l
-            w-60-m
-            pv5-ns
-            mt3
-            flex-column
-            flex-column-reverse
-            fixed
-            static-ns
-            left-0
-            right-0
-            bottom-0
-            z-999
-          ">
+          <div className="w-100 w-50-l w-60-m pv5-ns mt3 flex-column flex-column-reverse fixed static-ns left-0 right-0 bottom-0 z-999">
             <MatchingMultiplierInfo
               image={communityImage}
               title={communityName}

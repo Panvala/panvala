@@ -19,23 +19,7 @@ const MatchingMultiplierInfo = (props: MatchingMultiplierInfoProps) => {
 
   return (
     <>
-      <div className="
-        w-60-l 
-        w-80-m 
-        w-100 
-        center-m 
-        bg-white 
-        ml5-l 
-        b--black-10 
-        br3-ns 
-        bn-ns 
-        mv3-ns 
-        pa4-l 
-        pa3-m 
-        pa2 
-        bt 
-        shadow-5
-      ">
+      <div className="w-60-l w-80-m w-100 center-m bg-white ml5-l b--black-10 br3-ns bn-ns mv3-ns pa4-l pa3-m pa2 bt shadow-5">
         <div className="flex pv2-ns">
           <div className="w-100 ml3">
             <img className="h4-ns h3 pv2-ns" src={image} alt={title} />
