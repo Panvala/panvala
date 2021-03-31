@@ -34,28 +34,6 @@ const csvParse = require('csv-parse');
           totals = row;
         } else if (row['Community Name'] !== '') {
           communities[row['Community Name']] = row;
-
-
-          // if (row['Staked Tokens']) {
-          //   if (!totals['Staked Tokens'])
-          //     totals['Staked Tokens'] = 0;
-          //   totals['Staked Tokens'] += parseFloat(row['Staked Tokens']);
-          // }
-          // else if (row['PAN Donated']) {
-          //   if (!totals['PAN Donated'])
-          //     totals['PAN Donated'] = 0;
-          //   totals['PAN Donated'] += parseFloat(row['PAN Donated']);
-          // }
-          // else if (row['Donation Count']) {
-          //   if (!totals['Donation Count'])
-          //     totals['Donation Count'] = 0;
-          //   totals['Donation Count'] += parseInt(row['Donation Count'], 10);
-          // }
-          // else if (row['Quadratic Funding']) {
-          //   if (!totals['Quadratic Funding'])
-          //     totals['Quadratic Funding'] = 0;
-          //   totals['Quadratic Funding'] += parseFloat(row['Quadratic Funding']);
-          // }
         }
       })
       .on('end', () => resolve({ communities, totals }));
@@ -157,17 +135,6 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
       if (!!dataKey)
         pageContext.scoreboardTotals[toCamelCase(dataKey)] = scoreboardsData.totals[dataKey];
     });
-
-    // if (scoreboardData['Staked Tokens'])
-    //   pageContext.scoreboard.stakedTokens = scoreboardData['Staked Tokens'];
-    // if (scoreboardData['Share of Quadratic Funding'])
-    //   pageContext.scoreboard.donationShare = scoreboardData['Share of Quadratic Funding'];
-    // if (scoreboardData['PAN Donated'])
-    //   pageContext.scoreboard.panDonated = scoreboardData['PAN Donated'];
-    // if (scoreboardData['Donation Count'])
-    //   pageContext.scoreboard.donationCount = scoreboardData['Donation Count'];
-
-    // pageContext.scoreboardTotals = scoreboardsData.totals;
 
     console.log(`\n\nCreating community info page at url "/${kebabCaseName}" with context: `, pageContext);
     createPage({

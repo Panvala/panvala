@@ -89,7 +89,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
   }, [scoreboard]);
   
 
-  const Spacer = ({ width }) => <div className={`w-${width}-l w-${width}-m w-${width} pv5`} />;
+  const Spacer = ({ width }) => <div className={`w-${width}-l w-${width}-m w-${width} pv5-ns pv3 dn-m`} />;
 
   const ExternalDonationLink = ({ image }) => (
     <a className="blue link mv4 dt" href={donationURL} target="_blank" rel="noreferrer">
@@ -101,14 +101,16 @@ const CommunityDonate = (props: CommunityDonateProps) => {
   return (
     <Layout>
       <SEO title="Donate" />
+
       <section className="bg-gradient pb6">
         <Nav />
-        <div className="bg-white pb2 flex z-0">
+        <div className="bg-white pb2 flex flex-wrap flex-nowrap-ns">
+
           <Spacer width="10" />
 
           {/* Donation Form */}
-          <div className="w-40-l w-40-m w-70 pv5">
-            <div className="w-90-l w-90-m w-100 center">
+          <div className="w-40-l w-50-m w-100 pa4 pv5-l ph0-ns">
+            <div className="w-90-l w-80-m w-100 center">
               <a
                 href={`/${communityName.replace(/[' ']/g, '-').toLowerCase()}`}
                 className="dt mb4 teal link pointer"
@@ -116,27 +118,25 @@ const CommunityDonate = (props: CommunityDonateProps) => {
                 <img className="dtc v-mid" src={leftArrowIcon} />
                 <span className="dtc pl1 v-mid">Back to Community</span>
               </a>
-              <h1 className="f1-5 b ma0 mb4 pb2">Make a Donation</h1>
+              <span className="f2-ns f2-5 b ma0 mb4 pb2">Make a Donation</span>
               <CommunityDonation data={data} community={community} />
             </div>
-          </div>
+          </div>   
 
           {/* Matching Multiplier Info */}
-          <div className="w-50-l w-50-m w-20 pv5 mt3 flex-column z-999">
+          <div className="w-100 w-50-l w-60-m pv5-ns mt3 flex-column flex-column-reverse fixed static-ns left-0 right-0 bottom-0 z-999">
             <MatchingMultiplierInfo
               image={communityImage}
               title={communityName}
               multiplier={matchingMultiplier}
             />
-            <div className="w-60-l bg-white ml5 mt4 flex-column">
-              <div className="f4 b">Other ways to support with PAN</div>
-              {!!donationMethod && !!donationURL && (
-                <>
-                  {donationMethod === DonationMethodEnums.GITCOIN && <ExternalDonationLink image={gitcoinIcon} />}
-                  {donationMethod === DonationMethodEnums.GIVETH && <ExternalDonationLink image={givethIcon} />}
-                </>
-              )}
-            </div>
+            {!!donationMethod && !!donationURL && (
+              <div className="w-60-l w-80-m w-100 bg-white ml5-l center-m mt4 flex-column dn db-ns">
+                <div className="f4 b">Other ways to support with PAN</div>
+                {donationMethod === DonationMethodEnums.GITCOIN && <ExternalDonationLink image={gitcoinIcon} />}
+                {donationMethod === DonationMethodEnums.GIVETH && <ExternalDonationLink image={givethIcon} />}
+              </div>
+            )}
           </div>
         </div>
       </section>
