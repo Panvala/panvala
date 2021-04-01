@@ -304,12 +304,12 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3249896.903068695557557397"
+    "weight": "3265048.710583020755366145"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1017098.07166176393757"
+    "weight": "1017926.85544146393757"
   },
   "10": {
     "id": 10,
@@ -334,7 +334,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "56106.510511690064082747"
+    "weight": "56111.110617167661130568"
   },
   "15": {
     "id": 15,
@@ -354,7 +354,7 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "43515.162349468257117614"
+    "weight": "42998.198271661361332557"
   },
   "19": {
     "id": 19,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "11560.078289791131805153"
+    "weight": "11686.253428948840903997"
   },
   "23": {
     "id": 23,
@@ -389,7 +389,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "402572.364197984540204938"
+    "weight": "401644.020785298307730122"
   },
   "26": {
     "id": 26,
@@ -414,12 +414,12 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "133240.945642000000720896"
+    "weight": "141746.945642000000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "10895.003845902410858138"
+    "weight": "10896.184652086348543597"
   },
   "32": {
     "id": 32,
@@ -454,7 +454,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "46945.24270792864950734"
+    "weight": "49079.24270792864950734"
   },
   "39": {
     "id": 39,
@@ -504,7 +504,7 @@ const stakingResults = {
   "48": {
     "id": 48,
     "name": "Austin Meetups Fund",
-    "weight": "418.831215702870507373"
+    "weight": "421.076164434103620669"
   },
   "49": {
     "id": 49,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'March 28';
+const stakingTotalsUpdated = 'April 1';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
