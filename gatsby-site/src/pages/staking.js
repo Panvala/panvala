@@ -304,7 +304,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3265048.710583020755366145"
+    "weight": "3039119.090307858104433647"
   },
   "9": {
     "id": 9,
@@ -334,7 +334,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "56111.110617167661130568"
+    "weight": "56132.598504182609061681"
   },
   "15": {
     "id": 15,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "11686.253428948840903997"
+    "weight": "15079.704853046309541834"
   },
   "23": {
     "id": 23,
@@ -389,7 +389,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "401644.020785298307730122"
+    "weight": "403144.020785298307730122"
   },
   "26": {
     "id": 26,
@@ -424,7 +424,7 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "33700.976698044385392947"
+    "weight": "33799.84930519108353929"
   },
   "33": {
     "id": 33,
@@ -454,7 +454,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "49079.24270792864950734"
+    "weight": "54363.391254332301501706"
   },
   "39": {
     "id": 39,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'April 1';
+const stakingTotalsUpdated = 'April 3';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
