@@ -1,3 +1,4 @@
+import _categories from './categories.json';
 import _exchanges from './exchanges.json';
 import _networks from './networks.json';
 import _tokens from './tokens.json';
@@ -74,3 +75,13 @@ export interface ICommunityData {
     [chainId: string]: string;
   };
 }
+
+/**
+ * Staking Categories
+ */
+export interface ICategoriesData {
+  categoryID: number;
+  title: string;
+  description: string;
+}
+export const categories: ICategoriesData[] = _categories;

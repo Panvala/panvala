@@ -9,6 +9,7 @@ import {
 } from '../../data';
 import { ICommunityDonationFormFields } from './CommunityDonationForm';
 import { loadCommunityDonationContracts } from '../../utils/env';
+import { mapTokenToChainId } from '../../utils/format';
 
 const { formatUnits, parseEther } = utils;
 
@@ -30,7 +31,7 @@ interface ICommunityDonationFlowProps {
 export const withCommunityDonationFlow = WrappedComponent => {
   return (props: ICommunityDonationFlowProps) => {
     const { tokens, networks } = props.data;
-
+    
     const initialFormValues: ICommunityDonationFormFields = {
       firstName: '',
       lastName: '',
@@ -39,6 +40,10 @@ export const withCommunityDonationFlow = WrappedComponent => {
       tokenAmount: 0,
       fiatAmount: 0,
     };
+
+    // ---------------------------------------------------------------------------
+    // React State
+    // ---------------------------------------------------------------------------
 
     // MetaMask
     const [provider, setProvider] = useState<providers.Web3Provider>();
@@ -56,15 +61,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
     const [communityWallet, setCommunityWallet] = useState<string>('');
     const [selectedToken, setSelectedToken] = useState<string>(initialFormValues.paymentToken);
     const [selectedNetwork, setSelectedNetwork] = useState<string>(mapTokenToChainId(initialFormValues.paymentToken));
+    const [transactionHash, setTransactionHash] = useState<string>('');
     
-    // Info/Errors
+    // Status
     const [step, setStep] = useState<string | null>(null);
     const [message, setMessage] = useState<string>('');
-    // const [isDonating, setIsDonating] = useState<boolean>(false);
-    const [donationLoading, setDonationLoading] = useState<boolean>(false);
-    const [donationComplete, setDonationComplete] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
-    const [errorMessage, setErrorMessage] = useState<string>('');
+    const [isDonating, setIsDonating] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     // ---------------------------------------------------------------------------
     // React Effects
@@ -79,24 +82,6 @@ export const withCommunityDonationFlow = WrappedComponent => {
         setSelectedToken(networks[chainId].token);
       }
     }, [props.community]);
-
-    /**
-     * Wait for MetaMask plugin to initialize
-     */
-    function getWindowEthereum() {
-      if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-        return window.ethereum;
-      }
-    }
-
-    useEffect(() => {
-      if (getWindowEthereum()) {
-        if (!provider) {
-          setProvider(new providers.Web3Provider(window.ethereum));
-          console.log('Initialized MetaMask provider');
-        }
-      }
-    }, [getWindowEthereum()]);
 
     /**
      * Connect MetaMask account
@@ -179,6 +164,18 @@ export const withCommunityDonationFlow = WrappedComponent => {
     function BN(small) {
       return BigNumber.from(small);
     }
+
+    /**
+     * Connect MetaMask wallet
+     */
+    function connectWallet() {
+      if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+        if (!provider) {
+          setProvider(new providers.Web3Provider(window.ethereum));
+          console.log('Initialized MetaMask provider');
+        }
+      }
+    }
     
     /**
      * Check token allowance
@@ -234,39 +231,25 @@ export const withCommunityDonationFlow = WrappedComponent => {
 
     // Clear error
     function clearError() {
-      setError(false);
-      setErrorMessage('');
+      setError('');
     }
 
-    function clearMessage() {
+    function clearState() {
       setStep(null);
       setMessage('');
+      setIsDonating(false);
     }
 
     // Pass the error up to the caller and cancel everything
     function handleError(msg: string) {
-      setErrorMessage(msg);
-      setError(true);
-      setStep(null);
-      setMessage('');
+      setError(msg);
+      clearState();
       console.error(msg);
     }
   
     // Cancel the donation flow
     function handleCancel() {
-      clearMessage();
-    }
-
-    /**
-     * Map payment token to network
-     */
-    function mapTokenToChainId(token: string) {
-      switch (token) {
-        case TokenEnums.ETH: return NetworkEnums.MAINNET;
-        case TokenEnums.XDAI: return NetworkEnums.XDAI;
-        case TokenEnums.MATIC: return NetworkEnums.MATIC;
-        default: return '';
-      }
+      clearState();
     }
 
     /**
@@ -279,45 +262,82 @@ export const withCommunityDonationFlow = WrappedComponent => {
     /**
      * Calculate Token -> USD
      */
-    async function calculateTokenToFiat(tokenAmount: number, paymentToken: string): Promise<number> {
-      if (tokenAmount === 0)
+    async function calculateTokenToFiat(tokensIn: number, paymentToken: string): Promise<number> {
+      if (tokensIn === 0 || tokensIn === undefined)
         return 0;
       
       const ethPrice = parseFloat(await fetchEthPrice(selectedNetwork));
-      const fiatAmount = tokenAmount * ethPrice;
-      console.log(`${tokenAmount} ${paymentToken} -> ${fiatAmount} USD`);
+      let fiatOut = 0;
+
+      if (paymentToken === TokenEnums.PAN) {
+        if (router) {
+          const path = [tokens[paymentToken].addresses[selectedNetwork], await router.WETH()];
+          console.log('path: ', path);
+          const amounts = await router.getAmountsOut(tokensIn, path);
+          console.log('ethAmount: ', amounts[1].toString());
+          fiatOut = amounts[1] * ethPrice;
+        }
+      } else {
+        fiatOut = tokensIn * ethPrice;
+      }
       
-      return parseFloat(fiatAmount.toFixed(3));
+      console.log(`${tokensIn} ${paymentToken} -> ${fiatOut} USD`);  
+      return parseFloat(fiatOut.toFixed(3));
     }
 
     /**
      * Calculate USD -> Token
      */
-    async function calculateFiatToToken(fiatAmount: number, paymentToken: string): Promise<number> {
-      if (fiatAmount === 0)
+    async function calculateFiatToToken(fiatIn: number, paymentToken: string): Promise<number> {
+      if (fiatIn === 0)
         return 0;
 
       const ethPrice = parseFloat(await fetchEthPrice(selectedNetwork));
-      const tokenAmount = fiatAmount / ethPrice;
-      console.log(`${fiatAmount} USD -> ${tokenAmount} ${paymentToken}`);
+      const tokenAmount = fiatIn / ethPrice;
+      console.log(`${fiatIn} USD -> ${tokenAmount} ${paymentToken}`);
 
       return parseFloat(tokenAmount.toFixed(3));
     }
 
     /**
-     * Purchase PAN with ETH through exchange
+     * Master donation handler
      */
-    async function purchaseAndDonatePan(amountIn: BigNumber, provider: any): Promise<BigNumber> {      
-      const { chainId } = await provider.getNetwork();
-      const networkData = networks[chainId.toString()];
-      
-      if (!router || !inputToken || !router || !communityWallet)
-        throw new Error('Contracts not initialized - canceling attempt to purchase PAN');
-      
+    async function handleDonation(values: ICommunityDonationFormFields): Promise<string> {
+      if (!router || !inputToken || !provider || !activeAccount || !communityWallet) {
+        console.log('MetaMask and/or contracts are not initialized! Canceling donation attempt...');
+        return '';
+      }
+
+      if (isDonating) {
+        console.log('Donation already in progress!')
+        return '';
+      }
+
       try {
+        // TODO: validate submitted data
+        const { tokenAmount } = values;
+
+        /**
+         * [1] Prepare donation
+         */
+        setStep('1');
+        setIsDonating(true);
+        setMessage('Preparing donation...');
+        console.log('Preparing transaction...');
+
+        const { chainId } = await provider.getNetwork();
+        const networkData = networks[chainId.toString()];  
+
+        const amountIn = parseEther(tokenAmount.toString());
         const path: string[] = await getTokenPathByNetwork(selectedNetwork);
         const tokensOut = await router.getAmountsOut(amountIn, path);
         const amountOut: BigNumber = tokensOut[2];
+
+        // the swaps set min out to 99.5% of the desired value
+        const minAmountOut = parseFloat(amountOut.toString()) * 0.995;
+
+        const block = await provider.getBlock(await provider.getBlockNumber());
+        const deadline = BN(block.timestamp).add(3600); // add one hour
 
         // if necessary, approve exchange to spend tokens
         if (selectedToken !== networkData.token) {
@@ -340,17 +360,15 @@ export const withCommunityDonationFlow = WrappedComponent => {
             console.log('Tokens have been approved', approveTx.hash);
           }
         }
-
-        // the swaps set min out to 99.5% of the desired value
-        const minAmountOut = parseFloat(amountOut.toString()) * 0.995;
-
-        const block = await provider.getBlock(await provider.getBlockNumber());
-        const deadline = BN(block.timestamp).add(3600); // add one hour
   
-        setMessage('Purchasing PAN and sending to community wallet...');
+        /**
+         * [2] Submit donation transaction
+         */
+        setStep('2');
+        setMessage('Purchasing PAN and submitting donation...');
         console.log(`Purchasing PAN from ${networkData.exchange} using ${selectedToken}!\n\ntokenAddress: ${inputToken.address}\n\namountOut: ${amountOut}\n\nminAmountOut: ${minAmountOut}\n\ndeadline: ${deadline}\n\ninputValue: ${amountIn}\n\ncommunityWallet: ${communityWallet}`);
 
-        const tx = await router.swapExactETHForTokens(
+        const transaction = await router.swapExactETHForTokens(
           BN(minAmountOut.toString()),
           path,
           communityWallet,
@@ -360,60 +378,40 @@ export const withCommunityDonationFlow = WrappedComponent => {
           }
         );
 
-        console.log('Purchase transaction:', tx);
-  
-        setMessage('Waiting for transaction confirmation...');
-  
-        // Wait for tx to get mined
-        await provider.waitForTransaction(tx.hash);
-  
-        // TODO: maybe wait for blocks
-  
-        const receipt = await provider.getTransactionReceipt(tx.hash);
-        console.log('receipt:', receipt);
-  
-        return amountOut;
-      } catch (err) {
-        console.error(`ERROR: ${err.data?.message}`);
-        handleError(`${networkData.exchange} transaction failed: ${err.message}`);
-        return BN('0');
-      }
-    }
-  
-    /**
-     * Master donation handler
-     */
-    async function handleDonation(values: ICommunityDonationFormFields, actions: any) {
-      // TODO: validate submitted data
-      const { tokenAmount } = values;
+        /**
+         * [3] Save donor info and clean up
+         */
+        setStep('3');
+        setMessage('Your donation has been submitted!');
+        console.log('Transaction has been submitted! Receipt: ', transaction);
 
-      console.log('Starting donation flow...');
+        const donorInfo = {
+          community: props.community.name,
+          transactionHash: transaction.hash,
+          ...values
+        };
 
-      if (!provider || !activeAccount) {
-        console.log('No provider or active account!');
-        return;
-      }
+        // send donor info to formspree
+        const saveRequest = fetch('https://formspree.io/f/xnqlaobz', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: JSON.stringify(donorInfo),
+        });
+        const saveResponse = await saveRequest;
+        console.log('Sent donor info to Formspree! Response: ', saveResponse?.json());
 
-      try {
-        setStep('1');
-        const amountIn = parseEther(tokenAmount.toString());
-        const panPurchased = await purchaseAndDonatePan(amountIn, provider);
-  
-        if (panPurchased.gt('0') && step !== null) {
-  
-          setStep('2');
-          setMessage('Donation complete!');
-          console.log('Donation complete!');
+        setTransactionHash(transaction.hash);
+        setIsDonating(false);
 
-          actions.resetForm();
-        }
+        return transaction.hash;
       } catch (err) {
         // let the caller handle errors
         console.error(`ERROR: ${err}`);
         handleError(err.message);
+        return '';
       }
     }
-  
+
     const { ...passThroughProps } = props;
   
     return (
@@ -424,14 +422,13 @@ export const withCommunityDonationFlow = WrappedComponent => {
         onChangePaymentToken={handleChangePaymentToken}
         onChangeTokenAmount={calculateTokenToFiat}
         onChangeFiatAmount={calculateFiatToToken}
+        connectWallet={connectWallet}
         step={step}
         message={message}
         activeAccount={activeAccount}
-        errorMessage={errorMessage}
-        errorPopupVisible={error}
-        infoPopupVisible={!!step}
-        infoPopupLoading={donationLoading}
-        infoPopupSuccess={donationComplete}
+        error={error}
+        isDonating={isDonating}
+        transactionHash={transactionHash}
         {...passThroughProps}
       />
     );

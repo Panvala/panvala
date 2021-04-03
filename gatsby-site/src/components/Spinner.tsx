@@ -29,7 +29,7 @@ const Spinner = (props: SpinnerProps) => {
         background: background || 'none',
         width: width || '20px',
         height: height || '20px',
-        marginTop: marginTop || '1rem',
+        marginTop,
       }}
       {...passedInProps}
     >

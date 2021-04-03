@@ -186,7 +186,7 @@ const Community = (props: CommunityProps) => {
                 </div>
 
                 {/* Matching Explanation */}
-                <p className="f4 tj tl-l lh-copy">Donation matching is earned from community members who are owners of Panvala. The more PAN we own, the matching we earn.</p>
+                <p className="f4 tj tl-l lh-copy">Donation matching is earned from community members who are <strong>owners</strong> of Panvala. The more PAN we own, the more matching we earn.</p>
               </div>
 
             </div>
@@ -198,7 +198,7 @@ const Community = (props: CommunityProps) => {
                 <div className="f2 b mv3">{utils.commify(Math.round(parseCommaFloat(scoreboard.stakedTokens)))} PAN</div>
                 <p className="f5 mv0 tj tl-l lh-copy">Our PAN holdings include any PAN we hold together as a community, plus any PAN held by individual community members to increase our matching multiplier.</p>
                 <div className="w-70 bg-gray mv5 center">
-                  <a href="/staking" className="w-100 dim dib pv3 ph4 bn tc br-pill white bg-teal f5 fw7 link pointer">Become a Holder</a>
+                  <a href={`/${communityName.replace(/[' ']/g, '-').toLowerCase()}/staking`} className="w-100 dim dib pv3 ph4 bn tc br-pill white bg-teal f5 fw7 link pointer">Become a Holder</a>
                 </div>
               </div>
               <div className="w-50-l w-100 pl4-l">

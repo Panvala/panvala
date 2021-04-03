@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 
@@ -6,9 +6,15 @@ import FieldText from '../FieldText';
 import Label from '../Label';
 import DownArrow from '../Form/DownArrow';
 import { FormError } from '../Form/FormError';
+import closeIcon from '../../img/close.svg';
+import copyIcon from '../../img/copy.svg';
+import linkArrow from '../../img/link-arrow.svg';
 import swapIcon from '../../img/swap.png';
+import successIcon from '../../img/status-good.svg';
+import errorIcon from '../../img/error.svg';
 import { TokenEnums, networks, NetworkEnums } from '../../data';
-import { shortenString } from '../../utils/format';
+import { getExplorerUrl, shortenString } from '../../utils/format';
+import Spinner from '../Spinner';
 
 export interface ICommunityDonationFormFields {
   paymentToken: string;
@@ -19,14 +25,10 @@ export interface ICommunityDonationFormFields {
   email: string;
 }
 
-// TODO: add the 'required' tags back to the user metadata fields
-// (they're currently commented out for quicker debugging)
-
 const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields> = yup.object().shape({
   paymentToken: yup
     .string()
     .trim(),
-    // .required('Please enter your payment method.'),
   tokenAmount: yup
     .number()
     .moreThan(0, 'Please select a donation amount.'),
@@ -35,14 +37,17 @@ const CommunityDonationFormSchema: yup.ObjectSchema<ICommunityDonationFormFields
     .moreThan(0, 'Please select a donation amount in USD.'),
   firstName: yup
     .string()
-    .trim(),
+    .trim()
+    .required('Please enter your first name.'),
   lastName: yup
     .string()
-    .trim(),
+    .trim()
+    .required('Please enter your last name.'),
   email: yup
     .string()
     .trim()
-    .email('Please enter a valid email address.'),
+    .email('Please enter a valid email address.')
+    .required('Please enter an email address.'),
 });
 
 interface CommunityDonationFormProps {
@@ -52,10 +57,12 @@ interface CommunityDonationFormProps {
   };
   selectedToken: string;
   activeAccount: string;
-  errorMessage: string;
+  error: string;
   step: number | null;
   message: string;
-  onSubmit(values: any, actions: any): void;
+  isDonating: boolean;
+  transactionHash: any;
+  onSubmit(values: any, actions: any): Promise<string>;
   onChangePaymentToken(newToken: string): Promise<void>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
@@ -68,8 +75,10 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
     walletAddresses,
     selectedToken,
     activeAccount,
-    errorMessage,
+    error,
     message,
+    isDonating,
+    transactionHash,
     onSubmit,
     onChangePaymentToken,
     onChangeTokenAmount,
@@ -77,7 +86,15 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
     connectWallet,
   } = props;
 
-  const [showPersonalInfo, setShowPersonalInfo] = useState<boolean>(false);
+  const [showPersonalInfo, _] = useState<boolean>(true);
+  const [showInfoModal, setShowInfoModal] = useState<boolean>(false);
+  const transactionHashRef = useRef(null);
+
+  useEffect(() => {
+    if (!showInfoModal && (isDonating)) {
+      setShowInfoModal(true);
+    }
+  }, [showInfoModal, isDonating]);
 
   function getAddNetworkHelpText(token: TokenEnums) {
     let helpUrl = '';
@@ -113,7 +130,28 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
       validationSchema={CommunityDonationFormSchema}
       onSubmit={handleDonate}
     >
-      {({ values, handleSubmit, handleChange, setFieldValue, isSubmitting }) => {
+      {({ values, handleSubmit, handleChange, setFieldValue, resetForm, isSubmitting }) => {
+
+        useEffect(() => {
+          if (!showInfoModal && window.onclick !== null) {
+            window.onclick = null;
+            resetForm();
+          }
+          else if (showInfoModal && window.onclick === null) {
+            window.onclick = (e) => {
+              let el = e.target;
+              
+              while (el) {
+                if (el.id === 'info-modal')
+                  break;
+                el = el.parentNode;
+              }
+
+              if (el?.id !== 'info-modal')
+                setShowInfoModal(false);
+            };
+          }
+        }, [showInfoModal]);
 
         useEffect(() => {
           if (values.paymentToken === '' && selectedToken !== '')
@@ -123,41 +161,86 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
         const handleChangePaymentToken = (e: React.ChangeEvent<any>) => {
           onChangePaymentToken(e.target.value);
           // TODO: recalculate instead of clear
-          setFieldValue('tokenAmount', 0);
-          setFieldValue('fiatAmount', 0);
+          setFieldValue('tokenAmount', '');
+          setFieldValue('fiatAmount', '');
           handleChange(e);
         };
 
         const handleChangeTokenAmount = (e: React.ChangeEvent<any>) => {
           onChangeTokenAmount(e.target.value, values.paymentToken).then((val) => {
-            setFieldValue('fiatAmount', val);
+            setFieldValue('fiatAmount', val || '');
           });
           handleChange(e);
         };
 
         const handleChangeFiatAmount = (e: React.ChangeEvent<any>) => {
           onChangeFiatAmount(e.target.value, values.paymentToken).then((val) => {
-            setFieldValue('tokenAmount', val);
+            setFieldValue('tokenAmount', val || '');
           });
           handleChange(e);
         };
 
-        function getWalletExplorerUrl(walletAddress: string): string {
-          if (values.paymentToken === TokenEnums.ETH)
-            return `https://etherscan.io/address/${walletAddress}`;
-          else if (values.paymentToken === TokenEnums.XDAI)
-            return `https://blockscout.com/poa/xdai/address/${walletAddress}`;
-          else if (values.paymentToken === TokenEnums.MATIC)
-            return `https://explorer-mainnet.maticvigil.com/address/${walletAddress}`;
-          return '';
-        }
-
-        return (  
+        return (
           <form
             data-testid="community-donation-form"
             onSubmit={handleSubmit}
             name="community-donation"
+            className="relative" 
           >
+            {showInfoModal && (
+              <>
+                <div className="absolute left-0 right-0 bottom-0 top-0 bg-white o-80 z-0" />
+                <div className="absolute left-0 right-0 bottom-0 top-0 flex items-center">
+                  <div className="w-90 h-40 center tc pa4 mb5 b--black-10 br3-ns bn-ns bt z-9999 bg-white shadow-5 flex-column relative" id="info-modal">
+                    <img className="absolute w1 h1 top-0 right-0 mr3 mt3 pointer mid-gray" onClick={() => setShowInfoModal(false)} src={closeIcon} />
+                    {isDonating && (
+                      <>
+                        <Spinner className="pa2" width="3rem" height="3rem" />
+                        {!!message && <div className="pa2">{message}</div>}
+                      </>
+                    )}
+                    {!isDonating && (
+                      <>
+                        {!!transactionHash && (
+                          <>
+                            <img className="pa2" style={{ width: '3rem', height: '3rem' }} src={successIcon} />
+                            <h3>Thank You!</h3>
+                            {!!message && <div className="pa2">{message}</div>}
+                            <div className="ph2 mt3 b bg-light-gray br3 flex justify-between items-center">
+                              <div className="w-80 pv2 mv1 pre mid-gray">
+                                {transactionHash}
+                              </div>
+                              <textarea readOnly ref={transactionHashRef} className="absolute" style={{ zIndex: -1, height: 0 }} value={transactionHash}></textarea>
+                              {document.queryCommandSupported('copy') && (
+                                <div className="h1 w1 dt" onClick={() => {
+                                  const hashText: any = transactionHashRef.current;
+                                  if (hashText) {
+                                    hashText.select();
+                                    document.execCommand('copy');
+                                  }
+                                }}>
+                                  <img alt="Copy Address" className="dtc v-mid pointer link" src={copyIcon} />
+                                </div>
+                              
+                              )}
+                              <a className="h1 w1 dt" target="_blank" rel="noreferrer" href={getExplorerUrl(values, transactionHash)}>
+                                <img alt="View Transaction" className="dtc v-mid pointer link" src={linkArrow} />
+                              </a>
+                            </div>
+                          </>
+                        )}
+                        {!!!transactionHash && (
+                          <>
+                            <img className="pa2" style={{ width: '3rem', height: '3rem' }} src={errorIcon} />
+                            <div className="pa2">There was an error sending your donation! Please try again.</div>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             <Label className="f5 b">Payment Method</Label>
             <FormError name="paymentToken" className="pt2" />
@@ -168,17 +251,19 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2 bg-white black-50"
               value={values.paymentToken}
               onChange={handleChangePaymentToken}
+              disabled={!activeAccount}
               id="payment-token-select"
             >
               {walletAddresses && Object.keys(walletAddresses).map(chainId =>
                 <option key={networks[chainId].token} value={networks[chainId].token}>{networks[chainId].token}</option>)}
+              <option value={TokenEnums.PAN}>{TokenEnums.PAN}</option>
             </Field>
             <DownArrow />
 
-            {!!errorMessage && (
+            {!!error && (
               <>
-                <p className="red lh-copy">{errorMessage}</p>
-                {(/please connect metamask to the/g).test(errorMessage.toLowerCase()) && getAddNetworkHelpText(values.paymentToken)}
+                <p className="red lh-copy">{error}</p>
+                {(/please connect metamask to the/g).test(error.toLowerCase()) && getAddNetworkHelpText(values.paymentToken)}
               </>
             )}
 
@@ -192,6 +277,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
                   placeholder="0.00"
                   value={values.tokenAmount}
                   onChange={handleChangeTokenAmount}
+                  disabled={!activeAccount}
                   className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
                 />
                 <div className="fr mr4 o-50" style={{ marginTop: '-35px' }}>{values.paymentToken}</div>
@@ -205,6 +291,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
                   placeholder="0.00"
                   value={values.fiatAmount}
                   onChange={handleChangeFiatAmount}
+                  disabled={!activeAccount}
                   className="f6 input-reset b--black-10 pv3 ph2 db center w-100 br3 mt2"
                 />
                 <div className="fr mr4 o-50" style={{ marginTop: '-35px' }}>USD</div>
@@ -215,7 +302,7 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
               {!!!activeAccount &&
                 <p className="f5"><span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a> or select the credit card payment method.</p>}
               {!!activeAccount &&
-                <p className="f5">Connected to MetaMask wallet <a href={getWalletExplorerUrl(activeAccount)} target="_blank" rel="noreferrer" className="link teal">{shortenString(activeAccount)}</a>.</p>}
+                <p className="f5">Connected to MetaMask wallet <a href={getExplorerUrl(values, activeAccount)} target="_blank" rel="noreferrer" className="link teal">{shortenString(activeAccount)}</a>.</p>}
             </div>
   
             {showPersonalInfo && (
@@ -258,11 +345,10 @@ const CommunityDonationForm = (props: CommunityDonationFormProps) => {
                 type="submit"
                 name="submit"
                 onClick={handleSubmit as any}
-                className="f5 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4-ns mt2 w-100 w-auto-ns"
+                className={`f5 link pointer dim bn br-pill pv3 ph4 white bg-teal fw7 mt4-ns mt2 w-100 w-auto-ns`}
                 disabled={isSubmitting}
                 value="Donate"
               />
-              {!!message && <span className="pl2 f6">{message}</span>}
             </div>
           </form>
         );

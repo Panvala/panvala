@@ -8,7 +8,7 @@ import {
   IUniswapV2Factory,
   IUniswapV2Router02,
 } from './abis';
-import { exchanges, NetworkEnums, networks } from '../data';
+import { exchanges, NetworkEnums, networks, TokenEnums, tokens } from '../data';
 
 export const Environment = {
   staging: 'staging',
@@ -34,7 +34,48 @@ export function getEnvironment() {
   return environment;
 }
 
-export async function loadCommunityDonationContracts(provider: providers.Web3Provider) {
+interface ICommunityStakingContracts {
+  paymentToken: Contract;
+}
+
+export async function loadCommunityStakingContracts(provider: providers.Web3Provider): Promise<ICommunityStakingContracts> {
+  const { chainId } = await provider.getNetwork();
+  const signer = provider.getSigner();
+
+  if (!chainId) throw new Error('MetaMask is not connected.');
+
+  const createContract = async (contractAddress: string, abi: any) => {
+    const contractCode = await provider.getCode(contractAddress);
+    if (contractAddress === '' || !contractCode) {
+      throw new Error(`Invalid address or no code at address: ${contractAddress}`);
+    }
+    return new Contract(contractAddress, abi, signer);
+  };
+
+  const networkData = networks[chainId.toString()];
+  const paymentTokenData = tokens[TokenEnums.PAN];
+
+  /* Initialize PAN token */
+  const paymentTokenAddress = paymentTokenData.addresses[chainId.toString()];
+  const paymentToken = await createContract(paymentTokenAddress, IUniswapV2ERC20);
+  console.log(
+    `Initialized ${TokenEnums.PAN} token contract for network ${networkData.name} at address: `,
+    paymentTokenAddress
+  );
+
+  const contracts: ICommunityStakingContracts = { paymentToken };
+
+  return contracts;
+}
+
+interface ICommunityDonationContracts {
+  factory: Contract;
+  router: Contract;
+  paymentToken: Contract;
+  priceOracle?: Contract;
+}
+
+export async function loadCommunityDonationContracts(provider: providers.Web3Provider): Promise<ICommunityDonationContracts> {
   const { chainId } = await provider.getNetwork();
   const signer = provider.getSigner();
 
@@ -82,12 +123,7 @@ export async function loadCommunityDonationContracts(provider: providers.Web3Pro
     paymentTokenAddress
   );
 
-  const contracts: {
-    factory: Contract;
-    router: Contract;
-    paymentToken: Contract;
-    priceOracle?: Contract;
-  } = {
+  const contracts: ICommunityDonationContracts = {
     factory,
     router,
     paymentToken,
