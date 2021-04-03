@@ -80,7 +80,7 @@ const Community = (props: CommunityProps) => {
       setFullyStakedAmount(Math.round(neededForFullStake));
     }
   }, [scoreboard, scoreboardTotals]);
-  
+
 
   const community: ICommunityData = {
     name: communityName,
@@ -107,11 +107,11 @@ const Community = (props: CommunityProps) => {
   return (
     <Layout>
       <SEO title="Donate" />
-  
+
       <section className="bg-gradient pb6">
         <Nav />
         <div className="bg-white flex flex-wrap flex-nowrap-ns">
-          
+
           {/* Content Column */}
           <div className="w-60-l w-50-m w-100 mv5-ns mv4 flex-column">
 
@@ -244,7 +244,7 @@ const Community = (props: CommunityProps) => {
             </div>}
 
           </div>
-          
+
           {/* Donation Call to Action */}
           <div className="w-40 w-50-m fixed right-0">
             <div className="w-100 w-80-ns mv5-ns ml2-m pa3 pa4-l pa3-m left-m flex-column bg-white fixed static-ns left-0 right-0 bottom-0 z-999 br3 shadow-5">
@@ -255,7 +255,7 @@ const Community = (props: CommunityProps) => {
                   <div className="mb4-ns mb3 f4-ns f5 fw1 mid-gray">{usdDonated}</div>
 
                   <div className="mt2-ns mb2-ns f4-ns f5 fw1">Donors</div>
-                  <div className="mt2-ns f2-ns f3 b">{utils.commify(scoreboard.donationCount)}</div>
+                  <div className="mt2-ns f2-ns f3 b">{utils.commify(parseCommaFloat(scoreboard.donationCount))}</div>
                 </div>
                 <div className="w-30-ns w-40 relative">
                   {/* Desktop */}
@@ -281,10 +281,10 @@ const Community = (props: CommunityProps) => {
               >Donate</a>
             </div>
           </div>
-          
+
         </div>
       </section>
-  
+
     </Layout>
   );
 };
