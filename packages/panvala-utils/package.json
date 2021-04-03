@@ -10,7 +10,7 @@
   "author": "",
   "dependencies": {
     "ethers": "^4.0.33",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
     "@types/jest": "^24.0.16",
