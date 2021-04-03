@@ -33,7 +33,10 @@ module.exports = {
     port: process.env.PRODUCTION_PORT,
     dialect: 'postgres',
     dialectOptions: {
-      ssl: true,
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
     },
   },
   session: {
