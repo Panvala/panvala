@@ -40,7 +40,7 @@
     "express": "^4.16.4",
     "express-validator": "^6.2.0",
     "ipfs-http-client": "32.0.1",
-    "lodash": "4.17.14",
+    "lodash": "4.17.19",
     "morgan": "^1.9.1",
     "panvala-utils": "file:../packages/panvala-utils",
     "pg": "^8.5.1",
