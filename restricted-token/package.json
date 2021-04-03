@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "ethereumjs-util": "^6.0.0",
-        "lodash": "^4.17.14",
+        "lodash": "^4.17.19",
         "openzeppelin-solidity": "^2.1.2",
         "truffle-hdwallet-provider": "^1.0.0-web3one.5"
     }
