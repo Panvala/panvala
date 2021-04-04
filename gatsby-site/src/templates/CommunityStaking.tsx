@@ -8,6 +8,8 @@ import Layout from '../components/Layout';
 import Nav from '../components/Nav';
 import SEO from '../components/seo';
 
+import closeIcon from '../img/close.svg';
+import successIcon from '../img/status-good.svg';
 import leftArrowIcon from '../img/left-arrow.svg';
 import gitcoinIcon from '../img/gitcoin.png';
 import givethIcon from '../img/giveth.png';
@@ -25,7 +27,6 @@ import { loadImage } from '../utils/images';
 import { getMatchingMultiplier } from '../utils/calculations';
 import { BigNumber, Contract, providers } from 'ethers';
 import {
-  getAPIEndpoint,
   getExplorerUrl,
   getSwapUrl,
   mapDonationMethodToEnum,
@@ -109,7 +110,6 @@ const CommunityStaking = (props: CommunityStakingProps) => {
   const EMPTY_PERCENTAGES = {};
   categories.forEach(x => {
     EMPTY_PERCENTAGES[x.categoryID] = x.title === communityName ? '100' : '';
-    // if (x.title === communityName) categoryID = x.categoryID;
   });
 
   const communityImage = loadImage(communityName);
@@ -131,8 +131,7 @@ const CommunityStaking = (props: CommunityStakingProps) => {
   if (primaryDonationMethod && donationURL)
     donationMethod = mapDonationMethodToEnum(primaryDonationMethod);
 
-  const stakingNetwork: string = NetworkEnums.XDAI;
-  // const moarPANUrl = getSwapUrl(tokens[TokenEnums.PAN].addresses[stakingNetwork]);
+  const stakingNetwork: string = NetworkEnums.MAINNET;
   const pollID = '6';
 
   // MetaMask
@@ -152,8 +151,7 @@ const CommunityStaking = (props: CommunityStakingProps) => {
   const [moarPANUrl, setMoarPANUrl] = useState<string>('');
 
   // Status
-  const [step, setStep] = useState<string | null>(null);
-  const [message, setMessage] = useState<string>('');
+  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
@@ -183,6 +181,29 @@ const CommunityStaking = (props: CommunityStakingProps) => {
       setMatchingMultiplier(getMatchingMultiplier(scoreboard, scoreboardTotals));
     }
   }, [scoreboard]);
+
+  /**
+   * Close success modal on outside click
+   */
+  useEffect(() => {
+    if (!showSuccessModal && window.onclick !== null) {
+      window.onclick = null;
+    }
+    else if (showSuccessModal && window.onclick === null) {
+      window.onclick = (e) => {
+        let el = e.target;
+        
+        while (el) {
+          if (el.id === 'success-modal')
+            break;
+          el = el.parentNode;
+        }
+
+        if (el?.id !== 'success-modal')
+          setShowSuccessModal(false);
+      };
+    }
+  }, [showSuccessModal]);
 
   /**
    * Connect MetaMask account
@@ -234,27 +255,23 @@ const CommunityStaking = (props: CommunityStakingProps) => {
         handleError(errMsg);
       } else {
         clearError();
-        // if (provider) {
         (async () => {
-          const contracts = await loadCommunityStakingContracts(provider);
-          setInputToken(contracts.paymentToken);
-          console.log('Initialized contracts');
+          try {
+            const contracts = await loadCommunityStakingContracts(provider);
+            setInputToken(contracts.paymentToken);
+            console.log('Initialized contracts');
+          } catch (err) {
+            console.log('Error fetching balance: ', err);
+            if (err.includes('underlying network changed')) {
+              window.location.reload();
+            }
+          }
         })();
-        // }
       }
     }
   }, [metaMaskNetwork]);
 
   function connectWallet() {
-    if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-      if (!provider) {
-        setProvider(new providers.Web3Provider(window.ethereum));
-        console.log('Initialized MetaMask provider');
-      }
-    }
-  }
-
-  function connectDifferentWallet() {
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
       if (!provider) {
         setProvider(new providers.Web3Provider(window.ethereum));
@@ -311,6 +328,7 @@ const CommunityStaking = (props: CommunityStakingProps) => {
       const saveResponse = await saveRequest;
       console.log('Sent staker info to Formspree! Response: ', saveResponse?.json());
 
+      setShowSuccessModal(true);
       actions.setSubmitting(false);
       actions.resetForm();
     } catch (err) {
@@ -395,7 +413,6 @@ const CommunityStaking = (props: CommunityStakingProps) => {
         }
       } else {
         setPercentages(EMPTY_PERCENTAGES);
-        setMessage('Success! Your staking information has been submitted.');
         console.log('Success! Your staking information has been submitted.');
       }
     }
@@ -406,21 +423,10 @@ const CommunityStaking = (props: CommunityStakingProps) => {
     setError('');
   }
 
-  function clearState() {
-    setStep(null);
-    setMessage('');
-  }
-
   // Pass the error up to the caller and cancel everything
   function handleError(msg: string) {
     setError(msg);
-    clearState();
     console.error(msg);
-  }
-
-  // Cancel the donation flow
-  function handleCancel() {
-    clearState();
   }
 
   const Spacer = ({ width }) => (
@@ -434,13 +440,34 @@ const CommunityStaking = (props: CommunityStakingProps) => {
     </a>
   );
 
+  const MatchingInfoCard = () => (
+    <>
+      <MatchingMultiplierInfo
+        image={communityImage}
+        title={communityName}
+        multiplier={matchingMultiplier}
+      />
+      {!!donationMethod && !!donationURL && (
+        <div className="w-60-l w-80-m w-100 bg-white ml5-l center-m mt4 flex-column dn db-ns">
+          <div className="f4 b">Other ways to support with PAN</div>
+          {donationMethod === DonationMethodEnums.GITCOIN && (
+            <ExternalDonationLink image={gitcoinIcon} />
+          )}
+          {donationMethod === DonationMethodEnums.GIVETH && (
+            <ExternalDonationLink image={givethIcon} />
+          )}
+        </div>
+      )}
+    </>
+  );
+
   return (
     <Layout>
       <SEO title="Stake" />
 
       <section className="bg-gradient pb6">
         <Nav />
-        <div className="bg-white pb2 flex flex-wrap flex-nowrap-ns">
+        <div className="bg-white pb2 flex flex-wrap flex-nowrap-ns relative">
           <Spacer width="10" />
 
           {/* Content Column */}
@@ -451,34 +478,46 @@ const CommunityStaking = (props: CommunityStakingProps) => {
                 <span className="dtc pl1 v-mid">Back to Community</span>
               </a>
 
-              <div className="w-90-l w-80-m w-100 f2-ns f3 b ma0 pb3">Become an Owner</div>
+              <div className="w-90-l w-80-m w-100 f2-l f3 b ma0 pb3">Become an Owner</div>
 
-              <p className="w-80 f5 pb4 tj tl-l lh-copy">
+              <p className="w-80-l w-100 f5 pb4 tj tl-l lh-copy">
                 Donation matching is earned from community members who are <strong>owners</strong>{' '}
                 of Panvala. The more PAN we own, the more matching we earn!
               </p>
 
+              {/* Wrong network alert */}
+              {!!error && !!error.toLowerCase && /please connect metamask to the/g.test(error.toLowerCase()) && (
+                <p className="red lh-copy">{error}</p>
+              )}
+
+              {/* Connect Wallet prompt */}
+              {!!!activeAccount && (
+                <p className="f5 lh-copy">
+                  <span className="teal pointer" onClick={connectWallet}>Connect wallet</span> to proceed. If you don't have a wallet, <a className="teal link" href="">install MetaMask</a>.
+                </p>
+              )}
+
               {!!!error && (
                 <>
-                  {!!activeAccount && !!!inputTokenBalance && (
+                  {!!activeAccount && typeof inputTokenBalance === 'undefined' && (
                     <div className="flex items-center">
                       <Spinner width="1.5rem" height="1.5rem" />
                       <div className="w-90 ml3 f4">Loading PAN balance...</div>
                     </div>
                   )}
-                  {!!activeAccount && !!inputTokenBalance && (
+                  {!!activeAccount && typeof inputTokenBalance !== 'undefined' && (
                     <>
                       {/* Show PAN balance */}
                       {inputTokenBalance > 0 && (
                         <div className="w-100 pb2 flex-column">
-                          <div className="fw1">Available PAN to stake for this community</div>
-                          <div className="flex items-center">
-                            <div className="w-50 f2 b mv3">{inputTokenBalance.toFixed(2)} PAN</div>
+                          <div className="fw1 f5-ns f6">Available PAN to stake for this community</div>
+                          <div className="flex flex-nowrap-l flex-wrap items-center">
+                            <div className="w-50-l w-100 f2 b mv3">{inputTokenBalance.toFixed(2)} PAN</div>
                             <a
                               href={moarPANUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="w-50 f4 teal link"
+                              className="w-50-l w-100 f4 teal link"
                             >
                               Get MOAR PAN
                             </a>
@@ -489,7 +528,7 @@ const CommunityStaking = (props: CommunityStakingProps) => {
                       {/* No PAN in wallet */}
                       {inputTokenBalance === 0 && (
                         <div className="w-100 pb2 flex-column">
-                          <div className="f4 mb3">You don't own any PAN tokens in this wallet:</div>
+                          <div className="f4-ns mb3">You don't own any PAN tokens in this wallet:</div>
                           <div className="f4 mb4">
                             <a
                               className="link teal"
@@ -500,14 +539,11 @@ const CommunityStaking = (props: CommunityStakingProps) => {
                               {shortenString(activeAccount)}
                             </a>
                           </div>
-                          <div className="mb3 teal pointer" onClick={connectDifferentWallet}>
-                            Connect different wallet
-                          </div>
                           <a
                             href={moarPANUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="w-70 dim dib pv3 ph4 tc br-pill mid-gray b--mid-gray ba bw1 f5 fw7 link pointer"
+                            className="w-70-l w-100 dim dib pv3 ph4 tc br-pill mid-gray b--mid-gray ba bw1 f5 fw7 link pointer"
                           >
                             Get PAN tokens
                           </a>
@@ -516,25 +552,6 @@ const CommunityStaking = (props: CommunityStakingProps) => {
                     </>
                   )}
                 </>
-              )}
-
-              {/* Wrong network alert */}
-              {!!error && !!error.toLowerCase && /please connect metamask to the/g.test(error.toLowerCase()) && (
-                <p className="red lh-copy">{error}</p>
-              )}
-
-              {/* Connect Wallet prompt */}
-              {!!!activeAccount && (
-                <p className="f5">
-                  <span className="teal pointer" onClick={connectWallet}>
-                    Connect wallet
-                  </span>{' '}
-                  to proceed. If you don't have a wallet,{' '}
-                  <a className="teal link" href="">
-                    install MetaMask
-                  </a>{' '}
-                  or select the credit card payment method.
-                </p>
               )}
 
               <div>
@@ -631,7 +648,7 @@ const CommunityStaking = (props: CommunityStakingProps) => {
                           onClick={handleSubmit as any}
                           className={`${
                             disableSubmit() ? 'o-50' : 'link pointer dim'
-                          } bw1 bn br-pill pv3 ph4 white bg-teal fw7 mt0-l mt4-m mt2 w-70`}
+                          } bw1 bn br-pill pv3 ph4 ph2-m white bg-teal fw7 mt0-l mt2 w-70-l w-100`}
                           disabled={disableSubmit()}
                           value="Stake PAN for this Community"
                         />
@@ -643,25 +660,36 @@ const CommunityStaking = (props: CommunityStakingProps) => {
             </div>
           </div>
 
-          {/* Matching Multiplier Info */}
-          <div className="w-100 w-50-l w-60-m pv5-ns mt3 flex-column flex-column-reverse fixed static-ns left-0 right-0 bottom-0 z-999">
-            <MatchingMultiplierInfo
-              image={communityImage}
-              title={communityName}
-              multiplier={matchingMultiplier}
-            />
-            {!!donationMethod && !!donationURL && (
-              <div className="w-60-l w-80-m w-100 bg-white ml5-l center-m mt4 flex-column dn db-ns">
-                <div className="f4 b">Other ways to support with PAN</div>
-                {donationMethod === DonationMethodEnums.GITCOIN && (
-                  <ExternalDonationLink image={gitcoinIcon} />
-                )}
-                {donationMethod === DonationMethodEnums.GIVETH && (
-                  <ExternalDonationLink image={givethIcon} />
-                )}
-              </div>
-            )}
+          {/* Matching Multiplier Info - Desktop/Tablet */}
+          <div className="dn db-ns w-100 w-50-l w-60-m pv5-ns mt3 flex-column flex-column-reverse fixed static-ns left-0 right-0 bottom-0">
+            <MatchingInfoCard />
           </div>
+
+          {/* Matching Multiplier Info - Mobile */}
+          <div className="dn-ns w-100 w-50-l w-60-m pv5-ns mt3 flex-column flex-column-reverse fixed static-ns left-0 right-0 bottom-0 z-999">
+            <MatchingInfoCard />
+          </div>
+
+          {showSuccessModal && (
+            <>
+              <div className="absolute left-0 right-0 bottom-0 top-0 bg-white o-80" />
+              <div className="absolute left-0 right-0 bottom-0 top-0 flex items-center">
+                <div className="w-40-l w-70-m w-80 h-40 center tc pa4 mb5 b--black-10 br3-ns bn-ns bt bg-white shadow-5 flex-column relative" id="success-modal">
+                  <img className="absolute w1 h1 top-0 right-0 mr3 mt3 pointer mid-gray" onClick={() => setShowSuccessModal(false)} src={closeIcon} />
+
+                  <div className="mv2">
+                    <img className="pa2" style={{ width: '3rem', height: '3rem' }} src={successIcon} />
+                    <h3 className="pa1">You are now an owner of {communityName}!</h3>
+                    <a href="/" className="dt pa2 teal link pointer center">
+                      <img className="dtc v-mid" src={leftArrowIcon} />
+                      <span className="dtc pl1 v-mid">Return to Homepage</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
       </section>
     </Layout>
