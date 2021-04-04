@@ -11,9 +11,12 @@ interface CommunityDonationProps {
   activeAccount: string;
   step: number | null;
   message: string;
-  errorMessage: string;
+  error: string;
+  isDonating: boolean;
+  isSuccess: boolean;
+  transactionHash: string;
   onCancel(): void;
-  onDonate(data: any, actions: any): void;
+  onDonate(data: any, actions: any): Promise<string>;
   onChangePaymentToken(newToken: string): Promise<void>;
   onChangeFiatAmount(newFiatAmount: number, paymentToken: string): Promise<number>;
   onChangeTokenAmount(newTokenAmount: number, paymentToken: string): Promise<number>;
@@ -22,35 +25,25 @@ interface CommunityDonationProps {
 
 const CommunityDonation = (props: CommunityDonationProps) => {
   const {
-    initialValues,
     community,
-    selectedToken,
-    activeAccount,
-    step,
-    message,
-    errorMessage,
     onDonate,
     onChangePaymentToken,
     onChangeFiatAmount,
     onChangeTokenAmount,
     connectWallet,
+    ...passedInProps
   } = props;
 
   return (
     <div data-testid="community-donation-container">
       <CommunityDonationForm
-        initialValues={initialValues}
         onSubmit={onDonate}
         connectWallet={connectWallet}
-        activeAccount={activeAccount}
         onChangePaymentToken={onChangePaymentToken}
         onChangeFiatAmount={onChangeFiatAmount}
         onChangeTokenAmount={onChangeTokenAmount}
         walletAddresses={community.addresses}
-        selectedToken={selectedToken}
-        errorMessage={errorMessage}
-        step={step}
-        message={message}
+        {...passedInProps}
       />
     </div>
   );

@@ -1,0 +1,266 @@
+[
+  {
+    "categoryID": 7,
+    "title": "Hashing it Out",
+    "description":
+      "Hashing it Out is a podcast that dives into the weeds with tech innovators in blockchain technology. Its community of listeners, guests, and hosts aim to fund infrastructure and technical development advocacy."
+  },
+  {
+    "categoryID": 8,
+    "title": "Commons Stack",
+    "description":
+      "Commons Stack is a community of prosocial blockchain enthusiasts striving to create circular economies to fund public goods."
+  },
+  {
+    "categoryID": 9,
+    "title": "DAppNode",
+    "description":
+      "The DAppNode community works to make sure that all users can conveniently host P2P clients so we can decentralize the internet."
+  },
+  {
+    "categoryID": 10,
+    "title": "MetaCartel",
+    "description":
+      "MetaCartel is a community that helps launch and grow DAOs."
+  },
+  {
+    "categoryID": 11,
+    "title": "DXdao",
+    "description":
+      "The DXdao community works to develop a DeFi ecosystem that is truly decentralized."
+  },
+  {
+    "categoryID": 12,
+    "title": "Meta Gamma Delta",
+    "description":
+      "Meta Gamma Delta is an inclusive and empowering society supporting women-led projects ✨"
+  },
+  {
+    "categoryID": 13,
+    "title": "KERNEL",
+    "description":
+      "KERNEL is an 8-week, invite-only program for top tech talent looking to build relationships, products, and companies in blockchain and Web 3."
+  },
+  {
+    "categoryID": 14,
+    "title": "future modern",
+    "description":
+      "future modern is a network of cooperatives liberating our community through tech, art, culture, and service."
+  },
+  {
+    "categoryID": 16,
+    "title": "DePo DAO",
+    "description":
+      "DePo DAO funds and encourages open source projects to break down the political barriers that currently restrain us from real progress."
+  },
+  {
+    "categoryID": 17,
+    "title": "WhalerDAO",
+    "description":
+      "WhalerDAO is a community of builders, researchers, legal experts, and community influencers who are dedicated to help solve the plethora of problems that the world is facing, using the power of blockchain and decentralized finance (DeFi)."
+  },
+  {
+    "categoryID": 18,
+    "title": "Matic Mitra",
+    "description":
+      "Matic Mitra is a community of builders, researchers, legal experts, and community influencers who are dedicated to help solve the plethora of problems that the world is facing, using the power of blockchain and decentralized finance (DeFi)."
+  },
+  {
+    "categoryID": 19,
+    "title": "FightPandemics",
+    "description":
+      "FightPandemics is an open source altruistic platform that connects individuals and organizations that need help with those that can provide it at the local and global level."
+  },
+  {
+    "categoryID": 20,
+    "title": "lab10 collective",
+    "description":
+      "lab10 collective is the cooperative behind the Minerva Wallet that aims to co-create a zero-carbon society. Their work uses a non-extractive business model: their clients pay for features they need in the wallet, which they build and release as open source software."
+  },
+  {
+    "categoryID": 21,
+    "title": "DeFi Safety",
+    "description":
+      "DeFi Safety performs community funded Process and Quality Audits on DeFi contracts. They answer standard questions using the public artifacts (website, GitHub, documentation) to find the answers. The result is a simple % score."
+  },
+  {
+    "categoryID": 22,
+    "title": "Web3Bridge",
+    "description":
+      "Web3Bridge (formerly 500NigeriaDevs4Eth) is designed to be a bridge connecting web2 developers in Africa into web3. The program runs an 8-week remote learning plan which has been in operation since October 2019."
+  },
+  {
+    "categoryID": 23,
+    "title": "Mol LeArt",
+    "description":
+      "Mol LeArt is a DAO representing Web3 creative commons, where we create smart NFTs that work for creators."
+  },
+  {
+    "categoryID": 24,
+    "title": "Rotki",
+    "description":
+      "Rotki is an open source portfolio tracking, accounting, analytics and tax reporting tool that protects your privacy. The mission of Rotki is to bring transparency into the crypto and financial sectors through the use of open source local-first tech."
+  },
+  {
+    "categoryID": 25,
+    "title": "BrightID",
+    "description":
+      "BrightID is a social identity network that allows you to prove that you’re only using one account. It’s the holy grail of digital identity."
+  },
+  {
+    "categoryID": 26,
+    "title": "Ethereum France",
+    "description":
+      "Ethereum France is a French non-profit organization mainstreaming blockchain and Ethereum in all French-speaking countries. It runs the Ethereum Community Conference (EthCC), the largest annual European Ethereum event focused on technology and community. Three intense days of conferences, networking, learning and (covid-free) partying."
+  },
+  {
+    "categoryID": 27,
+    "title": "Abridged",
+    "description":
+      "Abridged creates delightful web3 experiences with the ability to onboard anyone to receive value from crypto. Recently, they created Collab.Land. This free service allows anyone to create a tokenized online community with existing social interfaces like Telegram and Discord."
+  },
+  {
+    "categoryID": 28,
+    "title": "NFThub",
+    "description":
+      "NFThub is an upcoming community-driven platform with an extensive directory and analytics for all things NFT."
+  },
+  {
+    "categoryID": 29,
+    "title": "MetaGame",
+    "description":
+      "MetaGame’s community aims to build a new world as a layer atop of the old one. They use SourceCred to track contributions from community members, and reward contributors with SEED tokens."
+  },
+  {
+    "categoryID": 30,
+    "title": "MetaSpace",
+    "description":
+      "MetaSpace is a hub for exploring health and wellness in Web3 communities. Bringing professionals from many disciplines together to share their knowledge and experience through discussions, classes, and retreats while creating a bridge between healing practitioners and the Web3 community."
+  },
+  {
+    "categoryID": 31,
+    "title": "Trips Community",
+    "description":
+      "Trips Community aims to build a completely decentralized vacation rental platform (think “Airbnb the platform, without Airbnb the company”), along with the tools to help users transition from today’s online marketplaces to Web 3 marketplaces."
+  },
+  {
+    "categoryID": 32,
+    "title": "Upala",
+    "description":
+      "Upala is an anti-Sybil system for DApps and a decentralized digital identity. It provides a digital identity uniqueness score in dollars (price of forgery)."
+  },
+  {
+    "categoryID": 33,
+    "title": "Bloom Network",
+    "description":
+      "Bloom connects people and existing initiatives to build capacity together and inspire a billion acts of regeneration. We do direct actions to create food security, social equity, regional economies, art and more!"
+  },
+  {
+    "categoryID": 34,
+    "title": "Handshake Development Fund",
+    "description":
+      "Handshake is a completely community-run decentralized blockchain built to dismantle ICANN's monopoly on top-level domains (.com, .net, .org, .io, etc.) and improve internet security by replacing Certificate Authorities. This community run development fund is the only source of non-VC, non-dilutive, grants funding in the HNS community."
+  },
+  {
+    "categoryID": 35,
+    "title": "LexDAO",
+    "description":
+      "LexDAO is a group of legal engineering professionals who are seeking to provide a trusted layer between the decentralized world of blockchains and a legal settlement layer in the real world. We are trying to bridge this layer to provide a working framework for organizations to work in a trustless and trusted manner using Ethereum, blockchains, smart contracts and decentralized organizations."
+  },
+  {
+    "categoryID": 36,
+    "title": "Grassroots Economics",
+    "description":
+      "Grassroots Economics is a non-profit foundation that seeks to empower marginalized communities to take charge of their own livelihoods and economic future. We focus on community development through economic empowerment and community currency programs. Beneficiaries of our programs include small businesses and people living in informal settlements as well as rural areas."
+  },
+  {
+    "categoryID": 37,
+    "title": "Circles UBI",
+    "description": "Circles is a basic income made to promote local economy within your community."
+  },
+  {
+    "categoryID": 38,
+    "title": "Giveth",
+    "description": "Giveth is a community of makers building the future of giving."
+  },
+  {
+    "categoryID": 39,
+    "title": "Women of Crypto Art",
+    "description": "Women of Crypto Art (WOCA) is a new community group formed to highlight and promote, collaborate and support any artist who identifies as a woman in the crypto art space. As a community we come together to share ideas, information, tips and general support in all things crypto art."
+  },
+  {
+    "categoryID": 40,
+    "title": "Dandelion Collective",
+    "description": "Dandelion Collective is a UK-based not-for-profit worker co-op. Their flagship project is Dandelion (https://dandelion.earth), a web platform for ticketed events and co-created gatherings. They also put on a range of events themselves as the Psychedelic Society (http://psychedelicsociety.org.uk/)."
+  },
+  {
+    "categoryID": 41,
+    "title": "Shenanigan",
+    "description": "Shenanigan provides a competitive and motivating platform for athletes of all types utilizing fiscal incentives to drive personal improvement."
+  },
+  {
+    "categoryID": 42,
+    "title": "Peoples' Collective",
+    "description": "People’s Cooperative pools funds to help support each other and families in need especially with the growing impact of the pandemic. We also support and advance the benefit of blockchain to the general community in Nigeria."
+  },
+  {
+    "categoryID": 43,
+    "title": "Marma J Foundation",
+    "description": "The Marma J Foundation was founded in mid-2019 with the simple goal of being an altruistic foundation with an efficient ability to spread love and positivity throughout the world. In September of the same year, the foundation moved to Antigua and Barbuda to start their very first hands-on projects."
+  },
+  {
+    "categoryID": 44,
+    "title": "Pool-Party",
+    "description": "Pool-Party is a smart contract-based platform where people can pool and manage crypto currencies together. Pool-Parties are set up by groups looking to combine their crypto in order to jointly invest in a project or series of other tokens all while earning interest and tokens on the pooled crypto that remains in their pool-party."
+  },
+  {
+    "categoryID": 45,
+    "title": "PrimeDAO",
+    "description": "PrimeDAO is a collective of Web 3 builders and creators committed to enabling the DeFi space’s systemic innovation. We’re collectively building and governing protocols that support DAO 2 DAO value creation."
+  },
+  {
+    "categoryID": 46,
+    "title": "Senary Commonwealth",
+    "description": "Senary Commonwealth supports web-based public utilities that democratize opportunity, more justly accrue and distribute value, and promote our greater humanity."
+  },
+  {
+    "categoryID": 47,
+    "title": "Kolektivo Labs",
+    "description": "Kolektivo Labs is a systems innovation lab committed to unleashing the full potential of human coordination. We do this by implementing Web 3 primitives in a real-world setting. We’ve launched CuraDAO, a social-impact DAO in Curacao, in 2019."
+  },
+  {
+    "categoryID": 48,
+    "title": "Austin Meetups Fund",
+    "description": "The Austin Meetups Fund is a donation-based fund shared by all local meetup groups who choose to participate. The goal of the fund is to build community, reward outstanding meetup contributors, and use new technology at the same time."
+  },
+  {
+    "categoryID": 49,
+    "title": "DoinGud",
+    "description": "DoinGud is a community of over +1800 individuals creating an NFT marketplace and social platform fully focused on doing good by empowering artist, creators, collectors, curators and social organizations to support one another and become self-owned, self-sustained and self-governed."
+  },
+  {
+    "categoryID": 50,
+    "title": "Gitcoin",
+    "description": "Gitcoin’s mission is to enable anyone to work on the open internet. We want to build a world in which everyone has the financial leverage to leave their job, and where it’s as easy to find work in software as it is for an Uber driver to find a ride today."
+  },
+  {
+    "categoryID": 51,
+    "title": "RaidGuild",
+    "description": "RaidGuild is the premier design and dev agency of the Web3 ecosystem. Our decentralized collective is deeply entrenched in the bleeding edge of DAOs, DeFi, dApps and everything else in between. Hailing from the MetaCartel network, our team consists of a diverse group of talent with over 9000 years of combined experience."
+  },
+  {
+    "categoryID": 52,
+    "title": "DAOhaus",
+    "description": "DAOhaus is a no-code platform for launching and running DAOs. Is it owned and operated by the community itself. Our mission is to foster a diverse, open economy of transparent collaboration."
+  },
+  {
+    "categoryID": 53,
+    "title": "Blockchain Education Network",
+    "description": "The Blockchain Education Network (BEN) is a seven-year-old 501©3 nonprofit network of blockchain clubs, students, professors, and alumni around the world. BEN provides free educational resources, conference tickets, travel scholarships, jobs and internship opportunities, and an online and offline community for all its members. BEN has had 2,350+ students go through its program across 1,000+ universities in 95+ countries."
+  },
+  {
+    "categoryID": 54,
+    "title": "DAOSquare",
+    "description": "DAOSquare originated from the most celebrated DAO community MetaCartel in the west and inspired by MetaCartel and MolochDAO. Since DAOSquare was founded on December 5th, 2019, it grew rapidly from a We-Media to the most influential DAO in China, or even in all Chinese-speaking areas. Different from other DAOs which focus on specific products or services, DAOSquare devotes itself to the construction of a global DAO."
+  }
+]

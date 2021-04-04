@@ -106,6 +106,7 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
   // Create pages for each community
   const communityTemplate = path.resolve(__dirname, 'src/templates/Community.tsx');
   const communityDonationTemplate = path.resolve(__dirname, 'src/templates/CommunityDonate.tsx');
+  const communityStakingTemplate = path.resolve(__dirname, 'src/templates/CommunityStaking.tsx');
   const communitiesData = await getCommunitiesCsvData();
   const scoreboardsData = await getCommunityScoreboardsCsvData();
   const communityNames = Object.keys(communitiesData.communities);
@@ -147,6 +148,13 @@ exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => 
     createPage({
       path: `/${kebabCaseName}/donate`,
       component: communityDonationTemplate,
+      context: pageContext,
+    });
+
+    console.log(`\n\nCreating community staking page at url "/${kebabCaseName}/staking" with context: `, pageContext);
+    createPage({
+      path: `/${kebabCaseName}/staking`,
+      component: communityStakingTemplate,
       context: pageContext,
     });
   }

@@ -29,12 +29,15 @@ const MatchingMultiplierInfo = (props: MatchingMultiplierInfoProps) => {
             </div>
           </div>
           <div className="h4 white relative">
+            {/* Desktop */}
             <div className="pa4 tc bg-blue dib-l dn-m dn mr3 mr0-ns br-100 absolute right-0" style={{ top: '-4.5rem' }}>
               <InfoText />
             </div>
+            {/* Tablet */}
             <div className="pa4 tc bg-blue dib-m dn-l dn mr3 mr0-ns br-100 absolute right-0" style={{ top: '-4.5rem' }}>
               <InfoText />
             </div>
+            {/* Mobile */}
             <div className="pa4 tc bg-blue dib dn-ns mr3 mr0-ns br-100 absolute right-0 top--2">
               <InfoText />
             </div>
