@@ -304,12 +304,12 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3039119.090307858104433647"
+    "weight": "3275728.301328624554980677"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1017926.85544146393757"
+    "weight": "1021841.56735926393757"
   },
   "10": {
     "id": 10,
@@ -349,12 +349,12 @@ const stakingResults = {
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "84395.171811981383590826"
+    "weight": "84524.563845741383590826"
   },
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "42998.198271661361332557"
+    "weight": "42998.198271661328514152"
   },
   "19": {
     "id": 19,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "15079.704853046309541834"
+    "weight": "14886.564293220989370634"
   },
   "23": {
     "id": 23,
@@ -424,7 +424,7 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "33799.84930519108353929"
+    "weight": "43549.200268292268860635"
   },
   "33": {
     "id": 33,
@@ -474,7 +474,7 @@ const stakingResults = {
   "42": {
     "id": 42,
     "name": "Peoples' Cooperative",
-    "weight": "5508.1555"
+    "weight": "22155.108934720126580928"
   },
   "43": {
     "id": 43,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'April 3';
+const stakingTotalsUpdated = 'April 6';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
