@@ -304,12 +304,12 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3275728.301328624554980677"
+    "weight": "3284595.471322542646928897"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1021841.56735926393757"
+    "weight": "1023291.82918613393757"
   },
   "10": {
     "id": 10,
@@ -319,7 +319,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "151629.33435257833530413"
+    "weight": "150629.33435257833530413"
   },
   "12": {
     "id": 12,
@@ -329,7 +329,7 @@ const stakingResults = {
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "206513.591652157749240137"
+    "weight": "182859.359968195749240137"
   },
   "14": {
     "id": 14,
@@ -354,12 +354,12 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "42998.198271661328514152"
+    "weight": "42710.037329161249107859"
   },
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "43024.332529281741792857"
+    "weight": "42892.532529281741792857"
   },
   "20": {
     "id": 20,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "14886.564293220989370634"
+    "weight": "14928.804844414210100637"
   },
   "23": {
     "id": 23,
@@ -389,7 +389,7 @@ const stakingResults = {
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "403144.020785298307730122"
+    "weight": "401644.020785298307730122"
   },
   "26": {
     "id": 26,
@@ -404,17 +404,17 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "55799.206896348935143044"
+    "weight": "55281.346052740434698294"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "95032.694006133437972786"
+    "weight": "99323.707526133437972786"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "141746.945642000000720896"
+    "weight": "138860.945642000000720896"
   },
   "31": {
     "id": 31,
@@ -424,7 +424,7 @@ const stakingResults = {
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "43549.200268292268860635"
+    "weight": "33749.200268292268860635"
   },
   "33": {
     "id": 33,
@@ -509,12 +509,12 @@ const stakingResults = {
   "49": {
     "id": 49,
     "name": "DoinGud",
-    "weight": "57231.8305"
+    "weight": "57069.4305"
   },
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "0.0"
+    "weight": "323365.231683962"
   },
   "51": {
     "id": 51,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'April 6';
+const stakingTotalsUpdated = 'April 14';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
