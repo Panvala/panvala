@@ -304,12 +304,12 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3284595.471322542646928897"
+    "weight": "3293636.420554326283935005"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1023291.82918613393757"
+    "weight": "1023766.01118613393757"
   },
   "10": {
     "id": 10,
@@ -334,7 +334,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "56132.598504182609061681"
+    "weight": "48989.319414274697369343"
   },
   "15": {
     "id": 15,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "14928.804844414210100637"
+    "weight": "15022.913863481271642544"
   },
   "23": {
     "id": 23,
@@ -414,7 +414,7 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "138860.945642000000720896"
+    "weight": "145506.945642000000720896"
   },
   "31": {
     "id": 31,
@@ -454,7 +454,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "54363.391254332301501706"
+    "weight": "56025.391254332301501706"
   },
   "39": {
     "id": 39,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'April 14';
+const stakingTotalsUpdated = 'April 19';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
