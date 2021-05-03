@@ -65,7 +65,7 @@ async function run() {
   const gatekeeper = ROGatekeeper.connect(wallet);
 
   // NOTE: make sure you are running this script during +1 epoch of the one you are finalizing
-  const epochNumber = (await gatekeeper.functions.currentEpochNumber()).sub(1);
+  const epochNumber = (await gatekeeper.currentEpochNumber()).sub(1);
   console.log('epochNumber:', epochNumber);
   const resources = [tokenCapacitor.address, parameterStore.address];
 
