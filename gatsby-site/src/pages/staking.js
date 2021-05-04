@@ -304,12 +304,12 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3293636.420554326283935005"
+    "weight": "3186492.640568646321457174"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1023766.01118613393757"
+    "weight": "1026506.58088550393757"
   },
   "10": {
     "id": 10,
@@ -319,7 +319,7 @@ const stakingResults = {
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "150629.33435257833530413"
+    "weight": "148535.08435257833530413"
   },
   "12": {
     "id": 12,
@@ -334,7 +334,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "48989.319414274697369343"
+    "weight": "44086.636352754610767228"
   },
   "15": {
     "id": 15,
@@ -359,12 +359,12 @@ const stakingResults = {
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "42892.532529281741792857"
+    "weight": "40848.602028215389041007"
   },
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "31447.502444434022897931"
+    "weight": "29665.488177022901067405"
   },
   "21": {
     "id": 21,
@@ -374,7 +374,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "15022.913863481271642544"
+    "weight": "15193.071978658206881575"
   },
   "23": {
     "id": 23,
@@ -404,12 +404,12 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "55281.346052740434698294"
+    "weight": "52607.031052740434698294"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "99323.707526133437972786"
+    "weight": "95032.694006133437972786"
   },
   "30": {
     "id": 30,
@@ -434,7 +434,7 @@ const stakingResults = {
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "199076.09332562732794055"
+    "weight": "190657.106028467588807583"
   },
   "35": {
     "id": 35,
@@ -444,7 +444,7 @@ const stakingResults = {
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "86486.837092976665413123"
+    "weight": "48901.037092976665413123"
   },
   "37": {
     "id": 37,
@@ -524,7 +524,7 @@ const stakingResults = {
   "52": {
     "id": 52,
     "name": "DAOhaus",
-    "weight": "0.0"
+    "weight": "1516.03507917181072609"
   },
   "53": {
     "id": 53,
@@ -554,7 +554,7 @@ categories.sort((a, b) => {
 
 const pollID = '6';
 const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'April 19';
+const stakingTotalsUpdated = 'May 2';
 const leagueBudget = 1266700.40;
 
 const ClipContainer = styled.div`
