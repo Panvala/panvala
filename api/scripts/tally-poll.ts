@@ -14,7 +14,7 @@ import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
 
 const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
-const BLOCKSCOUT_MATIC = 'https://explorer-mainnet.maticvigil.com/api/';
+const BLOCKSCOUT_MATIC = 'https://api.polygonscan.com/api/';
 const TOKEN_ADDRESS_MAINNET = '0xd56dac73a4d6766464b38ec6d91eb45ce7457c44';
 const TOKEN_ADDRESS_XDAI = '0x981fB9BA94078a2275A8fc906898ea107B9462A8';
 const TOKEN_ADDRESS_MATIC = '0xe9949106f0777e7A2e36df891d59583AC94dc896';

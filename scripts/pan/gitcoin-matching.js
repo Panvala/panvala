@@ -7,8 +7,9 @@ const stringify = require('csv-stringify/lib/sync');
 
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
-const DONATIONS_STARTED_AT = Date.parse('2021-01-01');
-const GITCOIN_ADDRESS = '0x00De4B13153673BCAE2616b67bf822500d325Fc3';
+const DONATIONS_STARTED_AT = Date.parse('2021-03-28');
+const DONATIONS_BATCH_NUMBER = 11;
+const GITCOIN_ADDRESS = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
 const ZKSYNC_ADDRESSES = new Set([
   '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF',
   '0x9D37F793E5eD4EbD66d62D505684CD9f756504F6',
@@ -77,6 +78,7 @@ const ENS_ADDRESSES = {
   '0.00000088': '0x0000000000000000000000000000000000000000',
   '37Q2dixQJUr5dUHYHCirfntByV4pvsvKHX': '0x0000000000000000000000000000000000000000',
   '0x01972': '0x0000000000000000000000000000000000000000',
+  'bc1qupk2u36zdm0fd8mmnu0ha33g0d2lgynwxw6j70': '0x0000000000000000000000000000000000000000',
 };
 
 const LEAGUE_ADDRESSES = {
@@ -100,7 +102,7 @@ const XDAI_ADDRESSES = {
   "Trips Community": "0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF",
 };
 
-const BLOCKSCOUT_MATIC = 'https://explorer-mainnet.maticvigil.com/api/';
+//const BLOCKSCOUT_MATIC = 'https://api.polygonscan.com/api/';
 const MATIC_ADDRESSES = {
   "Blockchain Education Network": "0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621",
   "Matic Mitra": "0xd9D66f6eB790c82A1e98CDa99C153983461A3725",
@@ -444,9 +446,10 @@ async function run() {
   );
 
   const xdaiTransactions = await getBlockscoutTransactions(BLOCKSCOUT_XDAI, Object.values(XDAI_ADDRESSES));
-  const maticTransactions = await getBlockscoutTransactions(BLOCKSCOUT_MATIC, Object.values(MATIC_ADDRESSES));
+  // FIXME: The new Polygon API at api.polygonscan.com does not support the gettxinfo method.
+  // const maticTransactions = await getBlockscoutTransactions(BLOCKSCOUT_MATIC, Object.values(MATIC_ADDRESSES));
 
-  const transactions = mainnetTransactions.concat(zksyncTransactions, xdaiTransactions, maticTransactions);
+  const transactions = mainnetTransactions.concat(zksyncTransactions, xdaiTransactions/*, maticTransactions*/);
 
   const donorNames = await getDonorNames();
 
@@ -457,6 +460,7 @@ async function run() {
     const grantAddress = ethers.utils.getAddress(item['To']);
     const donorAddress = ethers.utils.getAddress(item['From']);
     if (
+      grantAddress === donorAddress ||
       IGNORED_TXHASHES.has(item['Txhash']) ||
       IGNORED_ADDRESSES.has(grantAddress) ||
       IGNORED_ADDRESSES.has(donorAddress) ||
@@ -505,13 +509,13 @@ async function run() {
   calculateMatching(grants);
 
   const grantsCsv = grantsToCSV(grants);
-  fs.writeFileSync('gitcoin-grants.csv', grantsCsv);
+  fs.writeFileSync(`gitcoin-grants-batch-${DONATIONS_BATCH_NUMBER}.csv`, grantsCsv);
 
   const donorsCsv = donorsToCSV(donors);
-  fs.writeFileSync('gitcoin-donors.csv', donorsCsv);
+  fs.writeFileSync(`gitcoin-donors-batch-${DONATIONS_BATCH_NUMBER}.csv`, donorsCsv);
 
   const donationsCsv = donationsToCSV(grants, donors);
-  fs.writeFileSync('gitcoin-donations.csv', donationsCsv);
+  fs.writeFileSync(`gitcoin-donations-batch-${DONATIONS_BATCH_NUMBER}.csv`, donationsCsv);
 
   console.log('zksync fetch errors:', zksyncErrors);
   console.log('CSV files written.')
