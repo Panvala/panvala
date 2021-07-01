@@ -290,6 +290,66 @@ const categories = [
     title: 'DAOSquare',
     description: "DAOSquare originated from the most celebrated DAO community MetaCartel in the west and inspired by MetaCartel and MolochDAO. Since DAOSquare was founded on December 5th, 2019, it grew rapidly from a We-Media to the most influential DAO in China, or even in all Chinese-speaking areas. Different from other DAOs which focus on specific products or services, DAOSquare devotes itself to the construction of a global DAO.",
   },
+  {
+    categoryID: 55,
+    title: 'MyCrypto',
+    description: "MyCrypto is an open-source, client-side tool for interacting with the blockchain. Developed by and for the community beginning in 2015, we’re focused on building awesome products that put the power in people’s hands.",
+  },
+  {
+    categoryID: 56,
+    title: 'nfDAO',
+    description: "nfDAO is a community DAO whose primary mission is to support and fund NFT projects, that we believe will unlock a new era of mass adoption from NFTs. We operate by supporting and helping NFT projects grow, from their earlier stages of operation. When passionate and knowledgeable community members support the Blockchain ecosystem, we can achieve greater adoption and value for the whole industry.",
+  },
+  {
+    categoryID: 57,
+    title: 'Njombe Innovation Academy',
+    description: "Njombe region's main economic activities are agriculture (76.3% of GDP) and livestock keeping. Local youth have few employment opportunities. Could we create an environment where local youth gain the tools and mindset to transform the challenges that surround them into social enterprises? The Social Innovation Academy model has proven that through a cost-effective and “freesponsible” community approach, marginalized youth can become self-reliant and can create a future for themselves through social enterprises, which in turn disrupt the root causes of social problems.",
+  },
+  {
+    categoryID: 58,
+    title: 'ThinkBetter',
+    description: "ThinkBetter is a Toronto based not-for-profit group that teaches advanced thinking skills and evidence based self-improvement techniques. The rationality concepts we teach assist people to accelerate their personal growth. We believe that excellent critical thinking skills are necessary for a happy and healthy society.",
+  },
+  {
+    categoryID: 59,
+    title: 'Guerrilla Music',
+    description: "Guerrilla Music was founded by Sourav Deb, and Sky Hayward with the intention of doing things differently. We wanted to create a “for the artist, by the artist” type of company. Our goal from the beginning has been to empower artists of all disciplines. Currently we’re working on raising money for artists and musicians in Accra, Ghana.",
+  },
+  {
+    categoryID: 60,
+    title: 'Akasha Hub Barcelona',
+    description: "The AKASHA Barcelona hub, founded by Lorenzo Patuzzo, is imagined as a physical space for meetups, workshops, project development, and perhaps the creation of the next big thing. Our 280 sqm space includes desk workspaces, a hardware hacklab, a meeting room, a chilling zone, and a multipurpose social area for gatherings and meetups. The AKASHA Foundation encourages collaboration and supports great ideas. With this in mind, the hub is a physical complement to all of our digital interactions. And we hope it will be the first of many.",
+  },
+  {
+    categoryID: 61,
+    title: 'Ethers.js',
+    description: "The ethers.js library is a complete and compact library for interacting with the Ethereum Blockchain and its ecosystem.",
+  },
+  {
+    categoryID: 62,
+    title: 'rekt.news',
+    description: "Rekt.news is the dark web of DeFi journalism. At rekt.news, we aim to argue both sides of the story whilst also educating and entertaining our readers. Our content is unfiltered and authentic - an anonymous platform for whistleblowers and DeFi detectives to present their findings to the community. No other DeFi media company is as close to the ground as we are. We are not spectators; we report with experience from the inside of the industry.",
+  },
+  {
+    categoryID: 63,
+    title: 'Umbra',
+    description: "As a protocol, Umbra defines a simple set of standards, coupled with a singleton smart contract instance, to enable stealth addresses on Ethereum. With a stealth address, a payer can send Ether or ERC20 tokens to an address controlled by the receiver, but no one except the two parties know who that receiver is.",
+  },
+  {
+    categoryID: 64,
+    title: 'Civichub',
+    description: "Civichub is a pre-acceleration program which has taken place twice so far. The first iteration in 2018 consisted of 6 in-person weekend sprints in the volcanic region of La Garrotxa (Girona, Catalonia), the second version of the course took place in 2020-21 online. During these two sessions, more than 40 startups, social movements, cyber activists, corporate and government teams came together to boost and cross-pollinate their civic innovation, distributed governance and decentralized technology projects.",
+  },
+  {
+    categoryID: 65,
+    title: 'Web3 Designers',
+    description: "To evolve the beauty and usability of products in this ecosystem, we believe every project in the web3 realm needs and deserves access to a skilled product designer. As a collective of working design professionals, we're perfectly attuned to identify candidates who can add maximum value to a specific project or problem space. We boldly aim to cut out traditional recruiting firms and use our profits to fund educational programs which onboard skilled web2 designers into web3.",
+  },
+  {
+    categoryID: 66,
+    title: 'Jovian Network',
+    description: "We are a network of research professionals, technologists, speakers, and activists empowering communities in radical new ways. Whether shepherding a community to originate a DAO for the first time, or helping an existing DAO overcome a specific challenge, we serve these communities reaching their highest good. All primary research findings will be open-source so that learnings may benefit the entire ecosystem.",
+  }
 ];
 
 const EMPTY_PERCENTAGES = {};
@@ -299,42 +359,42 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "988500.53845029546157261"
+    "weight": "997056.109441353300233188"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "3186492.640568646321457174"
+    "weight": "2133725.19086384440956338"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1026506.58088550393757"
+    "weight": "1047141.64008577382757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "44995.697767315207261213"
+    "weight": "45079.897767315207261213"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "148535.08435257833530413"
+    "weight": "146982.79876657833530413"
   },
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "249378.6064111879817"
+    "weight": "254386.0140681879817"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "182859.359968195749240137"
+    "weight": "193138.948977229389018165"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "44086.636352754610767228"
+    "weight": "39779.317123606196767228"
   },
   "15": {
     "id": 15,
@@ -344,27 +404,27 @@ const stakingResults = {
   "16": {
     "id": 16,
     "name": "DePo DAO",
-    "weight": "2162.635070868748260579"
+    "weight": "2146.612167926103981482"
   },
   "17": {
     "id": 17,
     "name": "WhalerDAO",
-    "weight": "84524.563845741383590826"
+    "weight": "1688.157552894125958431"
   },
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "42710.037329161249107859"
+    "weight": "24036.393320705358893968"
   },
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "40848.602028215389041007"
+    "weight": "47207.118016215389041007"
   },
   "20": {
     "id": 20,
     "name": "lab10 collective",
-    "weight": "29665.488177022901067405"
+    "weight": "300.0"
   },
   "21": {
     "id": 21,
@@ -374,77 +434,72 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "15193.071978658206881575"
+    "weight": "20769.708333875094687342"
   },
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "15710.4705"
+    "weight": "17218.2357617"
   },
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "31112.081794276275443489"
+    "weight": "45047.136643657488644762"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "401644.020785298307730122"
+    "weight": "402540.931139416206973994"
   },
   "26": {
     "id": 26,
     "name": "Ethereum France",
-    "weight": "100.0"
-  },
-  "27": {
-    "id": 27,
-    "name": "Abridged",
     "weight": "0.0"
   },
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "52607.031052740434698294"
+    "weight": "67926.055014354595308547"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "95032.694006133437972786"
+    "weight": "99505.011528133437972786"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "145506.945642000000720896"
+    "weight": "158957.520819000000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "10896.184652086348543597"
+    "weight": "12612.012918086348543597"
   },
   "32": {
     "id": 32,
     "name": "Upala",
-    "weight": "33749.200268292268860635"
+    "weight": "26644.920268292268860635"
   },
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "9609.8805"
+    "weight": "12542.171716"
   },
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "190657.106028467588807583"
+    "weight": "176328.480483917634127116"
   },
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "47509.8805"
+    "weight": "5910.272495"
   },
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "48901.037092976665413123"
+    "weight": "50661.650002027795653063"
   },
   "37": {
     "id": 37,
@@ -454,87 +509,132 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "56025.391254332301501706"
+    "weight": "78328.39965614747216818"
   },
   "39": {
     "id": 39,
     "name": "Women of Crypto Art",
-    "weight": "32207.143748117637984588"
+    "weight": "120321.378991229960280401"
   },
   "40": {
     "id": 40,
     "name": "Dandelion Collective",
-    "weight": "140249.115554201233778505"
+    "weight": "130303.138275444168499836"
   },
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "33352.140333889028718874"
+    "weight": "41815.725853771413845642"
   },
   "42": {
     "id": 42,
     "name": "Peoples' Cooperative",
-    "weight": "22155.108934720126580928"
+    "weight": "38223.214919320126580928"
   },
   "43": {
     "id": 43,
     "name": "Marma J Foundation",
-    "weight": "1471.961"
+    "weight": "1096.433688"
   },
   "44": {
     "id": 44,
     "name": "Pool-Party",
-    "weight": "10806.07073"
+    "weight": "85149.062334920837372068"
   },
   "45": {
     "id": 45,
     "name": "PrimeDAO",
-    "weight": "396.75"
-  },
-  "46": {
-    "id": 46,
-    "name": "Senary Commonwealth",
-    "weight": "0.0"
+    "weight": "705.60292462"
   },
   "47": {
     "id": 47,
     "name": "Kolektivo Labs",
-    "weight": "3534.1305"
+    "weight": "4482.9145461"
   },
   "48": {
     "id": 48,
     "name": "Austin Meetups Fund",
-    "weight": "421.076164434103620669"
+    "weight": "5189.778367567031068664"
   },
   "49": {
     "id": 49,
     "name": "DoinGud",
-    "weight": "57069.4305"
+    "weight": "66293.204343"
   },
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "323365.231683962"
-  },
-  "51": {
-    "id": 51,
-    "name": "RaidGuild",
-    "weight": "0.0"
+    "weight": "344668.399242714838451446"
   },
   "52": {
     "id": 52,
     "name": "DAOhaus",
-    "weight": "1516.03507917181072609"
+    "weight": "5450.000120198206584212"
   },
   "53": {
     "id": 53,
     "name": "Blockchain Education Network",
-    "weight": "10698.027711543422299589"
+    "weight": "13174.517311343422299589"
   },
   "54": {
     "id": 54,
     "name": "DAOSquare",
-    "weight": "2175.9"
+    "weight": "107653.886073067559830054"
+  },
+  "55": {
+    "id": 55,
+    "name": "MyCrypto",
+    "weight": "4912.3485"
+  },
+  "56": {
+    "id": 56,
+    "name": "nfDAO",
+    "weight": "676.05"
+  },
+  "57": {
+    "id": 57,
+    "name": "Njombe Innovation Academy",
+    "weight": "1429.0485"
+  },
+  "59": {
+    "id": 59,
+    "name": "Guerrilla Music",
+    "weight": "6.2985"
+  },
+  "60": {
+    "id": 60,
+    "name": "Akasha Hub Barcelona",
+    "weight": "127.9"
+  },
+  "61": {
+    "id": 61,
+    "name": "ethers.js",
+    "weight": "12845.5377428452605"
+  },
+  "62": {
+    "id": 62,
+    "name": "rekt.news",
+    "weight": "5963.09423"
+  },
+  "63": {
+    "id": 63,
+    "name": "Umbra",
+    "weight": "890.6865"
+  },
+  "64": {
+    "id": 64,
+    "name": "Civichub",
+    "weight": "0.0"
+  },
+  "65": {
+    "id": 65,
+    "name": "Web3 Designers",
+    "weight": "8901.54115"
+  },
+  "66": {
+    "id": 66,
+    "name": "Jovian Network",
+    "weight": "18056.25"
   }
 };
 
@@ -552,10 +652,10 @@ categories.sort((a, b) => {
   return -1;
 });
 
-const pollID = '6';
-const snapshotsBeginOn = 'April 2';
-const stakingTotalsUpdated = 'May 2';
-const leagueBudget = 1266700.40;
+const pollID = '7';
+const snapshotsBeginOn = 'July 2';
+const stakingTotalsUpdated = 'July 2';
+const leagueBudget = 1232726.45;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -933,7 +1033,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from March 10 to 25. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                from June 16 to July 1. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
@@ -1061,11 +1161,9 @@ const Poll = () => {
               <div className="tc pv4">
                 <h2>Stake PAN for Your Community</h2>
                 <Box mt={1} mb={3} className="w-80 center tc lh-copy">
-                  PAN holders stake their tokens to increase their community's donation matching multiplier. The Panvala League's
+                  Stake your PAN tokens to increase your community's donation matching multiplier. The Panvala League's
                   goal is for communities to own the same share of Panvala as the share of the budget they want to receive,
-                  so we reward them for it with a higher matching multiplier. Stake more PAN to increase your
-                  community's <strong>funding at capacity</strong>, the amount of funding you can receive this quarter
-                  with the highest possible matching multiplier.
+                  so we reward them for it with a higher matching multiplier until they max out.
                 </Box>
                 <Box my={1} className="w-80 center tc lh-copy">
                   If you do not currently have a PAN balance but want to stake, or you would
@@ -1135,10 +1233,8 @@ const Poll = () => {
                             <div className="fl w-30 pa2 f5 tr">
                               <div className="b ttu f6 o-50">Staked</div>
                               <div>{utils.commify(staked.toFixed(2))} PAN</div>
-                              <div className="b ttu f6 o-50">Capacity</div>
+                              <div className="b ttu f6 o-50">% of Total</div>
                               <div>{percentageStaked.toFixed(2)}%</div>
-                              <div className="b ttu f6 o-50">Funding at Capacity</div>
-                              <div>{utils.commify(matchingCapacity.toFixed(2))} PAN</div>
                               <div className="i f7 o-40 pb3">last updated {stakingTotalsUpdated}</div>
                               <div>
                                 <Button type="button" width="100%" p={3} ml={3} bg={isSelected ? "#F5F6F9" : ""} color={isSelected ? "black" : ""} text={isSelected ? "Selected" : "Select"} onClick={e => {
