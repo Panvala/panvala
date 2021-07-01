@@ -66,6 +66,19 @@ import leagueRaidGuild from '../img/league/raidguild.jpg';
 import leagueDAOhaus from '../img/league/daohaus.png';
 import leagueBEN from '../img/league/blockchain-education-network.jpg';
 import leagueDAOSquare from '../img/league/daosquare.jpg';
+import leagueMyCrypto from '../img/league/mycrypto.jpg';
+import leagueNfDAO from '../img/league/nfdao.jpg';
+import leagueNjombe from '../img/league/njombe-innovation-academy.jpg';
+import leagueThinkBetter from '../img/league/think-better.png';
+import leagueGuerrillaMusic from '../img/league/guerrilla-music.jpg';
+import leagueAkashaHubBarcelona from '../img/league/akasha-hub-barcelona.jpg';
+import leagueEthersJs from '../img/league/ethersjs.png';
+import leagueRektNews from '../img/league/rekt-news.jpg';
+import leagueUmbra from '../img/league/umbra.jpg';
+import leagueCivichub from '../img/league/civichub.png';
+import leagueWeb3Designers from '../img/league/web3-designers.png';
+import leagueJovian from '../img/league/jovian-network.png';
+
 
 import eventsBg from '../img/events-bg.png';
 
@@ -199,7 +212,7 @@ const IndexPage = () => {
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
-          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 42 communities—we're aiming for thousands.
+          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 59 communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
@@ -479,7 +492,7 @@ const IndexPage = () => {
               alt=""
               src={leagueCirclesUBI}
             />
-            <a class="link dim near-black" href="https://joincircles.net/">
+            <a className="link dim near-black" href="https://joincircles.net/">
               <h3>Circles UBI</h3>
             </a>
           </div>
@@ -488,7 +501,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGiveth}
             />
-            <a class="link dim near-black" href="https://giveth.io/">
+            <a className="link dim near-black" href="https://giveth.io/">
               <h3>Giveth</h3>
             </a>
           </div>
@@ -497,7 +510,7 @@ const IndexPage = () => {
               alt=""
               src={leagueWOCA}
             />
-            <a class="link dim near-black" href="https://womenofcrypto.art/">
+            <a className="link dim near-black" href="https://womenofcrypto.art/">
               <h3>WOCA (Women of Crypto Art)</h3>
             </a>
           </div>
@@ -506,7 +519,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDandelionCollective}
             />
-            <a class="link dim near-black" href="https://dandelion.earth/">
+            <a className="link dim near-black" href="https://dandelion.earth/">
               <h3>Dandelion Collective</h3>
             </a>
           </div>
@@ -515,7 +528,7 @@ const IndexPage = () => {
               alt=""
               src={leagueShenanigan}
             />
-            <a class="link dim near-black" href="https://she.energy/">
+            <a className="link dim near-black" href="https://she.energy/">
               <h3>Shenanigan</h3>
             </a>
           </div>
@@ -524,7 +537,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePeoplesDAO}
             />
-            <a class="link dim near-black" href="https://www.peoplesdao.community/">
+            <a className="link dim near-black" href="https://www.peoplesdao.community/">
               <h3>Peoples' Cooperative</h3>
             </a>
           </div>
@@ -533,7 +546,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMarmaJ}
             />
-            <a class="link dim near-black" href="https://www.marmaj.org/">
+            <a className="link dim near-black" href="https://www.marmaj.org/">
               <h3>Marma J Foundation</h3>
             </a>
           </div>
@@ -542,7 +555,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePoolParty}
             />
-            <a class="link dim near-black" href="https://www.pool-party.club/hackervilla">
+            <a className="link dim near-black" href="https://www.pool-party.club/hackervilla">
               <h3>Pool-Party</h3>
             </a>
           </div>
@@ -551,7 +564,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePrimeDAO}
             />
-            <a class="link dim near-black" href="https://primedao.eth.link/#/">
+            <a className="link dim near-black" href="https://primedao.eth.link/#/">
               <h3>PrimeDAO</h3>
             </a>
           </div>
@@ -560,7 +573,7 @@ const IndexPage = () => {
               alt=""
               src={leagueSenaryCommonwealth}
             />
-            <a class="link dim near-black" href="https://sbv.io/">
+            <a className="link dim near-black" href="https://sbv.io/">
               <h3>Senary Commonwealth</h3>
             </a>
           </div>
@@ -569,7 +582,7 @@ const IndexPage = () => {
               alt=""
               src={leagueKolektivo}
             />
-            <a class="link dim near-black" href="https://kolektivo.co/">
+            <a className="link dim near-black" href="https://kolektivo.co/">
               <h3>Kolektivo Labs</h3>
             </a>
           </div>
@@ -578,7 +591,7 @@ const IndexPage = () => {
               alt=""
               src={leagueAustinMeetups}
             />
-            <a class="link dim near-black" href="https://www.meetup.com/ethereum-austin/events/">
+            <a className="link dim near-black" href="https://www.meetup.com/ethereum-austin/events/">
               <h3>Austin Meetups Fund</h3>
             </a>
           </div>
@@ -587,7 +600,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDoinGud}
             />
-            <a class="link dim near-black" href="https://linktr.ee/doingud">
+            <a className="link dim near-black" href="https://linktr.ee/doingud">
               <h3>DoinGud</h3>
             </a>
           </div>
@@ -596,7 +609,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGitcoin}
             />
-            <a class="link dim near-black" href="https://gitcoin.co/">
+            <a className="link dim near-black" href="https://gitcoin.co/">
               <h3>Gitcoin</h3>
             </a>
           </div>
@@ -605,7 +618,7 @@ const IndexPage = () => {
               alt=""
               src={leagueRaidGuild}
             />
-            <a class="link dim near-black" href="https://raidguild.org/">
+            <a className="link dim near-black" href="https://raidguild.org/">
               <h3>RaidGuild</h3>
             </a>
           </div>
@@ -614,7 +627,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDAOhaus}
             />
-            <a class="link dim near-black" href="https://daohaus.club/">
+            <a className="link dim near-black" href="https://daohaus.club/">
               <h3>DAOhaus</h3>
             </a>
           </div>
@@ -623,7 +636,7 @@ const IndexPage = () => {
               alt=""
               src={leagueBEN}
             />
-            <a class="link dim near-black" href="https://blockchainedu.org/">
+            <a className="link dim near-black" href="https://blockchainedu.org/">
               <h3>Blockchain Education Network</h3>
             </a>
           </div>
@@ -632,8 +645,116 @@ const IndexPage = () => {
               alt=""
               src={leagueDAOSquare}
             />
-            <a class="link dim near-black" href="https://www.daosquare.io/">
+            <a className="link dim near-black" href="https://www.daosquare.io/">
               <h3>DAOSquare</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueMyCrypto}
+            />
+            <a className="link dim near-black" href="https://www.mycrypto.com/">
+              <h3>MyCrypto</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueNfDAO}
+            />
+            <a className="link dim near-black" href="https://nfdao.substack.com/p/wtf-is-nfdao">
+              <h3>nfDAO</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueNjombe}
+            />
+            <a className="link dim near-black" href="https://socialinnovationacademy.org/our-model/">
+              <h3>Njombe Innovation Academy</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueThinkBetter}
+            />
+            <a className="link dim near-black" href="https://www.thinkbetter.ca/">
+              <h3>ThinkBetter</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueGuerrillaMusic}
+            />
+            <a className="link dim near-black" href="https://www.guerrillamusic.ca/">
+              <h3>Guerrilla Music</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueAkashaHubBarcelona}
+            />
+            <a className="link dim near-black" href="https://akasha.org/hub-bcn/">
+              <h3>Akasha Hub Barcelona</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueEthersJs}
+            />
+            <a className="link dim near-black" href="https://github.com/ethers-io/ethers.js">
+              <h3>Ethers.js</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueRektNews}
+            />
+            <a className="link dim near-black" href="https://www.rekt.news/">
+              <h3>Rekt.news</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueUmbra}
+            />
+            <a className="link dim near-black" href="https://twitter.com/UmbraCash">
+              <h3>Umbra</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueCivichub}
+            />
+            <a className="link dim near-black" href="https://www.civichub.org/">
+              <h3>Civichub</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueWeb3Designers}
+            />
+            <a className="link dim near-black" href="https://www.web3designers.org/">
+              <h3>Web3 Designers</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueJovian}
+            />
+            <a className="link dim near-black" href="http://jovian.network/">
+              <h3>Jovian Network</h3>
             </a>
           </div>
 
