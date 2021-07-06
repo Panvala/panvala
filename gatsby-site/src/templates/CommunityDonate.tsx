@@ -100,7 +100,7 @@ const CommunityDonate = (props: CommunityDonateProps) => {
 
   return (
     <Layout>
-      <SEO title="Donate" />
+      <SEO title={`Donate to ${communityName}`} />
 
       <section className="bg-gradient pb6">
         <Nav />

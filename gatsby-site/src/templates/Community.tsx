@@ -106,7 +106,7 @@ const Community = (props: CommunityProps) => {
 
   return (
     <Layout>
-      <SEO title="Donate" />
+      <SEO title={communityName} />
 
       <section className="bg-gradient pb6">
         <Nav />
