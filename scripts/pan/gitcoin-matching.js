@@ -8,6 +8,7 @@ const stringify = require('csv-stringify/lib/sync');
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
 const DONATIONS_STARTED_AT = Date.parse('2021-03-28');
+const DONATIONS_ENDED_AT = Date.parse('2021-07-04'); // Date.now() during the round
 const DONATIONS_BATCH_NUMBER = 11;
 const GITCOIN_ADDRESS = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
 const ZKSYNC_ADDRESSES = new Set([
@@ -93,6 +94,10 @@ const LEAGUE_ADDRESSES = {
   "DePo DAO": "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
 }
 
+const OFF_GITCOIN_GRANTS = {
+  '0x97Fb4845bf7bD7156B30ef09AE94419956FE3A90': 'Civichub',
+}
+
 const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
 const XDAI_ADDRESSES = {
   "Shenanigan": "0x5A9CE898f0B03c5A3Cd2d0c727efdD0555C86f81",
@@ -173,7 +178,7 @@ function donationsToCSV(grants, donors) {
 }
 
 async function getGrantAddresses() {
-  const initialGrantAddresses = {};
+  const initialGrantAddresses = {...OFF_GITCOIN_GRANTS};
   Object.entries(XDAI_ADDRESSES).forEach(([name, address]) => initialGrantAddresses[address] = name);
   Object.entries(MATIC_ADDRESSES).forEach(([name, address]) => initialGrantAddresses[address] = name);
 
@@ -278,8 +283,11 @@ async function getZksyncTransactionsInParallel(addresses, count = 20) {
 async function getZksyncTransactions(addresses) {
   const transactions = await getZksyncTransactionsInParallel(addresses);
   console.log('zksync transactions: ', transactions.length);
-  const currentTransactions = transactions.filter(x => Date.parse(x.created_at) > DONATIONS_STARTED_AT);
-  console.log(`donation period: ${DONATIONS_STARTED_AT} - ${Date.now()}`);
+  const currentTransactions = transactions.filter(x => {
+    const createdAt = Date.parse(x.created_at);
+    return createdAt > DONATIONS_STARTED_AT && createdAt <= DONATIONS_ENDED_AT;
+  });
+  console.log(`donation period: ${DONATIONS_STARTED_AT} - ${DONATIONS_ENDED_AT}`);
   console.log('zksync current transactions: ', currentTransactions.length);
   const panTransactions = currentTransactions.filter(x => x.tx.token === 'PAN' && x.tx.type !== 'ForcedExit');
   console.log('zksync PAN transactions: ', panTransactions.length);
