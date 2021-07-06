@@ -35,7 +35,7 @@ export function getMatchingMultiplier(communityRow, totals) {
 
 export function getMaxMatchingMultiplier(communityRow, totals) {
   console.log(Object.keys(communityRow));
-  const quadraticFunding = parseCommaFloat(communityRow['quadraticFundingw/CoalitionBonus']);
+  const quadraticFunding = parseCommaFloat(communityRow['quadraticFundingw/ParticipationBonuses']);
   const spreadsheetSubsidyPoints = parseCommaFloat(communityRow.subsidyPoints);
   const totalSubsidyPoints = parseCommaFloat(totals.subsidyPoints);
   const totalSubsidy = parseCommaFloat(totals['estimatedSubsidy(PAN)']);

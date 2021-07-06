@@ -13,7 +13,7 @@ const csvParse = require('csv-parse');
       .pipe(csvParse({columns: true}))
       .on('data', row => {
         if (row['Community Name'] !== '') {
-          communities[row['Community Name']] = row;
+          communities[row['Community Name'].trim()] = row;
         }
       })
       .on('end', () => resolve({ communities, totals }));
@@ -33,7 +33,7 @@ const csvParse = require('csv-parse');
         if (row['Community'] === 'Totals') {
           totals = row;
         } else if (row['Community Name'] !== '') {
-          communities[row['Community Name']] = row;
+          communities[row['Community Name'].trim()] = row;
         }
       })
       .on('end', () => resolve({ communities, totals }));

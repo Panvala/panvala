@@ -1,11 +1,11 @@
 ,Campaign Name,Community Name,Ethereum Address,Layer 2 Preference,Layer 2 Address,Primary Donation Method,Donation URL
-,Gitcoin,Gitcoin,0x00De4B13153673BCAE2616b67bf822500d325Fc3,,,,https://gitcoin.co/grants/86/gitcoin-grants-round-9-dev-fund
+,Gitcoin,Gitcoin,0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6,,,,https://gitcoin.co/grants/86/gitcoin-grants-round-9-dev-fund
 ,RaidGuild,RaidGuild,0xD25185f8c3B9e38C3f014378CE58B362Db568352,,,Gitcoin,https://gitcoin.co/grants/304/raid-guild-3
 ,DAOhaus,DAOhaus,,,,,
 ,Blockchain Education Network,Blockchain Education Network,0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621,Matic,0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621,Gitcoin,https://gitcoin.co/grants/49/blockchain-education-network
 ,DAOSquare,DAOSquare,0x9ac9c636404C8d46D9eb966d7179983Ba5a3941A,,,Gitcoin,https://gitcoin.co/grants/482/daosquare-3
 ,Circles UBI,Circles UBI,0x7415EfD9D908281ea0279c49A6c23011D9d9A0a4,,,Gitcoin,https://gitcoin.co/grants/331/circles-ubi
-,Giveth,Giveth,0x90dfc35e747ffcf9631ce75348f99632528e1704,,,Gitcoin,https://gitcoin.co/grants/795/givethio-panvala-league
+,Giveth,Giveth,0x90dfc35e747ffcf9631ce75348f99632528e1704,xDai,,Gitcoin,https://gitcoin.co/grants/795/givethio-panvala-league
 ,Women of Crypto Art (WOCA),Women of Crypto Art,0xCCa88b952976DA313Fb928111f2D5c390eE0D723,,,Gitcoin,https://gitcoin.co/grants/1761/women-of-crypto-art-panvala-league
 ,Dandelion Collective,Dandelion Collective,0x84a57c709482d44cE49511adac7ED7F1Db299455,,,Other,"https://psychedelicsociety.org.uk/become-a-member
 https://gitcoin.co/grants/564/dandelion"
@@ -18,7 +18,7 @@ https://gitcoin.co/grants/564/dandelion"
 ,Kolektivo Labs,Kolektivo Labs,0xe64e9187d513b455732fd63FD1398ecd1925A03E,,,Gitcoin,https://gitcoin.co/grants/1325/kolektivo-regenerative-economy-in-curacao
 ,Austin Meetups Fund,Austin Meetups Fund,,xDai,0x07294360e0bb89eBbE3542c478A8d1F6840ee2eE,Gitcoin,
 ,DoinGud,DoinGud,0x31e7e4bB3Aa3A5Dd3AC5E240223eb4416CFFa5c3,,,Gitcoin,https://gitcoin.co/grants/2213/doingud-social-impact-market-place
-,Commons Stack Community Fund,Commons Stack,0x1251A94b6d800979d2d933b8Bd5914b892772Ac6,,,Gitcoin,https://gitcoin.co/grants/1127/commons-stack-community-fund-panvala-league
+,Commons Stack Community Fund,Commons Stack,0x1251A94b6d800979d2d933b8Bd5914b892772Ac6,xDai,0x1251A94b6d800979d2d933b8Bd5914b892772Ac6,Gitcoin,https://gitcoin.co/grants/1127/commons-stack-community-fund-panvala-league
 ,DAppNode,DAppNode,0x00CF36853AA4024fb5BF5cc377dfd85844B411a0,,,Gitcoin,https://gitcoin.co/grants/143/dappnode-panvala-league
 ,FightPandemics,FightPandemics,0x78F3c73F5500335aAC51E4c2A79555D176b279da,,,Gitcoin,https://gitcoin.co/grants/668/fightpandemics
 ,KERNEL,KERNEL,0x7DAC9Fc15C1Db4379D75A6E3f330aE849dFfcE18,,,Gitcoin,https://gitcoin.co/grants/855/kernel-block-ii-panvala-league
@@ -47,3 +47,14 @@ https://gitcoin.co/grants/564/dandelion"
 ,Open Reviews by Trips Community,Trips Community,0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF,xDai,0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF,Gitcoin,https://gitcoin.co/grants/1166/open-reviews-a-web2-to-web3-replication-protocol-
 ,EthCC by Ethereum France,Ethereum France,0x04A8A22e5eF364c5237Df13317c4F083f32C2Cc4,,,Gitcoin,https://gitcoin.co/grants/1577/ethcc-by-ethereum-france-panvala-league
 ,Abridged,Abridged,0x0efE994201e2b0136DD40D5033b5F437e4c5F958,,,Gitcoin,https://gitcoin.co/grants/274/abridged
+,nfDAO ,nfDAO,0x37133cda1941449cde7128f0C964C228F94844a8,,,,https://gitcoin.co/grants/2292/nfdao
+,MyCrypto,MyCrypto,0x7030B43E821BA34124915bA65B90Dbda7a9E7d09,,,,https://gitcoin.co/grants/347/cryptoscamdb
+,Njombe Innovation Academy,Njombe Innovation Academy,0x308Fd8FB79379dEAD5A360FFb6Dd2D1AFf9F5EE4,,,,https://gitcoin.co/grants/2687/njombe-innovation-academy
+,Barrio to the Blockchain ,Guerrilla Music ,0x97b8fdfACf37dd68376198b7FCFFeC3c0846f593,,,,https://gitcoin.co/grants/2602/barrio-to-the-blockchain
+,ethers.js ,ethers.js,0x8ba1f109551bD432803012645Ac136ddd64DBA72,,,,https://gitcoin.co/grants/13/ethersjs-complete-simple-and-tiny
+,rekt.news ,rekt.news ,0x3C5c2F4bCeC51a36494682f91Dbc6cA7c63B514C,,,,https://gitcoin.co/grants/1632/rektnews-the-dark-web-of-defi-journalism
+,Akasha ,Akasha Hub Barcelona,0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d,,,,https://gitcoin.co/grants/368/akasha-hub-barcelona
+,Umbra,Umbra ,0x57EA12A3A8E441f5FE7B1F3Af1121097b7d3B6A8,,,,https://gitcoin.co/grants/821/umbra-privacy-preserving-stealth-payments
+,Civichub ,Civichub,0x97Fb4845bf7bD7156B30ef09AE94419956FE3A90,,,,https://giveth.io/project/alumnos-de-civichub
+,Web3Designers.org,Web3 Designers,0xE98dc4fdCb03cC29C0f64A00AAAd7F56d359CBAD,,,,https://gitcoin.co/grants/2609/web3designersorg
+,Jovian Network,Jovian Network,0x6Aa875452a622C25AFd05064138faFc14E715BeF,,,,https://gitcoin.co/grants/2959/jovian-network-community-activism-research-making
