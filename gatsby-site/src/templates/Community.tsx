@@ -106,7 +106,7 @@ const Community = (props: CommunityProps) => {
 
   return (
     <Layout>
-      <SEO title={communityName} />
+      <SEO title={communityName} description={`${communityName} is a member of the Panvala League: we stake PAN tokens to earn matching for donations made using PAN.`} />
 
       <section className="bg-gradient pb6">
         <Nav />

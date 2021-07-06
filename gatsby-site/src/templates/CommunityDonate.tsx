@@ -100,7 +100,8 @@ const CommunityDonate = (props: CommunityDonateProps) => {
 
   return (
     <Layout>
-      <SEO title={`Donate to ${communityName}`} />
+      <SEO title={`Donate to ${communityName}`} description={`Your donations to ${communityName} are matched by Panvala. ${communityName} is a member of the Panvala League.`} />
+
 
       <section className="bg-gradient pb6">
         <Nav />
