@@ -47,7 +47,7 @@ const toCamelCase = (input) => {
 };
 
 /* Convert to kebab-case */
-const toKebabCase = (input) => input.replace(/[' ']/g, '-').toLowerCase();
+const toKebabCase = (input) => input.trim().replace(/[ '\.]/g, '-').toLowerCase();
 
 exports.createPages = async ({ graphql, actions: { createPage }, reporter }) => {
   const result = await graphql(

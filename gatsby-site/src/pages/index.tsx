@@ -72,7 +72,7 @@ import leagueNjombe from '../img/league/njombe-innovation-academy.jpg';
 import leagueThinkBetter from '../img/league/think-better.png';
 import leagueGuerrillaMusic from '../img/league/guerrilla-music.jpg';
 import leagueAkashaHubBarcelona from '../img/league/akasha-hub-barcelona.jpg';
-import leagueEthersJs from '../img/league/ethersjs.png';
+import leagueEthersJs from '../img/league/ethers-js.png';
 import leagueRektNews from '../img/league/rekt-news.jpg';
 import leagueUmbra from '../img/league/umbra.jpg';
 import leagueCivichub from '../img/league/civichub.png';
@@ -220,7 +220,7 @@ const IndexPage = () => {
               alt=""
               src={leagueCommonsStack}
             />
-            <a className="link dim near-black" href="https://commonsstack.org/">
+            <a className="link dim near-black" href="/commons-stack">
               <h3>Commons Stack</h3>
             </a>
           </div>
@@ -229,7 +229,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDAppNode}
             />
-            <a className="link dim near-black" href="https://dappnode.io/">
+            <a className="link dim near-black" href="/dappnode">
               <h3>DAppNode</h3>
             </a>
           </div>
@@ -238,7 +238,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMetaCartel}
             />
-            <a className="link dim near-black" href="https://www.metacartel.org/">
+            <a className="link dim near-black" href="/metacartel">
               <h3>MetaCartel</h3>
             </a>
           </div>
@@ -247,7 +247,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDXdao}
             />
-            <a className="link dim near-black" href="https://dxdao.eth.link/">
+            <a className="link dim near-black" href="/dxdao">
               <h3>DXdao</h3>
             </a>
           </div>
@@ -256,7 +256,7 @@ const IndexPage = () => {
               alt=""
               src={leagueHashingItOut}
             />
-            <a className="link dim near-black" href="https://twitter.com/hashingitoutpod">
+            <a className="link dim near-black" href="/hashing-it-out">
               <h3>Hashing it Out</h3>
             </a>
           </div>
@@ -265,7 +265,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMetaGammaDelta}
             />
-            <a className="link dim near-black" href="https://metagammadelta.com/">
+            <a className="link dim near-black" href="/meta-gamma-delta">
               <h3>Meta Gamma Delta</h3>
             </a>
           </div>
@@ -274,7 +274,7 @@ const IndexPage = () => {
               alt=""
               src={leagueKERNEL}
             />
-            <a className="link dim near-black" href="https://gitcoin.co/blog/announcing-kernel/">
+            <a className="link dim near-black" href="/kernel">
               <h3>KERNEL</h3>
             </a>
           </div>
@@ -283,7 +283,7 @@ const IndexPage = () => {
               alt=""
               src={leagueFutureModern}
             />
-            <a className="link dim near-black" href="https://twitter.com/afuturemodern">
+            <a className="link dim near-black" href="/future-modern">
               <h3>future modern</h3>
             </a>
           </div>
@@ -303,7 +303,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDePoDAO}
             />
-            <a className="link dim near-black" href="https://www.depodao.org/">
+            <a className="link dim near-black" href="/depo-dao">
               <h3>DePo DAO</h3>
             </a>
           </div>
@@ -312,7 +312,7 @@ const IndexPage = () => {
               alt=""
               src={leagueWhalerDAO}
             />
-            <a className="link dim near-black" href="https://whalerdao.org/">
+            <a className="link dim near-black" href="/whalerdao">
               <h3>WhalerDAO</h3>
             </a>
           </div>
@@ -321,7 +321,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMaticMitra}
             />
-            <a className="link dim near-black" href="https://matic.network/matic-mitra/">
+            <a className="link dim near-black" href="/matic-mitra">
               <h3>Matic Mitra</h3>
             </a>
           </div>
@@ -330,7 +330,7 @@ const IndexPage = () => {
               alt=""
               src={leagueFightPandemics}
             />
-            <a className="link dim near-black" href="https://linktr.ee/fightpandemics">
+            <a className="link dim near-black" href="/fightpandemics">
               <h3>Fight Pandemics</h3>
             </a>
           </div>
@@ -339,7 +339,7 @@ const IndexPage = () => {
               alt=""
               src={leagueLab10Collective}
             />
-            <a className="link dim near-black" href="https://lab10.coop/">
+            <a className="link dim near-black" href="/lab10-collective">
               <h3>lab10 collective</h3>
             </a>
           </div>
@@ -348,7 +348,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDeFiSafety}
             />
-            <a className="link dim near-black" href="https://defisafety.com/">
+            <a className="link dim near-black" href="/defi-safety">
               <h3>DeFi Safety</h3>
             </a>
           </div>
@@ -357,7 +357,7 @@ const IndexPage = () => {
               alt=""
               src={leagueWeb3Bridge}
             />
-            <a className="link dim near-black" href="http://www.web3bridge.com/">
+            <a className="link dim near-black" href="/web3bridge">
               <h3>Web3Bridge</h3>
             </a>
           </div>
@@ -366,7 +366,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMolLeArt}
             />
-            <a className="link dim near-black" href="https://twitter.com/molleart">
+            <a className="link dim near-black" href="/mol-leart">
               <h3>Mol LeArt</h3>
             </a>
           </div>
@@ -375,7 +375,7 @@ const IndexPage = () => {
               alt=""
               src={leagueRotki}
             />
-            <a className="link dim near-black" href="https://rotki.com/">
+            <a className="link dim near-black" href="/rotki">
               <h3>Rotki</h3>
             </a>
           </div>
@@ -384,7 +384,7 @@ const IndexPage = () => {
               alt=""
               src={leagueBrightID}
             />
-            <a className="link dim near-black" href="https://www.brightid.org/">
+            <a className="link dim near-black" href="/brightid">
               <h3>BrightID</h3>
             </a>
           </div>
@@ -393,7 +393,7 @@ const IndexPage = () => {
               alt=""
               src={leagueEthereumFrance}
             />
-            <a className="link dim near-black" href="https://www.ethereum-france.com/">
+            <a className="link dim near-black" href="/ethereum-france">
               <h3>EthCC by Ethereum France</h3>
             </a>
           </div>
@@ -402,7 +402,7 @@ const IndexPage = () => {
               alt=""
               src={leagueAbridged}
             />
-            <a className="link dim near-black" href="https://abridged.io/">
+            <a className="link dim near-black" href="/abridged">
               <h3>Abridged</h3>
             </a>
           </div>
@@ -411,7 +411,7 @@ const IndexPage = () => {
               alt=""
               src={leagueNFTHub}
             />
-            <a className="link dim near-black" href="http://nfthub.xyz/">
+            <a className="link dim near-black" href="/nfthub">
               <h3>NFThub</h3>
             </a>
           </div>
@@ -420,7 +420,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMetaGame}
             />
-            <a className="link dim near-black" href="https://metagame.wtf/">
+            <a className="link dim near-black" href="/metagame">
               <h3>MetaGame</h3>
             </a>
           </div>
@@ -429,7 +429,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMetaSpace}
             />
-            <a className="link dim near-black" href="https://metaspacenow.com/">
+            <a className="link dim near-black" href="/metaspace">
               <h3>MetaSpace</h3>
             </a>
           </div>
@@ -438,7 +438,7 @@ const IndexPage = () => {
               alt=""
               src={leagueTripsCommunity}
             />
-            <a className="link dim near-black" href="https://tripscommunity.com/en/">
+            <a className="link dim near-black" href="/trips-community">
               <h3>Trips Community</h3>
             </a>
           </div>
@@ -447,7 +447,7 @@ const IndexPage = () => {
               alt=""
               src={leagueUpala}
             />
-            <a className="link dim near-black" href="https://upala-docs.readthedocs.io/en/latest/">
+            <a className="link dim near-black" href="/upala">
               <h3>Upala</h3>
             </a>
           </div>
@@ -456,7 +456,7 @@ const IndexPage = () => {
               alt=""
               src={leagueBloomNetwork}
             />
-            <a className="link dim near-black" href="https://bloomnetwork.org/">
+            <a className="link dim near-black" href="/bloom-network">
               <h3>Bloom Network</h3>
             </a>
           </div>
@@ -465,7 +465,7 @@ const IndexPage = () => {
               alt=""
               src={leagueHandshakeDevelopmentFund}
             />
-            <a className="link dim near-black" href="https://www.titansofdata.org/handshake/hns-development-fund/">
+            <a className="link dim near-black" href="/handshake-development-fund">
               <h3>Handshake Development Fund</h3>
             </a>
           </div>
@@ -474,7 +474,7 @@ const IndexPage = () => {
               alt=""
               src={leagueLexDAO}
             />
-            <a className="link dim near-black" href="https://lexdao.org/">
+            <a className="link dim near-black" href="/lexdao">
               <h3>LexDAO</h3>
             </a>
           </div>
@@ -483,7 +483,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGrassrootsEconomics}
             />
-            <a className="link dim near-black" href="https://www.grassrootseconomics.org/">
+            <a className="link dim near-black" href="/grassroots-economics">
               <h3>Grassroots Economics</h3>
             </a>
           </div>
@@ -492,7 +492,7 @@ const IndexPage = () => {
               alt=""
               src={leagueCirclesUBI}
             />
-            <a className="link dim near-black" href="https://joincircles.net/">
+            <a className="link dim near-black" href="/circles-ubi">
               <h3>Circles UBI</h3>
             </a>
           </div>
@@ -501,7 +501,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGiveth}
             />
-            <a className="link dim near-black" href="https://giveth.io/">
+            <a className="link dim near-black" href="/giveth">
               <h3>Giveth</h3>
             </a>
           </div>
@@ -510,7 +510,7 @@ const IndexPage = () => {
               alt=""
               src={leagueWOCA}
             />
-            <a className="link dim near-black" href="https://womenofcrypto.art/">
+            <a className="link dim near-black" href="/women-of-crypto-art">
               <h3>WOCA (Women of Crypto Art)</h3>
             </a>
           </div>
@@ -519,7 +519,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDandelionCollective}
             />
-            <a className="link dim near-black" href="https://dandelion.earth/">
+            <a className="link dim near-black" href="/dandelion-collective">
               <h3>Dandelion Collective</h3>
             </a>
           </div>
@@ -528,7 +528,7 @@ const IndexPage = () => {
               alt=""
               src={leagueShenanigan}
             />
-            <a className="link dim near-black" href="https://she.energy/">
+            <a className="link dim near-black" href="/shenanigan">
               <h3>Shenanigan</h3>
             </a>
           </div>
@@ -537,7 +537,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePeoplesDAO}
             />
-            <a className="link dim near-black" href="https://www.peoplesdao.community/">
+            <a className="link dim near-black" href="/peoples--cooperative">
               <h3>Peoples' Cooperative</h3>
             </a>
           </div>
@@ -546,7 +546,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMarmaJ}
             />
-            <a className="link dim near-black" href="https://www.marmaj.org/">
+            <a className="link dim near-black" href="/marma-j-foundation">
               <h3>Marma J Foundation</h3>
             </a>
           </div>
@@ -555,7 +555,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePoolParty}
             />
-            <a className="link dim near-black" href="https://www.pool-party.club/hackervilla">
+            <a className="link dim near-black" href="/pool-party">
               <h3>Pool-Party</h3>
             </a>
           </div>
@@ -564,7 +564,7 @@ const IndexPage = () => {
               alt=""
               src={leaguePrimeDAO}
             />
-            <a className="link dim near-black" href="https://primedao.eth.link/#/">
+            <a className="link dim near-black" href="/primedao">
               <h3>PrimeDAO</h3>
             </a>
           </div>
@@ -573,7 +573,7 @@ const IndexPage = () => {
               alt=""
               src={leagueSenaryCommonwealth}
             />
-            <a className="link dim near-black" href="https://sbv.io/">
+            <a className="link dim near-black" href="/senary-commonwealth">
               <h3>Senary Commonwealth</h3>
             </a>
           </div>
@@ -582,7 +582,7 @@ const IndexPage = () => {
               alt=""
               src={leagueKolektivo}
             />
-            <a className="link dim near-black" href="https://kolektivo.co/">
+            <a className="link dim near-black" href="/kolektivo-labs">
               <h3>Kolektivo Labs</h3>
             </a>
           </div>
@@ -591,7 +591,7 @@ const IndexPage = () => {
               alt=""
               src={leagueAustinMeetups}
             />
-            <a className="link dim near-black" href="https://www.meetup.com/ethereum-austin/events/">
+            <a className="link dim near-black" href="/austin-meetups-fund">
               <h3>Austin Meetups Fund</h3>
             </a>
           </div>
@@ -600,7 +600,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDoinGud}
             />
-            <a className="link dim near-black" href="https://linktr.ee/doingud">
+            <a className="link dim near-black" href="/doingud">
               <h3>DoinGud</h3>
             </a>
           </div>
@@ -609,7 +609,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGitcoin}
             />
-            <a className="link dim near-black" href="https://gitcoin.co/">
+            <a className="link dim near-black" href="/gitcoin">
               <h3>Gitcoin</h3>
             </a>
           </div>
@@ -618,7 +618,7 @@ const IndexPage = () => {
               alt=""
               src={leagueRaidGuild}
             />
-            <a className="link dim near-black" href="https://raidguild.org/">
+            <a className="link dim near-black" href="/raidguild">
               <h3>RaidGuild</h3>
             </a>
           </div>
@@ -627,7 +627,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDAOhaus}
             />
-            <a className="link dim near-black" href="https://daohaus.club/">
+            <a className="link dim near-black" href="/daohaus">
               <h3>DAOhaus</h3>
             </a>
           </div>
@@ -636,7 +636,7 @@ const IndexPage = () => {
               alt=""
               src={leagueBEN}
             />
-            <a className="link dim near-black" href="https://blockchainedu.org/">
+            <a className="link dim near-black" href="/blockchain-education-network">
               <h3>Blockchain Education Network</h3>
             </a>
           </div>
@@ -645,7 +645,7 @@ const IndexPage = () => {
               alt=""
               src={leagueDAOSquare}
             />
-            <a className="link dim near-black" href="https://www.daosquare.io/">
+            <a className="link dim near-black" href="/daosquare">
               <h3>DAOSquare</h3>
             </a>
           </div>
@@ -654,7 +654,7 @@ const IndexPage = () => {
               alt=""
               src={leagueMyCrypto}
             />
-            <a className="link dim near-black" href="https://www.mycrypto.com/">
+            <a className="link dim near-black" href="/mycrypto">
               <h3>MyCrypto</h3>
             </a>
           </div>
@@ -663,7 +663,7 @@ const IndexPage = () => {
               alt=""
               src={leagueNfDAO}
             />
-            <a className="link dim near-black" href="https://nfdao.substack.com/p/wtf-is-nfdao">
+            <a className="link dim near-black" href="/nfdao">
               <h3>nfDAO</h3>
             </a>
           </div>
@@ -672,7 +672,7 @@ const IndexPage = () => {
               alt=""
               src={leagueNjombe}
             />
-            <a className="link dim near-black" href="https://socialinnovationacademy.org/our-model/">
+            <a className="link dim near-black" href="/njombe-innovation-academy">
               <h3>Njombe Innovation Academy</h3>
             </a>
           </div>
@@ -690,7 +690,7 @@ const IndexPage = () => {
               alt=""
               src={leagueGuerrillaMusic}
             />
-            <a className="link dim near-black" href="https://www.guerrillamusic.ca/">
+            <a className="link dim near-black" href="/guerrilla-music">
               <h3>Guerrilla Music</h3>
             </a>
           </div>
@@ -699,7 +699,7 @@ const IndexPage = () => {
               alt=""
               src={leagueAkashaHubBarcelona}
             />
-            <a className="link dim near-black" href="https://akasha.org/hub-bcn/">
+            <a className="link dim near-black" href="/akasha-hub-barcelona">
               <h3>Akasha Hub Barcelona</h3>
             </a>
           </div>
@@ -708,7 +708,7 @@ const IndexPage = () => {
               alt=""
               src={leagueEthersJs}
             />
-            <a className="link dim near-black" href="https://github.com/ethers-io/ethers.js">
+            <a className="link dim near-black" href="/ethers-js">
               <h3>Ethers.js</h3>
             </a>
           </div>
@@ -717,7 +717,7 @@ const IndexPage = () => {
               alt=""
               src={leagueRektNews}
             />
-            <a className="link dim near-black" href="https://www.rekt.news/">
+            <a className="link dim near-black" href="/rekt-news">
               <h3>Rekt.news</h3>
             </a>
           </div>
@@ -726,7 +726,7 @@ const IndexPage = () => {
               alt=""
               src={leagueUmbra}
             />
-            <a className="link dim near-black" href="https://twitter.com/UmbraCash">
+            <a className="link dim near-black" href="/umbra">
               <h3>Umbra</h3>
             </a>
           </div>
@@ -735,7 +735,7 @@ const IndexPage = () => {
               alt=""
               src={leagueCivichub}
             />
-            <a className="link dim near-black" href="https://www.civichub.org/">
+            <a className="link dim near-black" href="/civichub">
               <h3>Civichub</h3>
             </a>
           </div>
@@ -744,7 +744,7 @@ const IndexPage = () => {
               alt=""
               src={leagueWeb3Designers}
             />
-            <a className="link dim near-black" href="https://www.web3designers.org/">
+            <a className="link dim near-black" href="/web3-designers">
               <h3>Web3 Designers</h3>
             </a>
           </div>
@@ -753,7 +753,7 @@ const IndexPage = () => {
               alt=""
               src={leagueJovian}
             />
-            <a className="link dim near-black" href="http://jovian.network/">
+            <a className="link dim near-black" href="/jovian-network">
               <h3>Jovian Network</h3>
             </a>
           </div>
