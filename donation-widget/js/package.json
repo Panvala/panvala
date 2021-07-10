@@ -1,0 +1,35 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "rm -rf .cache dist && parcel src/script.js --port 3401 --no-autoinstall",
+    "build": "rm -rf .cache dist && NODE_ENV=production parcel build src/script.js --no-source-maps --no-autoinstall",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@walletconnect/web3-provider": "^1.3.1",
+    "ethers": "^5.0.23",
+    "lodash": "^4.17.20",
+    "parcel-plugin-bundle-visualiser": "^1.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.6",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "parcel-bundler": "^1.12.3",
+    "parcel-plugin-inliner": "^1.0.10",
+    "prettier": "^1.19.1",
+    "sass": "^1.23.0-module.beta.1"
+  },
+  "license": "MIT",
+  "browserslist": [
+    "last 1 Chrome version",
+    "ie 11"
+  ]
+}
