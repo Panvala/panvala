@@ -1,0 +1,235 @@
+[
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "proposals",
+    "outputs": [
+      { "internalType": "address", "name": "gatekeeper", "type": "address" },
+      { "internalType": "uint256", "name": "requestID", "type": "uint256" },
+      { "internalType": "uint256", "name": "tokens", "type": "uint256" },
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" },
+      { "internalType": "bool", "name": "withdrawn", "type": "bool" }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "_days", "type": "uint256" }],
+    "name": "calculateDecay",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address[]", "name": "beneficiaries", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "tokenAmounts", "type": "uint256[]" },
+      { "internalType": "bytes[]", "name": "metadataHashes", "type": "bytes[]" }
+    ],
+    "name": "createManyProposals",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "time", "type": "uint256" }],
+    "name": "projectedUnlockedBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address", "name": "donor", "type": "address" },
+      { "internalType": "uint256", "name": "tokens", "type": "uint256" },
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "donate",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [{ "internalType": "uint256", "name": "proposalID", "type": "uint256" }],
+    "name": "withdrawTokens",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      { "internalType": "address", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "tokens", "type": "uint256" },
+      { "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "createProposal",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "updateBalances",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "parameters",
+    "outputs": [{ "internalType": "contract ParameterStore", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "lastLockedTime",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "lifetimeReleasedTokens",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "unlockedBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "lastLockedBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "proposalCount",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "SCALE",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "token",
+    "outputs": [{ "internalType": "contract IERC20", "name": "", "type": "address" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [{ "internalType": "uint256", "name": "time", "type": "uint256" }],
+    "name": "projectedLockedBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract ParameterStore", "name": "_parameters", "type": "address" },
+      { "internalType": "contract IERC20", "name": "_token", "type": "address" },
+      { "internalType": "contract Gatekeeper", "name": "_currentGatekeeper", "type": "address" },
+      { "internalType": "uint256", "name": "initialUnlockedBalance", "type": "uint256" }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "proposer", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "requestID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "tokens", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "ProposalCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "proposalID", "type": "uint256" },
+      { "indexed": true, "internalType": "address", "name": "to", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" }
+    ],
+    "name": "TokensWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "unlockedBalance", "type": "uint256" },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lastLockedBalance",
+        "type": "uint256"
+      },
+      { "indexed": false, "internalType": "uint256", "name": "lastLockedTime", "type": "uint256" },
+      { "indexed": false, "internalType": "uint256", "name": "totalBalance", "type": "uint256" }
+    ],
+    "name": "BalancesUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "payer", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "donor", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "numTokens", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes", "name": "metadataHash", "type": "bytes" }
+    ],
+    "name": "Donation",
+    "type": "event"
+  }
+]
