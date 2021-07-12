@@ -186,7 +186,7 @@ const Community = (props: CommunityProps) => {
                 </div>
 
                 {/* Matching Explanation */}
-                <p className="f4 tj tl-l lh-copy">Donation matching is earned from community members who are owners of Panvala. The more PAN we own, the matching we earn.</p>
+                <p className="f4 tj tl-l lh-copy">Donation matching is earned from community members who are owners of Panvala. The more PAN we own, the more matching we earn.</p>
               </div>
 
             </div>

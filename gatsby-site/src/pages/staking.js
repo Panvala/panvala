@@ -364,7 +364,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1823790.638925692913294119"
+    "weight": "1826974.475385233840206662"
   },
   "9": {
     "id": 9,
@@ -454,7 +454,7 @@ const stakingResults = {
   "26": {
     "id": 26,
     "name": "Ethereum France",
-    "weight": "0.0"
+    "weight": "338.48480753"
   },
   "27": {
     "id": 27,
@@ -464,7 +464,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "63926.055014354595308547"
+    "weight": "61926.055014354595308547"
   },
   "29": {
     "id": 29,
@@ -674,7 +674,7 @@ categories.sort((a, b) => {
 
 const pollID = '7';
 const snapshotsBeginOn = 'July 2';
-const stakingTotalsUpdated = 'July 5';
+const stakingTotalsUpdated = 'July 12';
 const leagueBudget = 1232726.45;
 
 const ClipContainer = styled.div`
