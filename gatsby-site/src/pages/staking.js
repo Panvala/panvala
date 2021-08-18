@@ -359,17 +359,17 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "997056.109441353300233188"
+    "weight": "997071.309441353300233188"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1826974.475385233840206662"
+    "weight": "1580942.228309929719888178"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1066849.92008577382757"
+    "weight": "1069885.78554399382757"
   },
   "10": {
     "id": 10,
@@ -414,7 +414,7 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "27882.443320705358893968"
+    "weight": "20332.344020705358893968"
   },
   "19": {
     "id": 19,
@@ -434,7 +434,7 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "16705.289627205782770359"
+    "weight": "3947.067400692007338869"
   },
   "23": {
     "id": 23,
@@ -444,7 +444,7 @@ const stakingResults = {
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "51897.806643657488644762"
+    "weight": "51922.841544707488644762"
   },
   "25": {
     "id": 25,
@@ -464,7 +464,7 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "61926.055014354595308547"
+    "weight": "58926.055014354595308547"
   },
   "29": {
     "id": 29,
@@ -474,12 +474,12 @@ const stakingResults = {
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "178900.306819000000720896"
+    "weight": "182697.306819000000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "15271.772918086348543597"
+    "weight": "14360.951375212701851097"
   },
   "32": {
     "id": 32,
@@ -489,7 +489,7 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "23933.295949150232809302"
+    "weight": "27849.965949150232809302"
   },
   "34": {
     "id": 34,
@@ -514,7 +514,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "78328.39965614747216818"
+    "weight": "37680.036546403651994366"
   },
   "39": {
     "id": 39,
@@ -524,12 +524,12 @@ const stakingResults = {
   "40": {
     "id": 40,
     "name": "Dandelion Collective",
-    "weight": "220431.898275444168499836"
+    "weight": "433600.898275444168499836"
   },
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "51080.525853771413845642"
+    "weight": "50956.619990863895848024"
   },
   "42": {
     "id": 42,
@@ -544,7 +544,7 @@ const stakingResults = {
   "44": {
     "id": 44,
     "name": "Pool-Party",
-    "weight": "90453.092334920837372068"
+    "weight": "77918.300975933165781328"
   },
   "45": {
     "id": 45,
@@ -574,7 +574,7 @@ const stakingResults = {
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "385845.859242714838451446"
+    "weight": "397010.927666983353955715"
   },
   "51": {
     "id": 51,
@@ -584,7 +584,7 @@ const stakingResults = {
   "52": {
     "id": 52,
     "name": "DAOhaus",
-    "weight": "2326.488120198206584212"
+    "weight": "824.781120198206584212"
   },
   "53": {
     "id": 53,
@@ -604,12 +604,12 @@ const stakingResults = {
   "56": {
     "id": 56,
     "name": "nfDAO",
-    "weight": "1488.733000314428379418"
+    "weight": "1505.501414214248679964"
   },
   "57": {
     "id": 57,
     "name": "Njombe Innovation Academy",
-    "weight": "5282.987009107769911939"
+    "weight": "5339.732406533071623149"
   },
   "58": {
     "id": 58,
@@ -619,7 +619,7 @@ const stakingResults = {
   "59": {
     "id": 59,
     "name": "Guerrilla Music",
-    "weight": "6.2985"
+    "weight": "2466.454242279194460941"
   },
   "60": {
     "id": 60,
@@ -629,7 +629,7 @@ const stakingResults = {
   "61": {
     "id": 61,
     "name": "ethers.js",
-    "weight": "14009.2877428452605"
+    "weight": "14024.4877428452605"
   },
   "62": {
     "id": 62,
@@ -639,7 +639,7 @@ const stakingResults = {
   "63": {
     "id": 63,
     "name": "Umbra",
-    "weight": "1153.9365"
+    "weight": "1169.1365"
   },
   "64": {
     "id": 64,
@@ -674,7 +674,7 @@ categories.sort((a, b) => {
 
 const pollID = '7';
 const snapshotsBeginOn = 'July 2';
-const stakingTotalsUpdated = 'July 12';
+const stakingTotalsUpdated = 'August 18';
 const leagueBudget = 1232726.45;
 
 const ClipContainer = styled.div`

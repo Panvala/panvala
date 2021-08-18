@@ -15,6 +15,9 @@ const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models'
 
 const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
 const BLOCKSCOUT_MATIC = 'https://api.polygonscan.com/api/';
+const BLOCKSCOUT_API_KEYS = {
+  [BLOCKSCOUT_MATIC]: 'B9Z6B4Q25P753EBNX1ED6EXY1FS7RZJWDU',
+};
 const TOKEN_ADDRESS_MAINNET = '0xd56dac73a4d6766464b38ec6d91eb45ce7457c44';
 const TOKEN_ADDRESS_XDAI = '0x981fB9BA94078a2275A8fc906898ea107B9462A8';
 const TOKEN_ADDRESS_MATIC = '0xe9949106f0777e7A2e36df891d59583AC94dc896';
@@ -89,7 +92,13 @@ const zkSyncLimiter = new Bottleneck({
 
 async function getZkSyncAccountBalance(address) {
   const provider = await getDefaultProvider('mainnet');
-  const accountState = await zkSyncLimiter.schedule(() => provider.getState(address));
+  let accountState = null;
+  try {
+    accountState = await zkSyncLimiter.schedule(() => provider.getState(address));
+  } catch (err) {
+    console.log(`Error while fetching zksync balance: ${err}`);
+    throw err;
+  }
   const balance = accountState.verified.balances.PAN;
   console.log(`Got zksync balance for ${address}`);
   return BigNumber.from(balance || 0);
@@ -104,15 +113,21 @@ async function getBlockscoutAccountBalance(blockscoutUrl, tokenAddress, address)
       action: 'tokenbalance',
       contractaddress: tokenAddress,
       address,
+      apikey: BLOCKSCOUT_API_KEYS[blockscoutUrl],
     },
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-  }).then(response => {
-    console.log(`Got blockscout balance for ${address}`);
-    return BigNumber.from(response.data.result);
-  });
+  })
+    .then(response => {
+      console.log(`Got blockscout balance for ${address}`);
+      return BigNumber.from(response.data.result);
+    })
+    .catch(err => {
+      console.log(`Error while fetching Blockscout balance via ${blockscoutUrl}: ${err}`);
+      throw err;
+    });
 }
 
 async function getUniswapAccountBalance(
@@ -132,13 +147,18 @@ async function getUniswapAccountBalance(
   const lpToken = new Contract(pairContractAddress, contractABIs.BasicToken.abi, provider);
 
   let balance = BigNumber.from(0);
-  const accountLpBalance = await lpToken.balanceOf(address);
-  if (!accountLpBalance.eq(0)) {
-    const lpSupply = await lpToken.totalSupply();
-    if (!lpSupply.eq(0)) {
-      const poolPanBalance = await panToken.balanceOf(pairContractAddress);
-      balance = accountLpBalance.mul(poolPanBalance).div(lpSupply);
+  try {
+    const accountLpBalance = await lpToken.balanceOf(address);
+    if (!accountLpBalance.eq(0)) {
+      const lpSupply = await lpToken.totalSupply();
+      if (!lpSupply.eq(0)) {
+        const poolPanBalance = await panToken.balanceOf(pairContractAddress);
+        balance = accountLpBalance.mul(poolPanBalance).div(lpSupply);
+      }
     }
+  } catch (err) {
+    console.log(`Error while fetching Uniswap balance via RPC: ${err}`);
+    throw err;
   }
 
   console.log(`Got uniswap balance for ${address}`);
