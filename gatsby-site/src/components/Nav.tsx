@@ -54,12 +54,12 @@ export default function Nav({ account, balance, handleClick }: Props) {
             Events
           </a>
           <a
-            href="https://forum.panvala.com"
+            href="https://tha.panvala.com"
             target="_blank"
             rel="noopener noreferrer"
             className="link dim white-60 f6 fw6 dib mr3"
           >
-            Forum
+            THA Forum
           </a>
           <a
             href="https://twitter.com/PanvalaHQ"

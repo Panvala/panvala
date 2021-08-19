@@ -775,7 +775,7 @@ const IndexPage = () => {
           </a>
         </div>
         <div className="dib v-top mr3-ns mr2 mv2">
-          <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!">
+          <a href="mailto:membership@panvala.com?subject=We want to join the Panvala League!">
             <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
               Submit A New Community
             </button>

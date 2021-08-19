@@ -58,8 +58,8 @@ const Join = () => {
               </Box>
               <Box className="w-50-ns w-100 pa3">
                 <Box maxWidth="365px" lineHeight="1.7">
-                  The best way to keep up to date with Panvala is to follow us on Twitter! We also post to the Panvala forum with
-                  more detailed updates for the community to discuss.
+                  The best way to keep up to date with Panvala is to follow us on Twitter! We also post to the
+                  Token Holders Association (THA) forum with more detailed updates for the community to discuss.
                   <Box flex justifyContent="center" className="mv4">
                     <a
                       href="https://twitter.com/PanvalaHQ"
@@ -70,7 +70,7 @@ const Join = () => {
                   </Box>
                   <Box flex justifyContent="center" className="mv4">
                     <a
-                      href="https://forum.panvala.com"
+                      href="https://tha.panvala.com"
                       className="link b dim blue"
                     >
                       <Button p={3} mr={3} text="Sign Up for the Forum" bg="#F5F6F9" color="black" />
@@ -82,20 +82,20 @@ const Join = () => {
 
             <section className="flex flex-wrap">
               <Box className="w-50-ns w-100" bold fontSize={4} textAlign="center">
-                Step 3: Join the Caucus
+                Step 3: Join the Token Holders Association
               </Box>
               <Box className="w-50-ns w-100 pa3">
                 <Box maxWidth="365px" lineHeight="1.7">
-                  Want to be even more involved? Join the Panvala Caucus! The Caucus is Panvala’s
-                  version of Ethereum’s Core Devs: we make recommendations that Panvala can accept or reject.
+                  Want to be even more involved? Join the Panvala Token Holders Association (THA)! The THA is where
+                  individual token holders come together to make Panvala succeed.
                   We need all the help we can get from active PAN holders to help Panvala achieve its mission.
                   <Box flex justifyContent="center" className="mv4">
                     <a
-                      href="mailto:caucus@panvala.com?subject=I%20want%20to%20join%20the%20Panvala%20Caucus!"
+                      href="https://tha.panvala.com/"
                       target="_blank"
                       className="link b dim blue"
                     >
-                      <Button p={3} mr={3} text="Email the Caucus" bg="#F5F6F9" color="black" />
+                      <Button p={3} mr={3} text="Join the THA" bg="#F5F6F9" color="black" />
                     </a>
                   </Box>
                 </Box>
@@ -115,7 +115,7 @@ const Join = () => {
                   The existing communities in the League have a strong influence over which communities to add to the League.
                   <Box flex justifyContent="center" className="mv4">
                     <a
-                      href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!"
+                      href="mailto:membership@panvala.com?subject=We want to join the Panvala League!"
                       target="_blank"
                       className="link b dim blue"
                     >

@@ -43,7 +43,7 @@ export default () => (
             </div>
           </div>
           <a
-            href="https://forum.panvala.com"
+            href="https://tha.panvala.com"
             rel="noopener noreferrer"
             target="_blank"
             className="link dim white f6 fw7"
@@ -70,13 +70,13 @@ export default () => (
             >
               Get PAN Tokens
             </a>
-            <a href="mailto:caucus@panvala.com?subject=I want to join the Panvala Caucus!" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Join the Panvala Caucus
+            <a href="https://tha.panvala.com/" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Join the THA
             </a>
           </div>
           <div className="dib v-top mr5-l mr3-m mr4 pr2 tl mt0-ns mt4">
             <h3 className="f3-l f5 ma0 white mb3">Communities</h3>
-            <a href="mailto:caucus@panvala.com?subject=We want to join the Panvala League!" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+            <a href="mailto:membership@panvala.com?subject=We want to join the Panvala League!" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
               Join the Panvala League
             </a>
             <a href="/staking" className="link dim white-60 f5-l f6 db mb3-ns mb2">
