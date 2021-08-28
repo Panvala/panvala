@@ -364,7 +364,7 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1580942.228309929719888178"
+    "weight": "1600020.97274800700330202"
   },
   "9": {
     "id": 9,
@@ -394,7 +394,7 @@ const stakingResults = {
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "48811.647123606196767228"
+    "weight": "44366.451935098916767228"
   },
   "15": {
     "id": 15,
@@ -464,17 +464,17 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "58926.055014354595308547"
+    "weight": "57848.048014354595308547"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "108268.674222068018405369"
+    "weight": "35881.914772816061405369"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "182697.306819000000720896"
+    "weight": "162697.306819000000720896"
   },
   "31": {
     "id": 31,
@@ -514,7 +514,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "37680.036546403651994366"
+    "weight": "31325.036546403651994366"
   },
   "39": {
     "id": 39,
@@ -529,7 +529,7 @@ const stakingResults = {
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "50956.619990863895848024"
+    "weight": "22457.319990863895848024"
   },
   "42": {
     "id": 42,
@@ -654,7 +654,7 @@ const stakingResults = {
   "66": {
     "id": 66,
     "name": "Jovian Network",
-    "weight": "43379.566080707197402188"
+    "weight": "38569.566080707197402188"
   }
 };
 
@@ -674,7 +674,7 @@ categories.sort((a, b) => {
 
 const pollID = '7';
 const snapshotsBeginOn = 'July 2';
-const stakingTotalsUpdated = 'August 18';
+const stakingTotalsUpdated = 'August 28';
 const leagueBudget = 1232726.45;
 
 const ClipContainer = styled.div`
