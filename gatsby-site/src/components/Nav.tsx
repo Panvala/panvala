@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import logoTeal from '../img/logo-teal.png';
+import logo from '../img/logo-white.png';
 import Identicon from './Identicon';
 import Box from './system/Box';
 import TopBar from './TopBar';
@@ -37,7 +37,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           title="Home"
           className="dtc-ns db w-25-ns w-90 tl-ns tc v-mid link center pb0-ns pb3"
         >
-          <img alt="" src={logoTeal} className="dib w-60-l w-100-m w-60" />
+          <img alt="" src={logo} className="dib w-60-l w-100-m w-60" />
         </a>
 
         <div className="dtc-ns db v-mid tc center w-50-ns w-100">
