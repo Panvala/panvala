@@ -162,11 +162,10 @@ const IndexPage = () => {
         {/* <!-- Hero --> */}
         <div className="w-70-l w-80-m w-90 dt center pv5-ns pv4">
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
-            <h1 className="white f1-ns f2 b ma0 mb3">Money for communities</h1>
+            <h1 className="white f1-ns f2 b ma0 mb3">Powering communities</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
-              Panvala is a donation matching fund that we want to share with your community.
-              Donations were matched at 7.5x last quarter using the PAN cryptocurrency that powers the system.
-              Panvala is run by our communities and people like you.
+            Panvala is a network of communities who cooperate. Our communities spend time with each other, help each other out,
+            and share Panvala's endowment. Panvala is run by our communities and people like you.
             </p>
             <div className="">
               <div className="dib v-top mr3-ns mr2 mv2">
@@ -212,7 +211,7 @@ const IndexPage = () => {
       <section id="league" className="w-70-l w-80-m w-90 center tc mv6-ns mb5 mt6">
         <h2 className="f2-5 ma0 mb3-ns mb0">The Panvala League</h2>
         <p className="ma0 f6 lh-text mb3">
-          The Panvala League's communities stake PAN tokens to earn donation matching capacity from Panvala's quarterly inflation. Your community can join them! Today we have 59 communities—we're aiming for thousands.
+          The Panvala League's communities stake PAN tokens to earn donation matching from Panvala's quarterly inflation. Your community can join them! Today we have 59 communities—we're aiming for thousands.
         </p>
         <div className="flex flex-wrap items-top justify-center tc center w-100">
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
