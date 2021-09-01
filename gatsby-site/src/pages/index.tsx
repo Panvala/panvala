@@ -164,8 +164,8 @@ const IndexPage = () => {
           <div className="dtc-l db v-mid w-50-l w-80-m w-90 pr5-ns">
             <h1 className="white f1-ns f2 b ma0 mb3">Powering communities</h1>
             <p className="white-60 f4-ns f5 fw4 lh-copy ma0 mb4">
-            Panvala is a network of communities who cooperate. Our communities spend time with each other, help each other out,
-            and share Panvala's endowment. Panvala is run by our communities and people like you.
+            Panvala is a network of communities who cooperate and earn perks from Panvala's shared endowment.
+            Panvala is run by our communities and people like you.
             </p>
             <div className="">
               <div className="dib v-top mr3-ns mr2 mv2">
