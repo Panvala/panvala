@@ -63,7 +63,7 @@ export default () => (
               Follow @PanvalaHQ on Twitter
             </a>
             <a
-              href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+              href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
               rel="noopener noreferrer"
               target="_blank"
               className="link dim white-60 f5-l f6 db mb3-ns mb2"

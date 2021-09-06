@@ -1027,7 +1027,7 @@ const Poll = () => {
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
-                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -1150,7 +1150,7 @@ const Poll = () => {
                 be allocated through daily staking snapshots.
               </Box>
               <a
-                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -1168,7 +1168,7 @@ const Poll = () => {
                 tokens.
               </Box>
               <a
-                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+                href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link b dim blue"
@@ -1190,7 +1190,7 @@ const Poll = () => {
                   like to increase your stake, you can do so via Uniswap. Daily staking snapshots begin on <b>{snapshotsBeginOn}</b>.
                   <Box flex justifyContent="center" my={3}>
                     <a
-                      href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44"
+                      href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="link b dim blue"
