@@ -359,42 +359,42 @@ const stakingResults = {
   "7": {
     "id": 7,
     "name": "Hashing it Out",
-    "weight": "997071.309441353300233188"
+    "weight": "998135.607284484001121676"
   },
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1600020.97274800700330202"
+    "weight": "1906425.20971315938697364"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1069885.78554399382757"
+    "weight": "1130118.00260769382757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "45293.647767315207261213"
+    "weight": "45391.647767315207261213"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "153853.47876657833530413"
+    "weight": "169199.76876657833530413"
   },
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "262721.7940681879817"
+    "weight": "270703.4940681879817"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "201794.848977229389018165"
+    "weight": "224942.028977229389018165"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "44366.451935098916767228"
+    "weight": "49525.091935098916767228"
   },
   "15": {
     "id": 15,
@@ -414,12 +414,12 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "20332.344020705358893968"
+    "weight": "22716.374020705358893968"
   },
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "61174.868016215389041007"
+    "weight": "65228.278016215389041007"
   },
   "20": {
     "id": 20,
@@ -434,22 +434,22 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "3947.067400692007338869"
+    "weight": "11008.347400692007338869"
   },
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "19375.4057617"
+    "weight": "23646.7557617"
   },
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "51922.841544707488644762"
+    "weight": "74165.816261548999961134"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "402540.931139416206973994"
+    "weight": "402544.598610556490447487"
   },
   "26": {
     "id": 26,
@@ -464,22 +464,22 @@ const stakingResults = {
   "28": {
     "id": 28,
     "name": "NFThub",
-    "weight": "57848.048014354595308547"
+    "weight": "56348.048014354595308547"
   },
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "35881.914772816061405369"
+    "weight": "42157.104772816061405369"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "162697.306819000000720896"
+    "weight": "174053.416819000000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "14360.951375212701851097"
+    "weight": "20131.821375212701851097"
   },
   "32": {
     "id": 32,
@@ -489,22 +489,22 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "27849.965949150232809302"
+    "weight": "40231.075949150232809302"
   },
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "195437.510483917634127116"
+    "weight": "173650.235892972808025321"
   },
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "8464.522495"
+    "weight": "11853.812495"
   },
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "60291.860002027795653063"
+    "weight": "77552.070002027795653063"
   },
   "37": {
     "id": 37,
@@ -514,42 +514,42 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "31325.036546403651994366"
+    "weight": "38722.505114126131398519"
   },
   "39": {
     "id": 39,
     "name": "Women of Crypto Art",
-    "weight": "127997.318991229960280401"
+    "weight": "137369.138991229960280401"
   },
   "40": {
     "id": 40,
     "name": "Dandelion Collective",
-    "weight": "433600.898275444168499836"
+    "weight": "356624.500957639515358623"
   },
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "22457.319990863895848024"
+    "weight": "26986.121743657761013532"
   },
   "42": {
     "id": 42,
     "name": "Peoples' Cooperative",
-    "weight": "44957.364919320126580928"
+    "weight": "81404.034919320126580928"
   },
   "43": {
     "id": 43,
     "name": "Marma J Foundation",
-    "weight": "1896.463688"
+    "weight": "3122.083688"
   },
   "44": {
     "id": 44,
     "name": "Pool-Party",
-    "weight": "77918.300975933165781328"
+    "weight": "85159.320975933165781328"
   },
   "45": {
     "id": 45,
     "name": "PrimeDAO",
-    "weight": "1155.49292462"
+    "weight": "2727.27292462"
   },
   "46": {
     "id": 46,
@@ -559,22 +559,22 @@ const stakingResults = {
   "47": {
     "id": 47,
     "name": "Kolektivo Labs",
-    "weight": "6137.1245461"
+    "weight": "12978.6245461"
   },
   "48": {
     "id": 48,
     "name": "Austin Meetups Fund",
-    "weight": "5189.778367567031068664"
+    "weight": "112026.078367567031068664"
   },
   "49": {
     "id": 49,
     "name": "DoinGud",
-    "weight": "87503.184343"
+    "weight": "94835.114343"
   },
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "397010.927666983353955715"
+    "weight": "460210.443278535309067262"
   },
   "51": {
     "id": 51,
@@ -589,27 +589,27 @@ const stakingResults = {
   "53": {
     "id": 53,
     "name": "Blockchain Education Network",
-    "weight": "15057.737311343422299589"
+    "weight": "25325.077311343422299589"
   },
   "54": {
     "id": 54,
     "name": "DAOSquare",
-    "weight": "109491.366073067559830054"
+    "weight": "114855.566073067559830054"
   },
   "55": {
     "id": 55,
     "name": "MyCrypto",
-    "weight": "5221.0985"
+    "weight": "9216.2085"
   },
   "56": {
     "id": 56,
     "name": "nfDAO",
-    "weight": "1505.501414214248679964"
+    "weight": "13191.811414214248679964"
   },
   "57": {
     "id": 57,
     "name": "Njombe Innovation Academy",
-    "weight": "5339.732406533071623149"
+    "weight": "8841.781628133936430361"
   },
   "58": {
     "id": 58,
@@ -619,42 +619,42 @@ const stakingResults = {
   "59": {
     "id": 59,
     "name": "Guerrilla Music",
-    "weight": "2466.454242279194460941"
+    "weight": "2638.964242279194460941"
   },
   "60": {
     "id": 60,
     "name": "Akasha Hub Barcelona",
-    "weight": "341.65"
+    "weight": "1280.17"
   },
   "61": {
     "id": 61,
     "name": "ethers.js",
-    "weight": "14024.4877428452605"
+    "weight": "26254.1377428452605"
   },
   "62": {
     "id": 62,
     "name": "rekt.news",
-    "weight": "6271.84423"
+    "weight": "6278.84423"
   },
   "63": {
     "id": 63,
     "name": "Umbra",
-    "weight": "1169.1365"
+    "weight": "1448.1365"
   },
   "64": {
     "id": 64,
     "name": "Civichub",
-    "weight": "198.0"
+    "weight": "498.2"
   },
   "65": {
     "id": 65,
     "name": "Web3 Designers",
-    "weight": "10164.79115"
+    "weight": "15628.29115"
   },
   "66": {
     "id": 66,
     "name": "Jovian Network",
-    "weight": "38569.566080707197402188"
+    "weight": "48921.936080707197402188"
   }
 };
 
@@ -674,7 +674,7 @@ categories.sort((a, b) => {
 
 const pollID = '7';
 const snapshotsBeginOn = 'July 2';
-const stakingTotalsUpdated = 'August 28';
+const stakingTotalsUpdated = 'September 22';
 const leagueBudget = 1232726.45;
 
 const ClipContainer = styled.div`
