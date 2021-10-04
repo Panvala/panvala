@@ -75,7 +75,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           >
             Token
           </a>
-          <a href="https://handbook.panvala.com/join-panvala" className="link dim white-60 f6 dn-ns dib fw6">
+          <a href="https://calendly.com/panvala-membership/meet-with-panvala" className="link dim white-60 f6 dn-ns dib fw6">
             Join
           </a>
         </div>
@@ -127,7 +127,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           ) : (
             typeof window !== 'undefined' &&
             !window.location.href.includes('join') && (
-              <a href="https://handbook.panvala.com/join-panvala">
+              <a href="https://calendly.com/panvala-membership/meet-with-panvala">
                 <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
                   Join Panvala
                 </button>
