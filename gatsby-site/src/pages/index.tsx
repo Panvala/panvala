@@ -68,7 +68,7 @@ import leagueBEN from '../img/league/blockchain-education-network.jpg';
 import leagueDAOSquare from '../img/league/daosquare.jpg';
 import leagueMyCrypto from '../img/league/mycrypto.jpg';
 import leagueNfDAO from '../img/league/nfdao.jpg';
-import leagueNjombe from '../img/league/njombe-innovation-academy.jpg';
+import leagueNjombe from '../img/league/njombe-innovation-academy.png';
 import leagueThinkBetter from '../img/league/think-better.png';
 import leagueGuerrillaMusic from '../img/league/guerrilla-music.jpg';
 import leagueAkashaHubBarcelona from '../img/league/akasha-hub-barcelona.jpg';
@@ -78,6 +78,11 @@ import leagueUmbra from '../img/league/umbra.jpg';
 import leagueCivichub from '../img/league/civichub.png';
 import leagueWeb3Designers from '../img/league/web3-designers.png';
 import leagueJovian from '../img/league/jovian-network.png';
+import leagueIrlArt from '../img/league/irl-art.png';
+import leagueCryptoKidsCamp from '../img/league/crypto-kids-camp.jpg';
+import leagueManaVox from '../img/league/mana-vox.jpg';
+import leagueFreedomInTechAlliance from '../img/league/freedom-in-tech-alliance.jpg';
+import leagueBiggerPie from '../img/league/the-bigger-pie.jpg';
 
 
 import eventsBg from '../img/events-bg.png';
@@ -754,6 +759,51 @@ const IndexPage = () => {
             />
             <a className="link dim near-black" href="/jovian-network">
               <h3>Jovian Network</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueIrlArt}
+            />
+            <a className="link dim near-black" href="/irl-art">
+              <h3>IRL Art</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueCryptoKidsCamp}
+            />
+            <a className="link dim near-black" href="/crypto-kids-camp">
+              <h3>Crypto Kids Camp</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueManaVox}
+            />
+            <a className="link dim near-black" href="/mana-vox">
+              <h3>MANA VOX</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueFreedomInTechAlliance}
+            />
+            <a className="link dim near-black" href="/freedom-in-tech-alliance">
+              <h3>Freedom in Tech Alliance</h3>
+            </a>
+          </div>
+          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
+            <img
+              alt=""
+              src={leagueBiggerPie}
+            />
+            <a className="link dim near-black" href="/the-bigger-pie">
+              <h3>The Bigger Pie</h3>
             </a>
           </div>
 
