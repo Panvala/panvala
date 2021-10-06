@@ -147,7 +147,7 @@ const Community = (props: CommunityProps) => {
                   <img src={communityImage} className="br3" />
                 </div>
                 <div className="w-60 ml4">
-                  <h1 className="f2 mb3">{communityName}</h1>
+                  <h1 className="f2 mb3">{campaignTitle}</h1>
                   {(!!communityWebsite || !!communityTwitter) && (
                     <div className="flex pb2">
                       {!!communityWebsite && <a href={communityWebsite} target="_blank" rel="noreferrer" className="w-40 blue link">{communityWebsite}</a>}
