@@ -16,6 +16,7 @@ import { getFullyStakedAmount, getMatchingMultiplier, getMaxMatchingMultiplier, 
 interface CommunityProps {
   pageContext: {
     communityName: string;
+    campaignTitle: string;
     ethereumAddress?: string;
     layer2Preference: string;
     layer2Address: string;
