@@ -30,7 +30,7 @@ const csvParse = require('csv-parse');
     fs.createReadStream(path.resolve(__dirname, 'src/data/communities-scoreboard.csv'))
       .pipe(csvParse({columns: true}))
       .on('data', row => {
-        if (row['Community'] === 'Totals') {
+        if (row['Campaign Title'] === 'Totals') {
           totals = row;
         } else if (row['Community Name'] !== '') {
           communities[row['Community Name'].trim()] = row;
