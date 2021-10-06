@@ -7,9 +7,9 @@ const stringify = require('csv-stringify/lib/sync');
 
 const MATCHING_BUDGET = 1369935.62;
 const ONE_DOLLAR_PAN = 11.31;
-const DONATIONS_STARTED_AT = Date.parse('2021-03-28');
-const DONATIONS_ENDED_AT = Date.parse('2021-07-04'); // Date.now() during the round
-const DONATIONS_BATCH_NUMBER = 11;
+const DONATIONS_STARTED_AT = Date.parse('2021-07-04');
+const DONATIONS_ENDED_AT = Date.parse('2021-10-01'); // Date.now() during the round
+const DONATIONS_BATCH_NUMBER = 12;
 const GITCOIN_ADDRESS = '0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6';
 const ZKSYNC_ADDRESSES = new Set([
   '0xaBEA9132b05A70803a4E85094fD0e1800777fBEF',
@@ -82,17 +82,81 @@ const ENS_ADDRESSES = {
   'bc1qupk2u36zdm0fd8mmnu0ha33g0d2lgynwxw6j70': '0x0000000000000000000000000000000000000000',
 };
 
-const LEAGUE_ADDRESSES = {
-  "Hashing it Out": "0x05dF81Bf098Ae29AfAd54250Cd224379eDCae850",
-  "Commons Stack": "0x1251A94b6d800979d2d933b8Bd5914b892772Ac6",
-  "DAppNode": "0x00CF36853AA4024fb5BF5cc377dfd85844B411a0",
-  "MetaCartel": "0xD91ec22114897E5E68997F77a6182dE3Cb09ba9B",
-  "DXdao": "0x466621C1771590c4ECc5314eB3055adAFd980d52",
-  "Meta Gamma Delta": "0x694c7CA85584d550B36c044E10D3A7b30d85E7F7",
-  "KERNEL": "0xC728DEa8B2972E6e07493BE8DC2F0314F7dC3E98",
-  "future modern": "0x5ab45FB874701d910140e58EA62518566709c408",
-  "DePo DAO": "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
-}
+const LEAGUE_MAINNET_ADDRESSES = [
+  "0x84a57c709482d44cE49511adac7ED7F1Db299455",
+  "0x00CF36853AA4024fb5BF5cc377dfd85844B411a0",
+  "0x1251A94b6d800979d2d933b8Bd5914b892772Ac6",
+  "0xD120a3cb934694037a12E2F603d45Aa3aE77ABC3",
+  "0x90dfc35e747ffcf9631ce75348f99632528e1704",
+  "0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6",
+  "0x4B8810b079eb22ecF2D1f75E08E0AbbD6fD87dbF",
+  "0x5A9CE898f0B03c5A3Cd2d0c727efdD0555C86f81",
+  "0x7DAC9Fc15C1Db4379D75A6E3f330aE849dFfcE18",
+  "0xba0FEE8490118FC4f46Bd0974D7BF93d0e2f1064",
+  "0x7415EfD9D908281ea0279c49A6c23011D9d9A0a4",
+  "0xF64bBc221f89cc882fBa507908bbE4Ae3Ad2F470",
+  "0xddB1CB4EdBCD83066Abf26E7102dc0e88009DEAB",
+  "0x9531C059098e3d194fF87FebB587aB07B30B1306",
+  "0xCCa88b952976DA313Fb928111f2D5c390eE0D723",
+  "0x6Aa875452a622C25AFd05064138faFc14E715BeF",
+  "0xC34ad4A95adCD9021182fd5607ED822DB738E7c4",
+  "0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621",
+  "0x5b6BCdbB5278616F818775B9A20F220262Fd6E9B",
+  "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
+  "0xB53b0255895c4F9E3a185E484e5B674bCCfbc076",
+  "0xe7E2E1de02CDc8dC307eA4CD237C0a24CF52f2AA",
+  "0x466621C1771590c4ECc5314eB3055adAFd980d52",
+  "0x5ab45FB874701d910140e58EA62518566709c408",
+  "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
+  "0xE98dc4fdCb03cC29C0f64A00AAAd7F56d359CBAD",
+  "0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF",
+  "0x58315fB2b6E94371679fFb4b3322ab32f3dc7311",
+  "0xD91ec22114897E5E68997F77a6182dE3Cb09ba9B",
+  "0x9ac9c636404C8d46D9eb966d7179983Ba5a3941A",
+  "0xF09631d7BA044bfe44bBFec22c0A362c7e9DCDd8",
+  "0x5FfF94e8585a12A13B46177110A8812B6dB92F87",
+  "0xd25A803E24FFd3C0033547BE04D8C43FFBa7486b",
+  "0x78F3c73F5500335aAC51E4c2A79555D176b279da",
+  "0x31e7e4bB3Aa3A5Dd3AC5E240223eb4416CFFa5c3",
+  "0xe64e9187d513b455732fd63FD1398ecd1925A03E",
+  "0x24801de57F065d95D741DFf0f419dc5004777C87",
+  "0x308Fd8FB79379dEAD5A360FFb6Dd2D1AFf9F5EE4",
+  "0x04A8A22e5eF364c5237Df13317c4F083f32C2Cc4",
+  "0x7030B43E821BA34124915bA65B90Dbda7a9E7d09",
+  "0x05dF81Bf098Ae29AfAd54250Cd224379eDCae850",
+  "0x0e3655263D2db2C7ece965557d3889be0716c48b",
+  "0xd9D66f6eB790c82A1e98CDa99C153983461A3725",
+  "0x3792acDf2A8658FBaDe0ea70C47b89cB7777A5a5",
+  "0x37133cda1941449cde7128f0C964C228F94844a8",
+  "0x6030dB952f1aEeFA27d84D40D2f64c6216f64b0e",
+  "0x9fC13b4E1C4206970a1C4520d2f77336CD5D0e0a",
+  "0x549Adf7B383A1645F26a2AcFE09c5304B679A532",
+  "0x842b87e0f5dd45ab5ff972b4d71f238ffad8ad3d",
+  "0x57EA12A3A8E441f5FE7B1F3Af1121097b7d3B6A8",
+  "0x3C5c2F4bCeC51a36494682f91Dbc6cA7c63B514C",
+  "0x97Fb4845bf7bD7156B30ef09AE94419956FE3A90",
+  "0x0efE994201e2b0136DD40D5033b5F437e4c5F958",
+  "0x07294360e0bb89eBbE3542c478A8d1F6840ee2eE",
+  "0x97b8fdfACf37dd68376198b7FCFFeC3c0846f593",
+  "0xD25185f8c3B9e38C3f014378CE58B362Db568352",
+  "0x1253594843798Ff0fcd7Fa221B820C2d3cA58FD5",
+  "0x83b08111c4b42cb7188118ebd6739749384077c4",
+  "0xe555c65c7BDB142AEbB1842Fbaa6427626573C87",
+];
+
+LEAGUE_SIDECHAIN_ADDRESSES = [
+  "0x07294360e0bb89eBbE3542c478A8d1F6840ee2eE",
+  "0x66Aa8Bee5366b6b48811AE0Dac9Fe5e1EEfE1621",
+  "0xf848a2741682e498a6a620e27d768c28c4216cd5",
+  "0x1251A94b6d800979d2d933b8Bd5914b892772Ac6",
+  "0x5ab45FB874701d910140e58EA62518566709c408",
+  "0xe027688a57c4A6Fb2708343cF330aaeB8fe594bb",
+  "0xd9D66f6eB790c82A1e98CDa99C153983461A3725",
+  "0x308Fd8FB79379dEAD5A360FFb6Dd2D1AFf9F5EE4",
+  "0x5A9CE898f0B03c5A3Cd2d0c727efdD0555C86f81",
+  "0x2C5FF0Be38115Fe6E37ACce8e94F86186c3D73dF",
+  "0xddB1CB4EdBCD83066Abf26E7102dc0e88009DEAB",
+];
 
 const OFF_GITCOIN_GRANTS = {
   '0x97Fb4845bf7bD7156B30ef09AE94419956FE3A90': 'Civichub',
@@ -235,6 +299,7 @@ async function fetchZksyncPages(address, olderThan = null) {
   }).then(response => {
     if (response.status === 200) {
       if (response.data.length >= 100) {
+        // TODO: Stop fetching more pages of transactions once we reach a date earlier than DONATIONS_STARTED_AT
         if (!response.data[response.data.length - 1].success) {
           console.log(`WARNING ${address}: Tried to paginate off of a failed transaction, which does not work. Some transactions might have been missed`)
           return response.data;
@@ -437,6 +502,8 @@ function calculateMatching(grants) {
 
 async function run() {
   const grantNames = await getGrantAddresses();
+  console.log(`Retrieved ${Object.keys(grantNames).length} grants from the Gitcoin API.`);
+
   const mainnetTransactions = await getTransactions();
   /*
   const zksyncAddresses = mainnetTransactions.reduce((acc, tx) => {
@@ -447,13 +514,9 @@ async function run() {
   }, new Set());
   console.log('zkSync users', zksyncAddresses);
   */
-  const zksyncAddresses = Object.keys(grantNames);
-  const zksyncTransactions = await getZksyncTransactions(
-    Array.from(zksyncAddresses.values())
-      .concat(Object.values(LEAGUE_ADDRESSES))
-  );
+  const zksyncTransactions = await getZksyncTransactions(LEAGUE_MAINNET_ADDRESSES);
 
-  const xdaiTransactions = await getBlockscoutTransactions(BLOCKSCOUT_XDAI, Object.values(XDAI_ADDRESSES));
+  const xdaiTransactions = await getBlockscoutTransactions(BLOCKSCOUT_XDAI, LEAGUE_SIDECHAIN_ADDRESSES);
   // FIXME: The new Polygon API at api.polygonscan.com does not support the gettxinfo method.
   // const maticTransactions = await getBlockscoutTransactions(BLOCKSCOUT_MATIC, Object.values(MATIC_ADDRESSES));
 

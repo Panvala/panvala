@@ -26,7 +26,9 @@ async function run() {
 
   const categories = await excludeCategoriesByIds((argv.exclude as string[]).map(x => parseInt(x)));
   if (categories.length !== argv.choices) {
-    console.log('Some categories were not found');
+    console.log(
+      `Some categories were not found: expected ${argv.choices}, found ${categories.length}`
+    );
     console.log('');
     console.log("> Did you remember to run 'yarn seed'?");
     process.exit(0);

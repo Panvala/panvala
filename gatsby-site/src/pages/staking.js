@@ -349,6 +349,31 @@ const categories = [
     categoryID: 66,
     title: 'Jovian Network',
     description: "We are a network of research professionals, technologists, speakers, and activists empowering communities in radical new ways. Whether shepherding a community to originate a DAO for the first time, or helping an existing DAO overcome a specific challenge, we serve these communities reaching their highest good. All primary research findings will be open-source so that learnings may benefit the entire ecosystem.",
+  },
+  {
+    categoryID: 67,
+    title: 'IRL Art',
+    description: "The IRL Art team is a grassroots, woman-owned, diverse, hard working group based in Denver, Colorado. Our team both individually manage independant large scale creative projects, and collectively create IRL projects leveraging each others’ resources, talents and tools. Together we’ve worked with over 1300 artists on an unquantifiable amount of projects. We program art, large events, education opportunities, build and strengthen art communities through a wide array of different vertices and industries.",
+  },
+  {
+    categoryID: 68,
+    title: 'Crypto Kids Camp',
+    description: "Crypto Kids Camp combines emerging technology with financial literacy to create a unique educational experience that not only improves upon these conventional S.T.E.M. and S.T.E.A.M. programs, but stands in a lane of its own. Our campers get an introduction to emerging technologies like drones, cyber security, NFTs, and online gaming so they can decide what interests them while learning the fundamentals of each discipline.",
+  },
+  {
+    categoryID: 69,
+    title: 'MANA VOX',
+    description: "MANA is an NGO based in Paris, France, that builds the MANA-Vox solution, an AI-enhanced platform that can monitor individual corporations’ involvement in local ecological controversies based on real-time information compiled from social media. It is the first crowdsourced index that tracks negative impact on forest made by corporations.",
+  },
+  {
+    categoryID: 70,
+    title: 'Freedom in Tech Alliance',
+    description: "The Freedom in Tech Alliance was founded in 2018 with the ultimate goal of shaping the culture shared by entrepreneurs, founders, and those working in the technology industry in such a way that ensures the maximum benefit to the people around the world.",
+  },
+  {
+    categoryID: 71,
+    title: 'The Bigger Pie',
+    description: "The Bigger Pie has a thriving and active global community whose members share their experience and learn from each other. The community is open to women and gender minorities interested in blockchain, crypto, DeFi and emerging tech. Its purpose is to connect and support the incredible women who are already in the space, shine a light on the work they do to highlight these role models.",
   }
 ];
 
@@ -364,37 +389,37 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1906425.20971315938697364"
+    "weight": "1629476.205974144870037368"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1130118.00260769382757"
+    "weight": "1130858.00260769382757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "45391.647767315207261213"
+    "weight": "45776.647767315207261213"
   },
   "11": {
     "id": 11,
     "name": "DXdao",
-    "weight": "169199.76876657833530413"
+    "weight": "170234.927489139877424239"
   },
   "12": {
     "id": 12,
     "name": "Meta Gamma Delta",
-    "weight": "270703.4940681879817"
+    "weight": "182049.031476323352118125"
   },
   "13": {
     "id": 13,
     "name": "KERNEL",
-    "weight": "224942.028977229389018165"
+    "weight": "226321.678977229389018165"
   },
   "14": {
     "id": 14,
     "name": "future modern",
-    "weight": "49525.091935098916767228"
+    "weight": "49750.091935098916767228"
   },
   "15": {
     "id": 15,
@@ -414,12 +439,12 @@ const stakingResults = {
   "18": {
     "id": 18,
     "name": "Matic Mitra",
-    "weight": "22716.374020705358893968"
+    "weight": "21236.874020705358893968"
   },
   "19": {
     "id": 19,
     "name": "FightPandemics",
-    "weight": "65228.278016215389041007"
+    "weight": "65413.278016215389041007"
   },
   "20": {
     "id": 20,
@@ -434,32 +459,27 @@ const stakingResults = {
   "22": {
     "id": 22,
     "name": "Web3Bridge",
-    "weight": "11008.347400692007338869"
+    "weight": "12019.327400692007338869"
   },
   "23": {
     "id": 23,
     "name": "Mol LeArt",
-    "weight": "23646.7557617"
+    "weight": "23861.7557617"
   },
   "24": {
     "id": 24,
     "name": "Rotki",
-    "weight": "74165.816261548999961134"
+    "weight": "65080.640261548999961134"
   },
   "25": {
     "id": 25,
     "name": "BrightID",
-    "weight": "402544.598610556490447487"
+    "weight": "402439.598610556490447487"
   },
   "26": {
     "id": 26,
     "name": "Ethereum France",
     "weight": "338.48480753"
-  },
-  "27": {
-    "id": 27,
-    "name": "Abridged",
-    "weight": "0.0"
   },
   "28": {
     "id": 28,
@@ -469,17 +489,17 @@ const stakingResults = {
   "29": {
     "id": 29,
     "name": "MetaGame",
-    "weight": "42157.104772816061405369"
+    "weight": "42492.104772816061405369"
   },
   "30": {
     "id": 30,
     "name": "MetaSpace",
-    "weight": "174053.416819000000720896"
+    "weight": "174603.416819000000720896"
   },
   "31": {
     "id": 31,
     "name": "Trips Community",
-    "weight": "20131.821375212701851097"
+    "weight": "20346.821375212701851097"
   },
   "32": {
     "id": 32,
@@ -489,22 +509,22 @@ const stakingResults = {
   "33": {
     "id": 33,
     "name": "Bloom Network",
-    "weight": "40231.075949150232809302"
+    "weight": "40516.075949150232809302"
   },
   "34": {
     "id": 34,
     "name": "Handshake Development Fund",
-    "weight": "173650.235892972808025321"
+    "weight": "173945.235892972808025321"
   },
   "35": {
     "id": 35,
     "name": "LexDAO",
-    "weight": "11853.812495"
+    "weight": "12083.812495"
   },
   "36": {
     "id": 36,
     "name": "Grassroots Economics",
-    "weight": "77552.070002027795653063"
+    "weight": "78792.070002027795653063"
   },
   "37": {
     "id": 37,
@@ -514,27 +534,27 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "38722.505114126131398519"
+    "weight": "336886.319364537005156103"
   },
   "39": {
     "id": 39,
     "name": "Women of Crypto Art",
-    "weight": "137369.138991229960280401"
+    "weight": "137594.138991229960280401"
   },
   "40": {
     "id": 40,
     "name": "Dandelion Collective",
-    "weight": "356624.500957639515358623"
+    "weight": "430225.564957639515358623"
   },
   "41": {
     "id": 41,
     "name": "Shenanigan",
-    "weight": "26986.121743657761013532"
+    "weight": "27204.621743657761013532"
   },
   "42": {
     "id": 42,
     "name": "Peoples' Cooperative",
-    "weight": "81404.034919320126580928"
+    "weight": "83224.014919320126580928"
   },
   "43": {
     "id": 43,
@@ -544,22 +564,17 @@ const stakingResults = {
   "44": {
     "id": 44,
     "name": "Pool-Party",
-    "weight": "85159.320975933165781328"
+    "weight": "85694.320975933165781328"
   },
   "45": {
     "id": 45,
     "name": "PrimeDAO",
-    "weight": "2727.27292462"
-  },
-  "46": {
-    "id": 46,
-    "name": "Senary Commonwealth",
-    "weight": "0.0"
+    "weight": "2942.27292462"
   },
   "47": {
     "id": 47,
     "name": "Kolektivo Labs",
-    "weight": "12978.6245461"
+    "weight": "13248.6245461"
   },
   "48": {
     "id": 48,
@@ -569,52 +584,42 @@ const stakingResults = {
   "49": {
     "id": 49,
     "name": "DoinGud",
-    "weight": "94835.114343"
+    "weight": "95219.094343"
   },
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "460210.443278535309067262"
-  },
-  "51": {
-    "id": 51,
-    "name": "RaidGuild",
-    "weight": "0.0"
+    "weight": "459363.190278535309067262"
   },
   "52": {
     "id": 52,
     "name": "DAOhaus",
-    "weight": "824.781120198206584212"
+    "weight": "5998.341120198206584212"
   },
   "53": {
     "id": 53,
     "name": "Blockchain Education Network",
-    "weight": "25325.077311343422299589"
+    "weight": "25620.077311343422299589"
   },
   "54": {
     "id": 54,
     "name": "DAOSquare",
-    "weight": "114855.566073067559830054"
+    "weight": "115080.566073067559830054"
   },
   "55": {
     "id": 55,
     "name": "MyCrypto",
-    "weight": "9216.2085"
+    "weight": "10451.2085"
   },
   "56": {
     "id": 56,
     "name": "nfDAO",
-    "weight": "13191.811414214248679964"
+    "weight": "13476.811414214248679964"
   },
   "57": {
     "id": 57,
     "name": "Njombe Innovation Academy",
-    "weight": "8841.781628133936430361"
-  },
-  "58": {
-    "id": 58,
-    "name": "ThinkBetter",
-    "weight": "0.0"
+    "weight": "9011.287074068745070827"
   },
   "59": {
     "id": 59,
@@ -624,22 +629,22 @@ const stakingResults = {
   "60": {
     "id": 60,
     "name": "Akasha Hub Barcelona",
-    "weight": "1280.17"
+    "weight": "1595.17"
   },
   "61": {
     "id": 61,
     "name": "ethers.js",
-    "weight": "26254.1377428452605"
+    "weight": "26589.1377428452605"
   },
   "62": {
     "id": 62,
     "name": "rekt.news",
-    "weight": "6278.84423"
+    "weight": "6577.47423"
   },
   "63": {
     "id": 63,
     "name": "Umbra",
-    "weight": "1448.1365"
+    "weight": "1731.7665"
   },
   "64": {
     "id": 64,
@@ -649,12 +654,12 @@ const stakingResults = {
   "65": {
     "id": 65,
     "name": "Web3 Designers",
-    "weight": "15628.29115"
+    "weight": "15873.29115"
   },
   "66": {
     "id": 66,
     "name": "Jovian Network",
-    "weight": "48921.936080707197402188"
+    "weight": "49151.936080707197402188"
   }
 };
 
@@ -672,10 +677,10 @@ categories.sort((a, b) => {
   return -1;
 });
 
-const pollID = '7';
-const snapshotsBeginOn = 'July 2';
-const stakingTotalsUpdated = 'September 22';
-const leagueBudget = 1232726.45;
+const pollID = '8';
+const snapshotsBeginOn = 'October 8';
+const stakingTotalsUpdated = 'October 5';
+const leagueBudget = 1181991.85;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -1053,7 +1058,7 @@ const Poll = () => {
               </p>
               <p className="white-60 fw4 ma0">
                 The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from June 16 to July 1. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                from September 8-23. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">

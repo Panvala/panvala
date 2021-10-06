@@ -32,7 +32,7 @@ const Community = (props: CommunityProps) => {
   // TODO: pull real data for this
   const communityWebsite = props?.pageContext?.scoreboard?.communityWebsite || '';
   const communityTwitter = props?.pageContext?.scoreboard?.communityTwitter || '';
-  const startDate = props?.pageContext?.scoreboard?.startDate || moment('2021-06-01');
+  const startDate = props?.pageContext?.scoreboard?.startDate || moment('2021-09-01');
   const donorsList = props?.pageContext?.donorsList || [];
   const ownersList = props?.pageContext?.ownersList || [];
   const usdDonated = '';
@@ -53,6 +53,7 @@ const Community = (props: CommunityProps) => {
 
   const {
     communityName,
+    campaignTitle,
     ethereumAddress,
     layer2Address,
     layer2Preference,
@@ -106,7 +107,7 @@ const Community = (props: CommunityProps) => {
 
   return (
     <Layout>
-      <SEO title={communityName} description={`${communityName} is a member of the Panvala League: we stake PAN tokens to earn matching for donations made using PAN.`} />
+      <SEO title={campaignTitle} description={`${communityName} is a member of the Panvala League: we stake PAN tokens to earn matching for donations made using PAN.`} />
 
       <section className="bg-gradient pb6">
         <Nav />
@@ -124,7 +125,7 @@ const Community = (props: CommunityProps) => {
                       <img className="br3" src={communityImage} />
                     </div>
                     <div className="w-70 dtc v-mid tc">
-                      <h1 className="f3">{communityName}</h1>
+                      <h1 className="f3">{campaignTitle}</h1>
                     </div>
                   </div>
                 </div>

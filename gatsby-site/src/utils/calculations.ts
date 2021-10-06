@@ -7,14 +7,16 @@ export function parsePercent(text) {
 }
 
 export function getFullyStakedAmount(communityRow, totals) {
-  const donationShare = parsePercent(communityRow.shareofQuadraticFunding);
-  if (donationShare === 0)
+  const fairShare = parsePercent(communityRow.fairShare);
+  const utilizedFairShare = parsePercent(communityRow.utilizedFairShare);
+  const targetShare = Math.max(fairShare, utilizedFairShare);
+  if (targetShare === 0)
     return 0;
   
   const currentStakedTokens = parseCommaFloat(communityRow.stakedTokens);
   const totalStakedTokens = parseCommaFloat(totals.stakedTokens);
-  const fullyStakedAmount = (donationShare * totalStakedTokens - donationShare * currentStakedTokens) /
-  (1 - donationShare);
+  const fullyStakedAmount = (targetShare * totalStakedTokens - targetShare * currentStakedTokens) /
+  (1 - targetShare);
 
   return fullyStakedAmount;
 }
@@ -35,11 +37,11 @@ export function getMatchingMultiplier(communityRow, totals) {
 
 export function getMaxMatchingMultiplier(communityRow, totals) {
   console.log(Object.keys(communityRow));
-  const quadraticFunding = parseCommaFloat(communityRow['quadraticFundingw/ParticipationBonuses']);
+  const fairShareScore = parseCommaFloat(communityRow.fairShareScore);
   const spreadsheetSubsidyPoints = parseCommaFloat(communityRow.subsidyPoints);
   const totalSubsidyPoints = parseCommaFloat(totals.subsidyPoints);
   const totalSubsidy = parseCommaFloat(totals['estimatedSubsidy(PAN)']);
-  const shareOfSubsidy = quadraticFunding / (totalSubsidyPoints - spreadsheetSubsidyPoints + quadraticFunding);
+  const shareOfSubsidy = fairShareScore / (totalSubsidyPoints - spreadsheetSubsidyPoints + fairShareScore);
   const maxSubsidy = shareOfSubsidy * totalSubsidy;
   const donations = parseCommaFloat(communityRow.pANDonated);
   console.log('donations', donations);
