@@ -389,17 +389,17 @@ const stakingResults = {
   "8": {
     "id": 8,
     "name": "Commons Stack",
-    "weight": "1629476.205974144870037368"
+    "weight": "1614724.480734485524711812"
   },
   "9": {
     "id": 9,
     "name": "DAppNode",
-    "weight": "1130858.00260769382757"
+    "weight": "1130831.15260769382757"
   },
   "10": {
     "id": 10,
     "name": "MetaCartel",
-    "weight": "45776.647767315207261213"
+    "weight": "19250.765954436254039283"
   },
   "11": {
     "id": 11,
@@ -481,6 +481,11 @@ const stakingResults = {
     "name": "Ethereum France",
     "weight": "338.48480753"
   },
+  "27": {
+    "id": 27,
+    "name": "Abridged",
+    "weight": "0.0"
+  },
   "28": {
     "id": 28,
     "name": "NFThub",
@@ -534,7 +539,7 @@ const stakingResults = {
   "38": {
     "id": 38,
     "name": "Giveth",
-    "weight": "336886.319364537005156103"
+    "weight": "339462.949364537005156103"
   },
   "39": {
     "id": 39,
@@ -559,7 +564,7 @@ const stakingResults = {
   "43": {
     "id": 43,
     "name": "Marma J Foundation",
-    "weight": "3122.083688"
+    "weight": "6802.517435773600551648"
   },
   "44": {
     "id": 44,
@@ -570,6 +575,11 @@ const stakingResults = {
     "id": 45,
     "name": "PrimeDAO",
     "weight": "2942.27292462"
+  },
+  "46": {
+    "id": 46,
+    "name": "Senary Commonwealth",
+    "weight": "0.0"
   },
   "47": {
     "id": 47,
@@ -589,7 +599,12 @@ const stakingResults = {
   "50": {
     "id": 50,
     "name": "Gitcoin",
-    "weight": "459363.190278535309067262"
+    "weight": "459363.940278535309067262"
+  },
+  "51": {
+    "id": 51,
+    "name": "RaidGuild",
+    "weight": "26525.88181287895322193"
   },
   "52": {
     "id": 52,
@@ -619,7 +634,12 @@ const stakingResults = {
   "57": {
     "id": 57,
     "name": "Njombe Innovation Academy",
-    "weight": "9011.287074068745070827"
+    "weight": "9011.093895730444370406"
+  },
+  "58": {
+    "id": 58,
+    "name": "ThinkBetter",
+    "weight": "0.0"
   },
   "59": {
     "id": 59,
@@ -639,7 +659,7 @@ const stakingResults = {
   "62": {
     "id": 62,
     "name": "rekt.news",
-    "weight": "6577.47423"
+    "weight": "6592.47423"
   },
   "63": {
     "id": 63,
@@ -660,6 +680,31 @@ const stakingResults = {
     "id": 66,
     "name": "Jovian Network",
     "weight": "49151.936080707197402188"
+  },
+  "67": {
+    "id": 67,
+    "name": "IRL Art",
+    "weight": "5044.22475447746606094"
+  },
+  "68": {
+    "id": 68,
+    "name": "Crypto Kids Camp",
+    "weight": "0.0"
+  },
+  "69": {
+    "id": 69,
+    "name": "MANA VOX",
+    "weight": "9753.476946132001074161"
+  },
+  "70": {
+    "id": 70,
+    "name": "Freedom in Tech Alliance",
+    "weight": "0.0"
+  },
+  "71": {
+    "id": 71,
+    "name": "The Bigger Pie",
+    "weight": "0.0"
   }
 };
 
@@ -679,7 +724,7 @@ categories.sort((a, b) => {
 
 const pollID = '8';
 const snapshotsBeginOn = 'October 8';
-const stakingTotalsUpdated = 'October 5';
+const stakingTotalsUpdated = 'October 10';
 const leagueBudget = 1181991.85;
 
 const ClipContainer = styled.div`

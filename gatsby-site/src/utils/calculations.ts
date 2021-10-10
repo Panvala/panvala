@@ -7,9 +7,11 @@ export function parsePercent(text) {
 }
 
 export function getFullyStakedAmount(communityRow, totals) {
-  const fairShare = parsePercent(communityRow.fairShare);
-  const utilizedFairShare = parsePercent(communityRow.utilizedFairShare);
-  const targetShare = Math.max(fairShare, utilizedFairShare);
+  const fairShareScore = parseCommaFloat(communityRow.fairShareScore);
+  const utilizedFairShareScore = parseCommaFloat(communityRow.utilizedFairShareScore);
+  const totalUtilizedFairShareScore = parseCommaFloat(totals.utilizedFairShareScore);
+
+  const targetShare = fairShareScore / (totalUtilizedFairShareScore - utilizedFairShareScore + fairShareScore);
   if (targetShare === 0)
     return 0;
   
