@@ -23,7 +23,8 @@
     "poll:tally": "ts-node scripts/tally-poll.ts",
     "sync-events": "ts-node scripts/sync-contract-events.ts",
     "test": "jest",
-    "update:contract-types": "typechain --target=ethers --outDir ./src/types '../packages/panvala-utils/abis/**/*.json'"
+    "update:contract-types": "typechain --target=ethers --outDir ./src/types '../packages/panvala-utils/abis/**/*.json'",
+    "combine-snapshots": "ts-node scripts/combine-snapshots.js"
   },
   "author": "",
   "license": "ISC",
@@ -41,6 +42,7 @@
     "express-validator": "^6.2.0",
     "ipfs-http-client": "32.0.1",
     "lodash": "4.17.14",
+    "luxon": "^2.0.2",
     "morgan": "^1.9.1",
     "panvala-utils": "file:../packages/panvala-utils",
     "pg": "^8.5.1",
