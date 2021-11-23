@@ -70,8 +70,8 @@ export default () => (
             >
               Get PAN Tokens
             </a>
-            <a href="https://tha.panvala.com/" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
-              Join the THA
+            <a href="https://feed.panvala.com/" target="_blank" className="link dim white-60 f5-l f6 db mb3-ns mb2">
+              Visit the Panvala News Feed
             </a>
           </div>
           <div className="dib v-top mr5-l mr3-m mr4 pr2 tl mt0-ns mt4">
