@@ -485,15 +485,6 @@ const IndexPage = () => {
           <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
             <img
               alt=""
-              src={leagueGrassrootsEconomics}
-            />
-            <a className="link dim near-black" href="/grassroots-economics">
-              <h3>Grassroots Economics</h3>
-            </a>
-          </div>
-          <div className="flex flex-column items-center w-20-l w-33 dib v-mid pa4">
-            <img
-              alt=""
               src={leagueCirclesUBI}
             />
             <a className="link dim near-black" href="/circles-ubi">
