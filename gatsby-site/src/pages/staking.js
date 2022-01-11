@@ -231,8 +231,8 @@ const categories = [
   },
   {
     categoryID: 44,
-    title: 'Pool-Party',
-    description: "Pool-Party is a smart contract-based platform where people can pool and manage crypto currencies together. Pool-Parties are set up by groups looking to combine their crypto in order to jointly invest in a project or series of other tokens all while earning interest and tokens on the pooled crypto that remains in their pool-party.",
+    title: 'Opolis',
+    description: "Opolis is a next generation employment ecosystem for the self sovereign worker. Opolis celebrates your independence while providing the employee benefits you need.",
   },
   {
     categoryID: 45,
@@ -623,7 +623,7 @@ const stakingResults = {
   },
   "44": {
     "id": 44,
-    "name": "Pool-Party",
+    "name": "Opolis",
     "weight": "85694.320975933165781328"
   },
   "45": {
