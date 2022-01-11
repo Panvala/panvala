@@ -424,6 +424,11 @@ const categories = [
     title: 'PizzaDAO',
     description: "PizzaDAO formed to promote pizza in all forms. That means we're a pizza-focused community that operates with transparency and communal governance over its treasury. The proceeds from the sale of our pizza NFTs are used to buy pizza for people all over the world on Bitcoin Pizza Day, 5/22.",
   },
+  {
+    categoryID: 83,
+    title: 'AYOWECCA Uganda',
+    description: "AYOWECCA UGANDA is s a community founded non governmental organization in Uganda East Africa, working on environment and social development.",
+  },
 
 ];
 
