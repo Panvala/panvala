@@ -13,7 +13,7 @@ import { getContracts, contractABIs, checkConnection } from '../src/utils/eth';
 
 const { CategoryPollResponse, CategoryPollAllocation } = require('../src/models');
 
-const BLOCKSCOUT_XDAI = 'https://blockscout.com/poa/xdai/api/';
+const BLOCKSCOUT_XDAI = 'https://blockscout.com/xdai/mainnet/api';
 const BLOCKSCOUT_MATIC = 'https://api.polygonscan.com/api/';
 const BLOCKSCOUT_API_KEYS = {
   [BLOCKSCOUT_MATIC]: 'B9Z6B4Q25P753EBNX1ED6EXY1FS7RZJWDU',

@@ -195,12 +195,6 @@ const categories = [
       "LexDAO is a group of legal engineering professionals who are seeking to provide a trusted layer between the decentralized world of blockchains and a legal settlement layer in the real world. We are trying to bridge this layer to provide a working framework for organizations to work in a trustless and trusted manner using Ethereum, blockchains, smart contracts and decentralized organizations.",
   },
   {
-    categoryID: 36,
-    title: 'Grassroots Economics',
-    description:
-      "Grassroots Economics is a non-profit foundation that seeks to empower marginalized communities to take charge of their own livelihoods and economic future. We focus on community development through economic empowerment and community currency programs. Beneficiaries of our programs include small businesses and people living in informal settlements as well as rural areas.",
-  },
-  {
     categoryID: 37,
     title: 'Circles UBI',
     description: "Circles is a basic income made to promote local economy within your community.",
@@ -374,7 +368,63 @@ const categories = [
     categoryID: 71,
     title: 'The Bigger Pie',
     description: "The Bigger Pie has a thriving and active global community whose members share their experience and learn from each other. The community is open to women and gender minorities interested in blockchain, crypto, DeFi and emerging tech. Its purpose is to connect and support the incredible women who are already in the space, shine a light on the work they do to highlight these role models.",
-  }
+  },
+  {
+    categoryID: 72,
+    title: '1Hive',
+    description: "1Hive is a DAO that issues and distributes a digital currency called Honey. Honey holders stake on proposals using Conviction Voting to determine how issuance is distributed. By supporting proposals which increase the value of Honey, a positive feedback loop drives growth and sustainability.",
+  },
+  {
+    categoryID: 73,
+    title: 'Breadchain Cooperative',
+    description: "Breadchain is a cooperative of blockchain projects working to advance a progressive vision for the technology and its effect on society.",
+  },
+  {
+    categoryID: 74,
+    title: 'ArtFan',
+    description: "An Interactive Art Marketplace and Virtual Gallery making more art more accessible to more people by giving artists emerging, digital tools and technologies.",
+  },
+  {
+    categoryID: 75,
+    title: 'Microsolidarity',
+    description: "Microsolidarity is a community-building methodology supporting people to find belonging & meaningful work. We're a network of practitioners creating small mutual aid communities where people can do a kind of personal development, in good company, for social benefit. In the past year, about 200 practitioners have been trained in this methodology, and we're having our first physical gatherings in Europe & the US in 2022.",
+  },
+  {
+    categoryID: 76,
+    title: 'Humanetics Workshop',
+    description: "The Proof of Personhood field is still small enough that most members can be gathered in one room. We think this offers a unique opportunity for knowledge exchange, risk mitigation, and cross-collaboration. The Humanetics Workshop is a group that aspires to execute on this opportunity. Our aim is to create a common channel that creates spaces for important ideas to be discussed, new connections to be made, and, above all, ignite a collaborative atmosphere in our emerging field.",
+  },
+  {
+    categoryID: 77,
+    title: 'Geo Web',
+    description: "The Geo Web is a set of open protocols for anchoring digital content to physical locations. It uses a partial common ownership property rights system to administer its digital land market and create a positive feedback loop for public goods funding.",
+  },
+  {
+    categoryID: 78,
+    title: 'GenerousAF Foundation',
+    description: "Our mission is to lead the next generation of Social Philanthropy, through connecting donors to STEAM initiatives and community programs that improve the local economy. We connect local groups to develop educational workshops and we give micro-grants to support community-driven initiatives.",
+  },
+  {
+    categoryID: 79,
+    title: 'Socialstack',
+    description: "Socialstack is a Web3 platform empowering and rewarding communities to collaborate towards a common good.",
+  },
+  {
+    categoryID: 80,
+    title: 'Delicious Democracy',
+    description: "Delicious Democracy is a Washington, DC-based collective that intersects culture, politics, & tech to build community power.",
+  },
+  {
+    categoryID: 81,
+    title: 'Akorn',
+    description: "Akorn is a global community-driven marketplace for regenerative projects.",
+  },
+  {
+    categoryID: 82,
+    title: 'PizzaDAO',
+    description: "PizzaDAO formed to promote pizza in all forms. That means we're a pizza-focused community that operates with transparency and communal governance over its treasury. The proceeds from the sale of our pizza NFTs are used to buy pizza for people all over the world on Bitcoin Pizza Day, 5/22.",
+  },
+
 ];
 
 const EMPTY_PERCENTAGES = {};
@@ -722,10 +772,11 @@ categories.sort((a, b) => {
   return -1;
 });
 
-const pollID = '8';
-const snapshotsBeginOn = 'October 8';
-const stakingTotalsUpdated = 'October 10';
-const leagueBudget = 1181991.85;
+const pollID = '9';
+const snapshotsBeginOn = 'January 14';
+const tokensReleasedOn = 'January 28';
+const stakingTotalsUpdated = 'January 10';
+const leagueBudget = 1157921.58;
 
 const ClipContainer = styled.div`
   display: flex;
@@ -1102,8 +1153,8 @@ const Poll = () => {
                 Panvala's communities stake tokens to earn donation matching capacity from the PAN token's inflation.
               </p>
               <p className="white-60 fw4 ma0">
-                The staked token amounts will be used for Panvala's next donation matching round on Gitcoin Grants
-                from September 8-23. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                The staked token amounts will be used for Panvala's next quarter of endowment distributions
+                beginning on {tokensReleasedOn}. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
               </p>
             </div>
             <div className="mv3 b">
