@@ -429,7 +429,11 @@ const categories = [
     title: 'AYOWECCA Uganda',
     description: "AYOWECCA UGANDA is s a community founded non governmental organization in Uganda East Africa, working on environment and social development.",
   },
-
+  {
+    categoryID: 84,
+    title: 'Body Gallery',
+    description: "BODY Gallery wants to bring dance to web3, BODY is a space made for dancers by dancers, and puts its efforts in creating an economy that favours dancers instead of institutions. BODY is creating a motion tracking studio in which dance NFTs can be made, and explore what theatre could look like in the digital era.",
+  },
 ];
 
 const EMPTY_PERCENTAGES = {};
