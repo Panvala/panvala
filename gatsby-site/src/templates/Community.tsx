@@ -33,7 +33,7 @@ const Community = (props: CommunityProps) => {
   // TODO: pull real data for this
   const communityWebsite = props?.pageContext?.scoreboard?.communityWebsite || '';
   const communityTwitter = props?.pageContext?.scoreboard?.communityTwitter || '';
-  const startDate = props?.pageContext?.scoreboard?.startDate || moment('2021-09-01');
+  const startDate = props?.pageContext?.scoreboard?.startDate || moment('2021-12-01');
   const donorsList = props?.pageContext?.donorsList || [];
   const ownersList = props?.pageContext?.ownersList || [];
   const usdDonated = '';
