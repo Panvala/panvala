@@ -11,7 +11,7 @@
     "ethers": "^4.0.30",
     "form-data": "^2.5.1",
     "ipfs-http-client": "^35.1.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "prettier": "^1.17.0"
   }
 }
