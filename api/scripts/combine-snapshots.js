@@ -47,7 +47,7 @@ async function run() {
       'start',
       'Provide the date (ISO 8601) to start combining snapshots from (must be a Friday)'
     )
-    .demandOption('weeks', 'Provide the number of weeks to combine snapshots for (4 or 5)')
+    .demandOption('weeks', 'Provide the number of weeks to combine snapshots for (4, 5, 8, or 13)')
     .help().argv;
 
   const startDate = DateTime.fromISO(argv.start);
@@ -60,8 +60,8 @@ async function run() {
     throw new Error(msg);
   }
 
-  if (!(argv.weeks === 4 || argv.weeks === 5)) {
-    const msg = `Combined snapshots must be for 4 or 5 weeks at the time of this script's creation. You asked for ${argv.weeks} weeks.`;
+  if (![4, 5, 8, 13].includes(argv.weeks)) {
+    const msg = `Combined snapshots must be for 4, 5, 8, or 13 weeks at the time of this script's creation. You asked for ${argv.weeks} weeks.`;
     console.error(msg);
     throw new Error(msg);
   }

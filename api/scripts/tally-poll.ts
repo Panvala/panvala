@@ -126,6 +126,9 @@ async function getBlockscoutAccountBalance(blockscoutUrl, tokenAddress, address)
     })
     .catch(err => {
       console.log(`Error while fetching Blockscout balance via ${blockscoutUrl}: ${err}`);
+      console.log(
+        `Blockscout URL: ${err.request.protocol}//${err.request.host}${err.request.path}`
+      );
       throw err;
     });
 }
@@ -265,6 +268,9 @@ async function run() {
   const data = [];
   for (const response of responses) {
     const plainResponse = await response.get({ plain: true });
+    await new Promise(function(resolve) {
+      setTimeout(resolve.bind(null), 2000);
+    }); // wait between balance queries to avoid rate limiting
     const balances = await getAccountBalances(token, response.account);
     data.push({ ...plainResponse, ...balances });
   }
