@@ -1231,7 +1231,7 @@ const Poll = () => {
               </button>
             </div>
             <div className="dib v-top mr3-ns mr2 mv2">
-              <a href="https://forum.panvala.com/t/stake-pan-for-your-community/186">
+              <a href="https://www.panvala.com/handbook/staking-pan">
                 <button className="f6 link dim ba b--white br-pill white bg-transparent fw7 pointer pv3 ph4">
                   Learn More
                 </button>
