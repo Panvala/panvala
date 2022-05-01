@@ -1193,7 +1193,7 @@ const Poll = () => {
             <ModalCopy>
               PAN holders stake their tokens to increase their community's donation matching multiplier. If you do not
               currently have a PAN balance but want to stake, or you would like to increase your stake,
-              you can do so via Uniswap. Daily staking snapshots begin on <b>{snapshotsBeginOn}</b>.
+              you can do so via Uniswap.
             </ModalCopy>
             <Box flex justifyContent="center">
               <a
@@ -1219,11 +1219,7 @@ const Poll = () => {
             <h1 className="white f1-5 b ma0 mb4 w-80-l w-100">Stake PAN for Your Community</h1>
             <div className="f5 lh-copy mb3">
               <p className="mb0 white b">
-                Panvala's communities stake tokens to earn donation matching capacity from the PAN token's inflation.
-              </p>
-              <p className="white-60 fw4 ma0">
-                The staked token amounts will be used for Panvala's next quarter of endowment distributions
-                beginning on {tokensReleasedOn}. The total matching budget for all communities is {utils.commify(leagueBudget)} PAN.
+                Panvala's communities stake tokens to earn funds from the inflation of PAN, Panvala's token.
               </p>
             </div>
             <div className="mv3 b">
@@ -1315,9 +1311,8 @@ const Poll = () => {
               </Box>
               <ModalSubTitle>{`Current voting weight: ${balance} PAN`}</ModalSubTitle>
               <Box color="#555" p={4} m={2} mx={5} textAlign="center" className="lh-copy">
-                Even though your vote has been submitted, you have until <b>{snapshotsBeginOn}</b>{' '}
-                to increase your stake by holding more PAN tokens. After that date, donation matching will
-                be allocated through daily staking snapshots.
+                Even though your vote has been submitted, you can always increase your stake by holding more PAN tokens.
+                Funding is constantly allocated through daily staking snapshots.
               </Box>
               <a
                 href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
@@ -1357,7 +1352,7 @@ const Poll = () => {
                 </Box>
                 <Box my={1} className="w-80 center tc lh-copy">
                   If you do not currently have a PAN balance but want to stake, or you would
-                  like to increase your stake, you can do so via Uniswap. Daily staking snapshots begin on <b>{snapshotsBeginOn}</b>.
+                  like to increase your stake, you can do so via Uniswap.
                   <Box flex justifyContent="center" my={3}>
                     <a
                       href="https://app.uniswap.org/#/swap?outputCurrency=0xd56dac73a4d6766464b38ec6d91eb45ce7457c44&use=V2"
@@ -1487,7 +1482,7 @@ const Poll = () => {
                       <div className="cf pa4">
                         <div className="f5 tl pb3 lh-copy">
                           The daily staking snapshots will be calculated using the balance of PAN tokens
-                          in your account each day beginning on {snapshotsBeginOn}.
+                          in your account each day.
                         </div>
                         <div className="f5 tl pb4 lh-copy">
                           <b>

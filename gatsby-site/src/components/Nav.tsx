@@ -33,7 +33,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
       {/* Nav links */}
       <nav className="dt-ns w-70-l w-80-m w-90 border-box center pv4">
         <a
-          href="/"
+          href="https://panvala.com"
           title="Home"
           className="dtc-ns db w-25-ns w-90 tl-ns tc v-mid link center pb0-ns pb3"
         >
@@ -41,43 +41,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
         </a>
 
         <div className="dtc-ns db v-mid tc center w-50-ns w-100">
-          <a
-            href="https://handbook.panvala.com/"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            Handbook
-          </a>
-          <a
-            href="https://events.panvala.com"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            Events
-          </a>
-          <a
-            href="https://feed.panvala.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            News Feed
-          </a>
-          <a
-            href="https://twitter.com/PanvalaHQ"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            Twitter
-          </a>
-          <a
-            href="https://handbook.panvala.com/the-pan-token/pan-token-resources"
-            className="link dim white-60 f6 fw6 dib mr3"
-          >
-            Token
-          </a>
-          <a href="https://calendly.com/panvala-membership/meet-with-panvala" className="link dim white-60 f6 dn-ns dib fw6">
-            Join
-          </a>
+         {/* Nav was removed from here */}
         </div>
 
         {/* Balances */}
@@ -127,11 +91,7 @@ export default function Nav({ account, balance, handleClick }: Props) {
           ) : (
             typeof window !== 'undefined' &&
             !window.location.href.includes('join') && (
-              <a href="https://calendly.com/panvala-membership/meet-with-panvala">
-                <button className="f6 link dim bn br-pill white bg-teal fw7 pointer pv3 ph4">
-                  Join Panvala
-                </button>
-              </a>
+              <span></span>
             )
           )}
         </div>
