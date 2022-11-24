@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0" />
+    <title>Donate</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="boot-loader-container" class="flex">
+      <div id="boot-loader"></div>
+    </div>
+
+    <form class="flex-col items-center hidden relative">
+      <div id="close">✕</div>
+      <p id="address" class="hidden">
+        Connected as <span class="address"></span>
+        <span class="disconnect cursor-pointer">(Disconnect)</span>
+      </p>
+
+      <table class="mb-4">
+        <tbody>
+          <tr>
+            <td>
+              Amount of USD you'd like to donate
+            </td>
+            <td>
+              <input step="any" type="number" placeholder="" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="flex items-center">
+                You will be donating this amount of
+                <select class="ml-1">
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="DAI">Dai (DAI)</option>
+                  <option value="PAN">Panvala (PAN)</option>
+                </select>
+              </div>
+            </td>
+            <td>≈ <span id="from-asset-amount"></span></td>
+          </tr>
+          <tr id="from-asset-balance-container" class="hidden">
+            <td>
+              Your balance
+            </td>
+            <td><span></span></td>
+          </tr>
+          <tr id="to-pan-amount-container">
+            <td>The community will be receiving this amount of PAN</td>
+            <td>≈ <span id="to-pan-amount"></span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button type="submit">Connect Wallet</button>
+
+      <div id="wallets" class="hidden">
+        <div id="metamask">
+          <img src="wallets/metamask.svg" width="35" height="35" />
+          <div class="ml-5">Metamask</div>
+        </div>
+        <div id="wallet-connect">
+          <img src="wallets/wallet-connect.svg" width="35" height="35" />
+          <div class="ml-5">Wallet Connect</div>
+        </div>
+      </div>
+    </form>
+
+    <div class="flex flex-col notification hidden">
+      <div>Thank you!</div>
+      <div class="text-xs">Waiting for transaction to be mined..</div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

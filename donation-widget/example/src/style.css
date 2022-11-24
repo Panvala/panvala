@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #46b0aa;
+  --dark-color: #248e88;
+  --light-color: #bff1ee;
+  --radius: 8px;
+}
+
+body {
+  padding-top: 50px;
+  width: 750px;
+  margin: 0 auto;
+  font-family: 'Work Sans', sans-serif;
+}
+
+button,
+button:after,
+button:before {
+  background-color: var(--light-color);
+}
+
+button:before {
+  left: -20px;
+  border-top-left-radius: 100%;
+  border-bottom-left-radius: 100%;
+}
+
+button:after,
+button:before {
+  content: ' ';
+  position: absolute;
+  z-index: 1;
+  width: 40px;
+  bottom: 0;
+  top: 0;
+}
+
+button:after {
+  right: -20px;
+  border-top-right-radius: 100%;
+  border-bottom-right-radius: 100%;
+}
+
+button {
+  color: var(--dark-color);
+  position: relative;
+  margin: 0 20px;
+  width: 150px;
+  height: 44px;
+}
+
+button:focus {
+  outline: none !important;
+}
+
+button:hover {
+  opacity: 0.7;
+}
+
+.notification {
+  padding: 10px 25px;
+  border-radius: var(--radius);
+  position: fixed;
+  top: 5px;
+  right: 5px;
+}
+
+.notification.success {
+  background-color: var(--light-color);
+  color: var(--dark-color);
+}
+
+.notification.error {
+  background-color: #ffecec;
+  color: #ff0b0b;
+}
+
+pre {
+  background: #eee;
+  padding: 10px 25px;
+  border-radius: var(--radius);
+}
