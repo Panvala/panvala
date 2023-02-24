@@ -47,7 +47,7 @@
     "panvala-utils": "file:../packages/panvala-utils",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^5.21.2",
+    "sequelize": "^6.29.0",
     "sequelize-cli": "^5.4.0",
     "yargs": "^15.0.2",
     "zksync": "^0.10.8"
