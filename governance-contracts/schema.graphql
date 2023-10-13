@@ -1,0 +1,212 @@
+type Approval @entity {
+  id: ID!
+  owner: Bytes! # address
+  spender: Bytes! # address
+  value: BigInt! # amount
+}
+
+type Transfer @entity {
+  id: ID!
+  from: Bytes! # address
+  to: Bytes! # address
+  value: BigInt! # amount
+}
+
+type BallotCommitted @entity {
+  id: ID!
+  epochNumber: BigInt! # amount
+  committer: Bytes! # address
+  voter: Bytes! # address
+  numTokens: BigInt! # amount
+  commitHash:Bytes!# Bytess32
+}
+
+type BallotRevealed @entity {
+   id: ID!
+  epochNumber: BigInt! # amount
+  voter: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type ContestAutomaticallyFinalized @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+  winningSlate: BigInt! # unit256
+}
+
+type ContestFinalizedWithoutWinner @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+}
+
+type PermissionRequested @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+  requestID: BigInt! # unit256
+  metadataHash: Bytes! #Bytess
+}
+
+type RunoffFinalized @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+  winningSlate: BigInt! # unit256
+  winnerVotes: BigInt! # unit256
+  losingSlate: BigInt! # unit256
+  loserVotes: BigInt! # unit256
+}
+
+type SlateCreated @entity {
+  id: ID!
+  slateID: BigInt! # unit256
+  recommender: Bytes! # address
+  requestIDs: [BigInt!]! # unit256[]
+}
+ 
+type SlateStaked @entity {
+  id: ID!
+  slateID: BigInt! # unit256
+  numTokens: BigInt!
+}
+
+type StakeWithdrawn @entity {
+  id: ID!
+  slateID: BigInt! # unit256
+  staker: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type VoteFailed @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+  leadingSlate: BigInt! # unit256
+  leaderVotes: BigInt! # unit256
+  runnerUpSlate: BigInt! # unit256
+  runnerUpVotes: BigInt! # unit256
+  totalVotes: BigInt! # unit256
+}
+
+type VoteFinalized @entity {
+  id: ID!
+  epochNumber: BigInt! # unit256
+  resource: Bytes! # address
+  winningSlate: BigInt! # unit256
+  winnerVotes: BigInt! # unit256
+  totalVotes: BigInt! # unit256
+}
+
+type VotingRightsDelegated @entity {
+  id: ID!
+  voter: Bytes! # address
+  delegate: Bytes! # address
+}
+
+type VotingTokensDeposited @entity {
+  id: ID!
+  voter: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type VotingTokensWithdrawn @entity {
+  id: ID!
+  voter: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type BalancesUpdated @entity {
+  id: ID!
+  unlockedBalance: BigInt! # amount
+  lastLockedBalance: BigInt! # amount
+  lastLockedTime: BigInt! # amount
+  totalBalance: BigInt! # amount
+}
+
+type Donation @entity {
+  id: ID!
+  payer: Bytes! # address
+  donor: Bytes! # address
+  numTokens: BigInt! # amount
+  metadataHash: Bytes!
+}
+
+type ProposalCreated @entity {
+  id: ID!
+  proposalID: BigInt! # amount
+  proposer: Bytes! # address
+  requestID: BigInt! # amount
+  recipient: Bytes! # address
+  tokens: BigInt! # amount
+  metadataHash: Bytes!
+}
+
+type ParameterProposalCreated @entity {
+  id: ID!
+  proposalID: BigInt! # amount
+  proposer: Bytes! # address
+  requestID: BigInt! # amount
+  key: String! # address
+  value: Bytes! # amount
+  metadataHash: Bytes!
+}
+
+type TokensWithdrawn @entity {
+  id: ID!
+  proposalID: BigInt! # amount
+  to: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type ReservedBalancesUpdated @entity {
+  id: ID!
+  unlockedBalance: BigInt! # amount
+  lastLockedBalance: BigInt! # amount
+  lastLockedTime: BigInt! # amount
+  totalBalance: BigInt! # amount
+}
+
+type ReservedDonation @entity {
+  id: ID!
+  payer: Bytes! # address
+  donor: Bytes! # address
+  numTokens: BigInt! # amount
+  metadataHash: Bytes! # amount
+}
+
+type ReservedProposalCreated @entity {
+  id: ID!
+  proposalID: BigInt! # amount
+  proposer: Bytes! # address
+  requestID: BigInt! # amount
+  recipient: Bytes! # address
+  tokens: BigInt! # amount
+  metadataHash: Bytes!
+}
+
+type ReservedTokensWithdrawn @entity {
+  id: ID!
+  proposalID: BigInt! # amount
+  to: Bytes! # address
+  numTokens: BigInt! # amount
+}
+
+type ParameterSet @entity {
+  id: ID!
+  name: String! 
+  key: Bytes! 
+  value: Bytes!
+}
+
+type ProposalAccepted @entity {
+    id: ID!
+    proposalID: BigInt! 
+    key: String!
+    value: Bytes!
+}
+
+type Initialized @entity {
+    id: ID!
+}
