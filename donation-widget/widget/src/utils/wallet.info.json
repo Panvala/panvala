@@ -1,0 +1,12 @@
+[
+  {
+    "name": "MetaMask",
+    "icon": "https://app.uniswap.org/static/media/metamask.023762b6.png",
+    "connecter": "injected"
+  },
+  {
+    "name": "WalletConnect",
+    "icon": "https://app.uniswap.org/static/media/walletConnectIcon.8215855c.svg",
+    "connecter": "walletconnect"
+  }
+]
